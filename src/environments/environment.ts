@@ -31,6 +31,25 @@ export const environment = {
   logoutUrl: oonaBaseUrl + '/api/v1/accounts/logout',
   meetingDetailsUrl: oonaBaseUrl + '/api/v1/meet/meetings/',
   changePasswordUrl: oonaBaseUrl + '/api/v1/accounts/password/change/',
+
+  // Messaging Urls
+  users: oonaBaseUrl + '/api/v1/accounts/z/user/',
+  teams: oonaBaseUrl + '/api/v1/streams/all',
+  subscribedStreams: oonaBaseUrl + '/api/v1/streams',
+  presentUsers: oonaBaseUrl + '/api/v1/accounts/present/user/',
+  userProfile: oonaBaseUrl + '/api/v1/accounts/profile/',
+  streamMessages: oonaBaseUrl + '/api/v1/message/s',
+  sendStreamMessageURL: oonaBaseUrl + '/api/v1/streams/message',
+  sendStreamMessageWithFileURL: oonaBaseUrl + '/api/v1/streams/file',
+  sendIndividualMessageWithFileURL: oonaBaseUrl + '/api/v1/message/file',
+  individualMessage: oonaBaseUrl + '/api/v1/message/',
+  streamTopic: oonaBaseUrl + '/api/v1/streams/all/topic?stream_id=',
+  newTeam: oonaBaseUrl + '/api/v1/streams/subscribe',
+  newMeeting: oonaBaseUrl + '/api/v1/meet/meetings/',
+  oonaMemberProfileDetail: oonaBaseUrl + '/api/v1/accounts/user/?email=',
+  oonaProfileUrl: oonaBaseUrl + '/api/v1/accounts/users/',
+  streamUnsubscribe: oonaBaseUrl + '/api/v1/streams/unsubscribe',
+  streamSubscribe: oonaBaseUrl + '/api/v1/streams/subscribe',
 };
 
 /*

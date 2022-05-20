@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {environment} from '../../../environments/environment';
+import { environment as env } from '../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {AuthService} from '../../auth/services/auth.service';
 import {BehaviorSubject} from 'rxjs';
@@ -9,23 +9,23 @@ import {Router} from '@angular/router';
   providedIn: 'root',
 })
 export class MessagingService {
-  users = environment.oona + '/api/v1/accounts/z/user/';
-  teams = environment.oona + '/api/v1/streams/all';
-  subscribedStreams = environment.oona + '/api/v1/streams';
-  presentUsers = environment.oona + '/api/v1/accounts/present/user/';
-  userProfile = environment.oona + '/api/v1/accounts/profile/';
-  streamMessages = environment.oona + '/api/v1/message/s';
-  sendStreamMessageURL = environment.oona + '/api/v1/streams/message';
-  sendStreamMessageWithFileURL = environment.oona + '/api/v1/streams/file';
-  sendIndividualMessageWithFileURL = environment.oona + '/api/v1/message/file';
-  individualMessage = environment.oona + '/api/v1/message/';
-  streamTopic = environment.oona + '/api/v1/streams/all/topic?stream_id=';
-  newTeam = environment.oona + '/api/v1/streams/subscribe';
-  newMeeting = environment.oona + '/api/v1/meet/meetings/';
-  oonaMemberProfileDetail = environment.oona + '/api/v1/accounts/user/?email=';
-  oonaProfileUrl = environment.oona + '/api/v1/accounts/users/';
-  streamUnsubscribe = environment.oona + '/api/v1/streams/unsubscribe';
-  streamSubscribe = environment.oona + '/api/v1/streams/subscribe';
+  users = env.users;
+  teams = env.teams;
+  subscribedStreams = env.subscribedStreams;
+  presentUsers = env.presentUsers;
+  userProfile = env.userProfile;
+  streamMessages = env.streamMessages;
+  sendStreamMessageURL = env.sendStreamMessageURL;
+  sendStreamMessageWithFileURL = env.sendStreamMessageWithFileURL;
+  sendIndividualMessageWithFileURL = env.sendIndividualMessageWithFileURL;
+  individualMessage = env.individualMessage;
+  streamTopic = env.streamTopic;
+  newTeam = env.newTeam;
+  newMeeting = env.newMeeting;
+  oonaMemberProfileDetail = env.oonaMemberProfileDetail;
+  oonaProfileUrl = env.oonaProfileUrl;
+  streamUnsubscribe = env.streamUnsubscribe;
+  streamSubscribe = env.streamSubscribe;
 
   allPlatformMembers = [];
   subscribers: any;
