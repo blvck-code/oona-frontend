@@ -12,7 +12,7 @@ import {NotificationService} from '../../../../shared/services/notification.serv
 export class IndividualMessagingRightPanelComponent implements OnInit {
   otherMembers: any ;
   allUsers: any;
-  serverUrl = environment.oona;
+  // serverUrl = environment.oona;
   commonTeams = Array();
   memberDetails = {
     full_name: undefined,

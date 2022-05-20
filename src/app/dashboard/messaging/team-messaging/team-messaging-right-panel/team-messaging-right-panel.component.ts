@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivationEnd, Router } from '@angular/router';
 import { Subscriber } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { oonaBaseUrl } from 'src/environments/environment';
 import { MessagingService } from '../../messaging.service';
 
 @Component({
@@ -12,7 +12,7 @@ import { MessagingService } from '../../messaging.service';
 export class TeamMessagingRightPanelComponent implements OnInit {
 
   allUsers: any;
-  serverUrl = environment.oona;
+  serverUrl = oonaBaseUrl;
   allSubscribers: any;
 
   groupMemberDetails = Array();

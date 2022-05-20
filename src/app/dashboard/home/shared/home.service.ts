@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {environment} from '../../../../environments/environment';
+import { environment as env } from '../../../../environments/environment';
 import {AuthService} from '../../../auth/services/auth.service';
 
 @Injectable({
@@ -8,10 +8,10 @@ import {AuthService} from '../../../auth/services/auth.service';
 })
 export class HomeService {
 
-  usersUrl = environment.oona + '/api/v1/accounts/user/';
-  meetingsUrl = environment.oona + '/api/v1/meet/meetings/';
-  scheduleMeetingsUrl = environment.oona + '/api/v1/meet/meetings/';
-  meetingDetailsUrl = environment.oona + '/api/v1/meet/meetings/';
+  usersUrl = env.getUserUrl;
+  meetingsUrl = env.meetingDetailsUrl;
+  scheduleMeetingsUrl = env.meetingDetailsUrl;
+  meetingDetailsUrl = env.meetingDetailsUrl;
 
   constructor(
     private http: HttpClient,

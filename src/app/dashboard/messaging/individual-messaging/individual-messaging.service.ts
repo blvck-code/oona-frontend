@@ -2,16 +2,16 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {AuthService} from '../../../auth/services/auth.service';
 import {Router} from '@angular/router';
-import {environment} from '../../../../environments/environment';
+import { environment as env } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class IndividualMessagingService {
 
-  oonaProfile = environment.oona + '/api/v1/accounts/user/?email=';
-  filteredMeetings = environment.oona + '/api/v1/meet/meeting/dm/?host=';
-  filteredAttendeeMeetings = environment.oona + '/api/v1/meet/meeting/dm/?attendees=';
+  oonaProfile = env.oonaMemberProfileDetail;
+  filteredMeetings = env.filteredMeetings;
+  filteredAttendeeMeetings = env.filteredAttendeeMeetings;
 
   constructor(
     private http: HttpClient,

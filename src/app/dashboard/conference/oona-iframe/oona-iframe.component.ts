@@ -5,6 +5,8 @@ import { OonaMeeting } from '../../home/shared/oonaMeeting';
 import { ConferenceService } from '../shared/conference.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { MeetingParticipant } from '../shared/meetingParticipant';
+import { environment as env } from '../../../../environments/environment';
+
 declare var JitsiMeetExternalAPI: any;
 
 @Component({
@@ -13,11 +15,13 @@ declare var JitsiMeetExternalAPI: any;
   styleUrls: ['./oona-iframe.component.scss'],
 })
 export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
+  // @ToDo white domain URL not similar
   domain = '192.168.0.76:8443';
   room: any;
   options: any;
   api: any;
   user: any;
+  // @ToDo white board URL not similar
   whiteboardUrl = 'http://192.168.0.76:8030';
 
   isAudioMuted = false;

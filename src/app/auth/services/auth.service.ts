@@ -17,7 +17,7 @@ export class AuthService {
   verificationUrl = env.verificationUrl;
   generateOTPUrl = env.generateOTPUrl;
   userProfileURL = env.userProfileURL;
-  getUserUrl = env.getUserUrl;
+  getUsersUrl = env.getUsersUrl;
   refreshTokenUrl = env.refreshTokenUrl;
   redirectUrl = '/dashboard';
   logoutUrl = env.logoutUrl;
@@ -121,7 +121,7 @@ export class AuthService {
 
   getCurrentUser(): any {
     console.log('Funny you not working');
-    return this.http.get(this.getUserUrl);
+    return this.http.get(this.getUsersUrl);
   }
 
   getUserProfile(): any {
