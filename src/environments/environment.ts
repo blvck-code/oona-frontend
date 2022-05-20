@@ -11,8 +11,6 @@ const domain = '192.168.0.100:8443';
 
 export const environment = {
   production: false,
-
-
   // User Management Urls
   loginUrl: oonaBaseUrl + '/api/v1/accounts/login/',
   requestResetUrl: oonaBaseUrl + '/api/v1/accounts/password/reset/request/',

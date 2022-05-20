@@ -12,6 +12,8 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import {StoreModule} from '@ngrx/store';
 import {sharedReducer} from './state/shared.reducer';
 import {sharedSelectors} from './state/shared.selectors';
+import {EffectsModule} from '@ngrx/effects';
+import {SharedEffects} from './state/shared.effects';
 
 
 
@@ -37,7 +39,8 @@ import {sharedSelectors} from './state/shared.selectors';
     ],
   imports: [
     CommonModule,
-    StoreModule.forFeature(sharedSelectors, sharedReducer)
+    StoreModule.forFeature(sharedSelectors, sharedReducer),
+    EffectsModule.forFeature([SharedEffects])
   ]
 })
 export class SharedModule { }
