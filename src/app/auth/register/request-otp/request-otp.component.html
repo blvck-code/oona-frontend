@@ -1,0 +1,35 @@
+<div class="main-login-section">
+  <div class="reset-password-container">
+    <div class="branding-section">
+      <img src="assets/img/oona_logo.svg" alt="" class="login-branding">
+    </div>
+    <div class="reset-password-content">
+      <div class="reset-password-title">
+        <p>Request OTP</p>
+      </div>
+      <div class="reset-password-description">
+        <p>Enter your email below to request a One-Time Password to help you verify your new account.</p>
+      </div>
+      <form [formGroup]="requestOTPForm" (ngSubmit)="onRequestOTP()" class="reset-password-form">
+        <div class="username-details">
+          <label for="userName">Email</label>
+          <input type="text" id="userName" formControlName="email" placeholder="Email Address">
+          <span *ngIf="requestOTPFormControls.email.touched && requestOTPFormControls.email.errors?.required">Please enter your email address.</span>
+          <span *ngIf="requestOTPFormControls.email.touched && requestOTPFormControls.email.errors?.email">Please enter a Valid email address.</span>
+          <span *ngIf="!requestOTPFormControls.email.touched && emptyForm">Please enter a your email address.</span>
+        </div>
+        <div class="reset-password-button">
+          <button class="reset-password-form-btn" type="submit" (click)="isSubmitted()">Request OTP</button>
+        </div>
+        <div class="login-error">
+          <span *ngIf="requestOTPError">{{requestOTPEServerError}}</span>
+        </div>
+        <div class="verify-option">
+          <span routerLink="/verify-account">Already have an OTP? Verify it here.</span>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+

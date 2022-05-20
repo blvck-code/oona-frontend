@@ -1,0 +1,48 @@
+.individual-message-item {
+  display: flex;
+  margin-bottom: 20px;
+}
+.message-sender-icon {
+  img {
+    height: 32px;
+    width: 32px;
+  }
+}
+.message-item-content {
+  width: calc(100% - 40px);
+}
+
+.name {
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: bold;
+  color: #323037;
+}
+
+.message-body {
+  padding: 15px;
+  border: none;
+  border-radius: 10px 10px 10px 0;
+  box-shadow: 0 2px 4px rgba(34, 37, 52, 0.0501803);
+  background-color: #fff;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: #EDEDF6 transparent;
+}
+
+.chat-tag {
+  font-size: 12px;
+  line-height: 14px;
+  color: #051EC4;
+}
+
+.chat-msg {
+  font-size: 14px;
+}
+
+.chat-time {
+  font-size: 12px;
+  line-height: 14px;
+  /* identical to box height */
+  color: #8A8D92;
+}

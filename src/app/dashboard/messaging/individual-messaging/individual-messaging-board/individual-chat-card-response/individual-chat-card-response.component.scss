@@ -1,0 +1,42 @@
+.container-fluid{
+  //margin-left: -1%;
+}
+.respondent{
+  font-family: Gilroy !important;
+  font-size: 14px;
+  line-height: 16px;
+  color: #323037;
+  font-weight: bolder;
+}
+.card{
+  border: none;
+  border-radius: 10px 10px 10px 0px;
+  height: 77%;
+  width: 100%;
+  background: #EDEDF6;
+
+}
+.colored-tag{
+  background: #C3CAFD;
+  border-radius: 10px 10px 0px 0px;
+  padding: 1%;
+}
+.chat-tag{
+  font-size: 12px;
+  line-height: 14px;
+  color: #051EC4;
+}
+.chat-msg{
+  font-family: Gilroy-Regular;
+  font-size: 12px;
+  line-height: 16px;
+  /* identical to box height, or 140% */
+  color: #554E6A;
+}
+.chat-time{
+  font-family: Gilroy-Regular;
+  font-size: 12px;
+  line-height: 14px;
+  /* identical to box height */
+  color: #8A8D92;
+}

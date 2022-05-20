@@ -1,0 +1,65 @@
+<div class="main-register-section">
+  <div class="register-container">
+    <div class="branding-section">
+      <img src="assets/img/oona_logo.svg" alt="" class="login-branding">
+    </div>
+    <div class="register-content">
+      <div class="register-title">
+        <p>Register</p>
+      </div>
+      <div class="register-description">
+        <p>Create a new Oona Account.</p>
+      </div>
+      <form [formGroup]="registrationForm" (ngSubmit)="onRegister()" class="register-form">
+        <div class="input-details">
+          <label for="email">Email*</label>
+          <input type="email" id="email" formControlName="email" placeholder="Email Address">
+          <span *ngIf="registrationFormControls.email.touched && registrationFormControls.email.errors?.required">Please enter your email address.</span>
+          <span *ngIf="registrationFormControls.email.touched && registrationFormControls.email.errors?.email">Please enter a valid email address!</span>
+          <span *ngIf="!registrationFormControls.email.touched && emptyForm">Please enter your email address.</span>
+        </div>
+
+        <div class="input-details">
+          <label for="firstName">First Name*</label>
+          <input type="text" id="firstName" formControlName="firstName" placeholder="First Name">
+          <span *ngIf="registrationFormControls.firstName.touched && registrationFormControls.firstName.errors?.required">Please enter your first name.</span>
+          <span *ngIf="!registrationFormControls.firstName.touched && emptyForm">Please enter your first name.</span>
+        </div>
+
+        <div class="input-details">
+          <label for="secondName">Second Name*</label>
+          <input type="text" id="secondName" formControlName="secondName"  placeholder="Second Name">
+          <span *ngIf="registrationFormControls.secondName.touched && registrationFormControls.secondName.errors?.required">Please enter your second name.</span>
+          <span *ngIf="!registrationFormControls.secondName.touched && emptyForm">Please enter your second name.</span>
+        </div>
+
+        <div class="input-details">
+          <label for="pass">Password*</label>
+          <input type="password" id="pass" formControlName="password1" placeholder="Password">
+          <span *ngIf="registrationFormControls.password1.touched && registrationFormControls.password1.errors?.required">Please enter your password.</span>
+          <span *ngIf="!registrationFormControls.password1.touched && emptyForm">Please enter your password.</span>
+        </div>
+
+        <div class="input-details">
+          <label for="confirmPass">Confirm Password*</label>
+          <input type="password" id="confirmPass" formControlName="confirmPass" placeholder="Confirm Password">
+          <span *ngIf="registrationFormControls.confirmPass.touched && registrationFormControls.confirmPass.errors?.required">Please confirm your password.</span>
+          <span *ngIf="!registrationFormControls.confirmPass.touched && emptyForm">Please confirm your password.</span>
+        </div>
+
+        <div class="register-buttons">
+          <button class="cancel-register-form-btn" routerLink="" type="button">Cancel</button>
+          <button type="submit" class="register-form-btn" (click)="isSubmitted()">Register</button>
+        </div>
+        <div class="signup-error">
+          <span *ngIf="signupError">{{signupServerError}}</span>
+        </div>
+        <div class="login-option">
+          <p>Already have an account? <span routerLink="/login">Login here</span></p>
+          <p>Or <span routerLink="/verify-account">Verify your account</span></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

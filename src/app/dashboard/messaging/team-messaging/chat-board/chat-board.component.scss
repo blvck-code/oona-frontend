@@ -1,0 +1,101 @@
+.team-name {
+    font-size: 18px;
+    color: #051EC4;
+    font-weight: 700;
+}
+
+.team-topic {
+  font-size: 14px;
+  line-height: 28px;
+  color: #051EC4;
+  font-weight: 700;
+}
+
+
+.navigation-section{
+    border-bottom: 1px solid #E9E9E9;
+}
+.navigation{
+  margin-right: 3%;
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 23px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 15px;
+  /* identical to box height */
+  color: #191726;
+  width: 86px;
+  height: 24px;
+}
+.navigation p{
+  margin: 0;
+}
+
+.nav-link{
+    p {
+      margin: 0;
+      color: #191726;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+  &.active {
+    border-bottom: 3px solid #051EC4;
+
+    p {
+      color: #051EC4;
+
+    }
+  }
+}
+.messages-tab-pane {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.custom-tab{
+  height: calc(100% - 75px);
+}
+
+.overflow-chat{
+  height: calc(100% - 180px);
+  margin-bottom: 10px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  padding-top: 15px;
+  scrollbar-width: thin;
+  // mix-blend-mode: normal;
+  scrollbar-color: #37314B transparent;
+}
+
+.load-more-messages-btn {
+  height: 35px;
+  width: 114px;
+  margin-bottom: 10px;
+  background-color: #051EC4;
+  border-radius: 5px;
+  color: #fff;
+  font-weight: 500;
+
+  &:focus {
+    box-shadow: none;
+  }
+}
+
+/* (1280x720)  WXGA */
+@media only screen and (min-device-width: 720px) and (max-device-width: 1280px) {
+  .overflow-chat{
+    height: 50vh;
+  }
+}
+.active{
+  color: #051EC4 !important;
+  background-color: #f8f8fb !important;
+}
+
+
+.text-editor{
+  max-height: 250px;
+}

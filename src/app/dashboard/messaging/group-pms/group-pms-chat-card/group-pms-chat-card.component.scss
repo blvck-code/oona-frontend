@@ -1,0 +1,73 @@
+.chart-item-container {
+  display: flex;
+  margin-bottom: 20px;
+}
+.chart-item-profile {
+  margin-right: 20px;
+}
+
+.chart-item-content-container {
+  width: calc(100% - 65px);
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-top-left-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(34, 37, 52, 0.0501803);
+}
+
+.chart-item-content-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 30px;
+  padding: 0 15px;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  background-color: #ECF4FB;
+  cursor: pointer;
+
+  p {
+    margin: 0;
+  }
+}
+
+.chart-item-content {
+  padding: 15px;
+}
+
+.name {
+  font-size: 14px;
+  font-weight: 600;
+}
+.card {
+  border: none;
+  min-height: 100px;
+  max-height: 85%;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: #EDEDF6 transparent;
+  max-width: 80%;
+  border-radius: 10px 10px 10px 0;
+  cursor: pointer;
+}
+
+.colored-tag {
+  background: #C3CAFD;
+  border-radius: 10px 10px 0 0;
+  padding: 1%;
+}
+.chat-tag {
+  font-size: 12px;
+  line-height: 14px;
+  color: #051EC4;
+}
+.chat-msg {
+  font-size: 14px;
+  line-height: 17px;
+}
+.chat-time {
+  font-size: 12px;
+  line-height: 14px;
+  /* identical to box height */
+  color: #8A8D92;
+}

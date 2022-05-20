@@ -1,0 +1,42 @@
+<div class="main-login-section">
+  <div class="sign-in-container">
+    <div class="branding-section">
+      <img src="assets/img/oona_logo.svg" alt="" class="login-branding">
+    </div>
+    <div class="sign-in-content">
+      <div class="sign-in-title">
+        <p>Sign In</p>
+      </div>
+      <div class="sign-in-description">
+        <p>Sign in to your Oona account.</p>
+      </div>
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="sign-in-form">
+        <div class="username-details">
+          <label for="userName">Username</label>
+          <input type="text" id="userName" formControlName="email" placeholder="Email Address">
+          <span *ngIf="addLoginFormControls.email.touched && addLoginFormControls.email.errors?.required">Please enter your email address.</span>
+          <span *ngIf="addLoginFormControls.email.touched && addLoginFormControls.email.errors?.email">Please enter a Valid email address.</span>
+          <span *ngIf="!addLoginFormControls.email.touched && emptyForm">Please enter a your email address.</span>
+        </div>
+        <div class="password-details">
+          <label for="password">Password</label>
+          <input type="password" id="password" formControlName="password" placeholder="Password">
+          <span class="forgot-password" routerLink="/request-reset">Forgot password?</span>
+          <span *ngIf="addLoginFormControls.password.touched && addLoginFormControls.password.errors?.required" class="password-error">Please enter your password.</span>
+          <span *ngIf="!addLoginFormControls.password.touched && emptyForm" class="password-error">Please enter your password.</span>
+        </div>
+        <div class="sign-in-button">
+          <button class="sign-in-form-btn" type="submit" (click)="isSubmitted()">Sign in</button>
+        </div>
+        <div class="login-error">
+          <span *ngIf="errorMsg$">{{ errorMsg$ | async }}</span>
+        </div>
+        <div class="registration-option">
+          <p>Don't have an Account? <span routerLink="/signup">Register Here.</span></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+

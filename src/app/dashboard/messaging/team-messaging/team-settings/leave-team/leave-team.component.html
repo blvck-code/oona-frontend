@@ -1,0 +1,18 @@
+<div>
+  <div class="d-flex justify-content-end mb-2" style="cursor: pointer" mat-dialog-close>
+    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10.3706 8.48531L16.9706 15.0853L15.0853 16.9706L8.48527 10.3706L1.88528 16.9706L-4.64358e-05 15.0853L6.59994 8.48531L-4.58588e-05 1.88533L1.88528 -6.59399e-07L8.48527 6.59998L15.0853 -8.24103e-08L16.9706 1.88533L10.3706 8.48531Z" fill="#023BE8"/>
+    </svg>
+
+  </div>
+  <div class="row d-flex justify-content-center">Leave {{teamDetail.name}} ?</div>
+
+  <div class="form-row slot-add-btn d-flex justify-content-between">
+    <button class="btn btn-cancel shadow-none" (click)="cancelLeaveTeam()">Cancel</button>
+    <button
+      class="btn btn-add"
+      (click)="leaveTeam()">
+      Leave
+    </button>
+  </div>
+</div>

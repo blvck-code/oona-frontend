@@ -1,0 +1,23 @@
+<div class="card card-meeting">
+  <div class="card-body">
+    <h5 class="card-title">{{ meetingDetails.name }}</h5>
+    <h6 class="card-subtitle mb-2 text-muted">{{ meetingDetails.agenda }}</h6>
+    <p *ngIf="!startMeetingOption" routerLink="/dashboard/meeting-details/{{meetingDetails.id}}" style="cursor: pointer">View notes</p>
+    <div class="card-text text-dark">
+      <div class="d-flex flex-row justify-content-start">
+        <img src="assets/img/clock-icon.svg" alt="clock">
+        <p class="mt-3 ms-1">{{meetingDetails.start_time | date:'mediumDate'}} &nbsp; |  {{meetingDetails.start_time | date:'HHmm'}} - {{meetingDetails.stop_time | date:'HHmm'}}</p>
+      </div>
+
+      <div class="d-flex flex-row justify-content-start">
+        <img src="assets/img/people-icon.svg" alt="chair-icon">
+        <p class="mt-3 ms-1">Meeting Chair:<span>{{meetingDetails.host_name.first_name}}  {{meetingDetails.host_name.last_name}}</span></p>
+      </div>
+<!--      <div class="d-flex flex-row">-->
+<!--        <span *ngFor="let name of meetingDetails.attendees_name">{{name.first_name}}</span>-->
+<!--      </div>-->
+
+    </div>
+    <button *ngIf="startMeetingOption" class="btn btn-primary" (click)="goToMeeting()">Go to meeting</button>
+  </div>
+</div>

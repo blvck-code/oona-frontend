@@ -1,0 +1,104 @@
+.main-login-section {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+}
+.branding-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 40px;
+}
+.branding-section img {
+  height: 60px;
+}
+.request-reset-content {
+  width: 450px;
+  margin-top: 15px !important;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 16px 40px 1px rgba(112, 144, 176, 0.2);
+  padding: 25px;
+}
+.request-reset-content .request-reset-title {
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+}
+.request-reset-content .request-reset-title p {
+  margin-bottom: 5px;
+}
+.request-reset-content .request-reset-description {
+  font-size: 15px;
+  text-align: center;
+}
+.username-details {
+  display: flex;
+  flex-direction: column;
+}
+.username-details label {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+.username-details input {
+  height: 50px;
+  border: 1px solid #023BE8;
+  border-radius: 10px;
+  padding: 5px 15px;
+  font-size: 16px;
+}
+.username-details input:focus {
+  outline: none;
+}
+
+.request-reset-button {
+  margin-top: 20px;
+}
+.request-reset-form-btn {
+  height: 55px;
+  width: 100%;
+  border: none;
+  border-radius: 30px;
+  background-color: #051EC4;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #ffffff;
+  cursor: pointer;
+}
+.request-reset-form span {
+  margin-top: 5px;
+  color: #d91500;
+  font-weight: 500;
+  font-size: 16px;
+}
+.request-reset-form span.forgot-password {
+  margin-top: 2px;
+  color: #000;
+  font-size: 14px;
+  text-align: end;
+  cursor: pointer;
+}
+.request-reset-form span.forgot-password:hover {
+  color: #051EC4;
+}
+.request-reset-form span.password-error {
+  margin-top: 0;
+  line-height: 1;
+}
+.request-reset-error {
+  padding-top: 5px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+.request-reset-error span.register-option {
+  margin: 0;
+  color: #000;
+  cursor: pointer;
+}
+.request-reset-error span.register-option:hover {
+  color: #051EC4;
+}

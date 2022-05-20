@@ -1,0 +1,42 @@
+<div class="create-dialog">
+  <div class="d-flex justify-content-end mb-2" >
+    <i style="cursor: pointer" mat-dialog-close (click)="cancelTeamCreate()" class="bi bi-x fa-2x close-btn"></i>
+  </div>
+  <h6 class="mt-n1 p-1 d-flex justify-content-center">Create team</h6>
+  <form [formGroup]="teamForm" (ngSubmit)="submitForm()">
+    <div class="modal-meeting-names mb-2">
+      <!--                <label for="meetingName" class="form-label">Meeting Name</label>-->
+      <input class="form-control shadow-none" id="meetingName" placeholder="Type the name of your team" formControlName="teamName"
+             [class.invalid]="teamFormControls.teamName.touched && teamFormControls.teamName.errors?.required">
+      <span class="text-danger p-0 m-0" *ngIf="teamFormControls.teamName.touched && teamFormControls.teamName.errors?.required">
+        <small>
+          Please enter the name of your team.
+        </small>
+      </span>
+    </div>
+
+    <div class="modal-meeting-names">
+      <!--                <label for="meetingName" class="form-label">Meeting Name</label>-->
+      <input class="form-control shadow-none" id="teamDesc" placeholder="Description of your team" formControlName="teamDescription"
+             [class.invalid]="teamFormControls.teamDescription.touched && teamFormControls.teamDescription.errors?.required">
+      <span class="text-danger" *ngIf="teamFormControls.teamDescription.touched && teamFormControls.teamDescription.errors?.required">
+        <small>
+        Please enter a description of your team.
+        </small>
+      </span>
+    </div>
+
+
+  </form>
+
+  <div class="mt-1 d-flex p-2 justify-content-evenly">
+    <button class="btn btn-primary schedule-meeting-btn shadow-none" (click)="cancelTeamCreate()">Cancel</button>
+    <button
+      class="btn btn-primary schedule-meeting-btn shadow-none"
+      type="submit"
+      [disabled]="this.teamForm.invalid "
+      (click)="isSubmitted()">
+      Create team
+    </button>
+  </div>
+</div>

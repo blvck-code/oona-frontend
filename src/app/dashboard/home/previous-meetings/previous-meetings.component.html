@@ -1,0 +1,275 @@
+<div class="home-topnav">
+  <div class="home-topnav-links">
+    <div class="upcoming-link" routerLink="/dashboard" routerLinkActive="link-active" [routerLinkActiveOptions]="{exact: true}" >
+      <p>Upcoming Meetings</p>
+    </div>
+    <div class="previous-link" routerLink="/dashboard/previous-meetings" routerLinkActive="link-active" >
+      <p>Previous Meetings</p>
+    </div>
+  </div>
+  <div class="home-topnav-button">
+    <a class="btn host-meeting-btn" data-bs-toggle="modal" href="#meetingModal" role="button" (click)="getUsers()">Host Meeting</a>
+  </div>
+</div>
+<div class="home-content-section g-0">
+  <div class="previous-meetings-container row g-0">
+    <div class="home-meetings-section col-9">
+
+      <div class="previous-meetings-section">
+        <div class="container meetings-yesterday-section">
+          <div class="yesterday-section-title">
+<!--            <p>Yesterday</p>-->
+          </div>
+          <div *ngIf="areMeetingsLoading" class="meetings-loading-indicator">
+            <app-load-indicator></app-load-indicator>
+          </div>
+          <div class="row yesterday-section-content">
+
+            <div *ngFor="let meeting of previousMeetings" class="col-lg-4 col-md-4 col-sm-12 yesterday-meeting-item">
+              <div class="meeting-item-content">
+                <div class="meeting-title">
+                  <p>{{meeting.name}}</p>
+                  <p routerLink="/dashboard/meeting-details/{{meeting.id}}">View notes</p>
+                </div>
+                <div class="meeting-time">
+                  <div class="clock-icon">
+                    <img src="assets/img/clock-icon.svg" alt="">
+                  </div>
+                  <p>{{meeting.start_time | date:'mediumDate'}} &nbsp; |  {{meeting.start_time | date:'HHmm'}} - {{meeting.stop_time | date:'HHmm'}}</p>
+                </div>
+                <div class="meeting-chair">
+                  <div class="meeting-chair-icon">
+                    <img src="assets/img/people-icon.svg" alt="">
+                  </div>
+                  <p>Meeting Chair: {{meeting.host_name.first_name}}&nbsp;{{meeting.host_name.last_name}}</p>
+                </div>
+                <div class="meeting-chair">
+                  <div class="meeting-chair-icon">
+                    <img src="assets/img/people-icon.svg" alt="">
+                  </div>
+                  <p>{{meeting.attendees_name.length}} Attendees</p>
+                </div>
+                <div class="missed-meeting">
+<!--                  <p>You missed this meeting.</p>-->
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+<!--        <div class="meetings-this-week-section">-->
+<!--          <div class="this-week-section-title">-->
+<!--            <p>Earlier this week</p>-->
+<!--          </div>-->
+<!--          <div class="this-week-section-content">-->
+<!--            <div class="this-week-meeting-item">-->
+<!--              <div class="meeting-item-content">-->
+<!--                <div class="meeting-title">-->
+<!--                  <p>Design Sprint Meeting</p>-->
+<!--                  <p routerLink="/dashboard/meeting-details">View notes</p>-->
+<!--                </div>-->
+<!--                <div class="meeting-time">-->
+<!--                  <div class="clock-icon">-->
+<!--                    <img src="assets/img/clock-icon.svg" alt="">-->
+<!--                  </div>-->
+<!--                  <p>1000 - 1500 | Starts in 2 hours</p>-->
+<!--                </div>-->
+<!--                <div class="meeting-chair">-->
+<!--                  <div class="meeting-chair-icon">-->
+<!--                    <img src="assets/img/people-icon.svg" alt="">-->
+<!--                  </div>-->
+<!--                  <p>Meeting Chair: Charity Mbaka</p>-->
+<!--                </div>-->
+<!--                <div class="meeting-chair">-->
+<!--                  <div class="meeting-chair-icon">-->
+<!--                    <img src="assets/img/people-icon.svg" alt="">-->
+<!--                  </div>-->
+<!--                  <p>12 Attendees</p>-->
+<!--                </div>-->
+<!--                &lt;!&ndash;          <div class="missed-meeting">&ndash;&gt;-->
+<!--                &lt;!&ndash;            <p>You missed this meeting.</p>&ndash;&gt;-->
+<!--                &lt;!&ndash;          </div>&ndash;&gt;-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <div class="meetings-this-week-section">-->
+<!--          <div class="this-week-section-title">-->
+<!--            <p>Earlier this month</p>-->
+<!--          </div>-->
+<!--          <div class="this-week-section-content">-->
+<!--            <div class="this-week-meeting-item">-->
+<!--              <div class="meeting-item-content">-->
+<!--                <div class="meeting-title">-->
+<!--                  <p>Design Sprint Meeting</p>-->
+<!--                  <p routerLink="/dashboard/meeting-details">View notes</p>-->
+<!--                </div>-->
+<!--                <div class="meeting-time">-->
+<!--                  <div class="clock-icon">-->
+<!--                    <img src="assets/img/clock-icon.svg" alt="">-->
+<!--                  </div>-->
+<!--                  <p>1000 - 1500 | Starts in 2 hours</p>-->
+<!--                </div>-->
+<!--                <div class="meeting-chair">-->
+<!--                  <div class="meeting-chair-icon">-->
+<!--                    <img src="assets/img/people-icon.svg" alt="">-->
+<!--                  </div>-->
+<!--                  <p>Meeting Chair: Charity Mbaka</p>-->
+<!--                </div>-->
+<!--                <div class="meeting-chair">-->
+<!--                  <div class="meeting-chair-icon">-->
+<!--                    <img src="assets/img/people-icon.svg" alt="">-->
+<!--                  </div>-->
+<!--                  <p>12 Attendees</p>-->
+<!--                </div>-->
+<!--                &lt;!&ndash;          <div class="missed-meeting">&ndash;&gt;-->
+<!--                &lt;!&ndash;            <p>You missed this meeting.</p>&ndash;&gt;-->
+<!--                &lt;!&ndash;          </div>&ndash;&gt;-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+      </div>
+
+    </div>
+    <div class="home-calendar-section  col-3">
+      <div class="meeting-priority">
+        <div class="priority-low">
+          <div class="priority-indicator">
+          </div>
+          <p>Low Priority</p>
+        </div>
+        <div class="priority-high">
+          <div class="priority-indicator">
+          </div>
+          <p>High Priority</p>
+        </div>
+        <div class="priority-urgent">
+          <div class="priority-indicator">
+          </div>
+          <p>Urgent</p>
+        </div>
+      </div>
+      <div class="home-calendar">
+        <div class="calendar-title">
+          <p>Calendar</p>
+          <full-calendar
+            #fullcalendar
+            [options]="calendarOptions"
+          ></full-calendar>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!--  Schedule Meeting Modal-->
+
+  <div class="modal fade meeting-modal" id="meetingModal" aria-hidden="true" aria-labelledby="Schedule Meeting Modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Schedule a meeting</h5>
+          <img src="assets/img/close_icon.svg" alt=""  #closeButton data-bs-dismiss="modal" aria-label="Close">
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="meetingForm" (ngSubmit)="submitForm()">
+
+            <div class="modal-meeting-name-time">
+              <div class="modal-meeting-name">
+                <label class="form-label">Meeting Date</label>
+                <div id="oonaMeetingDate" class="meeting-date-section">
+                  <input  type="text" data-input class="form-control" formControlName="meetingDate">
+                  <img src="assets/img/calendar_blue.svg" alt="" title="toggle" data-toggle>
+                </div>
+              </div>
+              <div class="modal-meeting-time">
+                <label class="form-label">Time</label>
+                <div class="modal-meeting-time-inputs">
+                  <input type="text" id="oonaMeetingTime" class="flatpickr" formControlName="meetingTime">
+                  <select class="form-select" aria-label="Default select example" formControlName="meetingDuration">
+                    <option *ngFor="let length of meetingLength" [ngValue]="length">
+                      {{length}}
+                    </option>
+                  </select>
+                </div>
+                <span *ngIf="timeError">Please enter valid time.</span>
+              </div>
+            </div>
+
+            <!--          Meeting Name and Agenda Section-->
+
+            <div class="modal-meeting-agenda-attendee">
+              <div class="modal-agenda-priority">
+                <div class="modal-meeting-names">
+                  <label for="meetingName" class="form-label">Meeting Name</label>
+                  <input class="form-control" id="meetingName" placeholder="Type the name of your meeting" formControlName="meetingName"
+                         [class.invalid]="meetingFormControls.meetingName.touched && meetingFormControls.meetingName.errors?.required">
+                  <span *ngIf="meetingFormControls.meetingName.touched && meetingFormControls.meetingName.errors?.required">Please enter a name for your meeting.</span>
+                  <span *ngIf="!meetingFormControls.meetingName.touched && emptyForm">Please enter a name for your meeting.</span>
+                </div>
+                <div class="modal-meeting-agenda">
+                  <label for="meetingAgenda" class="form-label">Meeting agenda (100 char)</label>
+                  <textarea class="form-control" id="meetingAgenda" placeholder="Type meeting agenda" formControlName="meetingAgenda"
+                            [class.invalid]="(meetingFormControls.meetingAgenda.touched && meetingFormControls.meetingAgenda.errors?.required) || (!meetingFormControls.meetingAgenda.touched && emptyForm)"></textarea>
+                  <span *ngIf="meetingFormControls.meetingAgenda.touched && meetingFormControls.meetingAgenda.errors?.required">Please enter a meeting agenda.</span>
+                  <span *ngIf="!meetingFormControls.meetingAgenda.touched && emptyForm">Please enter a meeting agenda.</span>
+                </div>
+                <div class="modal-meeting-priority">
+                  <label class="form-label">Meeting priority</label>
+                  <select class="form-select" aria-label="Default select example" formControlName="meetingPriority">
+                    <option *ngFor="let priority of meetingPriority" [ngValue]="priority">
+                      {{priority}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="modal-meeting-attendee">
+                <div class="meeting-attendee-label-section">
+                  <label for="meetingAttendees" class="form-label">Attendees</label>
+                  <img *ngIf="!attendeeListOpen" src="assets/img/add-user_blue.svg" alt="" aria-label="Add Meeting Attendees" title="Add meeting attendees" (click)="openAttendeesList()">
+                  <img *ngIf="attendeeListOpen" src="assets/img/close_icon_blue.svg" alt="" aria-label="Add Meeting Attendees" title="Close Section" (click)="openAttendeesList()">
+                </div>
+                <div class="add-attendees-section dropdown">
+                  <input *ngIf="attendeeListOpen" type="text" class="search-meeting-attendees" placeholder="Type here to search for user" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                         aria-expanded="false"
+                  >
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" #selectList >
+                    <li *ngFor="let user of oonaUsers" >
+                      <a class="dropdown-item" (click)="selectedUser(user)">
+                        {{user.first_name}}&nbsp;{{user.last_name}}
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="form-control attendee-list" id="meetingAttendees" [class.add-attendee] = attendeeListOpen [class.invalid]="emptyForm && this.displayInvitedUsers.length == 0">
+                  <div *ngFor="let user of displayInvitedUsers" class="attendee-chip">
+                    <p>{{user.first_name}}&nbsp;{{user.last_name}}</p>
+                    <img src="assets/img/close_icon_black.svg" alt="" (click)="onRemoveUser(user)">
+                  </div>
+                </div>
+                <span *ngIf="emptyForm && this.displayInvitedUsers.length == 0">Please add attendees for your meeting.</span>
+                <span *ngIf="hostError">A Host can't be an attendee in their meeting.</span>
+              </div>
+            </div>
+            <div class="modal-footer">
+
+              <!-- Toggle to second dialog -->
+              <div class="modal-footer-buttons">
+                <button class="btn btn-primary schedule-meeting-btn" type="submit" (click)="scheduleMeeting()">Schedule Meeting</button>
+                <button class="btn btn-primary start-meeting-btn" (click)="startMeeting()" type="submit">Start Meeting</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Second modal dialog -->
+
+  </div>
+</div>

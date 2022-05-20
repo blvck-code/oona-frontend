@@ -1,0 +1,194 @@
+import { Injectable } from '@angular/core';
+import {BehaviorSubject} from 'rxjs';
+import {environment} from '../../../environments/environment';
+import {AuthService} from '../../auth/services/auth.service';
+import {MessagingService} from './messaging.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class OonaSocketService {
+
+  public recognizedUsers = Array();
+  private usersSocket = new BehaviorSubject(this.recognizedUsers);
+  currentUsers = this.usersSocket.asObservable();
+
+  newMessages = Array();
+  newMessagesUnique = new Set();
+  newMessageCount = 0;
+  private messageCountSocket = new BehaviorSubject(this.newMessageCount);
+  messageCount = this.messageCountSocket.asObservable();
+
+  messagesToStreams = Array();
+  private streamMessageCountSocket = new BehaviorSubject(this.messagesToStreams);
+  streamMessageSocket = this.streamMessageCountSocket.asObservable();
+
+  messagesInPrivate = Array();
+  private privateMessageCountSocket = new BehaviorSubject(this.messagesInPrivate);
+  privateMessageSocket = this.privateMessageCountSocket.asObservable();
+
+  peopleType = Array();
+  public typingStatus = Array();
+  private typingStatusSocket = new BehaviorSubject(this.recognizedUsers);
+  typing = this.typingStatusSocket.asObservable();
+
+  private websocket: WebSocket | undefined;
+  private loggedInUserProfile: any;
+
+
+  constructor(
+    private authService: AuthService,
+    private messagingService: MessagingService
+  ) {
+    this.getCurrentProfile();
+    this.connect();
+    this.userManagement();
+  }
+
+  changeNewMessageCount(newCount: any): void {
+    this.messageCountSocket.next(newCount);
+  }
+  changeNewStreamMessageCount(newStreamMessages: any): void {
+    this.streamMessageCountSocket.next(newStreamMessages);
+  }
+
+  changeNewPrivateMessageCount(newPrivateMessages: any): void {
+    this.privateMessageCountSocket.next(newPrivateMessages);
+  }
+
+  changeTypingStatus(status: any): void {
+    this.typingStatusSocket.next(status);
+  }
+
+
+  connect(): void {
+    /**
+     * Creates a websocket connection to the user channel
+     */
+    this.websocket = new WebSocket(environment.userChannel, this.authService.getToken());
+    console.log('connected');
+  }
+
+
+  private filterSocketData(userData: any): void {
+    /*
+     * Filters all active and inactive users
+     * @param userData Incoming message from the server.
+     * @return void
+     */
+    const socketData  = JSON.parse(userData);
+    // {
+    //   "message": {
+    //   "operation": "add",
+    //   "all": false,
+    //   "type": "update_message_flags",
+    //   "id": 21,
+    //   "messages": [
+    //     34424,
+    //     34427,
+    //     34430,
+    //     34431,
+    //     34433
+    //   ],
+    //     "flag": "read"
+    // }
+    // }
+    if (socketData.message.type === 'presence'){
+        // console.log('pushing user presence data');
+        this.recognizedUsers.push(socketData);
+      } else if (socketData.message.type === 'message'){
+        // console.log('message', socketData);
+        this.setMessageType(socketData);
+        // this.newMessages.push(socketData);
+        // create a new set unique by message id
+        // this.newMessagesUnique = new Set(this.newMessages.map(item => item.message.message.id));
+        this.newMessageCount = this.newMessages.length;
+        this.changeNewMessageCount(this.newMessageCount);
+      } else if (socketData.message.type === 'update_message_flags'){
+        // how many messages have been read
+        const messagesRead = socketData.message.messages.length;
+        this.newMessageCount = this.newMessageCount - messagesRead;
+        const newRead = this.newMessageCount - messagesRead;
+        if (newRead < 0){
+          this.newMessageCount = 0;
+          this.changeNewMessageCount(this.newMessageCount);
+        }else{
+          this.changeNewMessageCount(this.newMessageCount);
+        }
+      }else if (socketData.message.type === 'typing'){
+      const typeData = {
+        userId: socketData.message.sender.user_id,
+        userEmail: socketData.message.sender.email,
+        op: socketData.message.op,
+        messageId: socketData.message.id
+      };
+
+      const newDataExists = this.peopleType.findIndex(personMessage => personMessage.userEmail === typeData.userEmail);
+
+      if (newDataExists >= 0){
+        // data already exists. Hence only push if messageID is greater than that already existing
+        // this would be obviously greater. Remove item at this index and replace with new ID
+        this.peopleType[newDataExists] = typeData;
+      }else{
+        this.peopleType.push(typeData);
+      }
+      const max = this.peopleType.reduce((prev, current) => (prev.messageId > current.messageId) ? prev : current);
+
+      this.changeTypingStatus(this.peopleType);
+    }
+
+  }
+
+  private userManagement(): void {
+    // @ts-ignore
+    this.websocket.onmessage = (evt) => {
+      this.filterSocketData(evt.data);
+    };
+
+    // @ts-ignore
+    this.websocket.onclose = (evt) => {
+      setTimeout(() => {
+        this.connect();
+      }, 1000);
+    };
+
+    // @ts-ignore
+    this.websocket.onerror = (evt) => {
+      setTimeout(() => {
+        console.log('Attempting to reconnect ...');
+        this.connect();
+      }, 1000);
+    };
+  }
+
+  private setMessageType(socketData: any): void {
+    if (socketData.message.message.type === 'stream'){
+      this.messagesToStreams.push(socketData.message.message);
+      // let the array have unique messages
+      // ! below is done because this socket service is called multiple times across multiple components
+      // hence a tendency to have it with duplicate items for each time it is called
+      // tslint:disable-next-line:max-line-length
+      this.messagesToStreams = this.messagesToStreams.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i); // have unique messages by id
+      this.changeNewStreamMessageCount(this.removeLoggedInUserMessages(this.messagesToStreams));
+    }else if (socketData.message.message.type === 'private'){
+      this.messagesInPrivate.push(socketData.message.message);
+      this.messagesInPrivate = this.messagesInPrivate.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
+      this.changeNewPrivateMessageCount(this.removeLoggedInUserMessages(this.messagesInPrivate));
+    }
+
+    this.newMessages = this.removeLoggedInUserMessages([...this.messagesToStreams, ...this.messagesInPrivate]);
+  }
+
+  private getCurrentProfile(): any {
+    this.messagingService.currentUserProfile().subscribe( (profile: any) => {
+      this.loggedInUserProfile = profile.zulip;
+    });
+  }
+
+  private removeLoggedInUserMessages(messagesArray: any[]): any{
+    // ** as the socket comes with data even though the current logged in user sent teh text,
+    // remove this logged in user from the messages array.
+    // the logged in user cannot get a notification if they are the one that sent the message
+    return messagesArray.filter((message: { sender_email: any; }) => message.sender_email !== this.loggedInUserProfile.email);
+  }
+}

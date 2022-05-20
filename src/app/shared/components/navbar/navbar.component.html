@@ -1,0 +1,118 @@
+<div class="content-section-topnav">
+  <div class="content-topnav-left">
+    <p>{{ parentTitle }}</p>
+  </div>
+
+  <div class="content-topnav-right">
+    <div class="right-profile-section">
+      <div class="profile-section-text">
+        <p> {{ (userDetails$ | async).first_name }} {{ (userDetails$ | async).last_name }}</p>
+        <!--          <p>Lecturer</p>-->
+      </div>
+      <div class="profile-section-image">
+        <img src="assets/img/placeholder.jpg" alt="" />
+      </div>
+      <div class="dropdown">
+        <div
+          class="profile-section-caret"
+          id="dropdownMenuButton1"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <svg
+            id="Layer_1"
+            xmlns="http://www.w3.org/2000/svg"
+            x="0px"
+            y="0px"
+            viewBox="0 0 330 330"
+            style="fill: #c9ced6"
+            xml:space="preserve"
+          >
+              <path
+                id="XMLID_225_"
+                d="M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393
+                c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393
+                s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z"
+              />
+            <g></g>
+            <g></g>
+            <g></g>
+            <g></g>
+            <g></g>
+            <g></g>
+            <g></g>
+            <g></g>
+            <g></g>
+            <g></g>
+            <g></g>
+            <g></g>
+            <g></g>
+            <g></g>
+            <g></g>
+            </svg>
+        </div>
+
+        <ul
+          class="dropdown-menu dropdown-menu-end"
+          aria-labelledby="dropdownMenuButton1"
+        >
+          <li
+            class="profile-dropdown-item fill"
+            routerLink="/dashboard/settings"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M14 8C14 10.21 12.21 12 10 12C7.79 12 6 10.21 6 8C6 5.79 7.79 4 10 4C12.21 4 14 5.79 14 8ZM2 18C2 15.34 7.33 14 10 14C12.67 14 18 15.34 18 18V19C18 19.55 17.55 20 17 20H3C2.45 20 2 19.55 2 19V18Z"
+                fill="#C9CED6"
+              />
+            </svg>
+            <p>My Profile</p>
+          </li>
+          <li
+            class="profile-dropdown-item logout stroke"
+            (click)="logoutUser()"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9"
+                stroke="#C9CED6"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M16 17L21 12L16 7"
+                stroke="#C9CED6"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M21 12H9"
+                stroke="#C9CED6"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <p>Log Out</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

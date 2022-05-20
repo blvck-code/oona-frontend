@@ -1,0 +1,252 @@
+.left-container{
+    background: #EDEDF6;
+    // border-radius: 10px;
+    margin-bottom: 5%;
+}
+form-control{
+    background: #EDEDF6 !important;
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+.card{
+    border: none;
+    padding: 5%;
+    border-radius: 10px;
+}
+.messages, .general{
+    height: 20vh;
+}
+
+.teams, .general, .messages{
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+.teams{
+  height: 36vh;
+}
+
+.card-title{
+  font-size: 14px;
+  line-height: 16px;
+  /* identical to box height */
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: #051EC4;
+  mix-blend-mode: normal;
+  opacity: 0.91;
+}
+
+.card-text{
+    font-size: 14px;
+    line-height: 19px;
+    color: #2D1A14;
+    max-height: 30vh;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: #EDEDF6 transparent;
+}
+.channel-name{
+    cursor: pointer;
+
+}
+.circle{
+    border-radius: 50%;
+    background: #EC5985;
+    padding: 0.5%;
+    width: 16px;
+    height: 16px;
+    color: #ffffff;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    display: inline-block;
+
+}
+
+.message-count{
+    font-size: 12px;
+    line-height: 14px;
+}
+
+.search-form{
+  background: #DADADA;
+  mix-blend-mode: normal;
+  opacity: 0.55;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.252814);
+  border-radius: 7px;
+}
+
+.form-control + .fa {
+  position: absolute;
+  left: 0;
+  padding: 8px 27px;
+}
+
+.scrollable-menu {
+  height: auto;
+  max-height: 200px;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #ddd transparent;
+}
+.dropdown-item{
+  cursor: pointer;
+  list-style: none;
+}
+
+.accordion-body :hover{
+  color: #051EC4;
+  background: #ededf6;
+}
+.add-team {
+  cursor: pointer;
+}
+
+
+.main-left-panel-container {
+
+  p {
+    margin: 0;
+  }
+}
+.panel-box-container, .panel-box-accordion {
+  padding: 12px 10px;
+  border-radius: 10px;
+  background-color: #ECF4FB;
+  margin-bottom: 10px;
+}
+
+.panel-box-title, .accordion-box-title {
+  margin-bottom: 5px;
+  padding-left: 10px;
+
+  p {
+    color: #051EC4;
+    font-weight: 500;
+  }
+}
+.panel-box-item {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  margin-bottom: 3px;
+  padding-left: 10px;
+  border-radius: 3px;
+  color: #2D1A14;
+  cursor: pointer;
+
+  p {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  &:hover {
+    background-color: #051EC4;
+    color: #fff;
+  }
+}
+
+.panel-box-accordion {
+
+  .accordion {
+    height: calc(100% - 40px);
+    overflow-y: scroll;
+    scrollbar-width: thin;
+  }
+
+  &.teams-panel {
+    height: calc(100vh - 480px);
+
+    .accordion-box-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      svg {
+        height: 18px;
+        width: 18px;
+        cursor: pointer;
+      }
+    }
+
+  }
+
+  &.general-panel {
+    .accordion {
+      height: 140px;
+    }
+  }
+
+  .accordion-item {
+    border: none;
+  }
+
+
+  .accordion-button {
+    margin-bottom: 5px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    background-color: #ECF4FB;
+    color: #2D1A14;
+    font-size: 14px;
+    font-weight: 500;
+
+    &::after {
+      height: 18px;
+      width: 18px;
+      background-size: 18px;
+      display: none;
+    }
+
+    &:hover {
+      background-color: #051EC4;
+      color: #fff;
+
+      &::after {
+        display: block;
+      }
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
+    &::after {
+      height: 18px;
+      width: 18px;
+      background-size: 18px;
+      display: none;
+    }
+
+    &:not(.collapsed) {
+      background-color: #051EC4;
+      color: #fff;
+      box-shadow: none;
+
+      &::after {
+        display: block;
+      }
+    }
+  }
+
+  .accordion-body {
+    padding: 10px 20px;
+    background-color: #F8F8FB;
+  }
+}
+
+.accordion-body-item {
+  display: flex;
+  align-items: center;
+  min-height: 26px;
+  margin-bottom: 3px;
+  padding-left: 10px;
+  border-radius: 3px;
+  color: #2D1A14;
+  cursor: pointer;
+
+  p {
+    font-size: 14px;
+  }
+}

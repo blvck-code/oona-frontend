@@ -1,0 +1,57 @@
+.main-dashboard-section {
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  height: 100vh;
+  background-color: #F8F8FB;
+}
+.sidenav-section {
+  height: 100%;
+  grid-column: 1 / 2;
+}
+.sidenav-content {
+  height: 100%;
+  max-width: 100px;
+  background-color: #051EC4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.sidenav-branding {
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.sidenav-icons {
+  padding-top: 30px;
+}
+.sidenav-icon-item {
+  height: 40px;
+  width: 42px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+.settings-icon svg {
+  height: 21px;
+  width: 21px;
+}
+.icon-active.sidenav-icon-item {
+  background-color: #fff;
+}
+.icon-active.sidenav-icon-item path {
+  stroke: #051EC4;
+}
+.icon-active.settings-icon path {
+  fill: #051EC4;
+}
+//Main Section
+
+//Topnav Section
+.dashboard-content-section {
+  grid-column: 2 / 25;
+}
+

@@ -1,0 +1,36 @@
+<div class="right-users-panel-container">
+  <div class="team-members-section">
+    <p class="users-section-title">Group Members</p>
+    <div class="group-members">
+      <div class="pb-2" *ngFor="let member of groupMemberDetails">
+      <span (click)="messagingService.goToMemberChat(member)" class="member">
+        <app-active-tag *ngIf="member.presence.aggregated.status === 'active'"></app-active-tag>
+        <app-inactive-tag *ngIf="member.presence.aggregated.status === 'idle'"></app-inactive-tag>
+        <app-idle-tag *ngIf="member.presence.aggregated.status === 'offline'" ></app-idle-tag>
+        <img src="assets/img/placeholder.jpg" height="32px" width="32px" class="rounded-circle me-2" alt="...">
+        <span class="member-name">{{ member.full_name }}</span>
+        <app-guest-tag *ngIf="member.is_guest" ></app-guest-tag>
+        <button *ngIf="member.name === 'Keith Shikuku' " type="button" class="btn btn-sm ms-1 team-lead-btn">Team Lead</button>
+      </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="other-members-section">
+    <p class="users-section-title">Other Staff</p>
+    <div class="other-members">
+      <div class="mb-1" *ngFor="let member of otherMemberDetails">
+      <span (click)="messagingService.goToMemberChat(member)" class="member">
+        <app-active-tag *ngIf="member.presence.aggregated.status === 'active'"></app-active-tag>
+        <app-inactive-tag *ngIf="member.presence.aggregated.status === 'idle'"></app-inactive-tag>
+        <app-idle-tag *ngIf="member.presence.aggregated.status === 'offline'" ></app-idle-tag>
+        <img src="assets/img/placeholder.jpg" height="32px" width="32px" class="rounded-circle me-2" alt="...">
+        <span class="member-name">{{ member.full_name }}</span>
+        <app-guest-tag *ngIf="member.is_guest" ></app-guest-tag>
+        <button *ngIf="member.name === 'Keith Shikuku' " type="button" class="btn btn-sm ms-1 team-lead-btn">Team Lead</button>
+      </span>
+      </div>
+    </div>
+  </div>
+
+</div>

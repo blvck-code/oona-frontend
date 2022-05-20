@@ -1,0 +1,65 @@
+<nav class="d-flex justify-content-center">
+    <div class="nav nav-tabs w-50 d-flex justify-content-center" id="nav-meeting-tab" role="tablist">
+      <div
+        class="nav-link active border-end-0 border-start-0 border-top-0 mb-0"
+        id="nav-recent-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#nav-recent"
+        type="button"
+        role="tab" aria-controls="nav-home" aria-selected="true">Upcoming</div>
+      <div
+        class="nav-link border-end-0 border-start-0 border-top-0 mb-0"
+        id="nav-previous-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#nav-previous"
+        type="button"
+        role="tab" aria-controls="nav-profile" aria-selected="false">Past</div>
+    </div>
+  </nav>
+
+
+
+  <div *ngIf="commonMeetings.length > 0; else noMeetings" class="overflow-chat">
+    <div class="tab-content d-flex justify-content-around" id="nav-tabContent">
+      <div class="tab-pane fade show active meeting-card-width" id="nav-recent" role="tabpanel" aria-labelledby="nav-home-tab">
+        <div *ngIf="upcomingMeetings.length > 0; else noUpcomingMeetings">
+            <div *ngFor="let meeting of upcomingMeetings">
+              <app-meeting-card [meetingDetails]="meeting" [startMeetingOption]="true"></app-meeting-card>
+            </div>
+        </div>
+
+        <ng-template #noUpcomingMeetings>
+          <div>
+            <p class="d-flex justify-content-center">
+              No upcoming meetings with {{ memberDetail.full_name }}
+            </p>
+          </div>
+        </ng-template>
+      </div>
+
+      <div class="tab-pane fade meeting-card-width" id="nav-previous" role="tabpanel" aria-labelledby="nav-profile-tab">
+        <div *ngIf="previousMeetings.length > 0; else noPreviousMeetings">
+          <div *ngFor="let meeting of previousMeetings">
+            <app-meeting-card [meetingDetails]="meeting"></app-meeting-card>
+          </div>
+        </div>
+        <ng-template #noPreviousMeetings>
+          <div>
+            <p class="d-flex justify-content-center">
+              No previous meetings with {{ memberDetail.full_name }}
+            </p>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+
+  </div>
+
+  <ng-template #noMeetings>
+    <div>
+      <p class="d-flex justify-content-center">
+        No meetings with {{ memberDetail.full_name }}
+      </p>
+    </div>
+  </ng-template>
+

@@ -1,0 +1,64 @@
+.right-users-panel-container{
+  height: 100%;
+  padding-right: 10px;
+}
+
+.users-section-title {
+  margin-bottom: 10px;
+  color: #57506C;
+  font-size: 16px;
+  font-weight: 700;
+}
+.team-members-section {
+  height: 54%;
+  margin-bottom: 5px;
+  padding: 15px 24px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  background-color: #ECF4FB;
+}
+
+.other-members-section {
+  height: calc(48% - 30px);
+  padding: 15px 24px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  background-color: #ECF4FB;
+}
+
+.circle{
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #09B663;
+  display: inline-block;
+}
+
+.member-name{
+  font-size: 14px;
+  line-height: 16px;
+  color: #323037;
+  font-weight: 600;
+}
+
+.member{
+  cursor: pointer;
+}
+
+.team-lead-btn{
+  width: 80px;
+  height: 24px;
+  background: #051EC4;
+  border-radius: 60px;
+  font-size: 10px;
+  line-height: 12px;
+
+  color: #FFFFFF;
+}
+
+.other-members ,
+.group-members {
+  height: calc(100% - 35px);
+  overflow-y: scroll;
+  scrollbar-width: thin;
+}

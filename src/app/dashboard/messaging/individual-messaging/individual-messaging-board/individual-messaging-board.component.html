@@ -1,0 +1,59 @@
+<div class="individual-messaging-container">
+  <div class="messaging-member-title">
+    <img src="assets/img/placeholder.jpg" alt="...">
+    <app-idle-tag class="ms-n5 circle" *ngIf="userActivity === 'idle'"></app-idle-tag>
+    <app-active-tag class="ms-n5 circle" *ngIf="userActivity === 'active'"></app-active-tag>
+    <app-inactive-tag class="ms-n5 circle" *ngIf="userActivity === 'offline'"></app-inactive-tag>
+    <p class="member-name p-2"> {{ memberDetail.full_name }}</p>
+  </div>
+
+  <nav>
+    <div class="nav nav-tabs w-100 d-flex justify-content-start border-bottom-5" id="nav-tab" role="tablist">
+      <div
+        class="nav-link active border-end-0 border-start-0 border-top-0 mb-0"
+        id="nav-home-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#nav-home"
+        type="button"
+        role="tab"
+        aria-controls="nav-home"
+        aria-selected="true">Chat</div>
+    </div>
+  </nav>
+
+
+  <div class="tab-content custom-tab" id="nav-tabContent">
+    <div class="tab-pane fade show active border-bottom-0" style="height: 100%" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+      <div class="overflow-chat">
+
+        <div *ngIf="messagesWithPerson.length >= 0" id="box">
+<!--          <div class="d-flex justify-content-center">-->
+<!--            <button class="btn btn-primary shadow-none" style="width: 10%" (click)="getMorePrivateMessages()">Get more</button>-->
+<!--          </div>-->
+          <app-individual-chat-card *ngFor="let chat of messagesWithPerson" [messageDetail]="chat"></app-individual-chat-card>
+        </div>
+
+        <div *ngIf="messagesWithPerson.length <= 0" class="d-flex justify-content-center">
+          <p>No messages with {{memberDetail.full_name }}</p>
+        </div>
+
+        </div>
+      <div class="individual-messaging-text-editor">
+        <app-text-editor (messageContent)="sendMessageToIndividual($event)"></app-text-editor>
+      </div>
+    </div>
+
+<!--    <div-->
+<!--      class="tab-pane fade border-bottom-0"-->
+<!--      style="height: 100%"-->
+<!--      id="nav-profile"-->
+<!--      role="tabpanel"-->
+<!--      aria-labelledby="nav-profile-tab">-->
+<!--      <app-team-meetings></app-team-meetings>-->
+<!--    </div>-->
+
+  </div>
+
+
+
+</div>

@@ -1,0 +1,54 @@
+<div class="h-100">
+  <p class="team-name mb-0">{{ streamName }} <span *ngIf="filteredStreamTopic !== ''" class="team-topic"><small>({{filteredStreamTopic}})</small></span></p>
+
+  <nav>
+    <div class="nav message-nav-tabs nav-tabs w-100 d-flex justify-content-start" id="nav-tab" role="tablist">
+      <div
+        class="nav-link active border-end-0 border-start-0 border-top-0 mb-0"
+        id="nav-home-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#nav-home"
+        type="button"
+        role="tab"
+        aria-controls="nav-home"
+        aria-selected="true">
+        <p>Chat</p>
+      </div>
+    </div>
+  </nav>
+
+
+  <div class="tab-content custom-tab" id="nav-tabContent">
+    <div class="tab-pane messages-tab-pane fade show active border-bottom-0" style="height: 100%" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+
+      <div class="overflow-chat">
+        <div *ngIf="messagesOfStream.length >= 1" #myList id="box">
+          <div class="d-flex justify-content-center">
+            <button class="btn load-more-messages-btn" (click)="getMorePrivateMessages()">Get more</button>
+          </div>
+          <app-chat-card
+            *ngFor="let message of filteredMessagesOfStream"
+            [messageDetail]="message"
+            (messageTopic)="setMessageTopic($event)"
+          ></app-chat-card>
+        </div>
+
+        <div
+          *ngIf="messagesOfStream.length < 1"
+          class="d-flex justify-content-center"
+        >
+          <app-loading-animation></app-loading-animation>
+        </div>
+      </div>
+
+      <app-text-editor
+        class="text-editor"
+        (messageContent)="sendMessageToStream($event)"
+        (newTopic)="setMessageTopic($event)"
+        [messageTopic]="messageTopic"
+        [streamName]="streamName"
+      ></app-text-editor>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,88 @@
+.group-pm-messages-container {
+  height: 100%;
+}
+.member-name{
+  font-size: 18px;
+  line-height: 23px;
+  color: #323037;
+  font-weight: 700;
+}
+.team-name{
+  font-size: 18px;
+  line-height: 28px;
+  color: #051EC4;
+  font-weight: 700;
+}
+
+.navigation-section{
+  border-bottom: 1px solid #E9E9E9;
+}
+
+.nav-link{
+  font-size: 14px;
+  line-height: 23px;
+  /* identical to box height */
+  color: #191726;
+}
+
+.active{
+  color: #051EC4 !important;
+  border-bottom: 3px solid #051EC4;
+}
+
+.overflow-chat{
+  overflow-y: scroll;
+  height: calc(100% - 275px);
+  padding-top: 1px;
+  scrollbar-width: thin;
+  // mix-blend-mode: normal;
+  scrollbar-color: #37314B transparent;
+}
+
+/* (1280x720)  WXGA */
+@media only screen and (min-device-width: 720px) and (max-device-width: 1280px) {
+  .overflow-chat{
+    height: 55vh;
+  }
+}
+
+.get-more-messages-btn {
+  height: 30px;
+  width: 100px;
+  margin-top: 5px;
+  background-color: #051EC4;
+  border-radius: 5px;
+  font-size: 12px;
+  border: none;
+  color: #fff;
+}
+
+.circlular-image{
+  border-radius: 50% !important;
+}
+.circle{
+  width: 10px;
+  height: 10px;
+  margin-top: 2.4%;
+  margin-left: -2%;
+}
+.navigation-section{
+  border-bottom: 1px solid #E9E9E9;
+}
+.navigation{
+  margin-right: 3%;
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 23px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 15px;
+  /* identical to box height */
+  color: #191726;
+  width: 86px;
+  height: 24px;
+}
+.navigation p{
+  margin: 0;
+}

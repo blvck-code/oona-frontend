@@ -1,0 +1,175 @@
+import {UserModel} from '../models/user.model';
+import * as authActions from './auth.actions';
+
+export interface UserInfoState {
+  first_name: string | null;
+  last_name: string | null;
+  email: string | null;
+  refresh: string | null;
+  access: string | null;
+}
+
+export interface AuthState {
+  message: string;
+  loginStatus: {
+    isLoggedIn: boolean
+    isLoading: boolean
+  };
+  userInfo: UserInfoState | null;
+}
+
+export const initialState: AuthState = {
+  message: '',
+  loginStatus: {
+    isLoggedIn: false,
+    isLoading: false
+  },
+  userInfo: null
+};
+
+// Save on local storage
+const saveUserData = (userInfo: UserModel) => {
+  console.log('User info ===>>', userInfo);
+  let userData = userInfo.user;
+  let tokenData = userInfo.token;
+
+  console.log('User data ====>>>', userData);
+  console.log('Token data =====>>>', tokenData);
+
+  let firstName: string = userData.first_name;
+  let lastName: string = userData.last_name;
+  let email: string = userData.email;
+  let accessToken: string = tokenData.access;
+  let refreshToken: string = tokenData.refresh;
+
+  console.log('Token ===>>>', accessToken);
+  // console.log('Last name ===>>>', lastName);
+  // let lastName: string = userInfo.user.last_name;
+  // let email: string = userInfo.user.email;
+  // let accessToken: string = userInfo.token?.access;
+  // let refreshToken: string = userInfo.token?.refresh;
+  //
+  localStorage.setItem('firstName', firstName);
+  localStorage.setItem('lastName', lastName);
+  localStorage.setItem('email', email);
+  localStorage.setItem('accessToken', accessToken);
+  localStorage.setItem('refreshToken', refreshToken);
+};
+
+// Update state management
+const updateState = () => {
+  const first_name = localStorage?.getItem('firstName');
+  let last_name = localStorage?.getItem('lastName');
+  let email = localStorage?.getItem('email');
+  let access = localStorage?.getItem('accessToken');
+  let refresh = localStorage?.getItem('refreshToken');
+
+  return  {
+    first_name,
+    last_name,
+    email,
+    refresh,
+    access,
+  };
+};
+
+// Handle Login Error
+const handleLoginError = (loginErr: any) => {
+  let errorMsg = '';
+  localStorage.clear();
+
+  if (loginErr){
+    if (loginErr.error[0].non_field_errors[0] === 'Invalid login credentials') {
+      errorMsg = 'Invalid login credentials. Please try again.';
+    } else if (loginErr.error[0].non_field_errors[0] === 'Unable to login with provided credentials') {
+      errorMsg = 'A user with the provided credentials does not exist.';
+    } else {
+      errorMsg = 'Invalid login credentials. Please try again.';
+    }
+  } else {
+    errorMsg = 'Invalid login credentials. Please try again.';
+  }
+  return errorMsg;
+};
+
+export function authReducer(
+  state = initialState,
+  action: any
+): AuthState {
+  switch (action.type){
+    // Logging In
+    case authActions.AuthActionsTypes.LOGIN_USER:
+    case authActions.AuthActionsTypes.LOGOUT_USER:
+      return {
+        ...state,
+        loginStatus: {
+          isLoggedIn: false,
+          isLoading: true
+        },
+        message: '',
+      };
+      // Logged In Success
+    case authActions.AuthActionsTypes.LOGIN_USER_SUCCESS:
+      saveUserData(action.payload);
+      return {
+        ...state,
+        loginStatus: {
+          isLoading: false,
+          isLoggedIn: true
+        },
+        userInfo: {
+          first_name: action.payload.user.first_name,
+          last_name: action.payload.user.last_name,
+          email: action.payload.user.email,
+          refresh: action.payload.token.refresh,
+          access: action.payload.token.access
+        },
+        message: '',
+      };
+      // Login Error
+    case authActions.AuthActionsTypes.LOGIN_USER_FAIL:
+      handleLoginError(action.payload);
+      return {
+        loginStatus: {
+          isLoggedIn: false,
+          isLoading: false
+        },
+        userInfo: null,
+        message: handleLoginError(action.payload)
+      };
+    // Logout
+    case authActions.AuthActionsTypes.LOGOUT_USER_SUCCESS:
+      return {
+        ...state,
+        loginStatus: {
+          isLoggedIn: false,
+          isLoading: false
+        },
+        userInfo: null,
+        message: action.payload
+      };
+    case authActions.AuthActionsTypes.LOGOUT_USER_FAIL:
+      return {
+        ...state,
+        loginStatus: {
+          isLoggedIn: true,
+          isLoading: false
+        },
+        userInfo: null,
+        message: action.payload
+      };
+    // Profile
+    case authActions.AuthActionsTypes.UPDATE_USER_INFO:
+      return {
+        ...state,
+        loginStatus: {
+          isLoggedIn: true,
+          isLoading: false
+        },
+        userInfo: updateState()
+      };
+
+      default:
+      return state;
+  }
+}

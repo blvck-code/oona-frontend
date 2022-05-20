@@ -1,0 +1,50 @@
+<div class="main-login-section">
+  <div class="reset-password-container">
+    <div class="branding-section">
+      <img src="assets/img/oona_logo.svg" alt="" class="login-branding">
+    </div>
+    <div class="reset-password-content">
+      <div class="reset-password-title">
+        <p>Reset Password</p>
+      </div>
+      <div class="reset-password-description">
+        <p>A verification code has been sent to your email. Use it to reset your password below.</p>
+      </div>
+      <form [formGroup]="resetPassForm" (ngSubmit)="onReset()" class="reset-password-form">
+        <div class="username-details">
+          <label for="userName">Email</label>
+          <input type="text" id="userName" formControlName="email" placeholder="Email Address">
+          <span *ngIf="resetPassFormControls.email.touched && resetPassFormControls.email.errors?.required">Please enter your email address.</span>
+          <span *ngIf="resetPassFormControls.email.touched && resetPassFormControls.email.errors?.email">Please enter a Valid email address.</span>
+          <span *ngIf="!resetPassFormControls.email.touched && emptyForm">Please enter a your email address.</span>
+        </div>
+        <div class="password-details">
+          <label for="password">Password</label>
+          <input type="password" id="password" formControlName="password" placeholder="Password">
+          <span *ngIf="resetPassFormControls.password.touched && resetPassFormControls.password.errors?.required" class="password-error">Please enter your password.</span>
+          <span *ngIf="!resetPassFormControls.password.touched && emptyForm" class="password-error">Please enter your password.</span>
+        </div>
+        <div class="password-details">
+          <label for="confirmPass">Confirm Password</label>
+          <input type="password" id="confirmPass" formControlName="confirmPass" placeholder="Confirm Password">
+          <span *ngIf="resetPassFormControls.confirmPass.touched && resetPassFormControls.confirmPass.errors?.required" class="password-error">Please confirm your password.</span>
+          <span *ngIf="!resetPassFormControls.confirmPass.touched && emptyForm" class="password-error">Please confirm your password.</span>
+        </div>
+        <div class="password-details">
+          <label for="token">Verification Code</label>
+          <input type="text" id="token" formControlName="verifyCode" placeholder="Verification Code">
+          <span *ngIf="resetPassFormControls.verifyCode.touched && resetPassFormControls.verifyCode.errors?.required" >Please enter your Verification Code.</span>
+          <span *ngIf="!resetPassFormControls.verifyCode.touched && emptyForm">Please enter your Verification Code</span>
+        </div>
+        <div class="reset-password-button">
+          <button class="reset-password-form-btn" type="submit" (click)="isSubmitted()">Reset</button>
+        </div>
+        <div class="login-error">
+          <span *ngIf="resetPassError">{{resetPassServerError}}</span>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+

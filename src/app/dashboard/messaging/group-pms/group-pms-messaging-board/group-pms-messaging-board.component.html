@@ -1,0 +1,29 @@
+<div class="group-pm-messages-container">
+  <div class="navigation-section">
+    <p class="team-name ">All Group Pms</p>
+
+    <div class="navigation mt-3 active">
+      <p>Chat</p>
+    </div>
+  </div>
+
+  <div class="overflow-chat">
+    <div *ngIf="messagesWithIndividuals.length >= 0" id="box">
+      <div class="d-flex justify-content-center">
+        <button class="btn get-more-messages-btn shadow-none" style="width: 10%" (click)="getMorePrivateMessages()">Get more</button>
+      </div>
+      <app-group-pms-chat-card *ngFor="let chat of messagesWithIndividuals" [messageDetail]="chat"></app-group-pms-chat-card>
+    </div>
+    <div *ngIf="messagesWithIndividuals.length < 1" class="d-flex justify-content-center">
+      <div>
+
+        <app-loading-animation></app-loading-animation>
+        <p class="teams-belonging me-5"> Fetching messages</p>
+      </div>
+    </div>
+
+  </div>
+
+  <app-group-pms-text-editor></app-group-pms-text-editor>
+
+</div>

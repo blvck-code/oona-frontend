@@ -1,0 +1,19 @@
+.overflow-chat{
+  overflow-y: scroll;
+  height: 65vh;
+  padding-top: 1px;
+  scrollbar-width: thin;;
+  // mix-blend-mode: normal;
+  scrollbar-color: #37314B transparent;
+}
+
+/* (1280x720)  WXGA */
+@media only screen and (min-device-width: 720px) and (max-device-width: 1280px) {
+  .overflow-chat{
+    height: 53vh;
+  }
+}
+
+.meeting-card-width{
+  width: 90%;
+}

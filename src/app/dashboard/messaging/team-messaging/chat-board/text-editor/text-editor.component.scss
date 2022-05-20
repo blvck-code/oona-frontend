@@ -1,0 +1,76 @@
+.text-editor-container{
+  border: none;
+}
+
+.text-editor-menu{
+  //width: 10px !important;
+}
+.submit-btn{
+  width: 100px;
+}
+.message-topic{
+  display: flex;
+  align-items: center;
+  height: 30px;
+  margin-bottom: 0;
+  padding-left: 10px;
+  border: 1px solid #dadadd;
+  border-bottom: none;
+  background-color: #fafafa;
+  color: #2D1A14;
+  font-weight: 500;
+
+  input {
+    background-color: transparent;
+
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+  }
+}
+
+.send-message-btn-container {
+  button {
+    position: absolute;
+    top: 1px;
+    right: 5px;
+    height: 34px;
+  }
+}
+
+.e-content{
+  overflow-y: scroll;
+  height: 100px !important;
+}
+
+.message-topic input::placeholder{
+  color: #2D1A14;
+}
+.child {
+  cursor: pointer;
+  position: absolute;
+  top: 6px;
+  right: 130px;
+}
+
+.child-file {
+  cursor: pointer;
+  position: absolute;
+  top: 3px;
+  right: 155px;
+}
+
+.parent {
+  position: relative;
+}
+.e-control{
+  //background: red;
+}
+
+.e-rte-img-dialog{
+  top: -350px !important;
+}
+.file-share {
+box-shadow: none;
+}

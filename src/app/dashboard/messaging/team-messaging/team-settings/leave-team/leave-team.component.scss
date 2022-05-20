@@ -1,0 +1,20 @@
+.slot-add-btn {
+  padding-right: 5px;
+  margin-top: 15px;
+  display: flex;
+  justify-content: flex-end;
+  bottom: 0;
+}
+.slot-add-btn .btn {
+  color: #ffffff;
+  height: 45px;
+  text-align: center;
+}
+.slot-add-btn .btn-cancel {
+  background: #78829F;
+  border-radius: 10px;
+}
+.slot-add-btn .btn-add {
+  background: #023BE8;
+  border-radius: 10px;
+}

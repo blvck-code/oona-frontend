@@ -1,0 +1,48 @@
+<div class="user-profile-section">
+  <div class="row">
+    <div class="user-profile-card col-4">
+      <img src="assets/img/placeholder.jpg" alt="">
+      <p class="user-profile-name">{{firstName}}&nbsp;{{secondName}}</p>
+      <div class="staff-email-section">
+        <p class="staff-id-number">{{email}}</p>
+      </div>
+      <div class="user-status-timestamps">
+        <div class="user-timestamp-section">
+          <p>Last Login: &nbsp;</p>
+          <p>{{lastLogin | date}}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="update-password-card col-4">
+      <div class="update-password-title">
+        <p>Update your Password</p>
+      </div>
+      <form [formGroup]="resetPasswordForm" (ngSubmit)="onResetPass()" class="update-password-form">
+        <div class="form-item">
+          <label for="currentPassword">Current password</label>
+          <input type="password" id="currentPassword" class="form-control" formControlName="currentPass">
+          <span *ngIf="addResetPassFormControls.currentPass.touched && addResetPassFormControls.currentPass.errors?.required">Please enter your current password.</span>
+          <span *ngIf="!addResetPassFormControls.currentPass.touched && emptyForm">Please enter your current password.</span>
+        </div>
+        <div class="form-item">
+          <label for="newPassword">New password</label>
+          <input type="password" id="newPassword" class="form-control" formControlName="newPass">
+          <span *ngIf="addResetPassFormControls.newPass.touched && addResetPassFormControls.newPass.errors?.required">Please enter a new password.</span>
+          <span *ngIf="addResetPassFormControls.newPass.touched && addResetPassFormControls.newPass.errors?.minlength">Please enter a valid password.</span>
+          <span *ngIf="!addResetPassFormControls.newPass.touched && emptyForm">Please enter a new password.</span>
+        </div>
+        <div class="form-item">
+          <label for="confirmPassword">Confirm password</label>
+          <input type="password" id="confirmPassword" class="form-control" formControlName="confirmPass">
+          <span *ngIf="addResetPassFormControls.confirmPass.touched && addResetPassFormControls.confirmPass.errors?.required">Please confirm your password.</span>
+          <span *ngIf="addResetPassFormControls.confirmPass.touched && addResetPassFormControls.confirmPass.errors?.minlength">Please enter a valid password.</span>
+          <span *ngIf="!addResetPassFormControls.confirmPass.touched && emptyForm">Please confirm your password.</span>
+        </div>
+        <p *ngIf="changeSuccessful" class="password-change-success">Password updated successfully!</p>
+        <button type=submit class="btn update-password-btn" (click)="isSubmitted()">Update</button>
+      </form>
+    </div>
+
+  </div>
+</div>

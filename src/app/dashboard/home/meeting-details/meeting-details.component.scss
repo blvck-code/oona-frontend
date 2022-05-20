@@ -1,0 +1,244 @@
+//Container Section
+.home-topnav {
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.home-topnav-links {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.home-topnav-links p {
+  color: #979797;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+.back-to-list-link p {
+  margin: 0;
+  text-decoration: underline #ddd;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.home-topnav-button .host-meeting-btn {
+  height: 50px;
+  width: 210px;
+  color: #ffffff;
+  font-weight: 500;
+  background-color: #051EC4;
+  border-radius: 5px;
+}
+
+.meeting-details-container {
+  padding-top: 30px;
+  height: calc(100% - 50px);
+}
+
+//Meeting Content Section
+.meeting-content-section{
+  height: 100%;
+  padding-right: 45px;
+}
+.meeting-title-date {
+  height: 55px;
+}
+.meeting-title {
+  padding-bottom: 8px;
+}
+.meeting-title p {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #051EC4;
+}
+.meeting-date {
+  display: flex;
+}
+.meeting-date img {
+  height: 17px;
+  width: 17px;
+  margin-right: 14px;
+}
+.meeting-date p {
+  margin: 0;
+  font-size: 13px;
+}
+.meeting-documents {
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+}
+.meeting-recording {
+  height: 90px;
+  width: 275px;
+  background-color: #fff;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+  margin-right: 20px;
+}
+.recording-icon {
+  height: 65px;
+  width: 65px;
+  border-radius: 50%;
+  background-color: #ECF4FB;
+  margin-right: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.recording-icon img {
+  height: 16px;
+  width: 20px;
+}
+.recording-title p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+.recording-size-length p {
+  margin: 0;
+  color: #a6acbe;
+  font-size: 14px;
+}
+
+.meeting-file {
+  height: 90px;
+  width: 275px;
+  background-color: #fff;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+  margin-right: 20px;
+}
+.file-icon {
+  height: 65px;
+  width: 65px;
+  border-radius: 50%;
+  background-color: #ECF4FB;
+  margin-right: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.file-icon img {
+  height: 22px;
+  width: 22px;
+}
+.file-title p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+.file-size-length p {
+  margin: 0;
+  color: #a6acbe;
+  font-size: 14px;
+}
+
+//Tabs Section
+
+.meeting-details-tab-section {
+  height: calc(100% - 180px);
+  background-color: #fff;
+  margin-top: 15px;
+  border-radius: 10px;
+  padding: 20px 30px;
+}
+.meeting-details-tabs .nav-item {
+  margin-right: 30px;
+}
+.meeting-details-tabs .nav-link {
+  font-weight: 600;
+  color: #979797;
+  border-radius: 0;
+  padding: 0.5rem 10px;
+}
+.meeting-details-tabs .nav-link.active {
+  color: #051EC4;
+  background-color: transparent;
+  border-bottom: 3px solid #051EC4;
+}
+//Whiteboard section
+.meeting-details-whiteboard {
+  height: 100%;
+  padding-right: 30px;
+}
+.meeting-details-attendees {
+  height: 100%;
+}
+.whiteboard-list {
+  height: 100%;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 20px 25px;
+}
+.whiteboard-title p {
+  margin: 0;
+  color: #051EC4;
+  font-size: 20px;
+  font-weight: 600;
+}
+.whiteboard-content {
+  height: calc(100% - 30px);
+  padding-top: 15px;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: #ddd transparent;
+  display: flex;
+  flex-direction: column;
+}
+.whiteboard-item {
+  padding-bottom: 20px;
+}
+.whiteboard-item img {
+  height: 210px;
+  width: 320px;
+}
+.attendee-list {
+  height: 100%;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 20px 25px;
+}
+.attendee-title {
+  margin: 0;
+  color: #051EC4;
+  font-size: 20px;
+  font-weight: 600;
+}
+.attendee-content {
+  height: calc(100% - 70px);
+  padding-top: 15px;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: #ddd transparent;
+  display: flex;
+  flex-direction: column;
+}
+.attendee-item {
+  display: flex;
+  align-items: center;
+  padding-bottom: 15px;
+}
+.attendee-pic {
+  padding-right: 18px;
+}
+.attendee-pic img {
+  height: 34px;
+  width: 34px;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+}
+.attendee-name p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}

@@ -1,0 +1,39 @@
+.close-btn{
+  font-size: 25px;
+}
+.team-names{
+  height: 470px;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+}
+
+.team-search{
+  border-radius: 7px;
+  width: 200px;
+}
+.specific-team, .member-detail, .team-member, .filtered-user{
+  cursor: pointer;
+}
+.user-names{
+  height: 350px;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+}
+
+.specific-team{
+  //width: 90%;
+  border-right: none;
+  border-left: none;
+}
+.no-team{
+  display: grid;
+  place-items: center;
+}
+.add-team{
+  font-size: 19px;
+}
+.searchable-users{
+  max-height: 70px;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+}

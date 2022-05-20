@@ -1,0 +1,133 @@
+.main-login-section {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+}
+.branding-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 40px;
+}
+.branding-section img {
+  height: 60px;
+}
+.reset-password-content {
+  width: 450px;
+  margin-top: 15px !important;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 16px 40px 1px rgba(112, 144, 176, 0.2);
+  padding: 25px;
+}
+.reset-password-content .reset-password-title {
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+}
+.reset-password-content .reset-password-title p {
+  margin-bottom: 10px;
+}
+.reset-password-content .reset-password-description {
+  font-size: 15px;
+  text-align: center;
+}
+.username-details {
+  display: flex;
+  flex-direction: column;
+}
+.username-details label {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+.username-details input {
+  height: 50px;
+  border: 1px solid #023BE8;
+  border-radius: 10px;
+  padding: 5px 15px;
+  font-size: 16px;
+}
+.username-details input:focus {
+  outline: none;
+}
+
+.password-details {
+  display: flex;
+  flex-direction: column;
+  margin-top: 15px;
+}
+.password-details label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+.password-details input {
+  height: 50px;
+  border: 1px solid #023BE8;
+  border-radius: 10px;
+  padding: 5px 15px;
+  font-size: 16px;
+}
+.password-details input:focus {
+  outline: none;
+}
+.reset-password-form span.request-otp {
+  text-align: end;
+  font-size: 15px;
+  color: #000;
+  cursor: pointer;
+}
+.reset-password-form span.request-otp:hover {
+  color: #051EC4;
+}
+
+.reset-password-button {
+  margin-top: 20px;
+}
+.reset-password-form-btn {
+  height: 55px;
+  width: 100%;
+  border: none;
+  border-radius: 30px;
+  background-color: #051EC4;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #ffffff;
+  cursor: pointer;
+}
+.reset-password-form span {
+  margin-top: 5px;
+  color: #d91500;
+  font-weight: 500;
+  font-size: 16px;
+}
+.reset-password-form span.forgot-password {
+  margin-top: 2px;
+  color: #000;
+  font-size: 14px;
+  text-align: end;
+  cursor: pointer;
+}
+.reset-password-form span.forgot-password:hover {
+  color: #051EC4;
+}
+
+.login-error {
+  padding-top: 5px;
+  text-align: center;
+}
+.registration-option {
+  padding-top: 15px;
+  text-align: center;
+}
+.registration-option p {
+  margin: 0;
+}
+.registration-option span {
+  color: #000;
+  text-decoration: underline;
+  cursor: pointer;
+}

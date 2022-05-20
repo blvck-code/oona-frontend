@@ -1,0 +1,75 @@
+.team-name {
+  margin-bottom: 0;
+  font-size: 18px;
+  line-height: 28px;
+  color: #051EC4;
+  font-weight: 700;
+}
+
+.navigation-section {
+  border-bottom: 1px solid #E9E9E9;
+}
+
+.navigation {
+  margin-right: 3%;
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 23px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 15px;
+  /* identical to box height */
+  color: #191726;
+  width: 86px;
+  height: 24px;
+}
+.navigation p {
+  margin: 0;
+}
+
+.nav-link {
+  font-size: 16px;
+  line-height: 23px;
+  font-weight: 400;
+  margin: 0;
+  /* identical to box height */
+  color: #191726;
+}
+
+.nav-link.active {
+  border-color:#051EC4;
+}
+
+.active {
+  color: #051EC4;
+  border-bottom: 3px solid #051EC4;
+}
+
+.overflow-chat {
+  height: calc(100% - 20px);
+  padding-top: 1px;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+}
+
+.active {
+  color: #051EC4 !important;
+  background-color: #f8f8fb !important;
+  border-bottom: 3px solid #051EC4;
+}
+button {
+  background: #D4D4E9;
+  border-radius: 5px;
+  font-size: 12px;
+  line-height: 14px;
+  border: none;
+  color: #323037;
+}
+
+.text-editor {
+  width: 50vw !important;
+}
+.custom-tab {
+  height: calc(100% - 87px);
+}

@@ -1,0 +1,106 @@
+<div class="home-topnav">
+  <div class="home-topnav-links">
+    <div class="back-to-list-link" routerLink="/dashboard/previous-meetings" routerLinkActive="link-active" >
+      <p>Back to meetings</p>
+    </div>
+  </div>
+  <div class="home-topnav-button">
+    <button class="btn host-meeting-btn">Watch Meeting</button>
+  </div>
+</div>
+<div class="meeting-details-container row g-0">
+  <div class="meeting-content-section col-7">
+    <div class="meeting-title-date">
+      <div class="meeting-title">
+        <p>{{meetingDetails.name}}</p>
+      </div>
+      <div class="meeting-date">
+        <img src="assets/img/clock-icon.svg" alt="">
+        <p>{{meetingDetails.start_time | date:'mediumDate'}} &nbsp; |  {{meetingDetails.start_time | date:'HHmm'}} - {{meetingDetails.stop_time | date:'HHmm'}}</p>
+      </div>
+    </div>
+    <div class="meeting-documents">
+      <div class="meeting-recording">
+        <div class="recording-icon">
+          <img src="assets/img/play_icon.svg" alt="">
+        </div>
+        <div class="recording-details">
+          <div class="recording-title">
+            <p>Meeting recording</p>
+          </div>
+          <div class="recording-size-length">
+            <p> 1h 40min | 400mb</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="meeting-file">
+        <div class="file-icon">
+          <img src="assets/img/file_icon.svg" alt="">
+        </div>
+        <div class="file-details">
+          <div class="file-title">
+            <p>UML Documentation</p>
+          </div>
+          <div class="file-size-length">
+            <p> 2 pages | 4mb</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="meeting-details-tab-section">
+      <ul class="nav nav-pills mb-3 meeting-details-tabs" id="pills-tab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="minutesTab" data-bs-toggle="pill" data-bs-target="#minutes" type="button" role="tab" aria-controls="minutes" aria-selected="true">Meeting Minutes</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="notesTab" data-bs-toggle="pill" data-bs-target="#notes" type="button" role="tab" aria-controls="notes" aria-selected="false">My Notes</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="chatsTab" data-bs-toggle="pill" data-bs-target="#chats" type="button" role="tab" aria-controls="chats" aria-selected="false">Chat Logs</button>
+        </li>
+      </ul>
+      <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="minutes" role="tabpanel" aria-labelledby="minutesTab">Minutes</div>
+        <div class="tab-pane fade" id="notes" role="tabpanel" aria-labelledby="notesTab">Notes</div>
+        <div class="tab-pane fade" id="chats" role="tabpanel" aria-labelledby="chatsTab">Chats</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="meeting-details-whiteboard col-3">
+    <div class="whiteboard-list">
+      <div class="whiteboard-title">
+        <p>Whiteboards (1)</p>
+      </div>
+      <div class="whiteboard-content">
+        <div class="whiteboard-item">
+          <img src="assets/img/whiteboard.svg" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="meeting-details-attendees col-2">
+    <div class="attendee-list">
+      <div class="attendee-title">
+        <p>Attendees ({{meetingDetails.attendees_name.length}})</p>
+      </div>
+      <div class="attendee-content">
+
+        <div *ngFor="let attendee of meetingDetails.attendees_name" class="attendee-item">
+          <div class="attendee-pic">
+            <img src="assets/img/placeholder.jpg" alt="">
+          </div>
+          <div class="attendee-name">
+            <p>{{attendee.first_name}}&nbsp;{{attendee.last_name}}</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+

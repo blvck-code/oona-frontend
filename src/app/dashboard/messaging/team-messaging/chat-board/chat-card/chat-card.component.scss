@@ -1,0 +1,63 @@
+.chart-item-container {
+  display: flex;
+  margin-bottom: 20px;
+}
+.chart-item-profile {
+  margin-right: 20px;
+}
+
+.chart-item-content-container {
+  min-width: 500px;
+}
+h3 {
+  font-size: 14px;
+  line-height: 19px;
+  color: #323037;
+  font-weight: bolder;
+}
+.chart-item-content {
+  border: none;
+}
+.chart-item-title {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 15px;
+  background-color: #ECF4FB;
+  border-radius: 10px 10px 0 0;
+  cursor: pointer;
+
+  p {
+    margin: 0;
+    color: #051EC4;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+}
+
+.chat-msg {
+  font-size: 14px;
+  color: #554E6A;
+}
+.chat-time{
+  font-size: 12px;
+  line-height: 14px;
+  color: #8A8D92;
+}
+
+.message-card{
+  padding: 15px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(34, 37, 52, 0.0501803);
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  scrollbar-width: thin;
+  mix-blend-mode: normal;
+  scrollbar-color: #cdcdcd transparent;
+  overflow-y: scroll;
+
+  p {
+    margin-bottom: 5px;
+  }
+}

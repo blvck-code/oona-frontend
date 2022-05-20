@@ -1,0 +1,39 @@
+<div class="main-login-section">
+  <div class="reset-password-container">
+    <a routerLink="/" class="branding-section">
+      <img src="assets/img/oona_logo.svg" alt="" class="login-branding">
+    </a>
+    <div class="reset-password-content">
+      <div class="reset-password-title">
+        <p>Verify Account</p>
+      </div>
+      <div class="reset-password-description">
+        <p>A One-Time Password (OTP) has been sent to your email. Use it to verify your account below.</p>
+      </div>
+      <form [formGroup]="verifyAccountForm" (ngSubmit)="onReset()" class="reset-password-form">
+        <div class="username-details">
+          <label for="userName">Email</label>
+          <input type="text" id="userName" formControlName="email" placeholder="Email Address">
+          <span *ngIf="verificationFormControls.email.touched && verificationFormControls.email.errors?.required">Please enter your email address.</span>
+          <span *ngIf="verificationFormControls.email.touched && verificationFormControls.email.errors?.email">Please enter a Valid email address.</span>
+          <span *ngIf="!verificationFormControls.email.touched && emptyForm">Please enter a your email address.</span>
+        </div>
+        <div class="password-details">
+          <label for="token">One-Time Password</label>
+          <input type="text" id="token" autocomplete="off" formControlName="verifyCode" placeholder="OTP">
+          <span class="request-otp" routerLink="/request-otp">Invalid or expire OTP? Request another.</span>
+          <span *ngIf="verificationFormControls.verifyCode.touched && verificationFormControls.verifyCode.errors?.required" >Please enter your Verification Code.</span>
+          <span *ngIf="!verificationFormControls.verifyCode.touched && emptyForm">Please enter your One-Time Pin.</span>
+        </div>
+        <div class="reset-password-button">
+          <button class="reset-password-form-btn" type="submit" (click)="isSubmitted()">Verify</button>
+        </div>
+        <div class="login-error">
+          <span *ngIf="verificationError">{{verificationServerError}}</span>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+

@@ -1,0 +1,130 @@
+.main-register-section {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+  margin-bottom: 30px;
+}
+.branding-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 40px;
+}
+.branding-section img {
+  height: 60px;
+}
+.register-content {
+  width: 450px;
+  min-height: 625px;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 16px 40px 1px rgba(112, 144, 176, 0.2);
+  padding: 25px;
+}
+.register-content .register-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+.register-content .register-title p {
+  margin-bottom: 10px;
+}
+.register-content .register-description {
+  font-size: 15px;
+}
+.register-content .register-description p {
+  margin: 0;
+}
+.username-details {
+  display: flex;
+  flex-direction: column;
+}
+.username-details label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+.username-details input {
+  height: 50px;
+  border: 1px solid #023BE8;
+  border-radius: 10px;
+  padding: 5px 15px;
+  font-size: 16px;
+}
+.username-details input:focus {
+  outline: none;
+}
+
+.input-details {
+  display: flex;
+  flex-direction: column;
+  margin-top: 15px;
+}
+.input-details label {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+.input-details input {
+  height: 50px;
+  border: 1px solid #023BE8;
+  border-radius: 10px;
+  padding: 5px 15px;
+  font-size: 16px;
+}
+.input-details input:focus {
+  outline: none;
+}
+.register-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+.cancel-register-form-btn {
+  height: 50px;
+  width: 40%;
+  border: none;
+  border-radius: 30px;
+  background-color: #BFD2FC;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: #051EC4;
+  cursor: pointer;
+}
+
+.register-form-btn {
+  height: 55px;
+  width: 45%;
+  border: none;
+  border-radius: 30px;
+  background-color: #051EC4;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: #ffffff;
+  cursor: pointer;
+}
+.signup-error {
+  padding-top: 8px;
+  text-align: center;
+}
+.register-form span {
+  margin-top: 3px;
+  color: #d91500;
+  font-weight: 500;
+  font-size: 16px;
+}
+.login-option {
+  padding-top: 5px;
+  text-align: center;
+}
+.login-option p {
+  margin: 0;
+}
+.login-option span {
+  color: #000;
+  text-decoration: underline;
+  cursor: pointer;
+}

@@ -1,0 +1,132 @@
+.main-landing-section {
+  font-family: 'Poppins', sans-serif !important;
+  height: 100vh;
+}
+.landing-section-content {
+  height: auto;
+  padding: 45px 5%;
+}
+.landing-topnav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.topnav-left-content img {
+  width: 150px;
+}
+.topnav-right-content {
+  display: flex;
+
+}
+.topnav-right-content .sign-in-btn, .register-btn {
+  height: 55px;
+  width: 175px;
+  border: none;
+  border-radius: 30px;
+  background-color: #051EC4;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #ffffff;
+  cursor: pointer;
+}
+.topnav-right-content .sign-in-btn:focus, .register-btn:focus {
+  outline: none;
+  box-shadow: none;
+  background-color: #BFD2FC;
+  color: #051EC4;
+}
+.topnav-right-content .sign-in-btn {
+  margin-right: 25px;
+}
+
+.landing-main-content {
+  display: flex;
+  padding-top: 60px;
+}
+.main-content-text {
+  width: 50%;
+  padding: 30px 0;
+}
+.main-content-text .content-text-title {
+  font-size: 80px;
+  line-height: 80px;
+  font-weight: 700;
+  color: #051EC4;
+  max-width: 75%;
+  margin-bottom: 60px;
+}
+.main-content-text .content-text-title p {
+  margin: 0;
+}
+
+.main-content-text .content-text-item p {
+  color: #696871;
+  font-size: 18px;
+  margin: 0;
+}
+.meeting-button {
+  margin-top: 60px;
+  display: flex;
+
+}
+.meeting-button .start-join-btn {
+  height: 65px;
+  width: 300px;
+  border: none;
+  border-radius: 40px 0 0 40px;
+  background-color: #051EC4;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #ffffff;
+  cursor: pointer;
+  margin-right: -15px;
+}
+.meeting-button .start-join-btn:focus {
+  outline: none;
+  box-shadow: none;
+}
+.meeting-button .toggle-section {
+  height: 65px;
+  width: 50px;
+  color: #ffffff;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #051EC4;
+  border-radius: 0 40px 40px 0;
+  margin-left: 0;
+  cursor: pointer;
+}
+.toggle-section img {
+  height: 24px;
+  width: 18px;
+}
+.meeting-button .dropdown-menu {
+  width: 310px;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 16px 40px 1px rgba(112, 144, 176, 0.2);
+  margin-top: 5px !important;
+}
+.meeting-options-item {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+}
+.meeting-options-item img {
+  padding-right: 15px;
+}
+.meeting-options-item p {
+  font-size: 16px;
+  font-weight: 500;
+  color: #051EC4;
+  margin: 0;
+  cursor: pointer;
+}
+
+.main-content-img {
+  width: 50%;
+}

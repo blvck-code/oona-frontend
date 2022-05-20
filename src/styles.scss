@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap');
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+@font-face {
+  font-family: Gilroy;
+  src: local("Gilroy"),
+  url(assets/font/Gilroy-Regular.woff);
+  font-weight: normal;
+}
+@font-face {
+  font-family: Gilroy;
+  src: local("Gilroy"),
+  url(assets/font/Gilroy-SemiBold.woff);
+  font-weight: 600;
+}
+@font-face {
+  font-family: Gilroy;
+  src: local("Gilroy"),
+  url(assets/font/Gilroy-Medium.woff);
+  font-weight: 500;
+}
+@font-face {
+  font-family: Gilroy;
+  src: local("Gilroy"),
+  url(assets/font/Gilroy-Bold.woff);
+  font-weight: bold;
+}
+@font-face {
+  font-family: Gilroy;
+  src: local("Gilroy"),
+  url(assets/font/Gilroy-Light.woff);
+  font-weight: 300;
+}
+body {
+  font-family: Gilroy, sans-serif !important;
+  font-weight: normal;
+  margin: 0;
+}
+
+::-webkit-scrollbar {
+  scrollbar-width: thin;
+  mix-blend-mode: normal;
+  scrollbar-color: #37314B transparent;
+}
+.fc .fc-view-harness {
+  height: 340px !important;
+}
+.fc .fc-daygrid-day-number {
+  color: #051EC4;
+  text-decoration: none;
+}
+.fc .fc-daygrid-day-events {
+  min-height: 0 !important;
+}
+.fc .fc-daygrid-day {
+  max-height: 45px !important;
+}
+.fc .fc-col-header-cell-cushion {
+  color: #051EC4;
+  text-decoration: none;
+}
+.fc-theme-standard .fc-scrollgrid {
+  border: 1px solid #f2eeee !important;
+}
+.fc-theme-standard td {
+  border: 1px solid #f2eeee !important;
+}
+.fc-theme-standard th {
+  border: 1px solid #f2eeee !important;
+}
+.fc .fc-button-primary {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  color: #051EC4 !important;
+}
+.fc .fc-button-primary:hover {
+  background-color: #D4EDF9 !important;
+}
+.fc .fc-button-primary:focus {
+  box-shadow: none !important;
+}
+.fc .fc-toolbar-title {
+  font-size: 1.5em !important;
+  margin: 0;
+  color: #051EC4;
+}
+
+.flatpickr-day.selected {
+  background-color: #051EC4 !important;
+  border-color: #051EC4 !important;
+}
+
+
+showdown {
+  pre {
+    margin-bottom: 10px;
+  }
+
+  p {
+    margin-bottom: 5px;
+    color: #000;
+  }
+}
+
+.e-toolbar-items {
+  .e-icons, .e-btn-icon, .e-bold {
+    font-size: 14px !important;
+  }
+}
+.e-toolbar .e-toolbar-items {
+  display: flex;
+  height: 34px;
+  min-height: 34px !important;
+
+  .e-toolbar-item {
+    min-height: 34px;
+  }
+}
+.e-toolbar .e-toolbar-items .e-toolbar-item .e-tbar-btn.e-btn {
+  height: auto !important;
+  margin: 0;
+}
+.e-toolbar-wrapper {
+  height: 34px !important;
+}
+.e-toolbar .e-toolbar-items .e-toolbar-item:not(.e-separator) {
+  padding: 0 3.5px !important;
+}
+.e-richtexteditor.e-rte-tb-expand .e-rte-content {
+  border-bottom: none;
+}
+
+@mixin sm-mobile {
+  @media (min-width: 480px) {
+    @content;
+  }
+}
+
+@mixin laptop {
+  @media (min-width: 760px) {
+    @content;
+  }
+}

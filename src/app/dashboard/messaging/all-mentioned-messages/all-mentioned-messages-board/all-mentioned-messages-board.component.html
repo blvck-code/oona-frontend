@@ -1,0 +1,28 @@
+<div class="all-mentions-messages-container">
+  <p class="team-name ">All mentions</p>
+  <div class="d-flex navigation-section mt-3">
+    <div class="navigation active">
+      <p>Chat</p>
+    </div>
+  </div>
+
+  <div class="overflow-chat">
+    <div *ngIf="mentionsWithIndividuals.length >= 0" id="box">
+      <div class=" d-flex justify-content-center">
+        <button class="get-more-messages-btn btn" (click)="getMorePrivateMessages()">Get more</button>
+      </div>
+      <app-individual-chat-card *ngFor="let chat of mentionsWithIndividuals" [messageDetail]="chat"></app-individual-chat-card>
+    </div>
+    <div
+      *ngIf="mentionsWithIndividuals.length < 1"
+      class="d-flex justify-content-center"
+    >
+      <div>
+        <app-loading-animation></app-loading-animation>
+        <p class="teams-belonging me-5"> Fetching messages</p>
+      </div>
+    </div>
+
+  </div>
+
+</div>

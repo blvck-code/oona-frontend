@@ -1,0 +1,35 @@
+<div class="main-login-section">
+  <div class="request-reset-container">
+    <div class="branding-section">
+      <img src="assets/img/oona_logo.svg" alt="" class="login-branding">
+    </div>
+    <div class="request-reset-content">
+      <div class="request-reset-title">
+        <p>Request Password Change</p>
+      </div>
+      <div class="request-reset-description">
+        <p>Please enter your email to continue</p>
+      </div>
+
+      <form [formGroup]="requestResetForm" (ngSubmit)="onLogin()" class="request-reset-form">
+        <div class="username-details">
+          <label for="userName"></label>
+          <input type="text" id="userName" formControlName="email" placeholder="Email Address">
+          <span *ngIf="addLoginFormControls.email.touched && addLoginFormControls.email.errors?.required">Please enter your email address.</span>
+          <span *ngIf="addLoginFormControls.email.touched && addLoginFormControls.email.errors?.email">Please enter a Valid email address.</span>
+          <span *ngIf="!addLoginFormControls.email.touched && emptyForm">Please enter a your email address.</span>
+        </div>
+        <div class="request-reset-button">
+          <button class="request-reset-form-btn" type="submit" (click)="isSubmitted()">Request</button>
+        </div>
+        <div class="request-reset-error" *ngIf="requestResetError">
+          <span>{{requestResetServerError}}</span>
+          <span class="register-option" routerLink="/signup">Register Instead?</span>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+

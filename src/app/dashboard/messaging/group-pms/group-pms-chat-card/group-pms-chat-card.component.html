@@ -1,0 +1,16 @@
+<div class="chart-item-container">
+  <div class="chart-item-profile">
+    <img src="assets/img/placeholder.jpg" height="32px" width="32px" class="rounded-circle me-2" alt="...">
+  </div>
+  <div class="chart-item-content-container" title="click to reply" (click)="replyToGroup()">
+    <div class="chart-item-content-title">
+      <p class="name">{{ messageDetail.display_recipient | shortenText}}</p>
+      <p class="chat-time">{{ messageTime }}</p>
+    </div>
+    <div class="chart-item-content">
+
+      <div class="chat-msg" [innerHTML]="messageDetail.content"> </div>
+
+    </div>
+  </div>
+</div>

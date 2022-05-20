@@ -1,0 +1,41 @@
+<div class="h-100">
+  <p class="team-name ">All private messages</p>
+  <nav>
+    <div class="nav nav-tabs w-100 d-flex justify-content-start border-bottom-5" id="nav-tab" role="tablist">
+      <div
+        class="nav-link active border-end-0 border-start-0 border-top-0 mb-0"
+        id="nav-home-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#nav-home"
+        type="button"
+        role="tab"
+        aria-controls="nav-home"
+        aria-selected="true">Chat</div>
+    </div>
+  </nav>
+
+  <div class="tab-content custom-tab" id="nav-tabContent">
+    <div class="tab-pane fade show active border-bottom-0" style="height: 100%" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+      <div class="overflow-chat">
+        <div *ngIf="messagesWithIndividuals.length >= 0" id="box">
+          <div class="d-flex justify-content-center">
+            <button class="btn btn-primary shadow-none" (click)="getMorePrivateMessages()">Get more</button>
+          </div>
+          <app-individual-chat-card *ngFor="let chat of messagesWithIndividuals" [messageDetail]="chat"></app-individual-chat-card>
+        </div>
+        <div
+          *ngIf="messagesWithIndividuals.length < 1"
+          class="d-flex justify-content-center"
+        >
+          <div>
+
+            <app-loading-animation></app-loading-animation>
+            <p class="teams-belonging me-5"> Fetching messages</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,13 @@
+<div class="main-home-section">
+  <app-navbar [parentTitle]="title"></app-navbar>
+
+  <div class="home-content-section">
+    <div class="settings-navigation">
+      <div class="user-settings-tab active-settings-tab" routerLink="/dashboard/settings">
+        <p>User Settings</p>
+      </div>
+    </div>
+    <router-outlet></router-outlet>
+  </div>
+
+</div>

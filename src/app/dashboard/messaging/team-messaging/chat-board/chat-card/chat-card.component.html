@@ -1,0 +1,23 @@
+<div class="chart-item-container">
+    <div class="chart-item-profile">
+        <img src="https://via.placeholder.com/150" height="32px" width="32px" class="rounded-circle" alt="...">
+    </div>
+    <div class="chart-item-content-container" (click)="getMessageTopic()">
+        <div class="chart-item-content">
+            <div class="chart-item-title" title="Click to reply">
+                <p class="chat-tag">{{ messageDetail.subject }}</p>
+            </div>
+            <div class="message-card">
+                <div class="d-flex justify-content-between">
+                    <h3>{{ messageDetail.sender_full_name}}</h3>
+<!--                    <p class="chat-time">{{messageDate}}</p>-->
+                    <p class="chat-time">{{ messageTime }}</p>
+                </div>
+              <div >
+                  <showdown class="chat-msg" [value]="messageDetail.content"></showdown>
+                </div>
+              </div>
+
+            </div>
+          </div>
+</div>
