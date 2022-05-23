@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {MessagingService} from '../../messaging.service';
+import {MessagingService} from '../../services/messaging.service';
 import { oonaBaseUrl } from '../../../../../environments/environment';
 import {Router} from '@angular/router';
 import {NotificationService} from '../../../../shared/services/notification.service';
-import {OonaSocketService} from '../../oona-socket.service';
+import {OonaSocketService} from '../../services/oona-socket.service';
 import {AuthService} from '../../../../auth/services/auth.service';
 
 @Component({

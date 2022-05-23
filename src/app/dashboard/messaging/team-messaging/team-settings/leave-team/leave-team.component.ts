@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {NotificationService} from '../../../../../shared/services/notification.service';
-import {MessagingService} from '../../../messaging.service';
+import {MessagingService} from '../../../services/messaging.service';
 
 @Component({
   selector: 'app-leave-team',

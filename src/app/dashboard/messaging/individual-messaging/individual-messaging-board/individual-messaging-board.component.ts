@@ -1,9 +1,9 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {MessagingService} from '../../messaging.service';
+import {MessagingService} from '../../services/messaging.service';
 
 import TurndownService from 'turndown';
-import {OonaSocketService} from '../../oona-socket.service';
+import {OonaSocketService} from '../../services/oona-socket.service';
 import {IndividualMessagingService} from '../individual-messaging.service';
 
 const turndownService = new TurndownService();

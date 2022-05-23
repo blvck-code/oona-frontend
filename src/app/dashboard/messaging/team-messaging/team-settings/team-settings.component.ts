@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
-import {MessagingService} from '../../messaging.service';
+import {MessagingService} from '../../services/messaging.service';
 import {FormBuilder} from '@angular/forms';
 import {NotificationService} from '../../../../shared/services/notification.service';
 import {CreateTeamComponent} from '../create-team/create-team.component';

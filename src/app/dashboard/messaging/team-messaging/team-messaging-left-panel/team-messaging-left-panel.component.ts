@@ -1,10 +1,18 @@
 import {ChangeDetectorRef, Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {Router} from '@angular/router';
-import {MessagingService} from '../../messaging.service';
+import {MessagingService} from '../../services/messaging.service';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {CreateTeamComponent} from '../create-team/create-team.component';
 import {TeamSettingsComponent} from '../team-settings/team-settings.component';
-import {OonaSocketService} from '../../oona-socket.service';
+import {OonaSocketService} from '../../services/oona-socket.service';
+
+// NgRx
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../../state/app.state';
+import {getAllStreams} from '../../state/messaging.selectors';
+import {AllStreamsModel, SubscribedStreams} from '../../models/streams.model';
+import {strings} from '@material/dialog/constants';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-team-messaging-left-panel',
@@ -26,17 +34,20 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   private privateAndPublicTeams: any;
   newMessagesCount: number | undefined;
   streamMessages = Array();
+  streams!: Observable<AllStreamsModel[]>;
 
   constructor(
     public messagingService: MessagingService,
     private router: Router,
     private dialog: MatDialog,
     private change: ChangeDetectorRef,
-    private userSocketService: OonaSocketService
-
+    private userSocketService: OonaSocketService,
+    private store: Store<AppState>
   ) { }
 
   ngOnInit(): void {
+    // Get All Streams
+    this.initPage();
 
     this.userSocketService.messageCount.subscribe(messages => {
       this.newMessagesCount = messages;
@@ -57,6 +68,11 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
 
   }
+
+  initPage() {
+    this.streams = this.store.select(getAllStreams);
+  }
+
   listAllTeams(): any{
     this.messagingService.getAllTeams().subscribe((teams: any) => {
       this.privateAndPublicTeams = teams.streams;

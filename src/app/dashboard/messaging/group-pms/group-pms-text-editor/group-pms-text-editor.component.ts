@@ -1,5 +1,5 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
-import {MessagingService} from '../../messaging.service';
+import {MessagingService} from '../../services/messaging.service';
 import {NotificationService} from '../../../../shared/services/notification.service';
 import {Router} from '@angular/router';
 import {Editor} from 'ngx-editor';

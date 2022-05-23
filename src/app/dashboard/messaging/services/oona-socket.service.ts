@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import { userChannel } from '../../../environments/environment';
-import {AuthService} from '../../auth/services/auth.service';
+import { userChannel } from '../../../../environments/environment';
+import {AuthService} from '../../../auth/services/auth.service';
 import {MessagingService} from './messaging.service';
 
 @Injectable({

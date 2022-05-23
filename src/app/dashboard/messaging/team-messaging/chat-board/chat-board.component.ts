@@ -8,11 +8,11 @@ import {
   ViewChildren,
 } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import { MessagingService } from '../../messaging.service';
+import { MessagingService } from '../../services/messaging.service';
 
 import TurndownService from 'turndown';
 import {HomeService} from '../../../home/shared/home.service';
-import {OonaSocketService} from '../../oona-socket.service';
+import {OonaSocketService} from '../../services/oona-socket.service';
 
 const turndownService = new TurndownService();
 

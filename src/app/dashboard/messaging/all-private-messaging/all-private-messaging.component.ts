@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {OonaSocketService} from '../oona-socket.service';
+import {OonaSocketService} from '../services/oona-socket.service';
 
 @Component({
   selector: 'app-all-private-messaging',

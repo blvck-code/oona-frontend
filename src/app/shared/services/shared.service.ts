@@ -14,7 +14,7 @@ export class SharedService {
   ) { }
 
 
-  getUsers(): Observable<string>{
+  getUsers(): Observable<any>{
     console.log('URL ===>>>>', this.getUsersUrl);
     // @ts-ignore
     return this.http.get(this.getUserUrl);

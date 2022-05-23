@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import { environment as env, oonaBaseUrl } from '../../../environments/environment';
+import { environment as env, oonaBaseUrl } from '../../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
-import {AuthService} from '../../auth/services/auth.service';
-import {BehaviorSubject} from 'rxjs';
+import {AuthService} from '../../../auth/services/auth.service';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {Router} from '@angular/router';
 
 @Injectable({
@@ -231,5 +231,13 @@ export class MessagingService {
     const cDate = dateObject.getFullYear() + '-' + (dateObject.getMonth() + 1) + '-' + dateObject.getDate();
     const cTime = dateObject.getHours() + ':' + dateObject.getMinutes() + ':' + dateObject.getSeconds();
     return cDate + ' ' + cTime;
+  }
+
+  fetchAllStreams(): Observable<any>{
+    return this.http.get(env.teams);
+  }
+
+  fetchSubStreams(): Observable<any>{
+    return this.http.get(env.subscribedStreams);
   }
 }
