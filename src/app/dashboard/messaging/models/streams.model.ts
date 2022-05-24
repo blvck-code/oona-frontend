@@ -13,7 +13,7 @@ export interface AllStreamsModel {
   rendered_description: string;
   stream_post_policy: number;
   is_announcement_only: boolean;
-  topics: any;
+  topics: TopicModel;
 }
 
 export interface TopicModel {

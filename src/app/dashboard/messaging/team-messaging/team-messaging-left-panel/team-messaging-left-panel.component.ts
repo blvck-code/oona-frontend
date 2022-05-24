@@ -10,7 +10,7 @@ import {Observable} from 'rxjs';
 // NgRx
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
-import {getAllStreams} from '../../state/messaging.selectors';
+import {getAllStreams, getStreamsLoading, getTopics} from '../../state/messaging.selectors';
 import {AllStreamsModel, SubscribedStreams} from '../../models/streams.model';
 import * as messagingActions from '../../state/messaging.actions';
 
@@ -35,6 +35,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   newMessagesCount: number | undefined;
   streamMessages = Array();
   streams!: Observable<AllStreamsModel[]>;
+  topics!: Observable<any>;
 
   constructor(
     public messagingService: MessagingService,
@@ -65,17 +66,25 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.messagingService.currentUserProfile().subscribe( (profile: any) => {
       this.loggedInUserProfile = profile;
     });
-
-
   }
 
   initPage() {
+    // Fetch streams
     this.streams = this.store.select(getAllStreams);
-    this.store.select(getAllStreams).subscribe(
-      data => {
-        data.forEach(item => this.store.dispatch(new messagingActions.LoadStreamTopic(item.stream_id)));
+    // Fetch Topics
+    this.store.select(getStreamsLoading).subscribe(
+      resp => {
+        if (!resp){
+          this.store.select(getAllStreams).subscribe(
+            data => {
+              data.forEach(item => this.store.dispatch(new messagingActions.LoadStreamTopic(item.stream_id)));
+            }
+          );
+        }
       }
     );
+    // Get Topics from store
+    this.topics = this.store.select(getTopics);
   }
 
   listAllTeams(): any{

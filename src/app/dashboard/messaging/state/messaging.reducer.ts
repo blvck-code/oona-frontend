@@ -44,6 +44,13 @@ export function messagingReducer(
         ...state,
         loading: true
       };
+    case messagingActions.MessagingActionsTypes.LOAD_STREAM_TOPIC_FAIL:
+    case messagingActions.MessagingActionsTypes.LOAD_SUB_STREAMS_FAIL:
+    case messagingActions.MessagingActionsTypes.LOAD_ALL_STREAMS_FAIL:
+      return {
+        ...state,
+        loading: false
+      };
     case messagingActions.MessagingActionsTypes.LOAD_ALL_STREAMS_SUCCESS:
       return {
         ...state,
@@ -67,7 +74,10 @@ export function messagingReducer(
         ...state,
         streams: {
           ...state.streams,
-          topics: [...state.streams.topics, addTopicToStream(action.payload)]
+          allStreams: [
+            ...state.streams.allStreams,
+          ],
+          // topics: [...state.streams.topics, addTopicToStream(action.payload)]
         }
       };
 

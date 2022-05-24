@@ -121,6 +121,12 @@
             <div (click)="displayMessagesOfTopic('')" class="accordion-body-item">
               <p>All Topics</p>
             </div>
+            <div *ngFor="let topic of (topics | async)" class="accordion-body-item">
+              <p>{{ topic.stream_id.content.name }}</p>
+            </div>
+            <div class="accordion-body-item">
+              <p>Topic</p>
+            </div>
 <!--            <div *ngFor="let topic of team.topics" (click)="displayMessagesOfTopic(topic)" class="accordion-body-item">-->
 <!--              <p>{{topic.name}}</p>-->
 <!--            </div>-->

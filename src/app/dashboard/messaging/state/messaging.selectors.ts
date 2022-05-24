@@ -11,3 +11,12 @@ export const getAllStreams = createSelector(
   state => state.streams.allStreams
 );
 
+export const getStreamsLoading = createSelector(
+  getMessagingState,
+  state => state.loading
+);
+
+export const getTopics = createSelector(
+  getMessagingState,
+  state => state.streams.topics
+);
