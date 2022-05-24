@@ -5,14 +5,14 @@ import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog
 import {CreateTeamComponent} from '../create-team/create-team.component';
 import {TeamSettingsComponent} from '../team-settings/team-settings.component';
 import {OonaSocketService} from '../../services/oona-socket.service';
+import {Observable} from 'rxjs';
 
 // NgRx
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
 import {getAllStreams} from '../../state/messaging.selectors';
 import {AllStreamsModel, SubscribedStreams} from '../../models/streams.model';
-import {strings} from '@material/dialog/constants';
-import {Observable} from 'rxjs';
+import * as messagingActions from '../../state/messaging.actions';
 
 @Component({
   selector: 'app-team-messaging-left-panel',
@@ -71,6 +71,11 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
   initPage() {
     this.streams = this.store.select(getAllStreams);
+    this.store.select(getAllStreams).subscribe(
+      data => {
+        data.forEach(item => this.store.dispatch(new messagingActions.LoadStreamTopic(item.stream_id)));
+      }
+    );
   }
 
   listAllTeams(): any{

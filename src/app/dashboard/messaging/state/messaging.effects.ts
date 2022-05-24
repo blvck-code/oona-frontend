@@ -44,4 +44,20 @@ export class MessagingEffects{
     )
   );
 
+  @Effect()
+  loadStreamTopics$: Observable<any> = this.actions$.pipe(
+    ofType<messagingActions.LoadStreamTopic>(
+      messagingActions.MessagingActionsTypes.LOAD_STREAM_TOPIC
+    ),
+    map((action: messagingActions.LoadStreamTopic) => action.payload),
+    mergeMap((streamId: any) =>
+      this.messagingSrv.getTopicsOnStreams(streamId).pipe(
+        map((topicData: any) =>
+          new messagingActions.LoadStreamTopicSuccess(topicData)
+        ),
+        catchError(err => of(new messagingActions.LoadStreamTopicFail(err)))
+      )
+    )
+  );
+
 }

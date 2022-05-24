@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import { environment as env, oonaBaseUrl } from '../../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {AuthService} from '../../../auth/services/auth.service';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {Router} from '@angular/router';
 
 @Injectable({
@@ -240,4 +240,8 @@ export class MessagingService {
   fetchSubStreams(): Observable<any>{
     return this.http.get(env.subscribedStreams);
   }
+
+  // streamsWithTopics$ = combineLatest([
+  //   env.
+  // ])
 }

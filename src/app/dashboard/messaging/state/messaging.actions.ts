@@ -16,6 +16,11 @@ export enum MessagingActionsTypes {
   LOAD_SUB_STREAMS = 'messaging/loadSubStreams',
   LOAD_SUB_STREAMS_SUCCESS = 'messaging/loadSubStreamsSuccess',
   LOAD_SUB_STREAMS_FAIL = 'messaging/loadSubStreamsFail',
+
+  // STREAM TOPICS
+  LOAD_STREAM_TOPIC = 'messaging/loadStreamTopic',
+  LOAD_STREAM_TOPIC_SUCCESS = 'messaging/loadStreamTopicSuccess',
+  LOAD_STREAM_TOPIC_FAIL = 'messaging/loadStreamTopicFail',
 }
 
 // LOAD MESSAGES ACTIONS
@@ -80,6 +85,23 @@ export class LoadSubStreamsFail implements Action {
   }
 }
 
+// STREAM TOPICS
+export class LoadStreamTopic implements Action {
+  readonly type = MessagingActionsTypes.LOAD_STREAM_TOPIC;
+  constructor(public payload: any) {
+  }
+}
+
+export class LoadStreamTopicSuccess implements Action {
+  readonly type = MessagingActionsTypes.LOAD_STREAM_TOPIC_SUCCESS;
+  constructor(public payload: any) {
+  }
+}
+export class LoadStreamTopicFail implements Action {
+  readonly type = MessagingActionsTypes.LOAD_STREAM_TOPIC_FAIL;
+  constructor(public payload: any) {
+  }
+}
 
 export type MessagingActions =
   // MESSAGING ACTIONS
@@ -93,4 +115,8 @@ export type MessagingActions =
   // SUB STREAM ACTION
   |  LoadSubStreams
   |  LoadSubStreamsSuccess
-  |  LoadSubStreamsFail;
+  |  LoadSubStreamsFail
+  // STREAM TOPICS
+   | LoadStreamTopic
+   | LoadStreamTopicSuccess
+   | LoadStreamTopicFail;

@@ -1,11 +1,13 @@
 import * as messagingActions from './messaging.actions';
 import {AllStreamsModel, SubscribedStreams} from '../models/streams.model';
+import {TopicsModel} from '../models/topics.model';
 
 export interface MessagingState {
   loading: boolean;
   streams: {
     allStreams: AllStreamsModel[],
-    subStreams: SubscribedStreams[]
+    subStreams: SubscribedStreams[],
+    topics: any
   };
 }
 
@@ -13,8 +15,22 @@ export const initialState: MessagingState = {
   loading: false,
   streams: {
     allStreams: [],
-    subStreams: []
+    subStreams: [],
+    topics: []
   }
+};
+
+const addTopicToStream = ( payload: any) => {
+  const stream_id = payload?.oz?.stream_id;
+  const content = [...payload?.zulip?.topics];
+
+  const topics  = {
+    stream_id: {
+      content
+    }
+  };
+
+  return  topics;
 };
 
 export function messagingReducer(
@@ -29,7 +45,6 @@ export function messagingReducer(
         loading: true
       };
     case messagingActions.MessagingActionsTypes.LOAD_ALL_STREAMS_SUCCESS:
-      console.log('Payload all streams ==>>', action.payload);
       return {
         ...state,
         loading: false,
@@ -39,13 +54,20 @@ export function messagingReducer(
         }
       };
     case messagingActions.MessagingActionsTypes.LOAD_SUB_STREAMS_SUCCESS:
-      console.log('Payload sub streams ==>>', action.payload);
       return {
         ...state,
         loading: false,
         streams: {
           ...state.streams,
           subStreams: action?.payload?.subscriptions
+        }
+      };
+    case messagingActions.MessagingActionsTypes.LOAD_STREAM_TOPIC_SUCCESS:
+      return {
+        ...state,
+        streams: {
+          ...state.streams,
+          topics: [...state.streams.topics, addTopicToStream(action.payload)]
         }
       };
 
