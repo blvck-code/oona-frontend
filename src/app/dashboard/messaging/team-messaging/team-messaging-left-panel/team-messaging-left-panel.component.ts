@@ -36,6 +36,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   streamMessages = Array();
   streams!: Observable<AllStreamsModel[]>;
   topics!: Observable<any>;
+  streamIds!: any[];
 
   constructor(
     public messagingService: MessagingService,
@@ -52,6 +53,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
     this.userSocketService.messageCount.subscribe(messages => {
       this.newMessagesCount = messages;
+      console.log('Messages ===>>', messages);
     });
 
     this.listAllTeams();
@@ -75,9 +77,12 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.store.select(getStreamsLoading).subscribe(
       resp => {
         if (!resp){
+          this.streams = this.store.select(getAllStreams);
           this.store.select(getAllStreams).subscribe(
             data => {
-              data.forEach(item => this.store.dispatch(new messagingActions.LoadStreamTopic(item.stream_id)));
+              data.forEach((item: AllStreamsModel) => {
+                this.streamIds = [...this.streamMessages, item.stream_id];
+              });
             }
           );
         }
@@ -85,6 +90,11 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     );
     // Get Topics from store
     this.topics = this.store.select(getTopics);
+  }
+
+  getTopics(team: any) {
+    console.log('Stream ==>>', team.stream_id);
+    this.store.dispatch(new messagingActions.LoadStreamTopic(team.stream_id));
   }
 
   listAllTeams(): any{

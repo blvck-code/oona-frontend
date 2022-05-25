@@ -1,11 +1,12 @@
 import * as messagingActions from './messaging.actions';
 import {AllStreamsModel, SubscribedStreams} from '../models/streams.model';
-import {TopicsModel} from '../models/topics.model';
+import {All} from '@ngrx/store-devtools/src/actions';
+// import {TopicsModel} from '../models/topics.model';
 
 export interface MessagingState {
   loading: boolean;
   streams: {
-    allStreams: AllStreamsModel[],
+    allStreams: AllStreamsModel[] | any,
     subStreams: SubscribedStreams[],
     topics: any
   };
@@ -70,13 +71,20 @@ export function messagingReducer(
         }
       };
     case messagingActions.MessagingActionsTypes.LOAD_STREAM_TOPIC_SUCCESS:
+
+      const topicStreamId = action.payload.oz.stream_id;
+      const updatedStream: any[] = state?.streams?.allStreams.map((stream: AllStreamsModel) => {
+        // tslint:disable-next-line:no-unused-expression
+        stream.stream_id === topicStreamId ? stream.topics = action.payload : null;
+      });
+
+      console.log('Target ==>>', updatedStream);
       return {
         ...state,
         streams: {
           ...state.streams,
-          allStreams: [
-            ...state.streams.allStreams,
-          ],
+          // allStreams: [...state.streams.allStreams, updatedStream]
+          allStreams: updatedStream
           // topics: [...state.streams.topics, addTopicToStream(action.payload)]
         }
       };

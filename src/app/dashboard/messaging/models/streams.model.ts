@@ -13,7 +13,7 @@ export interface AllStreamsModel {
   rendered_description: string;
   stream_post_policy: number;
   is_announcement_only: boolean;
-  topics: TopicModel;
+  topics?: TopicsModel;
 }
 
 export interface TopicModel {
@@ -24,30 +24,6 @@ export interface TopicModel {
     }
   ];
 }
-
-// {
-//   "zulip": {
-//   "result": "success",
-//     "msg": "",
-//     "topics": [
-//     {
-//       "name": "new streams",
-//       "max_id": 95
-//     },
-//     {
-//       "name": "swimming turtles",
-//       "max_id": 93
-//     },
-//     {
-//       "name": "topic demonstration",
-//       "max_id": 4
-//     }
-//   ]
-// },
-//   "oz": {
-//   "stream_id": 1
-// }
-// }
 
 export interface SubscribedStreams {
     audible_notifications: any;

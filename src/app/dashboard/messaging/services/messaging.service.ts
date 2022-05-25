@@ -241,7 +241,9 @@ export class MessagingService {
     return this.http.get(env.subscribedStreams);
   }
 
-  // streamsWithTopics$ = combineLatest([
-  //   env.
-  // ])
+  getStreamTopics(streamId: any): any {
+    return this.http.get(
+      this.streamTopic + streamId,
+    );
+  }
 }

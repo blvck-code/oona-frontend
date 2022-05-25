@@ -112,7 +112,7 @@
 
       <div *ngFor="let team of (streams | async); index as i" class="accordion-item">
         <h2 class="accordion-header" id="flush-headingOne">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"  [attr.data-bs-target]="'#flush-collapse'+i" aria-expanded="false" [attr.aria-controls]="'flush-collapse'+i">
+          <button (click)="getTopics(team)" class="accordion-button collapsed" type="button" data-bs-toggle="collapse"  [attr.data-bs-target]="'#flush-collapse'+i" aria-expanded="false" [attr.aria-controls]="'flush-collapse'+i">
             # {{team.name}}
           </button>
         </h2>

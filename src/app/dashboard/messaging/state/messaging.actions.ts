@@ -1,4 +1,5 @@
 import {Action} from '@ngrx/store';
+import {TopicsModel} from '../models/topics.model';
 
 
 export enum MessagingActionsTypes {
@@ -94,7 +95,7 @@ export class LoadStreamTopic implements Action {
 
 export class LoadStreamTopicSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_TOPIC_SUCCESS;
-  constructor(public payload: any) {
+  constructor(public payload: TopicsModel) {
   }
 }
 export class LoadStreamTopicFail implements Action {

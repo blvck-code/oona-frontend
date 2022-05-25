@@ -51,7 +51,7 @@ export class MessagingEffects{
     ),
     map((action: messagingActions.LoadStreamTopic) => action.payload),
     mergeMap((streamId: any) =>
-      this.messagingSrv.getTopicsOnStreams(streamId).pipe(
+      this.messagingSrv.getStreamTopics(streamId).pipe(
         map((topicData: any) =>
           new messagingActions.LoadStreamTopicSuccess(topicData)
         ),

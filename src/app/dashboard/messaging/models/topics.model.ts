@@ -1,31 +1,16 @@
 
 export interface TopicsModel {
+  zulip: {
+    result: string,
+    msg: string,
+    topics: Topics[]
+  };
+  oz: {
+    stream_id: number
+  };
+}
+export interface Topics {
   name: string;
   max_id: number;
 }
 
-
-
-// {
-//   "zulip": {
-//   "result": "success",
-//     "msg": "",
-//     "topics": [
-//     {
-//       "name": "new streams",
-//       "max_id": 95
-//     },
-//     {
-//       "name": "swimming turtles",
-//       "max_id": 93
-//     },
-//     {
-//       "name": "topic demonstration",
-//       "max_id": 4
-//     }
-//   ]
-// },
-//   "oz": {
-//   "stream_id": 1
-// }
-// }
