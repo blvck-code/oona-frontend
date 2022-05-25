@@ -172,6 +172,10 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     }
   }
 
+  showAllMessages(): void {
+    this.router.navigate(['/dashboard/messaging/all_messages']);
+  }
+
   showAllPrivateMessages(): void {
     this.router.navigate(['dashboard/messaging/private']);
   }
