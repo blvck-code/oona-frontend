@@ -179,11 +179,11 @@
                     <img *ngIf="attendeeListOpen" src="assets/img/close_icon_blue.svg" alt="" aria-label="Add Meeting Attendees" title="Close Section" (click)="openAttendeesList()">
                   </div>
                   <div class="add-attendees-section dropdown">
-                    <input *ngIf="attendeeListOpen" type="text" class="search-meeting-attendees" placeholder="Type here to search for user" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                    <input *ngIf="attendeeListOpen" [(ngModel)]="searchText" [ngModelOptions]="{standalone: true}" name="searchText" type="text" class="search-meeting-attendees" placeholder="Type here to search for user" id="dropdownMenuButton1" data-bs-toggle="dropdown"
                            aria-expanded="false"
                     >
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" #selectList >
-                      <li *ngFor="let user of oonaUsers" >
+                      <li *ngFor="let user of oonaUsers | searchFilter : searchText" >
                         <a class="dropdown-item" (click)="selectedUser(user)">
                           {{user.first_name}}&nbsp;{{user.last_name}}
                         </a>

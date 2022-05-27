@@ -8,11 +8,12 @@ import { HomeComponent } from './home.component';
 import { UpcomingMeetingsComponent } from './upcoming-meetings/upcoming-meetings.component';
 import { PreviousMeetingsComponent } from './previous-meetings/previous-meetings.component';
 import { MeetingDetailsComponent } from './meeting-details/meeting-details.component';
-import { SearchPipe} from './shared/pipes/filter.pipe';
 import {HighlightDirective} from './shared/directives/highlight.directive';
 import { LoadIndicatorComponent } from './shared/load-indicator/load-indicator.component';
 import {SharedModule} from '../../shared/shared.module';
-
+// import {UserFilterPipe} from '../../pipes/user-filter.pipe';
+// import {SearchPipe} from './shared/pipes/filter.pipe';
+// import {SearchUserPipe} from './shared/pipes/searchUser.pipe';
 
 @NgModule({
   declarations: [
@@ -21,17 +22,15 @@ import {SharedModule} from '../../shared/shared.module';
     PreviousMeetingsComponent,
     MeetingDetailsComponent,
     HighlightDirective,
-    SearchPipe,
-    SearchPipe,
-    LoadIndicatorComponent
+    LoadIndicatorComponent,
   ],
-    imports: [
-        CommonModule,
-        HomeRoutingModule,
-        ReactiveFormsModule,
-        FormsModule,
-        FullCalendarModule,
-        SharedModule
-    ]
+  imports: [
+    CommonModule,
+    HomeRoutingModule,
+    ReactiveFormsModule,
+    FormsModule,
+    FullCalendarModule,
+    SharedModule,
+  ]
 })
 export class HomeModule { }

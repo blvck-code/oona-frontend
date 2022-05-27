@@ -14,6 +14,7 @@ import {sharedReducer} from './state/shared.reducer';
 import {sharedSelectors} from './state/shared.selectors';
 import {EffectsModule} from '@ngrx/effects';
 import {SharedEffects} from './state/shared.effects';
+import { SearchPipe } from './pipe/search.pipe';
 
 
 
@@ -26,7 +27,8 @@ import {SharedEffects} from './state/shared.effects';
       InactiveTagComponent,
       IdleTagComponent,
       TypingComponent,
-      NavbarComponent
+      NavbarComponent,
+      SearchPipe
     ],
     exports: [
         AdminTagComponent,
@@ -35,7 +37,8 @@ import {SharedEffects} from './state/shared.effects';
         InactiveTagComponent,
         IdleTagComponent,
         TypingComponent,
-        NavbarComponent
+        NavbarComponent,
+        SearchPipe
     ],
   imports: [
     CommonModule,
