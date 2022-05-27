@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import {environment} from '../../../environments/environment';
-import {AuthService} from '../../auth/services/auth.service';
+import {environment} from '../../../../environments/environment';
+import {AuthService} from '../../../auth/services/auth.service';
 
 @Injectable({
   providedIn: 'root'

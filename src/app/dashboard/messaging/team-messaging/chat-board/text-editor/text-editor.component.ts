@@ -12,7 +12,7 @@ import {
   FormGroup,
   NgForm,
 } from '@angular/forms';
-import { MessagingService } from '../../../messaging.service';
+import { MessagingService } from '../../../services/messaging.service';
 import {NotificationService} from '../../../../../shared/services/notification.service';
 import {Router} from '@angular/router';
 import { ToolbarService, LinkService, ImageService, HtmlEditorService } from '@syncfusion/ej2-angular-richtexteditor';

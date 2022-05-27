@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
-import {MessagingService} from '../../messaging.service';
+import {MessagingService} from '../../services/messaging.service';
 import {environment} from '../../../../../environments/environment';
 import {NotificationService} from '../../../../shared/services/notification.service';
 
@@ -12,7 +12,7 @@ import {NotificationService} from '../../../../shared/services/notification.serv
 export class IndividualMessagingRightPanelComponent implements OnInit {
   otherMembers: any ;
   allUsers: any;
-  serverUrl = environment.oona;
+  // serverUrl = environment.oona;
   commonTeams = Array();
   memberDetails = {
     full_name: undefined,

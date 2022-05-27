@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {MessagingService} from '../messaging.service';
+import {MessagingService} from '../services/messaging.service';
 import {Router} from '@angular/router';
 import {AuthService} from '../../../auth/services/auth.service';
 

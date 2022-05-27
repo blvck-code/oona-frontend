@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../../auth/services/auth.service';
-import { environment } from '../../../../environments/environment';
+import { environment as env } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ConferenceService {
-  meetingDetailsUrl = environment.oona + '/api/v1/meet/meetings/';
-  usersUrl = environment.oona + '/api/v1/accounts/user/';
+  meetingDetailsUrl = env.meetingDetailsUrl;
+  usersUrl = env.getUserUrl;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

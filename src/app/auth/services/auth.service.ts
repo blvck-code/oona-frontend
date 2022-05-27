@@ -1,6 +1,6 @@
 import {Inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {environment} from '../../../environments/environment';
+import { environment as env } from '../../../environments/environment';
 import {BROWSER_STORAGE} from '../storage';
 import {OonaMeeting} from '../../dashboard/home/shared/oonaMeeting';
 import {Form} from '@angular/forms';
@@ -10,19 +10,19 @@ import {Form} from '@angular/forms';
 })
 export class AuthService {
 
-  loginUrl = environment.oona + '/api/v1/accounts/login/';
-  requestResetUrl = environment.oona + '/api/v1/accounts/password/reset/request/';
-  resetPassUrl = environment.oona + '/api/v1/accounts/password/reset/';
-  registrationUrl = environment.oona + '/api/v1/accounts/register/';
-  verificationUrl = environment.oona + '/api/v1/accounts/verify/otp/';
-  generateOTPUrl = environment.oona + '/api/v1/accounts/generate/otp/';
-  userProfileURL = environment.oona + '/api/v1/accounts/profile/';
-  getUserUrl = environment.oona + '/api/v1/accounts/users';
-  refreshTokenUrl = environment.oona + '/api/v1/accounts/token/refresh/';
+  loginUrl = env.loginUrl;
+  requestResetUrl = env.requestResetUrl;
+  resetPassUrl = env.resetPassUrl;
+  registrationUrl = env.registrationUrl;
+  verificationUrl = env.verificationUrl;
+  generateOTPUrl = env.generateOTPUrl;
+  userProfileURL = env.userProfileURL;
+  getUsersUrl = env.getUsersUrl;
+  refreshTokenUrl = env.refreshTokenUrl;
   redirectUrl = '/dashboard';
-  logoutUrl = environment.oona + '/api/v1/accounts/logout';
-  meetingDetailsUrl = environment.oona + '/api/v1/meet/meetings/';
-  changePasswordUrl = environment.oona + '/api/v1/accounts/password/change/';
+  logoutUrl = env.logoutUrl;
+  meetingDetailsUrl = env.meetingDetailsUrl;
+  changePasswordUrl = env.changePasswordUrl;
   resetEmail = '';
   meetingId = '';
   currentUser = '';
@@ -121,7 +121,7 @@ export class AuthService {
 
   getCurrentUser(): any {
     console.log('Funny you not working');
-    return this.http.get(this.getUserUrl);
+    return this.http.get(this.getUsersUrl);
   }
 
   getUserProfile(): any {

@@ -8,10 +8,26 @@ import { IdleTagComponent } from './components/idle-tag/idle-tag.component';
 import { TypingComponent } from './components/typing/typing.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 
+// NgRx
+import {StoreModule} from '@ngrx/store';
+import {sharedReducer} from './state/shared.reducer';
+import {sharedSelectors} from './state/shared.selectors';
+import {EffectsModule} from '@ngrx/effects';
+import {SharedEffects} from './state/shared.effects';
+
 
 
 @NgModule({
-  declarations: [AdminTagComponent, GuestTagComponent, ActiveTagComponent, InactiveTagComponent, IdleTagComponent, TypingComponent, NavbarComponent],
+  // tslint:disable-next-line:max-line-length
+    declarations: [
+      AdminTagComponent,
+      GuestTagComponent,
+      ActiveTagComponent,
+      InactiveTagComponent,
+      IdleTagComponent,
+      TypingComponent,
+      NavbarComponent
+    ],
     exports: [
         AdminTagComponent,
         GuestTagComponent,
@@ -22,7 +38,9 @@ import { NavbarComponent } from './components/navbar/navbar.component';
         NavbarComponent
     ],
   imports: [
-    CommonModule
+    CommonModule,
+    StoreModule.forFeature(sharedSelectors, sharedReducer),
+    EffectsModule.forFeature([SharedEffects])
   ]
 })
 export class SharedModule { }

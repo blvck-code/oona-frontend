@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {environment} from '../../../../../environments/environment';
+import { environment as env } from '../../../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {AuthService} from '../../../../auth/services/auth.service';
 
@@ -7,7 +7,7 @@ import {AuthService} from '../../../../auth/services/auth.service';
   providedIn: 'root'
 })
 export class ChatBoardService {
-  sendStreamMessageWithFileURL = environment.oona + '/api/v1/message/stream/file';
+  sendStreamMessageWithFileURL = env.sendStreamMessageWithFileURL;
 
   constructor(
     private http: HttpClient,

@@ -1,10 +1,18 @@
 import {ChangeDetectorRef, Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {Router} from '@angular/router';
-import {MessagingService} from '../../messaging.service';
+import {MessagingService} from '../../services/messaging.service';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {CreateTeamComponent} from '../create-team/create-team.component';
 import {TeamSettingsComponent} from '../team-settings/team-settings.component';
-import {OonaSocketService} from '../../oona-socket.service';
+import {OonaSocketService} from '../../services/oona-socket.service';
+import {Observable} from 'rxjs';
+
+// NgRx
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../../state/app.state';
+import {getAllStreams, getStreamsLoading, getTopics} from '../../state/messaging.selectors';
+import {AllStreamsModel, SubscribedStreams} from '../../models/streams.model';
+import * as messagingActions from '../../state/messaging.actions';
 
 @Component({
   selector: 'app-team-messaging-left-panel',
@@ -26,20 +34,26 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   private privateAndPublicTeams: any;
   newMessagesCount: number | undefined;
   streamMessages = Array();
+  streams!: Observable<AllStreamsModel[]>;
+  topics!: Observable<any>;
+  streamIds!: any[];
 
   constructor(
     public messagingService: MessagingService,
     private router: Router,
     private dialog: MatDialog,
     private change: ChangeDetectorRef,
-    private userSocketService: OonaSocketService
-
+    private userSocketService: OonaSocketService,
+    private store: Store<AppState>
   ) { }
 
   ngOnInit(): void {
+    // Get All Streams
+    this.initPage();
 
     this.userSocketService.messageCount.subscribe(messages => {
       this.newMessagesCount = messages;
+      console.log('Messages ===>>', messages);
     });
 
     this.listAllTeams();
@@ -54,9 +68,35 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.messagingService.currentUserProfile().subscribe( (profile: any) => {
       this.loggedInUserProfile = profile;
     });
-
-
   }
+
+  initPage() {
+    // Fetch streams
+    this.streams = this.store.select(getAllStreams);
+    // Fetch Topics
+    this.store.select(getStreamsLoading).subscribe(
+      resp => {
+        if (!resp){
+          this.streams = this.store.select(getAllStreams);
+          this.store.select(getAllStreams).subscribe(
+            data => {
+              data.forEach((item: AllStreamsModel) => {
+                this.streamIds = [...this.streamMessages, item.stream_id];
+              });
+            }
+          );
+        }
+      }
+    );
+    // Get Topics from store
+    this.topics = this.store.select(getTopics);
+  }
+
+  getTopics(team: any) {
+    console.log('Stream ==>>', team.stream_id);
+    this.store.dispatch(new messagingActions.LoadStreamTopic(team.stream_id));
+  }
+
   listAllTeams(): any{
     this.messagingService.getAllTeams().subscribe((teams: any) => {
       this.privateAndPublicTeams = teams.streams;
@@ -130,6 +170,10 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     }else{
       this.messagingService.changeTeamTopicMessages('');
     }
+  }
+
+  showAllMessages(): void {
+    this.router.navigate(['/dashboard/messaging/all_messages']);
   }
 
   showAllPrivateMessages(): void {

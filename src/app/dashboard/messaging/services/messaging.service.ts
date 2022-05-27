@@ -1,31 +1,31 @@
 import {Injectable} from '@angular/core';
-import {environment} from '../../../environments/environment';
+import { environment as env, oonaBaseUrl } from '../../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
-import {AuthService} from '../../auth/services/auth.service';
-import {BehaviorSubject} from 'rxjs';
+import {AuthService} from '../../../auth/services/auth.service';
+import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MessagingService {
-  users = environment.oona + '/api/v1/accounts/z/user/';
-  teams = environment.oona + '/api/v1/streams/all';
-  subscribedStreams = environment.oona + '/api/v1/streams';
-  presentUsers = environment.oona + '/api/v1/accounts/present/user/';
-  userProfile = environment.oona + '/api/v1/accounts/profile/';
-  streamMessages = environment.oona + '/api/v1/message/s';
-  sendStreamMessageURL = environment.oona + '/api/v1/streams/message';
-  sendStreamMessageWithFileURL = environment.oona + '/api/v1/streams/file';
-  sendIndividualMessageWithFileURL = environment.oona + '/api/v1/message/file';
-  individualMessage = environment.oona + '/api/v1/message/';
-  streamTopic = environment.oona + '/api/v1/streams/all/topic?stream_id=';
-  newTeam = environment.oona + '/api/v1/streams/subscribe';
-  newMeeting = environment.oona + '/api/v1/meet/meetings/';
-  oonaMemberProfileDetail = environment.oona + '/api/v1/accounts/user/?email=';
-  oonaProfileUrl = environment.oona + '/api/v1/accounts/users/';
-  streamUnsubscribe = environment.oona + '/api/v1/streams/unsubscribe';
-  streamSubscribe = environment.oona + '/api/v1/streams/subscribe';
+  users = env.users;
+  teams = env.teams;
+  subscribedStreams = env.subscribedStreams;
+  presentUsers = env.presentUsers;
+  userProfile = env.userProfile;
+  streamMessages = env.streamMessages;
+  sendStreamMessageURL = env.sendStreamMessageURL;
+  sendStreamMessageWithFileURL = oonaBaseUrl + '/api/v1/streams/file';
+  sendIndividualMessageWithFileURL = env.sendIndividualMessageWithFileURL;
+  individualMessage = env.individualMessage;
+  streamTopic = env.streamTopic;
+  newTeam = env.newTeam;
+  newMeeting = env.newMeeting;
+  oonaMemberProfileDetail = env.oonaMemberProfileDetail;
+  oonaProfileUrl = env.oonaProfileUrl;
+  streamUnsubscribe = env.streamUnsubscribe;
+  streamSubscribe = env.streamSubscribe;
 
   allPlatformMembers = [];
   subscribers: any;
@@ -231,5 +231,19 @@ export class MessagingService {
     const cDate = dateObject.getFullYear() + '-' + (dateObject.getMonth() + 1) + '-' + dateObject.getDate();
     const cTime = dateObject.getHours() + ':' + dateObject.getMinutes() + ':' + dateObject.getSeconds();
     return cDate + ' ' + cTime;
+  }
+
+  fetchAllStreams(): Observable<any>{
+    return this.http.get(env.teams);
+  }
+
+  fetchSubStreams(): Observable<any>{
+    return this.http.get(env.subscribedStreams);
+  }
+
+  getStreamTopics(streamId: any): any {
+    return this.http.get(
+      this.streamTopic + streamId,
+    );
   }
 }

@@ -42,26 +42,31 @@ import {ShowdownModule} from 'ngx-showdown';
 import {MarkdownToHtmlModule} from 'markdown-to-html-pipe';
 import { MeetingCardComponent } from './meeting-card/meeting-card.component';
 import { TeamMeetingsComponent } from './team-messaging/team-meetings/team-meetings.component';
+
+// NgRx
 import {StoreModule} from '@ngrx/store';
 import {messagingReducer} from './state/messaging.reducer';
+import {EffectsModule} from '@ngrx/effects';
+import {MessagingEffects} from './state/messaging.effects';
 
 
 @NgModule({
   // tslint:disable-next-line:max-line-length
   declarations: [MessagingComponent, TeamMessagingComponent, TeamMessagingLeftPanelComponent, TeamMessagingRightPanelComponent, ChatBoardComponent, ChatCardComponent, TextEditorComponent, IndividualMessagingComponent, IndividualMessagingRightPanelComponent, IndividualMessagingBoardComponent, IndividualChatCardComponent, IndividualChatCardResponseComponent, StartPageComponent, LandingMessagingRightPanelComponent, LandingMessageBoardComponent, MessageTimeBtnComponent, LoadingAnimationComponent, AllPrivateMessagingComponent, AllPrivateMessagesBoardComponent, DisplayNamesPipe, AllMentionedMessagesComponent, AllMentionedMessagesBoardComponent, CreateTeamComponent, TeamSettingsComponent, LeaveTeamComponent, GroupPmsComponent, GroupPmsMessagingBoardComponent, GroupPmsChatCardComponent, ShortenTextPipe, GroupPmsTextEditorComponent, MeetingCardComponent, TeamMeetingsComponent],
-    imports: [
-        CommonModule,
-        MessagingRoutingModule,
-        NgxEditorModule,
-        NgxEmojiPickerModule,
-        FormsModule,
-        SharedModule,
-        ReactiveFormsModule,
-        RichTextEditorModule,
-        NgxContentfulRichTextModule,
-        ShowdownModule,
-        MarkdownToHtmlModule,
-        // StoreModule.forFeature(messagingReducer())
-    ]
+  imports: [
+      CommonModule,
+      MessagingRoutingModule,
+      NgxEditorModule,
+      NgxEmojiPickerModule,
+      FormsModule,
+      SharedModule,
+      ReactiveFormsModule,
+      RichTextEditorModule,
+      NgxContentfulRichTextModule,
+      ShowdownModule,
+      MarkdownToHtmlModule,
+      StoreModule.forFeature('messaging', messagingReducer),
+      EffectsModule.forFeature([MessagingEffects])
+  ]
 })
 export class MessagingModule { }

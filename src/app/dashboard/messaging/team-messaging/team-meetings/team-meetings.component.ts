@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
-import {MessagingService} from '../../messaging.service';
+import {MessagingService} from '../../services/messaging.service';
 import {HomeService} from '../../../home/shared/home.service';
 import {IndividualMessagingService} from '../../individual-messaging/individual-messaging.service';
 
