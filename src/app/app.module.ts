@@ -45,7 +45,7 @@ import {TokenInterceptorService} from './interceptors/token-interceptor.service'
       maxAge: 25,
       logOnly: env.production
     }),
-    EffectsModule.forRoot([])
+    EffectsModule.forRoot([]),
   ],
   providers: [
     {

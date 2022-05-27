@@ -120,7 +120,6 @@ export class AuthService {
   }
 
   getCurrentUser(): any {
-    console.log('Funny you not working');
     return this.http.get(this.getUsersUrl);
   }
 

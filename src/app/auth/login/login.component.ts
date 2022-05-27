@@ -39,6 +39,7 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     this.handleRedirect();
     this.handleShowErrorMsg();
+    this.redirectOnLogin();
   }
 
   handleRedirect(): any {
@@ -63,6 +64,12 @@ export class LoginComponent implements OnInit {
 
   handleShowErrorMsg(): any {
     this.errorMsg$ = this.store.select(getErrorMessage);
+  }
+
+  redirectOnLogin() {
+    this.store.select(getIsLoggedIn).subscribe(
+      data => data ? this.router.navigate(['/dashboard']) : null
+    );
   }
 
   // loginUser(): any{

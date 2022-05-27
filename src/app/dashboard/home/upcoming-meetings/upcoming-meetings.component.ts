@@ -26,7 +26,7 @@ export class UpcomingMeetingsComponent implements OnInit, AfterViewInit {
     private changeDetector: ChangeDetectorRef,
   ) { }
 
-
+  searchText = '';
   allMeetings: OonaMeeting[] = [];
   upComingMeetings: OonaMeeting[] = [];
   previousMeetings: OonaMeeting[] = [];

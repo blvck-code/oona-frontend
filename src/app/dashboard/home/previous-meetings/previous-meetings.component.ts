@@ -27,6 +27,7 @@ export class PreviousMeetingsComponent implements OnInit {
   ) { }
 
   previousMeetings: OonaMeeting[] = [];
+  searchText = '';
 
   signupError = false;
   signupServerError = '';
@@ -99,6 +100,10 @@ export class PreviousMeetingsComponent implements OnInit {
         right: 'title'
       },
     };
+  }
+
+  handleChange(e: any): any {
+    console.log('Event ==>>', e);
   }
 
   updateHeader(): any {
