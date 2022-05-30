@@ -20,3 +20,13 @@ export const getTopics = createSelector(
   getMessagingState,
   state => state.streams.topics
 );
+
+export const getLoadingMsg = createSelector(
+  getMessagingState,
+  state => state.messaging.loading
+);
+
+export const getMessages = createSelector(
+  getMessagingState,
+  state => state.messaging.messages?.zulip?.messages
+);

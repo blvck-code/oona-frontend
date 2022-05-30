@@ -1,5 +1,6 @@
 import {Action} from '@ngrx/store';
 import {TopicsModel} from '../models/topics.model';
+import {MessagesModel} from '../models/messages.model';
 
 
 export enum MessagingActionsTypes {
@@ -27,15 +28,13 @@ export enum MessagingActionsTypes {
 // LOAD MESSAGES ACTIONS
 export class LoadMessaging implements Action {
   readonly type = MessagingActionsTypes.LOAD_MESSAGES;
-  constructor() {
-    console.log('Loading messaging');
+  constructor(public payload: any) {
   }
 }
 
 export class LoadMessagingSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_MESSAGES_SUCCESS;
   constructor(public payload: any) {
-    console.log('Loading messaging success ===>>>', payload);
   }
 }
 

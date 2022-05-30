@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import * as messagingActions from './messaging.actions';
 import { MessagingService } from '../services/messaging.service';
 import { catchError, map, mergeMap } from 'rxjs/operators';
+import {MessagesModel} from '../models/messages.model';
 
 @Injectable()
 export class MessagingEffects{
@@ -56,6 +57,22 @@ export class MessagingEffects{
           new messagingActions.LoadStreamTopicSuccess(topicData)
         ),
         catchError(err => of(new messagingActions.LoadStreamTopicFail(err)))
+      )
+    )
+  );
+
+  @Effect()
+  loadMessages$: Observable<any> = this.actions$.pipe(
+    ofType<messagingActions.LoadMessaging>(
+      messagingActions.MessagingActionsTypes.LOAD_MESSAGES
+    ),
+    map((action: messagingActions.LoadMessaging) => action.payload),
+    mergeMap((streamDetail: any) =>
+      this.messagingSrv.getMessagesOfStream(streamDetail).pipe(
+        map((messages: MessagesModel) =>
+          new messagingActions.LoadMessagingSuccess(messages)
+        ),
+        catchError(err => of(new messagingActions.LoadMessagingFail(err)))
       )
     )
   );

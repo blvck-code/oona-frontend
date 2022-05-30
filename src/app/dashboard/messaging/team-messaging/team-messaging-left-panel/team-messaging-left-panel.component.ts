@@ -13,6 +13,7 @@ import {AppState} from '../../../../state/app.state';
 import {getAllStreams, getStreamsLoading, getTopics} from '../../state/messaging.selectors';
 import {AllStreamsModel, SubscribedStreams} from '../../models/streams.model';
 import * as messagingActions from '../../state/messaging.actions';
+import {take} from 'rxjs/operators';
 
 @Component({
   selector: 'app-team-messaging-left-panel',
@@ -80,9 +81,13 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
           this.streams = this.store.select(getAllStreams);
           this.store.select(getAllStreams).subscribe(
             data => {
-              data.forEach((item: AllStreamsModel) => {
-                this.streamIds = [...this.streamMessages, item.stream_id];
-              });
+              // console.log('Length ===>>>>', );
+              take(data.length),
+                data.forEach((item: AllStreamsModel) => {
+                  take(1),
+                    this.store.dispatch(new messagingActions.LoadStreamTopic(item.stream_id));
+                  // this.streamIds = [...this.streamMessages, item.stream_id];
+                });
             }
           );
         }
@@ -93,7 +98,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   }
 
   getTopics(team: any) {
-    console.log('Stream ==>>', team.stream_id);
     this.store.dispatch(new messagingActions.LoadStreamTopic(team.stream_id));
   }
 

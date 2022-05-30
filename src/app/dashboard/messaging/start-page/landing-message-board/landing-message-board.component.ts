@@ -1,6 +1,14 @@
 import {ChangeDetectorRef, Component, HostListener, OnInit} from '@angular/core';
 import {MessagingService} from '../../services/messaging.service';
 
+// NgRx
+import {Store} from '@ngrx/store';
+import * as messageActions from '../../state/messaging.actions';
+import { AppState } from '../../../../state/app.state';
+import {getLoadingMsg, getMessages} from '../../state/messaging.selectors';
+import {Observable} from 'rxjs';
+import {SingleMessageModel} from '../../models/messages.model';
+
 @Component({
   selector: 'app-landing-message-board',
   templateUrl: './landing-message-board.component.html',
@@ -10,16 +18,54 @@ export class LandingMessageBoardComponent implements OnInit {
   allTeams = Array();
   messagesOfStream = Array();
   initialMessageCount =  30;
+  messages$!: Observable<any>;
+  loadingMessages!: Observable<boolean>;
 
   constructor(
     private messagingService: MessagingService,
-    private change: ChangeDetectorRef
+    private change: ChangeDetectorRef,
+    private store: Store<AppState>
   ) {
     this.allMemberTeams();
   }
 
   ngOnInit(): void {
     setTimeout( () => {this.getMessagesOfTeams(); }, 1000);
+    this.initPage();
+  }
+
+  // Init Page
+  initPage(): void {
+      const streamDetail = {
+        use_first_unread_anchor: true,
+        num_before: this.initialMessageCount,
+        type: [
+          {
+            operator: 'stream',
+            operand: 'general'
+          }
+        ]
+      };
+
+      // get Loading Message
+      this.loadingMessages = this.store.select(getLoadingMsg);
+
+      // fetch messages if not exist any
+      this.store.select(getMessages).subscribe(
+      messages => {
+        if (!messages){
+          // ToDo this should change on the change of operator and operand
+          this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
+        } else if (messages && !this.messages$) {
+          this.messages$ = this.store.select(getMessages);
+        } else {
+          this.messages$ = this.store.select(getMessages);
+        }
+      }
+      );
+
+    // @ts-ignore
+      document?.getElementById('box')?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
   }
 
   allMemberTeams(): void{
@@ -31,6 +77,7 @@ export class LandingMessageBoardComponent implements OnInit {
   getMessagesOfTeams(): void{
     // get messages of each team
     this.allTeams.forEach( (teamName: any) => {
+
       const streamDetail = {
         use_first_unread_anchor: true,
         num_before: this.initialMessageCount,
@@ -41,6 +88,7 @@ export class LandingMessageBoardComponent implements OnInit {
           }
         ]
       };
+
       this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
         this.change.detectChanges();
         this.messagesOfStream.push(...response.zulip.messages);
