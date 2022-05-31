@@ -5,7 +5,7 @@ import {Router} from '@angular/router';
 // NgRx
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
-import {getLoadingMsg, getMessages} from '../../state/messaging.selectors';
+import {getLoadingMsg, getMessages, getMessageType} from '../../state/messaging.selectors';
 import * as messageActions from '../../state/messaging.actions';
 import {Observable} from 'rxjs';
 
@@ -21,6 +21,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
   initialMessageCount = 10;
   messages$!: Observable<any>;
   loadingMessages!: Observable<boolean>;
+  messageType = 'pm-with';
 
   constructor(
     private messagingService: MessagingService,
@@ -36,8 +37,9 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
   }
 
   // Init page
-  initPage() {
+  initPage(): void {
 
+    // Message parameters
     const streamDetail = {
       use_first_unread_anchor: true,
       apply_markdown: false,
@@ -51,18 +53,71 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
       ]
     };
 
+
+    this.store.select(getMessages).subscribe(
+      data => {
+        if (!data) {
+          // Messages doesn't exist
+          this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
+        } else if (data) {
+           // fetch data data according to message type
+          this.store.select(getMessageType).subscribe(
+            data => {
+              // message type is for the page
+              if (data && data[0].operator === this.messageType){
+                this.showMessages();
+              } else {
+                this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
+                this.showMessages();
+              }
+            }
+          );
+        }
+      }
+    );
+
+
+
     // get Loading Message
     this.loadingMessages = this.store.select(getLoadingMsg);
 
-    // fetch messages if not exist any
+    this.store.select(getLoadingMsg).subscribe(
+      loading => console.log('Loading indicator ===>>', loading)
+    );
+
+    this.store.select(getMessageType).subscribe(
+      data => {
+        if (data) {
+          const operator = data[0].operator;
+          const operand = data[0].operand;
+
+          if (operator === 'private') {
+            this.store.select(getMessages).subscribe(
+              messages => {
+                if (!messages) {
+                  // ToDo this should change on the change of operator and operand
+                  this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
+                } else if (messages && !this.messages$) {
+                  this.messages$ = this.store.select(getMessages);
+                } else {
+                  this.messages$ = this.store.select(getMessages);
+                }
+              }
+            );
+          }
+        }
+      }
+    );
+  }
+
+  showMessages(): void {
     this.store.select(getMessages).subscribe(
       messages => {
-        if (!messages){
-          // ToDo this should change on the change of operator and operand
-          this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
-        } else if (messages && !this.messages$) {
+        // check messages exist on state
+        if (messages && this.messages$) {
           this.messages$ = this.store.select(getMessages);
         } else {
+          // else fetch messages from the state
           this.messages$ = this.store.select(getMessages);
         }
       }
@@ -94,7 +149,6 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
       };
       this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
         const allMessages = response.zulip.messages;
-        console.log('All messages', allMessages);
         if (allMessages.length >= 1){
           this.messagesWithIndividuals.push(... allMessages);
           // tslint:disable-next-line:max-line-length

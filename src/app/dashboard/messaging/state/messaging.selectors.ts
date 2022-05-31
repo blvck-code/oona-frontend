@@ -30,3 +30,8 @@ export const getMessages = createSelector(
   getMessagingState,
   state => state.messaging.messages?.zulip?.messages
 );
+
+export const getMessageType = createSelector(
+  getMessagingState,
+  state => state.messaging.messages?.oz.type
+);
