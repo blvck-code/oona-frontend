@@ -8,6 +8,8 @@ import {AppState} from '../../../../state/app.state';
 import {getLoadingMsg, getMessages, getMessageType} from '../../state/messaging.selectors';
 import * as messageActions from '../../state/messaging.actions';
 import {Observable} from 'rxjs';
+import {StreamDetail} from '../../models/messages.model';
+import {getUserDetails} from '../../../../auth/state/auth.selectors';
 
 @Component({
   selector: 'app-all-private-messages-board',
@@ -21,7 +23,9 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
   initialMessageCount = 10;
   messages$!: Observable<any>;
   loadingMessages!: Observable<boolean>;
-  messageType = 'pm-with';
+  operator = '';
+  operand: any;
+  streamDetail!: Observable<StreamDetail>;
 
   constructor(
     private messagingService: MessagingService,
@@ -36,8 +40,16 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
     this.initPage();
   }
 
+  // getOperator(): StreamDetail {
+  //   this.store.select();
+  // }
+
   // Init page
   initPage(): void {
+
+    this.store.select(getUserDetails).subscribe(
+      data => this.operand = data?.email
+    );
 
     // Message parameters
     const streamDetail = {
@@ -48,7 +60,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
         {
           operator: 'pm-with',
           // change to user.email
-          operand: 'maurice.oluoch@8teq.co.ke',
+          operand: this.operand,
         }
       ]
     };
@@ -64,7 +76,9 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
           this.store.select(getMessageType).subscribe(
             data => {
               // message type is for the page
-              if (data && data[0].operator === this.messageType){
+              if (data) {
+                // this.messageType = data[0].operator;
+                // const operand = data[0].operand;
                 this.showMessages();
               } else {
                 this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
@@ -77,36 +91,11 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
     );
 
 
-
     // get Loading Message
     this.loadingMessages = this.store.select(getLoadingMsg);
 
     this.store.select(getLoadingMsg).subscribe(
       loading => console.log('Loading indicator ===>>', loading)
-    );
-
-    this.store.select(getMessageType).subscribe(
-      data => {
-        if (data) {
-          const operator = data[0].operator;
-          const operand = data[0].operand;
-
-          if (operator === 'private') {
-            this.store.select(getMessages).subscribe(
-              messages => {
-                if (!messages) {
-                  // ToDo this should change on the change of operator and operand
-                  this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
-                } else if (messages && !this.messages$) {
-                  this.messages$ = this.store.select(getMessages);
-                } else {
-                  this.messages$ = this.store.select(getMessages);
-                }
-              }
-            );
-          }
-        }
-      }
     );
   }
 

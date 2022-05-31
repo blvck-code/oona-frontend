@@ -29,6 +29,7 @@ export enum MessagingActionsTypes {
 export class LoadMessaging implements Action {
   readonly type = MessagingActionsTypes.LOAD_MESSAGES;
   constructor(public payload: any) {
+    console.log('Stream data ==>>', payload);
   }
 }
 

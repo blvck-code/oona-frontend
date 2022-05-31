@@ -49,6 +49,18 @@ export interface SingleMessageModel {
       content_type: string;
 }
 
+export interface StreamDetail {
+  use_first_unread_anchor: boolean;
+  apply_markdown: boolean;
+  num_before: number;
+  type: [
+    {
+      operator: string,
+      operand: string,
+    }
+  ];
+}
+
 
 
 // {
