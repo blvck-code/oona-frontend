@@ -13,8 +13,9 @@ const routes: Routes = [
     path: '',
     component: MessagingComponent,
     children: [
+      { path: '',   redirectTo: 'all', pathMatch: 'full' },
       {
-        path: '',
+        path: 'all',
         component: StartPageComponent
       },
       {

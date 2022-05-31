@@ -66,12 +66,12 @@
       <p>MESSAGES</p>
     </div>
     <div class="panel-box-content">
-      <div (click)="showAllMessages()" class="panel-box-item">
-        <p>New Messages</p>
-      </div>
-      <div (click)="showAllPrivateMessages()" class="panel-box-item">
+      <a routerLink="/dashboard/messaging/all" routerLinkActive="active" class="panel-box-item">
+        New Messages
+      </a>
+      <a routerLink="/dashboard/messaging/private" routerLinkActive="active" class="panel-box-item">
         <p>Private Messages</p>
-      </div>
+      </a>
       <div (click)="showAllMentionedMessages()" class="panel-box-item">
         <p>Mentions</p>
       </div>

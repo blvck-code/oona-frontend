@@ -134,13 +134,21 @@ form-control{
   border-radius: 3px;
   color: #2D1A14;
   cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+
+  &.active {
+    background-color: #051EC4;
+    color: #fff;
+  }
 
   p {
     font-size: 14px;
     font-weight: 500;
   }
 
-  &:hover {
+  &:hover, .active {
     background-color: #051EC4;
     color: #fff;
   }
