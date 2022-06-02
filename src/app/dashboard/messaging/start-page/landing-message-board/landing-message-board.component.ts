@@ -20,6 +20,7 @@ export class LandingMessageBoardComponent implements OnInit {
   initialMessageCount =  30;
   messages$!: Observable<any>;
   loadingMessages!: Observable<boolean>;
+  messageExist: any;
 
   constructor(
     private messagingService: MessagingService,
@@ -36,6 +37,7 @@ export class LandingMessageBoardComponent implements OnInit {
 
   // Init Page
   initPage(): void {
+
       const streamDetail = {
         use_first_unread_anchor: true,
         num_before: this.initialMessageCount,
@@ -47,25 +49,28 @@ export class LandingMessageBoardComponent implements OnInit {
         ]
       };
 
+    // fetch data from server
+      this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
+
       // get Loading Message
       this.loadingMessages = this.store.select(getLoadingMsg);
 
-      // fetch messages if not exist any
-      this.store.select(getMessages).subscribe(
-      messages => {
-        if (!messages){
-          // ToDo this should change on the change of operator and operand
-          this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
-        } else if (messages && !this.messages$) {
-          this.messages$ = this.store.select(getMessages);
-        } else {
-          this.messages$ = this.store.select(getMessages);
-        }
-      }
-      );
+      // get messages from store
+      this.messages$ = this.store.select(getMessages);
+
+      this.messagesLength();
 
     // @ts-ignore
       document?.getElementById('box')?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+  }
+
+  messagesLength(): void {
+    this.store.select(getMessages).subscribe(
+      messages => {
+        // @ts-ignore
+        this.messageExist = messages?.length > 0;
+      }
+    );
   }
 
   allMemberTeams(): void{

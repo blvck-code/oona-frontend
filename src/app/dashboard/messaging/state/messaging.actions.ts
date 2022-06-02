@@ -9,6 +9,11 @@ export enum MessagingActionsTypes {
   LOAD_MESSAGES_SUCCESS = 'messaging/loadMessagesSuccess',
   LOAD_MESSAGES_FAIL = 'messaging/loadMessagesFail',
 
+  // GET MORE MESSAGES
+  LOAD_MORE_MESSAGE = 'messaging/loadMore',
+  LOAD_MORE_MESSAGE_SUCCESS = 'messaging/loadMoreSuccess',
+  LOAD_MORE_MESSAGE_FAIL = 'messaging/loadMoreFail',
+
   // ALL STREAMS
   LOAD_ALL_STREAMS = 'messaging/loadAllStreams',
   LOAD_ALL_STREAMS_SUCCESS = 'messaging/loadAllStreamsSuccess',
@@ -36,13 +41,36 @@ export class LoadMessaging implements Action {
 export class LoadMessagingSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_MESSAGES_SUCCESS;
   constructor(public payload: any) {
+    console.log('Message stream response ===>>>', payload);
   }
 }
 
 export class LoadMessagingFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_MESSAGES_FAIL;
   constructor(public payload: any) {
-    console.log('Loading messaging fail ====>>>', payload);
+    console.log('Message stream error ====>>>', payload);
+  }
+}
+
+// LOAD MORE MESSAGES
+export class LoadMoreMessaging implements Action {
+  readonly type = MessagingActionsTypes.LOAD_MORE_MESSAGE;
+  constructor(public payload: any) {
+    console.log('More Stream data ==>>', payload);
+  }
+}
+
+export class LoadMoreMessagingSuccess implements Action {
+  readonly type = MessagingActionsTypes.LOAD_MORE_MESSAGE_SUCCESS;
+  constructor(public payload: any) {
+    console.log('More Message stream response ===>>>', payload);
+  }
+}
+
+export class LoadMoreMessagingFail implements Action {
+  readonly type = MessagingActionsTypes.LOAD_MORE_MESSAGE_FAIL;
+  constructor(public payload: any) {
+    console.log('More Message stream error ====>>>', payload);
   }
 }
 
@@ -109,6 +137,10 @@ export type MessagingActions =
   | LoadMessaging
   | LoadMessagingSuccess
   | LoadMessagingFail
+  // MORE MESSAGES
+  | LoadMoreMessaging
+  | LoadMoreMessagingSuccess
+  | LoadMoreMessagingFail
   // ALL STREAM ACTIONS
   | LoadAllStreams
   | LoadAllStreamsSuccess

@@ -54,7 +54,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
     this.userSocketService.messageCount.subscribe(messages => {
       this.newMessagesCount = messages;
-      console.log('Messages ===>>', messages);
     });
 
     this.listAllTeams();
@@ -71,7 +70,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     });
   }
 
-  initPage() {
+  initPage(): void {
     // Fetch streams
     this.streams = this.store.select(getAllStreams);
     // Fetch Topics

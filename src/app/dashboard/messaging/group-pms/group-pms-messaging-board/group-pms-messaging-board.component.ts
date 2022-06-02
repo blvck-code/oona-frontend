@@ -1,6 +1,13 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {MessagingService} from '../../services/messaging.service';
 import {Router} from '@angular/router';
+import {Store} from '@ngrx/store';
+
+// NgRx
+import {AppState} from '../../../../state/app.state';
+import * as messagingActions from '../../state/messaging.actions';
+import {getLoadingMsg, getMessages} from '../../state/messaging.selectors';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-group-pms-messaging-board',
@@ -11,16 +18,48 @@ export class GroupPmsMessagingBoardComponent implements OnInit {
   allUsers = Array();
   messagesWithIndividuals = Array();
   loggedUserProfile: any;
+  messages$!: Observable<any>;
+  loadingMessages$!: Observable<boolean>;
+  messageExist: any;
   initialMessageCount =  20;
+  operands = '';
 
   constructor(
     private messagingService: MessagingService,
     private router: Router,
-    private change: ChangeDetectorRef
+    private change: ChangeDetectorRef,
+    private store: Store<AppState>
   ) {this.userProfileDetail(); }
 
   ngOnInit(): void {
+    this.initPage();
   }
+
+  // initialize page
+  initPage(): void {
+    const streamDetail = {
+      use_first_unread_anchor: true,
+      apply_markdown: false,
+      num_before: this.initialMessageCount,
+      type: [
+        {
+          operator: 'group-pm-with',
+          operand: 'maurice.oluoch@8teq.co.ke',
+        }
+      ]
+    };
+
+    // fetch data from server
+    this.store.dispatch(new messagingActions.LoadMessaging(streamDetail));
+
+    // get Loading Message
+    this.loadingMessages$ = this.store.select(getLoadingMsg);
+
+    // get messages from store
+    this.messages$ = this.store.select(getMessages);
+
+  }
+
   userProfileDetail(): void {
     this.messagingService.currentUserProfile().subscribe((loggedUser: any) => {
       this.loggedUserProfile = loggedUser;
@@ -41,6 +80,8 @@ export class GroupPmsMessagingBoardComponent implements OnInit {
         ]
       };
       this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
+          console.log('Group messages ===>>>', response);
+
           const allMessages = response.zulip.messages;
           if (allMessages.length >= 1){
             this.messagesWithIndividuals.push(... allMessages);

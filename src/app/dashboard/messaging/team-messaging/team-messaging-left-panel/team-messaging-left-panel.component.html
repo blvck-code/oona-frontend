@@ -72,12 +72,12 @@
       <a routerLink="/dashboard/messaging/private" routerLinkActive="active" class="panel-box-item">
         <p>Private Messages</p>
       </a>
-      <div (click)="showAllMentionedMessages()" class="panel-box-item">
-        <p>Mentions</p>
-      </div>
-      <div (click)="showAllGroupPms()" class="panel-box-item">
-        <p>Group PMs</p>
-      </div>
+      <a routerLink="/dashboard/messaging/mentions" routerLinkActive="active"  class="panel-box-item">
+        Mentions
+      </a>
+      <a routerLink="/dashboard/messaging/group-pm" routerLinkActive="active" class="panel-box-item">
+        Group PMs
+      </a>
     </div>
   </div>
   <div class="panel-box-accordion teams-panel">

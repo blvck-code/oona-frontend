@@ -2,6 +2,14 @@ import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {MessagingService} from '../../services/messaging.service';
 import {Router} from '@angular/router';
 
+// NgRx
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../../state/app.state';
+import * as messagingActions from '../../state/messaging.actions';
+import {Observable} from 'rxjs';
+import {getLoadingMsg, getMessages} from '../../state/messaging.selectors';
+import {getUserDetails} from '../../../../auth/state/auth.selectors';
+
 @Component({
   selector: 'app-all-mentioned-messages-board',
   templateUrl: './all-mentioned-messages-board.component.html',
@@ -12,11 +20,16 @@ export class AllMentionedMessagesBoardComponent implements OnInit {
   mentionsWithIndividuals = new Array();
   loggedInUserProfile: any;
   initialMessageCount =  10;
+  messages$!: Observable<any>;
+  loadingMessages$!: Observable<boolean>;
+  userName = '';
+  messageExist: any;
 
   constructor(
     private messagingService: MessagingService,
     private router: Router,
-    private change: ChangeDetectorRef
+    private change: ChangeDetectorRef,
+    private store: Store<AppState>
   ) {
     this.userProfile();
   }
@@ -25,6 +38,48 @@ export class AllMentionedMessagesBoardComponent implements OnInit {
     // setTimeout(() => {
     // this.getAllMentions();
     // }, 1000);
+    this.userProfile();
+    this.initPage();
+  }
+
+  initPage(): void {
+    const streamDetail = {
+      use_first_unread_anchor: true,
+      apply_markdown: false,
+      num_before: this.initialMessageCount,
+      type: [
+        {
+          operator: 'search',
+          // @Todo change this to current logged in user
+          operand: this.userName,
+        }
+      ]
+    };
+
+    this.store.dispatch(new messagingActions.LoadMessaging(streamDetail));
+
+    // get loading messages
+    this.loadingMessages$ = this.store.select(getLoadingMsg);
+
+    // get messages from store
+    this.messages$ = this.store.select(getMessages);
+
+    // check messages length
+    this.messagesLength();
+  }
+
+  messagesLength(): void {
+    this.store.select(getMessages).subscribe(
+      messages => {
+        // @ts-ignore
+        if (messages?.length > 0) {
+          console.log('Messages length ==>>', messages?.length);
+          this.messageExist = true;
+        } else {
+          this.messageExist = false;
+        }
+      }
+    );
   }
 
   userProfile(): any{
@@ -32,6 +87,12 @@ export class AllMentionedMessagesBoardComponent implements OnInit {
       this.loggedInUserProfile = profile.zulip;
       this.getAllMentions(profile.zulip.full_name);
     });
+
+    this.store.select(getUserDetails).subscribe(
+      data => {
+        this.userName = `${data?.first_name} ${data?.last_name}`;
+      }
+    );
   }
 
   private getAllMentions(userName: string): void {
@@ -61,6 +122,26 @@ export class AllMentionedMessagesBoardComponent implements OnInit {
       (error: any) => {
         console.log('error', error);
       });
+  }
+
+  // get more private messages
+  getMore(): void {
+    this.initialMessageCount = this.initialMessageCount + 10;
+
+    const streamDetail = {
+      use_first_unread_anchor: true,
+      apply_markdown: false,
+      num_before: this.initialMessageCount,
+      type: [
+        {
+          operator: 'search',
+          operand: this.userName,
+        }
+      ]
+    };
+
+    this.store.dispatch(new messagingActions.LoadMoreMessaging(streamDetail));
+
   }
 
   getMorePrivateMessages(): void {

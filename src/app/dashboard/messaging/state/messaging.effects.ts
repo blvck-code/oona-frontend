@@ -77,4 +77,20 @@ export class MessagingEffects{
     )
   );
 
+  @Effect()
+  loadMoreMessages$: Observable<any> = this.actions$.pipe(
+    ofType<messagingActions.LoadMoreMessaging>(
+      messagingActions.MessagingActionsTypes.LOAD_MORE_MESSAGE
+    ),
+    map((action: messagingActions.LoadMoreMessaging) => action.payload),
+    mergeMap((streamData: any) =>
+      this.messagingSrv.getMessagesOfStream(streamData).pipe(
+        map((messages: MessagesModel) =>
+          new messagingActions.LoadMoreMessagingSuccess(messages)
+        ),
+        catchError(err => of(new messagingActions.LoadMoreMessagingFail(err)))
+      )
+    )
+  );
+
 }

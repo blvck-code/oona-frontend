@@ -26,6 +26,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
   operator = '';
   operand: any;
   streamDetail!: Observable<StreamDetail>;
+  messageExist: any;
 
   constructor(
     private messagingService: MessagingService,
@@ -65,51 +66,25 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
       ]
     };
 
-
-    this.store.select(getMessages).subscribe(
-      data => {
-        console.log('Obtained data ===>>>', data);
-        if (!data) {
-          // Messages doesn't exist
-          this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
-        } else if (data) {
-           // fetch data data according to message type
-          this.store.select(getMessageType).subscribe(
-            data => {
-              // message type is for the page
-              if (data) {
-                // this.messageType = data[0].operator;
-                // const operand = data[0].operand;
-                this.showMessages();
-              } else {
-                this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
-                this.showMessages();
-              }
-            }
-          );
-        }
-      }
-    );
-
+    // fetch data from server
+    this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
 
     // get Loading Message
     this.loadingMessages = this.store.select(getLoadingMsg);
 
-    this.store.select(getLoadingMsg).subscribe(
-      loading => console.log('Loading indicator ===>>', loading)
-    );
+    // get messages from store
+    this.messages$ = this.store.select(getMessages);
+
+    document?.getElementById('box')?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+
+    this.messagesLength();
   }
 
-  showMessages(): void {
+  messagesLength(): void {
     this.store.select(getMessages).subscribe(
       messages => {
-        // check messages exist on state
-        if (messages && this.messages$) {
-          this.messages$ = this.store.select(getMessages);
-        } else {
-          // else fetch messages from the state
-          this.messages$ = this.store.select(getMessages);
-        }
+        // @ts-ignore
+        this.messageExist = messages?.length > 0;
       }
     );
   }

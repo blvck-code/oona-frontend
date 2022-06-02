@@ -8,13 +8,16 @@
   </div>
 
   <div class="overflow-chat">
-    <div *ngIf="messagesWithIndividuals.length >= 0" id="box">
+    <div *ngIf="(messages$ | async) as messages" id="box">
       <div class="d-flex justify-content-center">
-        <button class="btn get-more-messages-btn shadow-none" style="width: 10%" (click)="getMorePrivateMessages()">Get more</button>
+        <button class="btn get-more-messages-btn shadow-none" *ngIf="messageExist" style="width: 10%" (click)="getMorePrivateMessages()">Get more</button>
       </div>
-      <app-group-pms-chat-card *ngFor="let chat of messagesWithIndividuals" [messageDetail]="chat"></app-group-pms-chat-card>
+      <app-group-pms-chat-card *ngFor="let chat of messages" [messageDetail]="chat"></app-group-pms-chat-card>
     </div>
-    <div *ngIf="messagesWithIndividuals.length < 1" class="d-flex justify-content-center">
+    <div *ngIf="!messageExist" class="py-4">
+      <p>No Messages</p>
+    </div>
+    <div *ngIf="(loadingMessages$ | async)" class="d-flex justify-content-center">
       <div>
 
         <app-loading-animation></app-loading-animation>

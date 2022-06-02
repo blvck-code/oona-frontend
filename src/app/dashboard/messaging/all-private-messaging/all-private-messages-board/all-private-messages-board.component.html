@@ -17,17 +17,16 @@
   <div class="tab-content custom-tab" id="nav-tabContent">
     <div class="tab-pane fade show active border-bottom-0" style="height: 100%" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
       <div class="overflow-chat">
-        <div *ngIf="(messages$ | async) as messages;else content" id="box">
+        <div *ngIf="(messages$ | async) as messages" id="box">
           <div class="d-flex justify-content-center">
-            <button class="btn btn-primary shadow-none" (click)="getMorePrivateMessages()">Get more</button>
+            <button class="btn btn-primary shadow-none" *ngIf="messageExist" (click)="getMorePrivateMessages()">Get more</button>
           </div>
           <app-individual-chat-card *ngFor="let chat of messages" [messageDetail]="chat"></app-individual-chat-card>
         </div>
 
-        <ng-template #content>
-          <p>No messages</p>
-        </ng-template>
-
+        <div class="py-4" *ngIf="!messageExist">
+          <p>No Messages</p>
+        </div>
         <div
           *ngIf="(loadingMessages | async)"
           class="d-flex justify-content-center"
@@ -41,6 +40,6 @@
 
       </div>
     </div>
-
   </div>
+
 </div>
