@@ -68,6 +68,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
 
     this.store.select(getMessages).subscribe(
       data => {
+        console.log('Obtained data ===>>>', data);
         if (!data) {
           // Messages doesn't exist
           this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
