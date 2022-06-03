@@ -54,6 +54,13 @@
   scrollbar-width: thin;
   mix-blend-mode: normal;
   scrollbar-color: #37314B transparent;
+  position: relative;
+}
+
+.add-editor {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 
 .active {

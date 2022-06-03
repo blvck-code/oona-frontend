@@ -1,0 +1,127 @@
+.text-editor-container{
+  border: none;
+}
+
+.text-editor-menu{
+  //width: 10px !important;
+}
+.submit-btn{
+  width: 100px;
+}
+.group-pm-users {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 34px;
+  padding-left: 15px;
+  padding-right: 5px;
+  border-radius: 10px 10px 0 0;
+  background: #ECF4FB;
+}
+
+.search-pm-users-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: calc(100% - 30px);
+}
+
+.list-pm-members {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 10px;
+}
+
+.pm-member {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  margin-right: 5px;
+  padding: 0 10px;
+  border-radius: 5px;
+  background-color: #051EC4;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+
+  p {
+    min-width: 115px;
+    margin-right: 5px;
+    margin-bottom: 0;
+  }
+}
+
+.e-content{
+  overflow-y: scroll;
+  height: 100px !important;
+}
+
+.message-topic input::placeholder{
+  color: #000000;
+}
+
+.team-member{
+  height: 50px;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+}
+
+.add-attendees-section {
+
+  input {
+    height: 26px;
+    width: 175px;
+    padding-left: 10px;
+    border: none;
+    border-radius: 10px;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+
+    &::placeholder {
+      font-size: 14px;
+    }
+  }
+
+  li {
+    font-size: 14px;
+    cursor: pointer;
+  }
+}
+.add-attendees-section .dropdown-menu {
+
+  &.show {
+    min-height: 50px;
+    max-height: 150px;
+    width: 100%;
+    padding: 10px;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+
+  }
+}
+
+.search-meeting-attendees:focus-visible {
+  outline: none;
+}
+
+.child {
+  position: absolute;
+  top: 8px;
+  right: 140px;
+  cursor: pointer;
+}
+
+.parent {
+  position: relative;
+}
+
+
+.submit-pm-btn {
+  button {
+    position: absolute;
+    top: 1px;
+    right: 5px;
+    height: 34px;
+  }
+}

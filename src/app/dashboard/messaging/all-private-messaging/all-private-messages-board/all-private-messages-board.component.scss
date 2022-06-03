@@ -51,6 +51,13 @@
   padding-top: 1px;
   overflow-y: scroll;
   scrollbar-width: thin;
+  position: relative;
+}
+
+.add-editor {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 
 .active {
