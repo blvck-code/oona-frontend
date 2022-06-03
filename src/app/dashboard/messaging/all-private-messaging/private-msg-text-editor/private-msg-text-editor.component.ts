@@ -138,6 +138,7 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(form: NgForm): void {
+    console.log('Form data ==>>', form);
     const markdown = turndownService.turndown(form.value.name);
     const messageDetail = {
       to: this.chatGroup.map(member => member.id),
