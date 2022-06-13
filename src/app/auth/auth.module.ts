@@ -13,7 +13,6 @@ import {authReducer} from './state/auth.reducer';
 import {EffectsModule} from '@ngrx/effects';
 import {AuthEffects} from './state/auth.effects';
 
-
 @NgModule({
   declarations: [
     LoginComponent,

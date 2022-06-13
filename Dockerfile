@@ -1,4 +1,4 @@
-FROM node
+FROM node:14
 RUN mkdir -p /home/oona
 WORKDIR /home/oona
 COPY . .

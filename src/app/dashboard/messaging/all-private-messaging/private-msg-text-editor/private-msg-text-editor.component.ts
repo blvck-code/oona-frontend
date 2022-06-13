@@ -138,13 +138,13 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(form: NgForm): void {
-    console.log('Form data ==>>', form);
     const markdown = turndownService.turndown(form.value.name);
     const messageDetail = {
-      to: this.chatGroup.map(member => member.id),
+      to: this.chatGroup.map(member => member.user_id),
       content: markdown
     };
     this.messagingService.sendIndividualMessage(messageDetail).subscribe((response: any) => {
+      console.log('Response from server ==>>', response);
       if (response.zulip.result === 'success'){
         // clear the form
         form.value.name = '';
@@ -166,8 +166,11 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
   }
 
   addSelectedUser(user: any): any {
+    console.log('Selected user ===>>', user);
     this.chatGroup.push(user);
+    console.log('Chat group ==>>', this.chatGroup);
     const uniqueMembers = [...new Set(this.chatGroup)];
+    console.log('Unique members ===>>', uniqueMembers);
     this.groupPmsService.changeChatGroup(uniqueMembers);
   }
 

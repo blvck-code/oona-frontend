@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import {UserModel} from '../models/user.model';
-import {AuthResponseModel} from '../models/authResponse.model';
+import { AuthResponseModel } from '../models/authResponse.model';
 
 export enum AuthActionsTypes {
   // Log In
@@ -69,20 +69,21 @@ export class LogoutUserFail implements Action {
 export class LoadProfile implements Action {
   readonly type = AuthActionsTypes.FETCH_PROFILE_LOAD;
   constructor() {
-    console.log('Loading user profile');
+    console.log('Loading current user profile');
   }
 }
 
 export class LoadProfileSuccess implements Action {
   readonly type = AuthActionsTypes.FETCH_PROFILE_SUCCESS;
   constructor(public payload: any) {
-    console.log('Profile loaded successfully ====>>>>', payload);
+    console.log('Current user profile loaded successfully ====>>>>', payload);
   }
 }
 
 export class LoadProfileError implements Action {
   readonly type = AuthActionsTypes.FETCH_PROFILE_FAIL;
   constructor(public payload: any) {
+    console.log('Load current user profile error ===>>', payload);
   }
 }
 

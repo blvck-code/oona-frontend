@@ -124,6 +124,7 @@ export class AuthService {
   }
 
   getUserProfile(): any {
+    console.log('Fetch profile fired');
     return this.http.get(this.userProfileURL);
   }
 

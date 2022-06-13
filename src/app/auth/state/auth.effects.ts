@@ -54,7 +54,7 @@ export class AuthEffects {
       authActions.AuthActionsTypes.FETCH_PROFILE_LOAD
     ),
     mergeMap(() =>
-      this.authSrv.getCurrentUser().pipe(
+      this.authSrv.getUserProfile().pipe(
         map((userProfile: any) =>
           new authActions.LoadProfileSuccess(userProfile)
         ),

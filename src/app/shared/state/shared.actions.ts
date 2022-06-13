@@ -11,21 +11,21 @@ export enum SharedActionsTypes {
 export class LoadUsers implements Action {
   readonly type = SharedActionsTypes.LOAD_USERS;
   constructor() {
-    console.log('Fetching users');
+    // console.log('Fetching users');
   }
 }
 
 export class LoadUsersSuccess implements Action {
   readonly type = SharedActionsTypes.LOAD_USERS_SUCCESS;
   constructor(public payload: any) {
-    console.log('Fetching users success ===>>', payload);
+    // console.log('Fetching users success ===>>', payload);
   }
 }
 
 export class LoadUsersFail implements Action {
   readonly type = SharedActionsTypes.LOAD_USERS_FAIL;
   constructor(public payload: any) {
-    console.log('Fetching users fail ===>>>', payload);
+    // console.log('Fetching users fail ===>>>', payload);
   }
 }
 

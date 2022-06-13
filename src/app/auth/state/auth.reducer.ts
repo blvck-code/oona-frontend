@@ -16,6 +16,7 @@ export interface AuthState {
     isLoading: boolean
   };
   userInfo: UserInfoState | null;
+  zulipProfile: null;
 }
 
 export const initialState: AuthState = {
@@ -24,7 +25,8 @@ export const initialState: AuthState = {
     isLoggedIn: false,
     isLoading: false
   },
-  userInfo: null
+  userInfo: null,
+  zulipProfile: null
 };
 
 // Save on local storage
@@ -130,6 +132,7 @@ export function authReducer(
     case authActions.AuthActionsTypes.LOGIN_USER_FAIL:
       handleLoginError(action.payload);
       return {
+        ...state,
         loginStatus: {
           isLoggedIn: false,
           isLoading: false

@@ -25,8 +25,9 @@ export class AppComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.updateState();
+    this.store.dispatch(new authActions.LoadProfile());
   }
 
 
