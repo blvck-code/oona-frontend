@@ -143,6 +143,7 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
       to: this.chatGroup.map(member => member.user_id),
       content: markdown
     };
+    console.log('Private message content ==>>>', messageDetail);
     this.messagingService.sendIndividualMessage(messageDetail).subscribe((response: any) => {
       console.log('Response from server ==>>', response);
       if (response.zulip.result === 'success'){

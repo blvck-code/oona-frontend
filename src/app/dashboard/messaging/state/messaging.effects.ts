@@ -93,4 +93,20 @@ export class MessagingEffects{
     )
   );
 
+  // @Effect()
+  // loadPrivateUser$: Observable<any> = this.actions$.pipe(
+  //   ofType<messagingActions.LoadCurrentPrivateUser>(
+  //     messagingActions.MessagingActionsTypes.LOAD_CURRENT_USER
+  //   ),
+  //   map((action: messagingActions.LoadCurrentPrivateUser) => action.payload),
+  //   mergeMap((user: any) =>
+  //     this.messagingSrv.currentMemberChatDetail(user).pipe(
+  //       map((message: any) =>
+  //         new messagingActions.LoadCurrentPrivateUserSuccess(messages)
+  //       ),
+  //       catchError(err => of(new messagingActions.LoadCurrentPrivateUserFail(err)))
+  //     )
+  //   )
+  // );
+
 }

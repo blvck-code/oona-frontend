@@ -3,6 +3,7 @@ import {AllStreamsModel, SubscribedStreams} from '../models/streams.model';
 import {All} from '@ngrx/store-devtools/src/actions';
 import {MessagesModel} from '../models/messages.model';
 import {TopicsModel} from '../models/topics.model';
+import {CurrentUserModel} from '../models/currentUser.model';
 
 export interface MessagingState {
   loading: boolean;
@@ -11,6 +12,7 @@ export interface MessagingState {
     subStreams: SubscribedStreams[],
     topics: any
   };
+  currentUser: CurrentUserModel | null;
   messaging: {
     loading: boolean,
     messages: MessagesModel | null;
@@ -24,6 +26,7 @@ export const initialState: MessagingState = {
     subStreams: [],
     topics: []
   },
+  currentUser: null,
   messaging: {
     loading: false,
     messages: null

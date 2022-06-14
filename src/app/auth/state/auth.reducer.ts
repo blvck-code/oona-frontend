@@ -1,4 +1,4 @@
-import {UserModel} from '../models/user.model';
+import { UserModel } from '../models/user.model';
 import * as authActions from './auth.actions';
 
 export interface UserInfoState {
@@ -12,37 +12,144 @@ export interface UserInfoState {
 export interface AuthState {
   message: string;
   loginStatus: {
-    isLoggedIn: boolean
-    isLoading: boolean
+    isLoggedIn: boolean;
+    isLoading: boolean;
   };
   userInfo: UserInfoState | null;
   zulipProfile: null;
+  users: {
+    all: any;
+    zulipUsers: any;
+    selectedUser: any;
+  };
 }
 
 export const initialState: AuthState = {
   message: '',
   loginStatus: {
     isLoggedIn: false,
-    isLoading: false
+    isLoading: false,
   },
   userInfo: null,
-  zulipProfile: null
+  zulipProfile: null,
+  users: {
+    all: null,
+    zulipUsers: null,
+    selectedUser: null,
+  },
 };
 
+
+export function authReducer(state = initialState, action: any): AuthState {
+  switch (action.type) {
+    // Logging In
+    case authActions.AuthActionsTypes.LOGIN_USER:
+    case authActions.AuthActionsTypes.LOGOUT_USER:
+      return {
+        ...state,
+        loginStatus: {
+          isLoggedIn: false,
+          isLoading: true,
+        },
+        message: '',
+      };
+    // Logged In Success
+    case authActions.AuthActionsTypes.LOGIN_USER_SUCCESS:
+      saveUserData(action.payload);
+      return {
+        ...state,
+        loginStatus: {
+          isLoading: false,
+          isLoggedIn: true,
+        },
+        userInfo: {
+          first_name: action.payload.user.first_name,
+          last_name: action.payload.user.last_name,
+          email: action.payload.user.email,
+          refresh: action.payload.token.refresh,
+          access: action.payload.token.access,
+        },
+        message: '',
+      };
+    // Login Error
+    case authActions.AuthActionsTypes.LOGIN_USER_FAIL:
+      handleLoginError(action.payload);
+      return {
+        ...state,
+        loginStatus: {
+          isLoggedIn: false,
+          isLoading: false,
+        },
+        userInfo: null,
+        message: handleLoginError(action.payload),
+      };
+    // Logout
+    case authActions.AuthActionsTypes.LOGOUT_USER_SUCCESS:
+      return {
+        ...state,
+        loginStatus: {
+          isLoggedIn: false,
+          isLoading: false,
+        },
+        userInfo: null,
+        message: action.payload,
+      };
+    case authActions.AuthActionsTypes.LOGOUT_USER_FAIL:
+      return {
+        ...state,
+        loginStatus: {
+          isLoggedIn: true,
+          isLoading: false,
+        },
+        userInfo: null,
+        message: action.payload,
+      };
+    // Profile
+    case authActions.AuthActionsTypes.UPDATE_USER_INFO:
+      return {
+        ...state,
+        loginStatus: {
+          isLoggedIn: true,
+          isLoading: false,
+        },
+        userInfo: updateState(),
+      };
+    // Load All Users
+    case authActions.AuthActionsTypes.LOAD_ALL_USERS_SUCCESS:
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          all: action.payload,
+        },
+      };
+    // Zulips users
+    case authActions.AuthActionsTypes.LOAD_ZULIP_USERS_SUCCESS:
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          zulipUsers: action.payload
+        }
+      };
+    default:
+      return state;
+  }
+}
 // Save on local storage
 const saveUserData = (userInfo: UserModel) => {
   console.log('User info ===>>', userInfo);
-  let userData = userInfo.user;
-  let tokenData = userInfo.token;
+  const userData = userInfo.user;
+  const tokenData = userInfo.token;
 
-  console.log('User data ====>>>', userData);
-  console.log('Token data =====>>>', tokenData);
+  // console.log('User data ====>>>', userData);
+  // console.log('Token data =====>>>', tokenData);
 
-  let firstName: string = userData.first_name;
-  let lastName: string = userData.last_name;
-  let email: string = userData.email;
-  let accessToken: string = tokenData.access;
-  let refreshToken: string = tokenData.refresh;
+  const firstName: string = userData.first_name;
+  const lastName: string = userData.last_name;
+  const email: string = userData.email;
+  const accessToken: string = tokenData.access;
+  const refreshToken: string = tokenData.refresh;
 
   console.log('Token ===>>>', accessToken);
   // console.log('Last name ===>>>', lastName);
@@ -61,12 +168,12 @@ const saveUserData = (userInfo: UserModel) => {
 // Update state management
 const updateState = () => {
   const first_name = localStorage?.getItem('firstName');
-  let last_name = localStorage?.getItem('lastName');
-  let email = localStorage?.getItem('email');
-  let access = localStorage?.getItem('accessToken');
-  let refresh = localStorage?.getItem('refreshToken');
+  const last_name = localStorage?.getItem('lastName');
+  const email = localStorage?.getItem('email');
+  const access = localStorage?.getItem('accessToken');
+  const refresh = localStorage?.getItem('refreshToken');
 
-  return  {
+  return {
     first_name,
     last_name,
     email,
@@ -80,10 +187,13 @@ const handleLoginError = (loginErr: any) => {
   let errorMsg = '';
   localStorage.clear();
 
-  if (loginErr){
+  if (loginErr) {
     if (loginErr.error[0].non_field_errors[0] === 'Invalid login credentials') {
       errorMsg = 'Invalid login credentials. Please try again.';
-    } else if (loginErr.error[0].non_field_errors[0] === 'Unable to login with provided credentials') {
+    } else if (
+      loginErr.error[0].non_field_errors[0] ===
+      'Unable to login with provided credentials'
+    ) {
       errorMsg = 'A user with the provided credentials does not exist.';
     } else {
       errorMsg = 'Invalid login credentials. Please try again.';
@@ -93,86 +203,3 @@ const handleLoginError = (loginErr: any) => {
   }
   return errorMsg;
 };
-
-export function authReducer(
-  state = initialState,
-  action: any
-): AuthState {
-  switch (action.type){
-    // Logging In
-    case authActions.AuthActionsTypes.LOGIN_USER:
-    case authActions.AuthActionsTypes.LOGOUT_USER:
-      return {
-        ...state,
-        loginStatus: {
-          isLoggedIn: false,
-          isLoading: true
-        },
-        message: '',
-      };
-      // Logged In Success
-    case authActions.AuthActionsTypes.LOGIN_USER_SUCCESS:
-      saveUserData(action.payload);
-      return {
-        ...state,
-        loginStatus: {
-          isLoading: false,
-          isLoggedIn: true
-        },
-        userInfo: {
-          first_name: action.payload.user.first_name,
-          last_name: action.payload.user.last_name,
-          email: action.payload.user.email,
-          refresh: action.payload.token.refresh,
-          access: action.payload.token.access
-        },
-        message: '',
-      };
-      // Login Error
-    case authActions.AuthActionsTypes.LOGIN_USER_FAIL:
-      handleLoginError(action.payload);
-      return {
-        ...state,
-        loginStatus: {
-          isLoggedIn: false,
-          isLoading: false
-        },
-        userInfo: null,
-        message: handleLoginError(action.payload)
-      };
-    // Logout
-    case authActions.AuthActionsTypes.LOGOUT_USER_SUCCESS:
-      return {
-        ...state,
-        loginStatus: {
-          isLoggedIn: false,
-          isLoading: false
-        },
-        userInfo: null,
-        message: action.payload
-      };
-    case authActions.AuthActionsTypes.LOGOUT_USER_FAIL:
-      return {
-        ...state,
-        loginStatus: {
-          isLoggedIn: true,
-          isLoading: false
-        },
-        userInfo: null,
-        message: action.payload
-      };
-    // Profile
-    case authActions.AuthActionsTypes.UPDATE_USER_INFO:
-      return {
-        ...state,
-        loginStatus: {
-          isLoggedIn: true,
-          isLoading: false
-        },
-        userInfo: updateState()
-      };
-
-      default:
-      return state;
-  }
-}

@@ -19,6 +19,22 @@ export enum AuthActionsTypes {
   LOGOUT_USER = 'userCenter/logoutUser',
   LOGOUT_USER_SUCCESS = 'userCenter/logoutUserSuccess',
   LOGOUT_USER_FAIL = 'userCenter/logoutUserFail',
+
+  // All Users
+  LOAD_ALL_USERS = 'userCenter/loadAllUsers',
+  LOAD_ALL_USERS_SUCCESS = 'userCenter/loadAllUsersSuccess',
+  LOAD_ALL_USERS_FAIL = 'userCenter/loadAllUsersFail',
+
+  // Zulip Users
+  LOAD_ZULIP_USERS = 'userCenter/loadZulipUsers',
+  LOAD_ZULIP_USERS_SUCCESS = 'userCenter/loadZulipUsersSuccess',
+  LOAD_ZULIP_USERS_FAIL = 'userCenter/loadZulipUsersFail',
+
+  // Selected User
+  LOAD_SELECTED_USER = 'userCenter/loadSelectedUser',
+  LOAD_SELECTED_USER_SUCCESS = 'userCenter/loadSelectedUserSuccess',
+  LOAD_SELECTED_USER_FAIL = 'userCenter/loadSelectedUserFail',
+
   // Register
 
   // Forgot Password
@@ -32,13 +48,11 @@ export class LoginUser implements Action {
   constructor( public payload: any) {
   }
 }
-
 export class LoginUserSuccess implements Action {
   readonly type = AuthActionsTypes.LOGIN_USER_SUCCESS;
   constructor(public payload: AuthResponseModel) {
   }
 }
-
 export class LoginUserFail implements Action {
   readonly type = AuthActionsTypes.LOGIN_USER_FAIL;
   constructor( public payload: any) {
@@ -51,13 +65,11 @@ export class LogoutUser implements Action {
   constructor() {
   }
 }
-
 export class LogoutUserSuccess implements Action {
   readonly type = AuthActionsTypes.LOGOUT_USER_SUCCESS;
   constructor(public payload: string) {
   }
 }
-
 export class LogoutUserFail implements Action {
   readonly type = AuthActionsTypes.LOGOUT_USER_FAIL;
   constructor(public payload: string) {
@@ -72,27 +84,62 @@ export class LoadProfile implements Action {
     console.log('Loading current user profile');
   }
 }
-
 export class LoadProfileSuccess implements Action {
   readonly type = AuthActionsTypes.FETCH_PROFILE_SUCCESS;
   constructor(public payload: any) {
     console.log('Current user profile loaded successfully ====>>>>', payload);
   }
 }
-
 export class LoadProfileError implements Action {
   readonly type = AuthActionsTypes.FETCH_PROFILE_FAIL;
   constructor(public payload: any) {
     console.log('Load current user profile error ===>>', payload);
   }
 }
-
 export class UpdateState implements Action {
   readonly type = AuthActionsTypes.UPDATE_USER_INFO;
   constructor() {}
 }
 
+// ALL USERS
+export class LoadAllUsers implements Action {
+  readonly type = AuthActionsTypes.LOAD_ALL_USERS;
+  constructor() {
+    console.log('Loading all users');
+  }
+}
+export class LoadAllUsersSuccess implements Action {
+  readonly type = AuthActionsTypes.LOAD_ALL_USERS_SUCCESS;
+  constructor(public payload: any) {
+    console.log('Loaded all users ===>>', payload);
+  }
+}
+export class LoadAllUsersFail implements Action {
+  readonly type = AuthActionsTypes.LOAD_ALL_USERS_FAIL;
+  constructor(public payload: any) {
+    console.log('Load users fail ====>>', payload);
+  }
+}
 
+// Zulip Users
+export class LoadZulipUsers implements Action {
+  readonly type = AuthActionsTypes.LOAD_ZULIP_USERS;
+  constructor() {
+    console.log('Loading zulip users');
+  }
+}
+export class LoadZulipUsersSuccess implements Action {
+  readonly type = AuthActionsTypes.LOAD_ZULIP_USERS_SUCCESS;
+  constructor(public payload: any) {
+    console.log('Loaded zulip users ===>>', payload);
+  }
+}
+export class LoadZulipUsersFail implements Action {
+  readonly type = AuthActionsTypes.LOAD_ZULIP_USERS_FAIL;
+  constructor(public payload: any) {
+    console.log('Load zulip users fail ====>>', payload);
+  }
+}
 
 export type AuthActions =
   // LOGIN USER ACTIONS
@@ -108,5 +155,14 @@ export type AuthActions =
   | LoadProfileSuccess
   | LoadProfileError
   // UPDATE STATE
-  | UpdateState;
+  | UpdateState
+  // LOAD ALL USERS
+  | LoadAllUsers
+  | LoadAllUsersSuccess
+  | LoadAllUsersFail
+  // Load Zulip Users
+  | LoadZulipUsers
+  | LoadZulipUsersSuccess
+  | LoadZulipUsersFail;
+
 

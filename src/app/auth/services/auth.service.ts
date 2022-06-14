@@ -4,6 +4,7 @@ import { environment as env } from '../../../environments/environment';
 import {BROWSER_STORAGE} from '../storage';
 import {OonaMeeting} from '../../dashboard/home/shared/oonaMeeting';
 import {Form} from '@angular/forms';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -158,6 +159,14 @@ export class AuthService {
 
   updateUserPassword(passwordData: any): any {
     return this.http.post(this.changePasswordUrl, passwordData, this.getHeaders());
+  }
+
+  getAllUsers(): Observable<any>{
+    return this.http.get(env.presentUsers);
+  }
+
+  getZulipUsers(): Observable<any> {
+    return this.http.get(env.zulipUsers);
   }
 
 }

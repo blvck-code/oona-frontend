@@ -7,7 +7,7 @@ import { environment as env } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class SharedService {
-  getUsersUrl: string = env.getUserUrl;
+  getUsersUrl: string = env.presentUsers;
 
   constructor(
     private http: HttpClient

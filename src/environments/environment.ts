@@ -28,6 +28,7 @@ export const environment = {
 
   // Messaging Urls
   users: oonaBaseUrl + '/api/v1/accounts/z/user/',
+  zulipUsers: oonaBaseUrl + '/api/v1/accounts/z/user/',
   teams: oonaBaseUrl + '/api/v1/streams/all',
   subscribedStreams: oonaBaseUrl + '/api/v1/streams',
   presentUsers: oonaBaseUrl + '/api/v1/accounts/present/user/',

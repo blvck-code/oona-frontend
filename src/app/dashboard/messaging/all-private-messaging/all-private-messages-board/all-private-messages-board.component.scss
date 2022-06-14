@@ -43,7 +43,7 @@
 
 .active {
   color: #051EC4;
-  border-bottom: 3px solid #051EC4;
+  position: relative;
 }
 
 .overflow-chat {
@@ -52,6 +52,7 @@
   overflow-y: scroll;
   scrollbar-width: thin;
   position: relative;
+  padding-bottom: 150px;
 }
 
 .add-editor {

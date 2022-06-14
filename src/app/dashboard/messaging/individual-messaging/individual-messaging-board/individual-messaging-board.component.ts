@@ -4,7 +4,11 @@ import {MessagingService} from '../../services/messaging.service';
 
 import TurndownService from 'turndown';
 import {OonaSocketService} from '../../services/oona-socket.service';
-import {IndividualMessagingService} from '../individual-messaging.service';
+
+// NgRx
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../../state/app.state';
+import * as messageActions from '../../state/messaging.actions';
 
 const turndownService = new TurndownService();
 
@@ -31,17 +35,9 @@ export class IndividualMessagingBoardComponent implements OnInit {
   newMessagesCount = 0;
   createdAt: any;
 
-  constructor(
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private messagingService: MessagingService,
-    private change: ChangeDetectorRef,
-    private userSocketService: OonaSocketService,
-    ) {
-   }
-
   ngOnInit(): void {
     this.messagingService.currentMemberChatDetail.subscribe(member => {
+      console.log('Current member ===>>>', member);
       this.memberDetail = member;
       setTimeout(() => {
         this.privateMessages();
@@ -58,6 +54,16 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
   }
 
+  constructor(
+    private router: Router,
+    private store: Store<AppState>,
+    private activatedRoute: ActivatedRoute,
+    private messagingService: MessagingService,
+    private change: ChangeDetectorRef,
+    private userSocketService: OonaSocketService,
+  ) {
+  }
+
   privateMessages(): void{
       const streamDetail = {
         use_first_unread_anchor: true,
@@ -70,6 +76,11 @@ export class IndividualMessagingBoardComponent implements OnInit {
           }
         ]
       };
+
+      // fetch data from server
+      this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
+
+
       this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
           this.messagesWithPerson = response.zulip.messages;
           // @ts-ignore
