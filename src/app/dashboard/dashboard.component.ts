@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 // NgRx
-import * as sharedAction from '../shared/state/shared.actions';
+import * as authActions from '../auth/state/auth.actions'
 import {Store} from '@ngrx/store';
 import {AppState} from '../state/app.state';
 
@@ -19,8 +19,11 @@ export class DashboardComponent implements OnInit {
     this.initOnLoad();
   }
 
-  initOnLoad() {
-    this.store.dispatch(new sharedAction.LoadUsers());
+  initOnLoad(): void {
+    if (localStorage.getItem('accessToken')){
+      this.store.dispatch(new authActions.LoadAllUsers());
+      this.store.dispatch(new authActions.LoadZulipUsers());
+    }
   }
 
 }

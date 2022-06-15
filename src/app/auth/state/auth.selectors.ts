@@ -29,3 +29,18 @@ export const getIsAuthLoading = createSelector(
   getAuthState,
   state => state.loginStatus.isLoading
 );
+
+export const getZulipUsers = createSelector(
+  getAuthState,
+  state => state.users.zulipUsers
+);
+
+export const getAllUsers = createSelector(
+  getAuthState,
+  state => state.users.all
+);
+
+export const getSelectedUser = createSelector(
+  getAuthState,
+  state => state.users.selectedUser
+);

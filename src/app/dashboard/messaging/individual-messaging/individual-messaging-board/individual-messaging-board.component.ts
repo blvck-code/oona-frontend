@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {MessagingService} from '../../services/messaging.service';
 
 import TurndownService from 'turndown';
@@ -9,6 +9,10 @@ import {OonaSocketService} from '../../services/oona-socket.service';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
 import * as messageActions from '../../state/messaging.actions';
+import * as authActions from '../../../../auth/state/auth.actions';
+import {getAllUsers, getSelectedUser} from '../../../../auth/state/auth.selectors';
+import {Observable, Subscription} from 'rxjs';
+import {getMessages} from '../../state/messaging.selectors';
 
 const turndownService = new TurndownService();
 
@@ -29,6 +33,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
     avatar_url: undefined,
     email: undefined
   };
+  messages$!: Observable<any>;
   messagesWithPerson = Array();
   userActivity: any;
   initialMessageCount = 30;
@@ -36,9 +41,11 @@ export class IndividualMessagingBoardComponent implements OnInit {
   createdAt: any;
 
   ngOnInit(): void {
+    this.getUserInfo();
+
     this.messagingService.currentMemberChatDetail.subscribe(member => {
-      console.log('Current member ===>>>', member);
       this.memberDetail = member;
+      this.store.dispatch(new authActions.SetSelectedUser(member));
       setTimeout(() => {
         this.privateMessages();
       }, 1000);
@@ -54,6 +61,20 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
   }
 
+  getUserInfo(): void {
+    const userEmail = localStorage.getItem('privateMsg');
+
+    this.store.select(getAllUsers).subscribe(
+      users => {
+       const members = users?.members;
+       console.log('Members ===>>', members);
+
+       // const selectedUser = members?.find((user: any) => user.email = userEmail);
+       // console.log('Current user ==>>', selectedUser);
+      }
+    );
+  }
+
   constructor(
     private router: Router,
     private store: Store<AppState>,
@@ -62,6 +83,28 @@ export class IndividualMessagingBoardComponent implements OnInit {
     private change: ChangeDetectorRef,
     private userSocketService: OonaSocketService,
   ) {
+  }
+
+  getSelectedUser(): void {
+    const userEmail = localStorage.getItem('privateMsg');
+
+    const streamDetail = {
+      use_first_unread_anchor: true,
+      apply_markdown: false,
+      num_before: this.initialMessageCount,
+      type: [
+        {
+          operator: 'pm-with',
+          operand: userEmail,
+        }
+      ]
+    };
+
+    // fetch messages from server
+    this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
+
+    // get messages from store
+    this.messages$ = this.store.select(getMessages);
   }
 
   privateMessages(): void{
@@ -77,9 +120,11 @@ export class IndividualMessagingBoardComponent implements OnInit {
         ]
       };
 
-      // fetch data from server
-      this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
+      // get Selected User
+      this.getSelectedUser();
 
+      // @ts-ignore
+      // document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
 
       this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
           this.messagesWithPerson = response.zulip.messages;
@@ -88,7 +133,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
           // this.sortMessageDates();
         } ,
         (error: any) => {
-          console.log('error', error);
+          console.log('Get Messages Error ===>>', error);
         });
       this.userActiveStatus();
   }

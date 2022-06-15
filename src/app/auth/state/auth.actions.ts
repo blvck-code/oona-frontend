@@ -31,6 +31,7 @@ export enum AuthActionsTypes {
   LOAD_ZULIP_USERS_FAIL = 'userCenter/loadZulipUsersFail',
 
   // Selected User
+  SET_SELECTED_USER = 'userCenter/setSelectedUser',
   LOAD_SELECTED_USER = 'userCenter/loadSelectedUser',
   LOAD_SELECTED_USER_SUCCESS = 'userCenter/loadSelectedUserSuccess',
   LOAD_SELECTED_USER_FAIL = 'userCenter/loadSelectedUserFail',
@@ -105,19 +106,16 @@ export class UpdateState implements Action {
 export class LoadAllUsers implements Action {
   readonly type = AuthActionsTypes.LOAD_ALL_USERS;
   constructor() {
-    console.log('Loading all users');
   }
 }
 export class LoadAllUsersSuccess implements Action {
   readonly type = AuthActionsTypes.LOAD_ALL_USERS_SUCCESS;
   constructor(public payload: any) {
-    console.log('Loaded all users ===>>', payload);
   }
 }
 export class LoadAllUsersFail implements Action {
   readonly type = AuthActionsTypes.LOAD_ALL_USERS_FAIL;
   constructor(public payload: any) {
-    console.log('Load users fail ====>>', payload);
   }
 }
 
@@ -125,19 +123,31 @@ export class LoadAllUsersFail implements Action {
 export class LoadZulipUsers implements Action {
   readonly type = AuthActionsTypes.LOAD_ZULIP_USERS;
   constructor() {
-    console.log('Loading zulip users');
   }
 }
 export class LoadZulipUsersSuccess implements Action {
   readonly type = AuthActionsTypes.LOAD_ZULIP_USERS_SUCCESS;
   constructor(public payload: any) {
-    console.log('Loaded zulip users ===>>', payload);
   }
 }
 export class LoadZulipUsersFail implements Action {
   readonly type = AuthActionsTypes.LOAD_ZULIP_USERS_FAIL;
   constructor(public payload: any) {
     console.log('Load zulip users fail ====>>', payload);
+  }
+}
+
+// Selected User
+export class SetSelectedUser implements Action {
+  readonly type = AuthActionsTypes.SET_SELECTED_USER;
+  constructor(public payload: any) {
+    console.log('Selected user ==>>', payload);
+  }
+}
+export class LoadSelectedUser implements Action {
+  readonly type = AuthActionsTypes.LOAD_SELECTED_USER;
+  constructor(public payload: any) {
+    console.log('Selected user ==>>', payload);
   }
 }
 
@@ -163,6 +173,9 @@ export type AuthActions =
   // Load Zulip Users
   | LoadZulipUsers
   | LoadZulipUsersSuccess
-  | LoadZulipUsersFail;
+  | LoadZulipUsersFail
+  // Selected User
+  | SetSelectedUser
+  | LoadSelectedUser;
 
 

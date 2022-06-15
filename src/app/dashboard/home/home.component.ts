@@ -39,8 +39,10 @@ export class HomeComponent implements OnInit {
   }
 
   onInitPage(): void {
-    this.store.dispatch(new authActions.LoadAllUsers());
-    this.store.dispatch(new authActions.LoadZulipUsers());
+    if (localStorage.getItem('accessToken')){
+      this.store.dispatch(new authActions.LoadAllUsers());
+      this.store.dispatch(new authActions.LoadZulipUsers());
+    }
   }
 
   logoutUser(): void {

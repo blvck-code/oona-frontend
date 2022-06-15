@@ -6,6 +6,13 @@ import {NotificationService} from '../../../../shared/services/notification.serv
 import {OonaSocketService} from '../../services/oona-socket.service';
 import {AuthService} from '../../../../auth/services/auth.service';
 
+// NgRx
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../../state/app.state';
+import * as authActions from '../../../../auth/state/auth.actions';
+import {getAllUsers} from '../../../../auth/state/auth.selectors';
+import {Observable} from 'rxjs';
+
 @Component({
   selector: 'app-landing-messaging-right-panel',
   templateUrl: './landing-messaging-right-panel.component.html',
@@ -25,9 +32,12 @@ export class LandingMessagingRightPanelComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private notification: NotificationService,
+    private store: Store<AppState>
   ) {}
 
   ngOnInit(): void {
+    this.onInitPage();
+
     this.userSocketService.currentUsers.subscribe(users =>
       (this.socketUsers = users));
     this.userSocketService.typing.subscribe( peopleTyping => {
@@ -46,7 +56,18 @@ export class LandingMessagingRightPanelComponent implements OnInit {
       });
   }
 
+  onInitPage(): void {
+    this.store.select(getAllUsers).subscribe(
+      users => {
+        // const usersPresent = users?.members.filter((user: any) => user.presence );
+        // this.allUsers = this.newListOfUsers(usersPresent);
+      }
+    );
+  }
+
   goToMemberChat(member: any): void {
+    this.store.dispatch(new authActions.SetSelectedUser(member));
+    localStorage.setItem('privateMsg', member.email);
     this.router.navigate(['dashboard/messaging/narrow'], { queryParams: { member: member.full_name.replace(/\s/g, '') } });
   }
 

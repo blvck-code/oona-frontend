@@ -21,14 +21,13 @@ export class AppComponent implements OnInit {
 
   updateState = () => {
     if (localStorage.getItem('accessToken')){
-      console.log('User token exists');
       this.store.dispatch(new authActions.UpdateState());
     }
   }
 
   ngOnInit(): void {
-    this.store.dispatch(new authActions.LoadAllUsers());
     this.updateState();
   }
+
 
 }

@@ -38,19 +38,16 @@ export enum MessagingActionsTypes {
 export class LoadMessaging implements Action {
   readonly type = MessagingActionsTypes.LOAD_MESSAGES;
   constructor(public payload: any) {
-    console.log('Stream data ==>>', payload);
   }
 }
 export class LoadMessagingSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_MESSAGES_SUCCESS;
   constructor(public payload: any) {
-    console.log('Message stream response ===>>>', payload);
   }
 }
 export class LoadMessagingFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_MESSAGES_FAIL;
   constructor(public payload: any) {
-    console.log('Message stream error ====>>>', payload);
   }
 }
 
@@ -58,19 +55,16 @@ export class LoadMessagingFail implements Action {
 export class LoadMoreMessaging implements Action {
   readonly type = MessagingActionsTypes.LOAD_MORE_MESSAGE;
   constructor(public payload: any) {
-    console.log('More Stream data ==>>', payload);
   }
 }
 export class LoadMoreMessagingSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_MORE_MESSAGE_SUCCESS;
   constructor(public payload: any) {
-    console.log('More Message stream response ===>>>', payload);
   }
 }
 export class LoadMoreMessagingFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_MORE_MESSAGE_FAIL;
   constructor(public payload: any) {
-    console.log('More Message stream error ====>>>', payload);
   }
 }
 
@@ -78,13 +72,11 @@ export class LoadMoreMessagingFail implements Action {
 export class LoadAllStreams implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_STREAMS;
   constructor() {
-    console.log('Fetching streams');
   }
 }
 export class LoadAllStreamsSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_STREAMS_SUCCESS;
   constructor(public payload: any) {
-    console.log('Loaded all streams ====>>>', payload);
   }
 }
 export class LoadAllStreamsFail implements Action {
@@ -124,13 +116,11 @@ export class LoadStreamTopicFail implements Action {
 export class LoadCurrentPrivateUser implements Action {
   readonly type = MessagingActionsTypes.LOAD_CURRENT_USER;
   constructor(public payload: any) {
-    console.log('Loading current private user ===>>>', payload);
   }
 }
 export class LoadCurrentPrivateUserSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_CURRENT_USER_SUCCESS;
   constructor(public payload: any) {
-    console.log('Loaded private user ===>>>', payload);
   }
 }
 export class LoadCurrentPrivateUserFail implements Action {

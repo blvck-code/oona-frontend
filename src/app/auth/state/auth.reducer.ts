@@ -132,7 +132,18 @@ export function authReducer(state = initialState, action: any): AuthState {
           zulipUsers: action.payload
         }
       };
-    default:
+    // Selected User
+    case authActions.AuthActionsTypes.SET_SELECTED_USER:
+      localStorage.setItem('privateMsg', action?.payload.email);
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          selectedUser: action.payload
+        }
+      };
+
+      default:
       return state;
   }
 }
