@@ -114,7 +114,12 @@ export function authReducer(state = initialState, action: any): AuthState {
         },
         userInfo: updateState(),
       };
-    // Load All Users
+    case authActions.AuthActionsTypes.CURRENT_USER_PROFILE:
+      return {
+        ...state,
+        zulipProfile: action.payload
+      };
+      // Load All Users
     case authActions.AuthActionsTypes.LOAD_ALL_USERS_SUCCESS:
       return {
         ...state,

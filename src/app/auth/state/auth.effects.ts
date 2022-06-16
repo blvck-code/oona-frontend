@@ -41,21 +41,21 @@ export class AuthEffects {
     )
   );
 
-  @Effect()
-  getProfile$: Observable<any> = this.actions$.pipe(
-    ofType<authActions.LoadProfile>(
-      authActions.AuthActionsTypes.FETCH_PROFILE_LOAD
-    ),
-    mergeMap(() =>
-      this.authSrv.getUserProfile().pipe(
-        map(
-          (userProfile: any) => new authActions.LoadProfileSuccess(userProfile)
-        ),
-        // ToDo Logout encase of 401 error
-        catchError((err: any) => of(new authActions.LoadProfileError(err)))
-      )
-    )
-  );
+  // @Effect()
+  // getProfile$: Observable<any> = this.actions$.pipe(
+  //   ofType<authActions.LoadProfile>(
+  //     authActions.AuthActionsTypes.FETCH_PROFILE_LOAD
+  //   ),
+  //   mergeMap(() =>
+  //     this.authSrv.getUserProfile().pipe(
+  //       map(
+  //         (userProfile: any) => new authActions.LoadProfileSuccess(userProfile)
+  //       ),
+  //       // ToDo Logout encase of 401 error
+  //       catchError((err: any) => of(new authActions.LoadProfileError(err)))
+  //     )
+  //   )
+  // );
 
   @Effect()
   loadAllUsers$: Observable<any> = this.actions$.pipe(

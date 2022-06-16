@@ -34,6 +34,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
     email: undefined
   };
   messages$!: Observable<any>;
+  selectedUser$!: Observable<any>;
   messagesWithPerson = Array();
   userActivity: any;
   initialMessageCount = 30;
@@ -67,7 +68,13 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.store.select(getAllUsers).subscribe(
       users => {
        const members = users?.members;
-       console.log('Members ===>>', members);
+       members.forEach((member: any) => {
+         if (member.email === userEmail){
+           localStorage.setItem('privateMsg', member.email);
+           this.store.dispatch(new authActions.SetSelectedUser(member));
+         }
+       });
+       // console.log('Members ===>>', members);
 
        // const selectedUser = members?.find((user: any) => user.email = userEmail);
        // console.log('Current user ==>>', selectedUser);
@@ -88,6 +95,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
   getSelectedUser(): void {
     const userEmail = localStorage.getItem('privateMsg');
 
+    this.selectedUser$ = this.store.select(getSelectedUser);
     const streamDetail = {
       use_first_unread_anchor: true,
       apply_markdown: false,
@@ -139,6 +147,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
   }
 
   sendMessageToIndividual(message: any): void {
+    console.log('Message content ==>>> ', message);
 
     const markdown = turndownService.turndown(message);
 //
@@ -147,6 +156,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
       to: [this.memberDetail.user_id],
       content: markdown
     };
+    console.log('Message final content ===>>> ', messageDetail);
     this.messagingService.sendIndividualMessage(messageDetail).subscribe((response: any) => {
       // re-fetch messages with pm
     });

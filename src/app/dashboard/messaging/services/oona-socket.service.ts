@@ -4,6 +4,11 @@ import { userChannel } from '../../../../environments/environment';
 import {AuthService} from '../../../auth/services/auth.service';
 import {MessagingService} from './messaging.service';
 
+// NgRx
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../state/app.state';
+import * as authActions from '../../../auth/state/auth.actions';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -38,7 +43,8 @@ export class OonaSocketService {
 
   constructor(
     private authService: AuthService,
-    private messagingService: MessagingService
+    private messagingService: MessagingService,
+    private store: Store<AppState>
   ) {
     this.getCurrentProfile();
     this.connect();
@@ -46,17 +52,21 @@ export class OonaSocketService {
   }
 
   changeNewMessageCount(newCount: any): void {
+    console.log('Message counter ===>>', newCount);
     this.messageCountSocket.next(newCount);
   }
   changeNewStreamMessageCount(newStreamMessages: any): void {
+    console.log('newStreamMessages ===>>>', newStreamMessages);
     this.streamMessageCountSocket.next(newStreamMessages);
   }
 
   changeNewPrivateMessageCount(newPrivateMessages: any): void {
+    console.log('newPrivateMessages ==>>', newPrivateMessages);
     this.privateMessageCountSocket.next(newPrivateMessages);
   }
 
   changeTypingStatus(status: any): void {
+    console.log('Typing status ==>>', status);
     this.typingStatusSocket.next(status);
   }
 
@@ -66,7 +76,7 @@ export class OonaSocketService {
      * Creates a websocket connection to the user channel
      */
     this.websocket = new WebSocket(userChannel, this.authService.getToken());
-    console.log('connected');
+    console.log('Web sockets connected');
   }
 
 
@@ -93,6 +103,7 @@ export class OonaSocketService {
     //     "flag": "read"
     // }
     // }
+    console.log('Socket data ===>>>', socketData);
     if (socketData.message.type === 'presence'){
         // console.log('pushing user presence data');
         this.recognizedUsers.push(socketData);
@@ -142,6 +153,7 @@ export class OonaSocketService {
   private userManagement(): void {
     // @ts-ignore
     this.websocket.onmessage = (evt) => {
+      console.log('Web socket event ==>>', evt);
       this.filterSocketData(evt.data);
     };
 
@@ -181,6 +193,7 @@ export class OonaSocketService {
 
   private getCurrentProfile(): any {
     this.messagingService.currentUserProfile().subscribe( (profile: any) => {
+      this.store.dispatch(new authActions.CurrentUserProfile(profile));
       this.loggedInUserProfile = profile.zulip;
     });
   }

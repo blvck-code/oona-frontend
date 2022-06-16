@@ -11,7 +11,7 @@ export enum AuthActionsTypes {
   UPDATE_USER_INFO = 'userCenter/updateUserInfo',
 
   // User Profile
-  FETCH_PROFILE_LOAD = 'userCenter/fetchProfile',
+  CURRENT_USER_PROFILE = 'userCenter/setProfile',
   FETCH_PROFILE_SUCCESS = 'userCenter/fetchProfileSuccess',
   FETCH_PROFILE_FAIL = 'userCenter/fetchProfileFail',
 
@@ -79,10 +79,9 @@ export class LogoutUserFail implements Action {
 }
 
 // FETCH USER PROFILE
-export class LoadProfile implements Action {
-  readonly type = AuthActionsTypes.FETCH_PROFILE_LOAD;
-  constructor() {
-    console.log('Loading current user profile');
+export class CurrentUserProfile implements Action {
+  readonly type = AuthActionsTypes.CURRENT_USER_PROFILE;
+  constructor(public payload: any) {
   }
 }
 export class LoadProfileSuccess implements Action {
@@ -161,9 +160,9 @@ export type AuthActions =
   | LogoutUserSuccess
   | LogoutUserFail
   // FETCH USER PROFILE
-  | LoadProfile
-  | LoadProfileSuccess
-  | LoadProfileError
+  | CurrentUserProfile
+  // | LoadProfileSuccess
+  // | LoadProfileError
   // UPDATE STATE
   | UpdateState
   // LOAD ALL USERS
