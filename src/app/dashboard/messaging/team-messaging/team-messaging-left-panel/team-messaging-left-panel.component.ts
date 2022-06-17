@@ -80,12 +80,12 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
           this.streams = this.store.select(getAllStreams);
           this.store.select(getAllStreams).subscribe(
             data => {
-              // console.log('Length ===>>>>', );
+              console.log('Streams from state ===>>>>', data);
               take(data.length),
                 data.forEach((item: AllStreamsModel) => {
                   take(1),
-                    this.store.dispatch(new messagingActions.LoadStreamTopic(item.stream_id));
-                  // this.streamIds = [...this.streamMessages, item.stream_id];
+                  this.store.dispatch(new messagingActions.LoadStreamTopic(item.stream_id));
+                  this.streamIds = [...this.streamMessages, item.stream_id];
                 });
             }
           );
@@ -94,9 +94,12 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     );
     // Get Topics from store
     this.topics = this.store.select(getTopics);
+    this.store.select(getTopics).subscribe(
+      topics => console.log('Topics ====>>> ', topics)
+    );
   }
 
-  getTopics(team: any) {
+  getTopics(team: any): any {
     this.store.dispatch(new messagingActions.LoadStreamTopic(team.stream_id));
   }
 

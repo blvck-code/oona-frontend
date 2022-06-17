@@ -115,7 +115,6 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
       };
       this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
         const allMessages = response.zulip.messages;
-        console.log('More messages ===>>', allMessages);
         if (allMessages.length >= 1){
           this.messagesWithIndividuals.push(... allMessages);
           // tslint:disable-next-line:max-line-length
