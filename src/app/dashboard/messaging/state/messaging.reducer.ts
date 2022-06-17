@@ -125,6 +125,13 @@ export function messagingReducer(
           messages: action.payload
         }
       };
+    case messagingActions.MessagingActionsTypes.LOAD_MORE_MESSAGE:
+      return {
+        ...state,
+        messaging: {
+          ...state.messaging,
+        }
+      };
     case messagingActions.MessagingActionsTypes.LOAD_MESSAGES_FAIL:
       return {
         ...state,

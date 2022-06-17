@@ -55,6 +55,7 @@ export class LoadMessagingFail implements Action {
 export class LoadMoreMessaging implements Action {
   readonly type = MessagingActionsTypes.LOAD_MORE_MESSAGE;
   constructor(public payload: any) {
+    console.log('Loaded more messages ==>>>', payload);
   }
 }
 export class LoadMoreMessagingSuccess implements Action {

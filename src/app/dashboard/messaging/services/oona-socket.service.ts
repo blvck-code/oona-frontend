@@ -153,13 +153,13 @@ export class OonaSocketService {
   private userManagement(): void {
     // @ts-ignore
     this.websocket.onmessage = (evt) => {
-      console.log('Web socket message ==>>', evt);
+      console.log('Web socket message');
       this.filterSocketData(evt.data);
     };
 
     // @ts-ignore
     this.websocket.onclose = (evt) => {
-      console.log('Web socket closed ===>>>', evt);
+      console.log('Web socket closed');
       setTimeout(() => {
         this.connect();
       }, 1000);

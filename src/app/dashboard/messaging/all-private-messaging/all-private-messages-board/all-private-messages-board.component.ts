@@ -10,6 +10,7 @@ import * as messageActions from '../../state/messaging.actions';
 import {Observable} from 'rxjs';
 import {StreamDetail} from '../../models/messages.model';
 import {getUserDetails} from '../../../../auth/state/auth.selectors';
+import {LoadMoreMessaging} from '../../state/messaging.actions';
 
 @Component({
   selector: 'app-all-private-messages-board',
@@ -114,6 +115,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
       };
       this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
         const allMessages = response.zulip.messages;
+        console.log('More messages ===>>', allMessages);
         if (allMessages.length >= 1){
           this.messagesWithIndividuals.push(... allMessages);
           // tslint:disable-next-line:max-line-length
@@ -147,10 +149,11 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
           }
         ]
       };
-      console.log('user stream detail', streamDetail);
+      // console.log('user stream detail', streamDetail);
       this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
           const allMessages = response.zulip.messages;
           if (allMessages.length >= 1){
+            this.store.dispatch(new messageActions.LoadMoreMessaging(allMessages.slice(0, 10)));
             this.messagesWithIndividuals.push(... allMessages.slice(0, 10));
             // tslint:disable-next-line:max-line-length
             this.messagingService.changePmNames(this.messagesWithIndividuals.map(individualMessage => individualMessage.display_recipient));

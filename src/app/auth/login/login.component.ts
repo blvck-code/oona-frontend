@@ -66,7 +66,7 @@ export class LoginComponent implements OnInit {
     this.errorMsg$ = this.store.select(getErrorMessage);
   }
 
-  redirectOnLogin() {
+  redirectOnLogin(): void {
     this.store.select(getIsLoggedIn).subscribe(
       data => data ? this.router.navigate(['/dashboard']) : null
     );
