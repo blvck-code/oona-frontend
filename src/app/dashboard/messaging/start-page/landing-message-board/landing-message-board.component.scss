@@ -1,5 +1,6 @@
 .start-messages-container {
   height: 100%;
+  position: relative;
 }
 .team-name {
   font-size: 18px;
@@ -46,9 +47,16 @@
   overflow-x: hidden;
   height: calc(100% - 90px);
   padding-top: 15px;
+  padding-bottom: 170px;
   scrollbar-width: thin;
   mix-blend-mode: normal;
   scrollbar-color: #37314B transparent;
+}
+
+.add-editor {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
 }
 
 .active{

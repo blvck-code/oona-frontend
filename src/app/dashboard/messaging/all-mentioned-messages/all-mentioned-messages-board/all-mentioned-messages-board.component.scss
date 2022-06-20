@@ -1,6 +1,7 @@
 .all-mentions-messages-container {
   height: 100%;
   padding-top: 15px;
+  position: relative;
 }
 .team-name {
   //font-family: Gilroy-Bold;
@@ -54,12 +55,12 @@
   scrollbar-width: thin;
   mix-blend-mode: normal;
   scrollbar-color: #37314B transparent;
-  position: relative;
+  padding-bottom: 170px;
 }
 
 .add-editor {
   position: absolute;
-  bottom: 0;
+  bottom: 20px;
   width: 100%;
 }
 

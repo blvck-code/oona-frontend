@@ -167,7 +167,6 @@ const saveUserData = (userInfo: UserModel) => {
   const accessToken: string = tokenData.access;
   const refreshToken: string = tokenData.refresh;
 
-  console.log('Token ===>>>', accessToken);
   // console.log('Last name ===>>>', lastName);
   // let lastName: string = userInfo.user.last_name;
   // let email: string = userInfo.user.email;
