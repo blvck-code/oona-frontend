@@ -18,6 +18,7 @@
       </div>
 
       <app-chat-card
+        (click)="selectedUser(chat)"
         *ngFor="let chat of messages"
         [messageDetail]="chat"
       ></app-chat-card>
@@ -36,5 +37,5 @@
       </div>
     </div>
   </div>
-  <app-landing-text-editor class="add-editor"></app-landing-text-editor>
+  <app-landing-text-editor [receiverData]="receiverInfo" class="add-editor" [class.active]="editorActive"></app-landing-text-editor>
 </div>

@@ -32,6 +32,9 @@ export enum MessagingActionsTypes {
   LOAD_CURRENT_USER = 'messaging/loadPrivateUser',
   LOAD_CURRENT_USER_SUCCESS = 'messaging/loadPrivateUserSuccess',
   LOAD_CURRENT_USER_FAIL = 'messaging/loadPrivateUserFail',
+
+  // HANDLE SEND MESSAGE
+  HANDLE_SEND_MESSAGE = 'messaging/handleSendMessage',
 }
 
 // LOAD MESSAGES ACTIONS
@@ -131,6 +134,13 @@ export class LoadCurrentPrivateUserFail implements Action {
   }
 }
 
+export class HandleSendMessage implements Action {
+  readonly type = MessagingActionsTypes.HANDLE_SEND_MESSAGE;
+  constructor(public payload: any) {
+    console.log('Send message details ===>>>', payload);
+  }
+}
+
 export type MessagingActions =
   // MESSAGING ACTIONS
   | LoadMessaging
@@ -155,4 +165,6 @@ export type MessagingActions =
   // LOAD PRIVATE USER
   | LoadCurrentPrivateUser
   | LoadCurrentPrivateUserSuccess
-  | LoadCurrentPrivateUserFail;
+  | LoadCurrentPrivateUserFail
+  // HANDLE SEND MESSAGE
+  | HandleSendMessage;

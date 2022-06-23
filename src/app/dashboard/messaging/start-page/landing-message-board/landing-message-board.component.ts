@@ -21,6 +21,8 @@ export class LandingMessageBoardComponent implements OnInit {
   messages$!: Observable<any>;
   loadingMessages!: Observable<boolean>;
   messageExist: any;
+  editorActive = false;
+  public receiverInfo: any;
 
   constructor(
     private messagingService: MessagingService,
@@ -139,5 +141,9 @@ export class LandingMessageBoardComponent implements OnInit {
     });
   }
 
+  selectedUser(chat: any): any {
+    this.editorActive = true;
+    this.store.dispatch(new messageActions.HandleSendMessage(chat));
+  }
 
 }

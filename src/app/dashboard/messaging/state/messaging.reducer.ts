@@ -4,6 +4,7 @@ import {All} from '@ngrx/store-devtools/src/actions';
 import {MessagesModel} from '../models/messages.model';
 import {TopicsModel} from '../models/topics.model';
 import {CurrentUserModel} from '../models/currentUser.model';
+import {act} from '@ngrx/effects';
 
 export interface MessagingState {
   loading: boolean;
@@ -13,6 +14,7 @@ export interface MessagingState {
     topics: any
   };
   currentUser: CurrentUserModel | null;
+  currentReceiver: any;
   messaging: {
     loading: boolean,
     messages: MessagesModel | null;
@@ -27,6 +29,7 @@ export const initialState: MessagingState = {
     topics: []
   },
   currentUser: null,
+  currentReceiver: null,
   messaging: {
     loading: false,
     messages: null
@@ -136,7 +139,11 @@ export function messagingReducer(
       return {
         ...state,
       };
-
+    case messagingActions.MessagingActionsTypes.HANDLE_SEND_MESSAGE:
+      return {
+        ...state,
+        currentReceiver: action.payload
+      };
 
     default:
       return state;

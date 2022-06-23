@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {MessagingService} from '../../services/messaging.service';
 import {NotificationService} from '../../../../shared/services/notification.service';
 import {Router} from '@angular/router';
@@ -26,6 +26,7 @@ export class LandingTextEditorComponent implements OnInit, OnDestroy {
   chatGroup = Array();
   allUsers = Array();
   filteredUsers = Array();
+  @Input() public receiverData: any;
 
   constructor(
     private messagingService: MessagingService,
@@ -69,6 +70,7 @@ export class LandingTextEditorComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.onInitHandler();
+    console.log('Receiver info ===>>>', this.receiverData);
   }
 
   ngOnDestroy(): void {
