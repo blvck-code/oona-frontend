@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import { userChannel } from '../../../../environments/environment';
+import { userChannel, messageChannel } from '../../../../environments/environment';
 import {AuthService} from '../../../auth/services/auth.service';
 import {MessagingService} from './messaging.service';
 
@@ -78,7 +78,6 @@ export class OonaSocketService {
     this.websocket = new WebSocket(userChannel, this.authService.getToken());
     console.log('Web sockets connected');
   }
-
 
   private filterSocketData(userData: any): void {
     /*
