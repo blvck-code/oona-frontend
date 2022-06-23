@@ -5,7 +5,7 @@ import {MessagingService} from '../../services/messaging.service';
 import {Store} from '@ngrx/store';
 import * as messageActions from '../../state/messaging.actions';
 import { AppState } from '../../../../state/app.state';
-import {getLoadingMsg, getMessages} from '../../state/messaging.selectors';
+import {filteredState, getFilteredMsg, getLoadingMsg, getMessages} from '../../state/messaging.selectors';
 import {Observable} from 'rxjs';
 import {SingleMessageModel} from '../../models/messages.model';
 
@@ -56,7 +56,18 @@ export class LandingMessageBoardComponent implements OnInit {
       this.loadingMessages = this.store.select(getLoadingMsg);
 
       // get messages from store
-      this.messages$ = this.store.select(getMessages);
+      // this.messages$ = this.store.select(getMessages);
+
+      this.store.select(filteredState).subscribe(
+        filtered => {
+          if (!filtered){
+            // get messages from store
+            this.messages$ = this.store.select(getMessages);
+          } else {
+            this.messages$ = this.store.select(getFilteredMsg);
+          }
+        }
+      );
 
       this.messagesLength();
 
@@ -65,10 +76,25 @@ export class LandingMessageBoardComponent implements OnInit {
   }
 
   messagesLength(): void {
-    this.store.select(getMessages).subscribe(
-      messages => {
-        // @ts-ignore
-        this.messageExist = messages?.length > 0;
+
+    this.store.select(filteredState).subscribe(
+      filtered => {
+        if (!filtered){
+          // get messages from store
+          this.store.select(getMessages).subscribe(
+            messages => {
+              // @ts-ignore
+              this.messageExist = messages?.length > 0;
+            }
+          );
+        } else {
+          this.store.select(getFilteredMsg).subscribe(
+            messages => {
+              // @ts-ignore
+              this.messageExist = messages?.length > 0;
+            }
+          );
+        }
       }
     );
   }

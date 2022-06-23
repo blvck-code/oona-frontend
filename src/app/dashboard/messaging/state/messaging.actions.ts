@@ -32,6 +32,9 @@ export enum MessagingActionsTypes {
   LOAD_CURRENT_USER = 'messaging/loadPrivateUser',
   LOAD_CURRENT_USER_SUCCESS = 'messaging/loadPrivateUserSuccess',
   LOAD_CURRENT_USER_FAIL = 'messaging/loadPrivateUserFail',
+
+  // FILTER MESSAGES
+  FILTER_MESSAGES = 'messaging/filterMessages'
 }
 
 // LOAD MESSAGES ACTIONS
@@ -102,15 +105,18 @@ export class LoadSubStreamsFail implements Action {
 // STREAM TOPICS
 export class LoadStreamTopic implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_TOPIC;
-  constructor(public payload: any) {}
+  constructor(public payload: any) {
+  }
 }
 export class LoadStreamTopicSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_TOPIC_SUCCESS;
-  constructor(public payload: TopicsModel) {}
+  constructor(public payload: TopicsModel) {
+  }
 }
 export class LoadStreamTopicFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_TOPIC_FAIL;
-  constructor(public payload: any) {}
+  constructor(public payload: any) {
+  }
 }
 
 // CURRENT USER PRIVATE MESSAGE
@@ -128,6 +134,12 @@ export class LoadCurrentPrivateUserFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_CURRENT_USER_FAIL;
   constructor(public payload: any) {
     console.log('Load private user failed ==>>>', payload);
+  }
+}
+
+export class FilterMessages implements Action {
+  readonly type = MessagingActionsTypes.FILTER_MESSAGES;
+  constructor(public payload: any) {
   }
 }
 
@@ -155,4 +167,6 @@ export type MessagingActions =
   // LOAD PRIVATE USER
   | LoadCurrentPrivateUser
   | LoadCurrentPrivateUserSuccess
-  | LoadCurrentPrivateUserFail;
+  | LoadCurrentPrivateUserFail
+  // FILTER MESSAGES
+  | FilterMessages;

@@ -1,11 +1,11 @@
-import {ChangeDetectorRef, Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {MessagingService} from '../../services/messaging.service';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {CreateTeamComponent} from '../create-team/create-team.component';
 import {TeamSettingsComponent} from '../team-settings/team-settings.component';
 import {OonaSocketService} from '../../services/oona-socket.service';
-import {Observable} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 
 // NgRx
 import {Store} from '@ngrx/store';
@@ -38,6 +38,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   streams!: Observable<AllStreamsModel[]>;
   topics!: Observable<any>;
   streamIds!: any[];
+  allTopics: any = [];
 
   constructor(
     public messagingService: MessagingService,
@@ -51,6 +52,9 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   ngOnInit(): void {
     // Get All Streams
     this.initPage();
+
+    console.log('All topics ===>>', this.allTopics);
+
 
     this.userSocketService.messageCount.subscribe(messages => {
       this.newMessagesCount = messages;
@@ -72,20 +76,37 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
   initPage(): void {
     // Fetch streams
-    this.streams = this.store.select(getAllStreams);
+    this.store.select(getAllStreams);
+    // this.store.select(getAllStreams).subscribe(
+    //   data => console.log('all streams  ====>>>', data)
+    // );
     // Fetch Topics
     this.store.select(getStreamsLoading).subscribe(
       resp => {
         if (!resp){
           this.streams = this.store.select(getAllStreams);
           this.store.select(getAllStreams).subscribe(
-            data => {
-              console.log('Streams from state ===>>>>', data);
-              take(data.length),
-                data.forEach((item: AllStreamsModel) => {
+            streams => {
+              take(streams.length),
+                streams.map((stream: AllStreamsModel) => {
+                  const streamId = stream?.stream_id;
+                  // console.log('Stream content ===>>', stream);
                   take(1),
-                  this.store.dispatch(new messagingActions.LoadStreamTopic(item.stream_id));
-                  this.streamIds = [...this.streamMessages, item.stream_id];
+                    this.messagingService.getTopicsOnStreams(stream.stream_id).subscribe(
+                      // tslint:disable-next-line:no-shadowed-variable
+                      (data: any) => {
+                        const topicId = data?.oz?.stream_id;
+                        if (topicId === streamId) {
+                          stream = {
+                            ...stream,
+                            topics: data
+                          };
+                          this.allTopics = [...this.allTopics, stream];
+                        }
+                      }
+                    );
+                  // this.store.dispatch(new messagingActions.LoadStreamTopic(item.stream_id));
+                  // this.streamIds = [...this.streamMessages, item.stream_id];
                 });
             }
           );
@@ -94,13 +115,31 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     );
     // Get Topics from store
     this.topics = this.store.select(getTopics);
-    this.store.select(getTopics).subscribe(
-      topics => console.log('Topics ====>>> ', topics)
-    );
+
   }
 
   getTopics(team: any): any {
-    this.store.dispatch(new messagingActions.LoadStreamTopic(team.stream_id));
+    // this.store.dispatch(new messagingActions.LoadStreamTopic(team.stream_id));
+
+    this.store.dispatch(new messagingActions.FilterMessages(team));
+
+  }
+
+  displayMessagesOfTopic(team: any, topic?: any): void {
+    // if (topic.name){
+    //   this.messagingService.changeTeamTopicMessages(topic.name);
+    // }else{
+    //   this.messagingService.changeTeamTopicMessages('');
+    // }
+    const streamId = team.stream_id;
+    const topicName = topic?.name;
+
+    const filterData = {
+      stream_id: streamId,
+      topic: topicName
+    };
+    console.log('Clicked stream ===>>', filterData);
+    this.store.dispatch(new messagingActions.FilterMessages(filterData));
   }
 
   listAllTeams(): any{
@@ -170,14 +209,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.publicTeams = allAvailableTeams.filter((team: { invite_only: any; }) => !team.invite_only);
   }
 
-  displayMessagesOfTopic(topic: any): void {
-    if (topic.name){
-      this.messagingService.changeTeamTopicMessages(topic.name);
-    }else{
-      this.messagingService.changeTeamTopicMessages('');
-    }
-  }
-
   showAllMessages(): void {
     this.router.navigate(['/dashboard/messaging/all_messages']);
   }
@@ -228,9 +259,10 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
       team.messageCount = messages.filter(message => message.stream_id === team.stream_id).length;
     });
 
-    this.publicTeams.forEach((team: { messageCount: number; stream_id: any; }) => {
-        team.messageCount = messages.filter(message => message.stream_id === team.stream_id).length;
-      });
+    // this.publicTeams.forEach((team: { messageCount: number; stream_id: any; }) => {
+    //   console.log('publicTeams ====>>>', team);
+    //     team.messageCount = messages.filter(message => message.stream_id === team.stream_id).length;
+    //   });
     }
   }
 }

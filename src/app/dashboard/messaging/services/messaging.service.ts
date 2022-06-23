@@ -4,6 +4,8 @@ import {HttpClient} from '@angular/common/http';
 import {AuthService} from '../../../auth/services/auth.service';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {Router} from '@angular/router';
+import {AllStreamsModel} from '../models/streams.model';
+import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -33,7 +35,7 @@ export class MessagingService {
   constructor(
     private http: HttpClient,
     private authService: AuthService,
-    private router: Router ) {
+    private router: Router) {
     this.getAllUsers();
   }
 
@@ -78,12 +80,15 @@ export class MessagingService {
   changeStreamName(name: string): void {
     this.stream.next(name);
   }
+
   changeTeamTopicMessages(streamTopic: any): void {
     this.topic.next(streamTopic);
   }
+
   changeEditorTopic(editorTopic: any): void {
     this.editorTopic.next(editorTopic);
   }
+
   changePmNames(pmNames: any): void {
     this.pmNames.next(pmNames);
   }
@@ -116,16 +121,19 @@ export class MessagingService {
   getAllSubscribedStreams(): any {
     return this.http.get(this.subscribedStreams, this.authService.getHeaders());
   }
+
   currentUserProfile(): any {
     return this.http.get(this.userProfile, this.authService.getHeaders());
   }
-  goToMemberChat(member: any): void{
-    this.router.navigate(['dashboard/messaging/narrow'], { queryParams: { member: member.full_name.replace(/\s/g, '') } });
+
+  goToMemberChat(member: any): void {
+    this.router.navigate(['dashboard/messaging/narrow'], {queryParams: {member: member.full_name.replace(/\s/g, '')}});
   }
 
   getDetailsOfStream(streamId: string): any {
     return this.http.get(this.subscribedStreams, this.authService.getHeaders());
   }
+
   newListOfUsers(usersPresent: any): any[] {
     const allOnline = usersPresent.filter(
       (user: { presence: { aggregated: { status: string } } }) =>
@@ -149,6 +157,7 @@ export class MessagingService {
       ...allOffline.sort(this.compare),
     ];
   }
+
   compare(member1: any, member2: any): number {
     // * order each list alphanumerically
     if (member1.full_name < member2.full_name) {
@@ -176,7 +185,7 @@ export class MessagingService {
     );
   }
 
-  sendStreamMessageWithFile(message: any): any{
+  sendStreamMessageWithFile(message: any): any {
     return this.http.post(
       this.sendStreamMessageWithFileURL,
       message,
@@ -184,7 +193,7 @@ export class MessagingService {
     );
   }
 
-  sendIndividualMessageWithFile(message: any): any{
+  sendIndividualMessageWithFile(message: any): any {
     return this.http.post(
       this.sendIndividualMessageWithFileURL,
       message,
@@ -199,6 +208,7 @@ export class MessagingService {
       this.authService.getHeaders()
     );
   }
+
   getTopicsOnStreams(streamId: any): any {
     return this.http.get(
       this.streamTopic + streamId,
@@ -210,34 +220,37 @@ export class MessagingService {
     return this.http.post(this.newTeam, teamData, this.authService.getHeaders());
   }
 
-  getOonaMemberDetail(email: any): any{
+  getOonaMemberDetail(email: any): any {
     return this.http.get(this.oonaMemberProfileDetail + email, this.authService.getHeaders());
   }
-  oonaProfile(): any{
+
+  oonaProfile(): any {
     return this.http.get(this.oonaProfileUrl, this.authService.getHeaders());
   }
-  createMeeting(meetingDetail: any): any{
+
+  createMeeting(meetingDetail: any): any {
     return this.http.post(this.newMeeting, meetingDetail, this.authService.getHeaders());
   }
 
-  unsubscribeFromStream(streamDetail: any): any{
+  unsubscribeFromStream(streamDetail: any): any {
     return this.http.post(this.streamUnsubscribe, streamDetail, this.authService.getHeaders());
   }
-  subscribeMember(streamDetail: any): any{
+
+  subscribeMember(streamDetail: any): any {
     return this.http.post(this.streamSubscribe, streamDetail, this.authService.getHeaders());
   }
 
-  formatDate(dateObject: any): any{
+  formatDate(dateObject: any): any {
     const cDate = dateObject.getFullYear() + '-' + (dateObject.getMonth() + 1) + '-' + dateObject.getDate();
     const cTime = dateObject.getHours() + ':' + dateObject.getMinutes() + ':' + dateObject.getSeconds();
     return cDate + ' ' + cTime;
   }
 
-  fetchAllStreams(): Observable<any>{
+  fetchAllStreams(): Observable<any> {
     return this.http.get(env.teams);
   }
 
-  fetchSubStreams(): Observable<any>{
+  fetchSubStreams(): Observable<any> {
     return this.http.get(env.subscribedStreams);
   }
 

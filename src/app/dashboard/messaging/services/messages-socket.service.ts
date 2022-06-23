@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
-import {environment} from '../../../../environments/environment';
-import {AuthService} from '../../../auth/services/auth.service';
+import { BehaviorSubject } from 'rxjs';
+import { messageChannel, userChannel } from '../../../../environments/environment';
+import { AuthService } from '../../../auth/services/auth.service';
+import {webSocket, WebSocketSubject} from 'rxjs/internal-compatibility';
+import {getToken} from 'codelyzer/angular/styles/cssLexer';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +11,7 @@ import {AuthService} from '../../../auth/services/auth.service';
 export class MessagesSocketService {
 
   private newMessageCount = 0;
+  private connection$: WebSocket | undefined;
   private messageCountSocket = new BehaviorSubject(this.newMessageCount);
   messageCount = this.messageCountSocket.asObservable();
 
@@ -21,18 +24,27 @@ export class MessagesSocketService {
     this.messageCountManagement();
   }
 
-  private messageConnect(): void {
+  initSockets(): any {
+    this.messageConnect().subscribe(
+        (data: any) => {
+        console.log('Message content ====>>', data);
+      }
+    );
+  }
+
+  private messageConnect(): any {
     /**
      * Creates a websocket connection to the message channel
      */
-    this.messageSocket = new WebSocket(environment.userChannel, this.authService.getToken());
-    console.log('message connected');
+    this.messageSocket = new WebSocket(messageChannel, this.authService.getToken());
+    console.log('Messaging sockets connected');
   }
 
   private messageCountManagement(): void {
     // @ts-ignore
-    this.messageCountSocket.onmessage = (evt) => {
-      // this.filterSocketMessages(evt.data);
+    this.messageSocket.onmessage = (evt) => {
+      this.filterSocketMessages(evt.data);
+      console.log('Message received on the socket =====>>>>', evt);
     };
 
     // @ts-ignore
@@ -45,7 +57,7 @@ export class MessagesSocketService {
     // @ts-ignore
     this.messageCountSocket.onerror = (evt) => {
       setTimeout(() => {
-        console.log('Attempting to reconnect ...');
+        console.log('Attempting to reconnect messaging sockets ...');
         this.messageConnect();
       }, 1000);
     };
