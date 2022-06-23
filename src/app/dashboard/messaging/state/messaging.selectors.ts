@@ -35,3 +35,8 @@ export const getMessageType = createSelector(
   getMessagingState,
   state => state.messaging.messages?.oz.type
 );
+
+export const getReceiverInfo = createSelector(
+  getMessagingState,
+  state => state.msgReceiver
+);

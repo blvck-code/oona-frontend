@@ -14,7 +14,7 @@ export interface MessagingState {
     topics: any
   };
   currentUser: CurrentUserModel | null;
-  currentReceiver: any;
+  msgReceiver: any;
   messaging: {
     loading: boolean,
     messages: MessagesModel | null;
@@ -29,7 +29,7 @@ export const initialState: MessagingState = {
     topics: []
   },
   currentUser: null,
-  currentReceiver: null,
+  msgReceiver: null,
   messaging: {
     loading: false,
     messages: null
@@ -142,7 +142,7 @@ export function messagingReducer(
     case messagingActions.MessagingActionsTypes.HANDLE_SEND_MESSAGE:
       return {
         ...state,
-        currentReceiver: action.payload
+        msgReceiver: action.payload
       };
 
     default:

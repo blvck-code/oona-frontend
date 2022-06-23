@@ -46,7 +46,6 @@ export class LandingMessagingRightPanelComponent implements OnInit {
      });
     this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
       // @Todo Delete console log
-      console.log('Members ===>>>', users);
       const usersPresent = users.members.filter(user => user.presence );
       this.allUsers = this.newListOfUsers(usersPresent);
     },

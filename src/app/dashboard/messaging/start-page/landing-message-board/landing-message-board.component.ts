@@ -7,7 +7,7 @@ import * as messageActions from '../../state/messaging.actions';
 import { AppState } from '../../../../state/app.state';
 import {getLoadingMsg, getMessages} from '../../state/messaging.selectors';
 import {Observable} from 'rxjs';
-import {SingleMessageModel} from '../../models/messages.model';
+import {MsgReceiver, SingleMessageModel} from '../../models/messages.model';
 
 @Component({
   selector: 'app-landing-message-board',
@@ -22,7 +22,6 @@ export class LandingMessageBoardComponent implements OnInit {
   loadingMessages!: Observable<boolean>;
   messageExist: any;
   editorActive = false;
-  public receiverInfo: any;
 
   constructor(
     private messagingService: MessagingService,
@@ -141,7 +140,7 @@ export class LandingMessageBoardComponent implements OnInit {
     });
   }
 
-  selectedUser(chat: any): any {
+  selectedUser(chat: MsgReceiver): any {
     this.editorActive = true;
     this.store.dispatch(new messageActions.HandleSendMessage(chat));
   }

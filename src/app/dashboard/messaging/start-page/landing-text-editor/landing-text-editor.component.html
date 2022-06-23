@@ -1,21 +1,22 @@
 <div class="group-pm-users">
   <span style="font-weight: bolder" class="mr-2">To :</span>
+
   <div class="search-pm-users-container" >
     <div class="list-pm-members">
       <div class="pm-member" *ngFor="let person of chatGroup" (click)="removeFromGroup(person)">
-        <p>{{person.full_name}}</p>
+        <p>###{{person.full_name}}</p>
         <i class="bi bi-x"></i>
       </div>
     </div>
 
     <div class="add-attendees-section dropdown">
-      <input type="text" (keyup)="searchUser($event)" class="search-meeting-attendees" placeholder="Search User" id="dropdownMenuButton1" data-bs-toggle="dropdown"
-             aria-expanded="false">
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" #selectList >
-        <li *ngFor="let user of filteredUsers" (click)="addSelectedUser(user)" class="py-2">
-          {{user.full_name}}
-        </li>
-      </ul>
+<!--      <input type="text" (keyup)="searchUser($event)" class="search-meeting-attendees" placeholder="Search User" id="dropdownMenuButton1" data-bs-toggle="dropdown"-->
+<!--             aria-expanded="false">-->
+<!--      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" #selectList >-->
+<!--        <li *ngFor="let user of filteredUsers" (click)="addSelectedUser(user)" class="py-2">-->
+<!--          {{user.full_name}}-->
+<!--        </li>-->
+<!--      </ul>-->
     </div>
   </div>
 </div>

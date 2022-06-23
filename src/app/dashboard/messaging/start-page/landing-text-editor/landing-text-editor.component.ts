@@ -7,6 +7,11 @@ import {NgForm} from '@angular/forms';
 
 import TurndownService from 'turndown';
 import {GroupPmsServiceService} from '../../group-pms/group-pms-service.service';
+import {Observable} from 'rxjs';
+import {AppState} from '../../../../state/app.state';
+import {Store} from '@ngrx/store';
+import {getReceiverInfo} from '../../state/messaging.selectors';
+import {MsgReceiver} from '../../models/messages.model';
 
 const turndownService = new TurndownService();
 
@@ -26,13 +31,14 @@ export class LandingTextEditorComponent implements OnInit, OnDestroy {
   chatGroup = Array();
   allUsers = Array();
   filteredUsers = Array();
-  @Input() public receiverData: any;
+  receiverInfo!: Observable<any>;
 
   constructor(
     private messagingService: MessagingService,
     private  groupPmsService: GroupPmsServiceService,
     private  notificationService: NotificationService,
     private router: Router,
+    private store: Store<AppState>
   ) { }
 
   // @ts-ignore
@@ -55,8 +61,16 @@ export class LandingTextEditorComponent implements OnInit, OnDestroy {
   editorData = '';
   toggled = false;
 
+  getReceiverInfo(): void {
+    this.receiverInfo = this.store.select(getReceiverInfo);
+    this.store.select(getReceiverInfo).subscribe(
+      (data: MsgReceiver) => console.log('MsgReceiver ===>>>', data)
+    );
+  }
+
   onInitHandler(): void {
     this.loggedInProfile();
+    this.getReceiverInfo();
     this.editor = new Editor();
     this.editor.commands.focus().exec();
     this.groupPmsService.currentChatGroup.subscribe((chatMembers) => {
@@ -70,7 +84,6 @@ export class LandingTextEditorComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.onInitHandler();
-    console.log('Receiver info ===>>>', this.receiverData);
   }
 
   ngOnDestroy(): void {
@@ -148,7 +161,15 @@ export class LandingTextEditorComponent implements OnInit, OnDestroy {
       to: this.chatGroup.map(member => member.id),
       content: markdown
     };
+    this.receiverInfo.subscribe((data: MsgReceiver) => {
+      {
+        console.log('Msg Receiver ===>>>', data);
+        // @ts-ignore
+        messageDetail.to = data.recipient_id;
+      }
+    });
     console.log('Message content ===>>>', messageDetail);
+
     this.messagingService.sendIndividualMessage(messageDetail).subscribe((response: any) => {
       if (response.zulip.result === 'success'){
         // clear the form

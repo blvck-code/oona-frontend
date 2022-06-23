@@ -61,7 +61,26 @@ export interface StreamDetail {
   ];
 }
 
-
+export interface MsgReceiver {
+  avatar_url: any;
+  client: string;
+  content: string;
+  content_type: string;
+  display_recipient: string;
+  flags: string[];
+  id: number;
+  is_me_message: boolean;
+  reactions: any[];
+  recipient_id: number;
+  sender_email: string;
+  sender_full_name: string;
+  sender_id: number;
+  sender_realm_str: string;
+  submessages: any[];
+  timestamp: number;
+  topic_links: any[];
+  type: string;
+}
 
 // {
 //   "oz": {

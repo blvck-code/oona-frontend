@@ -80,7 +80,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
           this.streams = this.store.select(getAllStreams);
           this.store.select(getAllStreams).subscribe(
             data => {
-              console.log('Streams from state ===>>>>', data);
               take(data.length),
                 data.forEach((item: AllStreamsModel) => {
                   take(1),
@@ -94,9 +93,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     );
     // Get Topics from store
     this.topics = this.store.select(getTopics);
-    this.store.select(getTopics).subscribe(
-      topics => console.log('Topics ====>>> ', topics)
-    );
   }
 
   getTopics(team: any): any {
