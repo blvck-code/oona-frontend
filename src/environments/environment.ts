@@ -4,7 +4,7 @@
 
 export const oonaBaseUrl = 'https://192.168.0.100:2443';
 export const userChannel = 'wss://192.168.0.100:2443/ws/on/event/';
-const messageChannel = 'wss://192.168.0.100:2443/ws/on/message/';
+export const messageChannel = 'wss://192.168.0.100:2443/ws/on/message/';
 const whiteBoard = 'http://192.168.0.100:8030';
 const etherPad = 'http://192.168.0.100:9001/';
 const domain = '192.168.0.100:8443';

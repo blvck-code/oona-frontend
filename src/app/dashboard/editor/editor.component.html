@@ -1,11 +1,11 @@
 <div class="group-pm-users">
-<!--  <span style="font-weight: bolder" class="mr-2">To : {{ receiverInfo ? receiverInfo.subject: '' }}</span>-->
+  <!--  <span style="font-weight: bolder" class="mr-2">To : {{ receiverInfo ? receiverInfo.subject: '' }}</span>-->
   <div style="font-weight: bolder" class="d-flex recipient-user mr-2">
     To :
     <span class="ps-2" *ngIf="receiverInfo && receiverInfo.display_recipient">{{ receiverInfo.display_recipient | titlecase }}</span>
     <span class="ps-2" *ngIf="receiverInfo && receiverInfo.subject"> <strong>></strong> {{ receiverInfo.subject | titlecase }}</span>
   </div>
-<!--  <span style="font-weight: bolder" class="mr-2">To : Brian Maurice</span>-->
+  <!--  <span style="font-weight: bolder" class="mr-2">To : Brian Maurice</span>-->
 
   <div class="search-pm-users-container" >
     <div class="list-pm-members">
@@ -16,13 +16,13 @@
     </div>
 
     <div class="add-attendees-section dropdown">
-<!--      <input type="text" (keyup)="searchUser($event)" class="search-meeting-attendees" placeholder="Search User" id="dropdownMenuButton1" data-bs-toggle="dropdown"-->
-<!--             aria-expanded="false">-->
-<!--      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" #selectList >-->
-<!--        <li *ngFor="let user of filteredUsers" (click)="addSelectedUser(user)" class="py-2">-->
-<!--          {{user.full_name}}-->
-<!--        </li>-->
-<!--      </ul>-->
+      <!--      <input type="text" (keyup)="searchUser($event)" class="search-meeting-attendees" placeholder="Search User" id="dropdownMenuButton1" data-bs-toggle="dropdown"-->
+      <!--             aria-expanded="false">-->
+      <!--      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" #selectList >-->
+      <!--        <li *ngFor="let user of filteredUsers" (click)="addSelectedUser(user)" class="py-2">-->
+      <!--          {{user.full_name}}-->
+      <!--        </li>-->
+      <!--      </ul>-->
     </div>
   </div>
 </div>
@@ -36,6 +36,7 @@
         #fromRTE
         [(value)]="editorData"
         [toolbarSettings]='tools'
+        placeholder="Write message..."
         required
         name="name"
         [(ngModel)]="editorData"

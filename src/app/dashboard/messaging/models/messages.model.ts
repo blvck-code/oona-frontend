@@ -61,7 +61,7 @@ export interface StreamDetail {
   ];
 }
 
-export interface MsgReceiver {
+export interface SingleChat {
   avatar_url: any;
   client: string;
   content: string;
@@ -76,6 +76,7 @@ export interface MsgReceiver {
   sender_full_name: string;
   sender_id: number;
   sender_realm_str: string;
+  subject: string;
   submessages: any[];
   timestamp: number;
   topic_links: any[];

@@ -1,26 +1,26 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {MessagingService} from '../../services/messaging.service';
-import {NotificationService} from '../../../../shared/services/notification.service';
+import {MessagingService } from '../messaging/services/messaging.service';
+import {NotificationService} from '../../shared/services/notification.service';
 import {Router} from '@angular/router';
 import {Editor} from 'ngx-editor';
 import {NgForm} from '@angular/forms';
 
 import TurndownService from 'turndown';
-import {GroupPmsServiceService} from '../../group-pms/group-pms-service.service';
+import {GroupPmsServiceService} from '../messaging/group-pms/group-pms-service.service';
 import {Observable} from 'rxjs';
-import {AppState} from '../../../../state/app.state';
+import {AppState} from '../../state/app.state';
 import {Store} from '@ngrx/store';
-import {getReceiverInfo} from '../../state/messaging.selectors';
-import { SingleChat } from '../../models/messages.model';
+import {getReceiverInfo} from '../messaging/state/messaging.selectors';
+import { SingleChat } from '../messaging/models/messages.model';
 
 const turndownService = new TurndownService();
 
 @Component({
-  selector: 'app-landing-text-editor',
-  templateUrl: './landing-text-editor.component.html',
-  styleUrls: ['./landing-text-editor.component.scss']
+  selector: 'app-editor',
+  templateUrl: './editor.component.html',
+  styleUrls: ['./editor.component.scss']
 })
-export class LandingTextEditorComponent implements OnInit, OnDestroy {
+export class EditorComponent implements OnInit, OnDestroy {
   @Output() messageContent = new EventEmitter<any>();
   @Output() newTopic = new EventEmitter<any>();
   editorTopic = '';
