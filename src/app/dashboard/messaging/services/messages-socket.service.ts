@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import {environment} from '../../../../environments/environment';
+import {userChannel, messageChannel} from '../../../../environments/environment';
 import {AuthService} from '../../../auth/services/auth.service';
 
 @Injectable({
@@ -21,18 +21,19 @@ export class MessagesSocketService {
     this.messageCountManagement();
   }
 
-  private messageConnect(): void {
+  messageConnect(): void {
     /**
      * Creates a websocket connection to the message channel
      */
-    this.messageSocket = new WebSocket(environment.userChannel, this.authService.getToken());
+    this.messageSocket = new WebSocket(messageChannel, this.authService.getToken());
     console.log('message connected');
   }
 
-  private messageCountManagement(): void {
+  messageCountManagement(): void {
     // @ts-ignore
     this.messageCountSocket.onmessage = (evt) => {
       // this.filterSocketMessages(evt.data);
+      console.log('Message received ====>>>>', evt);
     };
 
     // @ts-ignore

@@ -66,7 +66,6 @@ export class EditorComponent implements OnInit, OnDestroy {
     this.store.select(getReceiverInfo).subscribe(
       (data: SingleChat) => {
         this.receiverInfo = data;
-        console.log('Recipient details ==>>>', data);
       }
     );
   }

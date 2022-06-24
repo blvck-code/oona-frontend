@@ -137,7 +137,6 @@ export class LoadCurrentPrivateUserFail implements Action {
 export class HandleSendMessage implements Action {
   readonly type = MessagingActionsTypes.HANDLE_SEND_MESSAGE;
   constructor(public payload: any) {
-    console.log('Send message details ===>>>', payload);
   }
 }
 

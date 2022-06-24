@@ -6,6 +6,7 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../state/app.state';
 import * as messagingActions from './state/messaging.actions';
+import {MessagesSocketService} from './services/messages-socket.service';
 
 @Component({
   selector: 'app-messaging',
@@ -22,8 +23,11 @@ export class MessagingComponent implements OnInit {
     private route: ActivatedRoute,
     private authService: AuthService,
     private router: Router,
+    private messageSocket: MessagesSocketService,
     private store: Store<AppState>
-  ) { }
+  ) {
+    this.messageSocket.messageConnect();
+  }
 
   ngOnInit(): void {
     this.initPage();

@@ -57,10 +57,12 @@
   position: absolute;
   bottom: -120px;
   width: 100%;
+  opacity: 0;
 
   &.active {
     transition: 0.5s ease;
     bottom: 20px;
+    opacity: 1;
   }
 }
 

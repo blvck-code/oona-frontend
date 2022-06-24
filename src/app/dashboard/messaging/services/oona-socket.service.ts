@@ -3,11 +3,14 @@ import {BehaviorSubject} from 'rxjs';
 import {messageChannel, userChannel} from '../../../../environments/environment';
 import {AuthService} from '../../../auth/services/auth.service';
 import {MessagingService} from './messaging.service';
+import { webSocket } from 'rxjs/webSocket';
 
 // NgRx
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../state/app.state';
 import * as authActions from '../../../auth/state/auth.actions';
+
+const msgSocket = webSocket(messageChannel);
 
 @Injectable({
   providedIn: 'root'
@@ -162,7 +165,7 @@ export class OonaSocketService {
   private userManagement(): void {
     // @ts-ignore
     this.websocket.onmessage = (evt) => {
-      console.log('Web socket message');
+      console.log('Web socket message ====>>>', evt);
       this.filterSocketData(evt.data);
     };
 
