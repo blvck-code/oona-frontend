@@ -6,9 +6,13 @@
     </div>
   </div>
 
+  <div *ngIf="!messageExist" class="py-4">
+    <p>No Messages</p>
+  </div>
+
   <div class="overflow-chat" id="speakers_list">
     <div *ngIf="(messages$ | async) as messages" id="box">
-      <div class="d-flex justify-content-center">
+      <div *ngIf="messageExist" class="d-flex justify-content-center">
         <button
           class="btn btn-primary shadow-none"
           (click)="getMorePrivateMessages()"

@@ -1,27 +1,49 @@
-# Oona
+# Oona Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.1.2.
+## Introduction
+This project is meant to provide the main
 
-## Development server
+## Requirements
+1. node_js 16+
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Installation pre-requisites
+For this project, we recommend installing Node 16 Long Term Support Edition(LTE)
 
-## Code scaffolding
+To easily switch between node versions on your machine, we recommend using a node virtual environment tool such as nave or nvm-windows, depending on your operating system.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+For example, here is how you switch to a new node version using nave:
 
-## Build
+    # note that you don't even need to update your node version before installing nave
+    npm install -g nave
+    
+    nave use 12.3.1
+    node -v
+    v12.3.1
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+# Installing the Angular CLI
 
-## Running unit tests
+With the following command the angular-cli will be installed globally in your machine:
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+    npm install -g @angular/cli 
 
-## Running end-to-end tests
+# How To install this repository
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+We can install the master branch using the following commands:
 
-## Further help
+    git clone http://192.168.0.207/oona/oona-v2-frontend.git
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+After cloning the repo, next you install npm on the project directory using the below commands on your terminal:
+
+    cd oona-web-app
+    npm install 
+
+This should take a couple of minutes. If there are issues, try re-installing the node js again.
+
+# To run the Development UI Server
+
+To run the frontend part of our code, we will use the Angular CLI:
+
+    ng serve
+
+The application is visible at port 4200: [http://localhost:4200](http://localhost:4200)
+

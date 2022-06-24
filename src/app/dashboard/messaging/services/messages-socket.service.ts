@@ -9,6 +9,7 @@ import {AuthService} from '../../../auth/services/auth.service';
 export class MessagesSocketService {
 
   private newMessageCount = 0;
+  private connection$: WebSocket | undefined;
   private messageCountSocket = new BehaviorSubject(this.newMessageCount);
   messageCount = this.messageCountSocket.asObservable();
 
@@ -46,7 +47,7 @@ export class MessagesSocketService {
     // @ts-ignore
     this.messageCountSocket.onerror = (evt) => {
       setTimeout(() => {
-        console.log('Attempting to reconnect ...');
+        console.log('Attempting to reconnect messaging sockets ...');
         this.messageConnect();
       }, 1000);
     };

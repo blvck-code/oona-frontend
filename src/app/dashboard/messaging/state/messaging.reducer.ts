@@ -1,7 +1,7 @@
 import * as messagingActions from './messaging.actions';
 import {AllStreamsModel, SubscribedStreams} from '../models/streams.model';
 import {All} from '@ngrx/store-devtools/src/actions';
-import {MessagesModel} from '../models/messages.model';
+import {MessagesModel, SingleMessageModel} from '../models/messages.model';
 import {TopicsModel} from '../models/topics.model';
 import {CurrentUserModel} from '../models/currentUser.model';
 import {act} from '@ngrx/effects';
@@ -17,7 +17,9 @@ export interface MessagingState {
   msgReceiver: any;
   messaging: {
     loading: boolean,
+    filtered: boolean,
     messages: MessagesModel | null;
+    filteredMsg: SingleMessageModel[] | undefined;
   };
 }
 
@@ -32,22 +34,34 @@ export const initialState: MessagingState = {
   msgReceiver: null,
   messaging: {
     loading: false,
-    messages: null
+    filtered: false,
+    messages: null,
+    filteredMsg: undefined,
   }
 };
 
-const addTopicToStream = ( payload: any) => {
-  const stream_id = payload?.oz?.stream_id;
-  const content = [...payload?.zulip?.topics];
-
-  const topics  = {
-    stream_id: {
-      content
-    }
-  };
-
-  return  topics;
-};
+// const addTopicToStream = ( state: MessagingState, payload: any) => {
+//   const stream_id = payload?.oz?.stream_id;
+//   const allStreams = state?.streams.allStreams;
+//
+//   let newStreams: any = [];
+//   let trys: any = [];
+//
+//   allStreams.forEach((stream: any) => {
+//     // tslint:disable-next-line:triple-equals
+//     if (stream.stream_id == stream_id){
+//       // @ts-ignore
+//       stream = {
+//         ...stream,
+//         topics: payload
+//       };
+//
+//       newStreams = [...newStreams, stream];
+//     }
+//   });
+//
+//   trys.push(newStreams);
+// };
 
 const sortMsg = (payload: any) => {
   const messages = payload.zulip.messages;
@@ -92,31 +106,35 @@ export function messagingReducer(
           subStreams: action?.payload?.subscriptions
         }
       };
-    // case messagingActions.MessagingActionsTypes.LOAD_STREAM_TOPIC_SUCCESS:
-    //
-    //   const topicStreamId = action.payload.oz.stream_id;
-    //   const updatedStream: any[] = state?.streams?.allStreams.map((stream: AllStreamsModel) => {
-    //     // tslint:disable-next-line:no-unused-expression
-    //     stream.stream_id === topicStreamId ? stream.topics = action.payload : null;
-    //   });
-    //
-    //   console.log('Target ==>>', updatedStream);
-    //   return {
-    //     ...state,
-    //     streams: {
-    //       ...state.streams,
-    //       // allStreams: [...state.streams.allStreams, updatedStream]
-    //       allStreams: updatedStream
-    //       // topics: [...state.streams.topics, addTopicToStream(action.payload)]
-    //     }
-    //   };
+    case messagingActions.MessagingActionsTypes.LOAD_STREAM_TOPIC_SUCCESS:
+      // addTopicToStream(state, action.payload);
+
+      // const topicStreamId = action.payload.oz.stream_id;
+      // console.log('topicStreamId ===>>>', topicStreamId);
+      // const updatedStream: any[] = state?.streams?.allStreams.map((stream: AllStreamsModel) => {
+      //   // tslint:disable-next-line:no-unused-expression
+      //   stream.stream_id === topicStreamId ? stream.topics = action.payload : null;
+      // });
+
+      // console.log('Target ==>>', updatedStream);
+      return {
+        ...state,
+        streams: {
+          ...state.streams,
+          // allStreams: [...state.streams.allStreams, updatedStream]
+          // allStreams: updatedStream
+          // topics: [...state.streams.topics, addTopicToStream(action.payload)]
+        }
+      };
 
     // Handle Messages
     case messagingActions.MessagingActionsTypes.LOAD_MESSAGES:
       return {
         ...state,
         messaging: {
+          ...state.messaging,
           loading: true,
+          filtered: false,
           messages: null
         }
       };
@@ -124,7 +142,9 @@ export function messagingReducer(
       return {
         ...state,
         messaging: {
+          ...state.messaging,
           loading: false,
+          filtered: false,
           messages: action.payload
         }
       };

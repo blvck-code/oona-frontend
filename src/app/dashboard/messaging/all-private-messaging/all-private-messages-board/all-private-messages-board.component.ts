@@ -5,7 +5,7 @@ import {Router} from '@angular/router';
 // NgRx
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
-import {getLoadingMsg, getMessages, getMessageType} from '../../state/messaging.selectors';
+import {filteredState, getFilteredMsg, getLoadingMsg, getMessages, getMessageType} from '../../state/messaging.selectors';
 import * as messageActions from '../../state/messaging.actions';
 import {Observable} from 'rxjs';
 import {StreamDetail} from '../../models/messages.model';

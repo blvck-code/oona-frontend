@@ -105,15 +105,18 @@ export class LoadSubStreamsFail implements Action {
 // STREAM TOPICS
 export class LoadStreamTopic implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_TOPIC;
-  constructor(public payload: any) {}
+  constructor(public payload: any) {
+  }
 }
 export class LoadStreamTopicSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_TOPIC_SUCCESS;
-  constructor(public payload: TopicsModel) {}
+  constructor(public payload: TopicsModel) {
+  }
 }
 export class LoadStreamTopicFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_TOPIC_FAIL;
-  constructor(public payload: any) {}
+  constructor(public payload: any) {
+  }
 }
 
 // CURRENT USER PRIVATE MESSAGE

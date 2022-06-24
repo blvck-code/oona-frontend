@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/services/auth.service';
 
 // NgRx
@@ -56,6 +56,7 @@ export class MessagingComponent implements OnInit {
   initPage(): void{
     this.store.dispatch(new messagingActions.LoadAllStreams());
     this.store.dispatch(new messagingActions.LoadSubStreams());
+
   }
 
   logoutUser(): void {

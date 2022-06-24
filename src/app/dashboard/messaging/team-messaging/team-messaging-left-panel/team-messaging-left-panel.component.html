@@ -110,22 +110,19 @@
 <!--        </div>-->
 <!--      </div>-->
 
-      <div *ngFor="let team of (streams | async); index as i" class="accordion-item">
+      <div *ngFor="let team of allTopics.sort(); index as i" class="accordion-item">
         <h2 class="accordion-header" id="flush-headingOne">
-          <button (click)="getTopics(team)" class="accordion-button collapsed" type="button" data-bs-toggle="collapse"  [attr.data-bs-target]="'#flush-collapse'+i" aria-expanded="false" [attr.aria-controls]="'flush-collapse'+i">
-            # {{team.name}}
+          <button (click)="displayMessagesOfTopic(team)" class="accordion-button collapsed" type="button" data-bs-toggle="collapse"  [attr.data-bs-target]="'#flush-collapse'+i" aria-expanded="false" [attr.aria-controls]="'flush-collapse'+i">
+            # {{ team.name | lowercase }}
           </button>
         </h2>
         <div id="flush-collapse{{i}}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#teamsAccordion">
           <div class="accordion-body">
-            <div (click)="displayMessagesOfTopic('')" class="accordion-body-item">
-              <p>All Topics</p>
-            </div>
-            <div *ngFor="let topic of (topics | async)" class="accordion-body-item">
-              <p>{{ topic.stream_id.content.name }}</p>
-            </div>
-            <div class="accordion-body-item">
-              <p>Topic</p>
+<!--            <div (click)="displayMessagesOfTopic('')" class="accordion-body-item">-->
+<!--              <p>All Topics</p>-->
+<!--            </div>-->
+            <div *ngFor="let topic of team?.topics?.zulip?.topics" class="accordion-body-item">
+              <p (click)="displayMessagesOfTopic(team, topic)" >{{ topic?.name }}</p>
             </div>
 <!--            <div *ngFor="let topic of team.topics" (click)="displayMessagesOfTopic(topic)" class="accordion-body-item">-->
 <!--              <p>{{topic.name}}</p>-->
@@ -152,10 +149,10 @@
         </h2>
         <div id="flush-collapse-general{{i}}" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#generalAccordion">
           <div class="accordion-body">
-            <div (click)="displayMessagesOfTopic('')" class="accordion-body-item">
+            <div (click)="displayMessagesOfTopic('', '')" class="accordion-body-item">
               <p>All Topics</p>
             </div>
-            <div *ngFor="let topic of team.topics" (click)="displayMessagesOfTopic(topic)" class="accordion-body-item">
+            <div *ngFor="let topic of team.topics" (click)="displayMessagesOfTopic(team, topic)" class="accordion-body-item">
               <p>{{topic.name}}</p>
             </div>
           </div>
