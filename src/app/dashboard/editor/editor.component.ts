@@ -31,7 +31,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   chatGroup = Array();
   allUsers = Array();
   filteredUsers = Array();
-  receiverInfo!: SingleChat;
+  receiverInfo!: SingleChat | any;
 
   constructor(
     private messagingService: MessagingService,
@@ -62,6 +62,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   toggled = false;
 
   getReceiverInfo(): void {
+    this.receiverInfo = '';
     this.store.select(getReceiverInfo).subscribe(
       (data: SingleChat) => {
         this.receiverInfo = data;
