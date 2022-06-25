@@ -25,6 +25,7 @@ export class MessagingComponent implements OnInit {
   secondName = '';
   streams!: Observable<AllStreamsModel[]>;
   allTopics: any = [];
+  initialMessageCount =  30;
 
   constructor(
     private route: ActivatedRoute,
@@ -61,6 +62,17 @@ export class MessagingComponent implements OnInit {
     this.store.dispatch(new messagingActions.LoadAllStreams());
     this.store.dispatch(new messagingActions.LoadSubStreams());
 
+    const streamDetail = {
+      use_first_unread_anchor: true,
+      num_before: this.initialMessageCount,
+      type: [
+        {
+          operator: 'stream',
+          operand: 'general'
+        }
+      ]
+    };
+    this.store.dispatch(new messagingActions.LoadAllMessages(streamDetail));
   }
 
   logoutUser(): void {

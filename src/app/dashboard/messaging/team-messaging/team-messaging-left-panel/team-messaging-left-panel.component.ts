@@ -183,8 +183,19 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   //   }
   // }
 
-  displayMessagesOfTopic(team?: any, topic?: any): void {
+  displayMessagesOfTopic(stream?: any, topic?: any): void {
+    console.log('Stream details ===>>>', stream);
+    console.log('Topic details ===>>>', topic);
 
+    // @Todo change to topic incase user clicks topic instead of stream
+    // if (topic){
+    //   route = `${stream.name}/${topic.name}`;
+    // } else {
+    //   route = `${stream.name}`;
+    // }
+
+    this.router.navigate([`/dashboard/messaging/streams/${stream.name}`]);
+    // this.router.navigate(['/dashboard/messaging/team']);
   }
 
   showAllMessages(): void {

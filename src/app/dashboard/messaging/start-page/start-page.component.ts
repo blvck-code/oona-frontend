@@ -11,24 +11,12 @@ import {AppState} from '../../../state/app.state';
   styleUrls: ['./start-page.component.scss']
 })
 export class StartPageComponent implements OnInit {
-  initialMessageCount =  30;
 
   constructor(
     private store: Store<AppState>
   ) { }
 
   onIniHandler(): void {
-    const streamDetail = {
-      use_first_unread_anchor: true,
-      num_before: this.initialMessageCount,
-      type: [
-        {
-          operator: 'stream',
-          operand: 'general'
-        }
-      ]
-    };
-    this.store.dispatch(new messagingActions.LoadAllMessages(streamDetail));
   }
 
   ngOnInit(): void {

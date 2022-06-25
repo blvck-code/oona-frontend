@@ -7,6 +7,7 @@ import {StartPageComponent} from './start-page/start-page.component';
 import {AllPrivateMessagingComponent} from './all-private-messaging/all-private-messaging.component';
 import {AllMentionedMessagesComponent} from './all-mentioned-messages/all-mentioned-messages.component';
 import {GroupPmsComponent} from './group-pms/group-pms.component';
+import {StreamsComponent} from './streams/streams.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,10 @@ const routes: Routes = [
       {
         path: 'team',
         component: TeamMessagingComponent
+      },
+      {
+        path: 'streams/:stream',
+        component: StreamsComponent
       },
       {
         path: 'private',
