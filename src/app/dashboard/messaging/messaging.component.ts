@@ -60,6 +60,7 @@ export class MessagingComponent implements OnInit {
   initPage(): void {
     this.store.dispatch(new messagingActions.LoadAllStreams());
     this.store.dispatch(new messagingActions.LoadSubStreams());
+
   }
 
   logoutUser(): void {
