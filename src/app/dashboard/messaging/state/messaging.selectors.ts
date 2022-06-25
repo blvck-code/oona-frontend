@@ -28,12 +28,12 @@ export const getLoadingMsg = createSelector(
 
 export const getMessages = createSelector(
   getMessagingState,
-  state => state.messaging.messages?.zulip?.messages
+  state => state.messaging.allMessages?.messages?.zulip?.messages
 );
 
 export const getMessageType = createSelector(
   getMessagingState,
-  state => state.messaging.messages?.oz.type
+  state => state.messaging.allMessages?.messages?.oz.type
 );
 
 export const getReceiverInfo = createSelector(

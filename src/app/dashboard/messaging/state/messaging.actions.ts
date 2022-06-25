@@ -8,6 +8,11 @@ export enum MessagingActionsTypes {
   LOAD_MESSAGES_SUCCESS = 'messaging/loadMessagesSuccess',
   LOAD_MESSAGES_FAIL = 'messaging/loadMessagesFail',
 
+  // All MESSAGES
+  LOAD_ALL_MESSAGES = 'messaging/loadAllMessages',
+  LOAD_ALL_MESSAGES_SUCCESS = 'messaging/loadAllMessagesSuccess',
+  LOAD_ALL_MESSAGES_FAIL = 'messaging/loadAllMessagesFail',
+
   // GET MORE MESSAGES
   LOAD_MORE_MESSAGE = 'messaging/loadMore',
   LOAD_MORE_MESSAGE_SUCCESS = 'messaging/loadMoreSuccess',
@@ -69,6 +74,25 @@ export class LoadMoreMessagingSuccess implements Action {
 export class LoadMoreMessagingFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_MORE_MESSAGE_FAIL;
   constructor(public payload: any) {
+  }
+}
+
+// LOAD MORE MESSAGES
+export class LoadAllMessages implements Action {
+  readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES;
+  constructor(public payload: any) {
+    console.log('Loaded more messages ==>>>', payload);
+  }
+}
+export class LoadAllMessagesSuccess implements Action {
+  readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES_SUCCESS;
+  constructor(public payload: any) {
+  }
+}
+export class LoadAllMessagesFail implements Action {
+  readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES_FAIL;
+  constructor(public payload: any) {
+    console.log('Load all messages fail ===>>>', payload);
   }
 }
 
@@ -166,4 +190,8 @@ export type MessagingActions =
   | LoadCurrentPrivateUserSuccess
   | LoadCurrentPrivateUserFail
   // HANDLE SEND MESSAGE
-  | HandleSendMessage;
+  | HandleSendMessage
+  // LOAD ALL MESSAGE
+  | LoadAllMessages
+  | LoadAllMessagesSuccess
+  | LoadAllMessagesFail;

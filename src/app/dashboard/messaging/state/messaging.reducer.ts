@@ -17,7 +17,14 @@ export interface MessagingState {
   msgReceiver: any;
   messaging: {
     loading: boolean,
-    messages: MessagesModel | null;
+    allMessages: {
+      loading: boolean,
+      messages: MessagesModel | null
+    };
+    privateMsgs: {
+      loading: boolean,
+      messages: MessagesModel | null
+    };
   };
 }
 
@@ -32,7 +39,14 @@ export const initialState: MessagingState = {
   msgReceiver: null,
   messaging: {
     loading: false,
-    messages: null
+    allMessages: {
+      loading: false,
+      messages: null
+    },
+    privateMsgs: {
+      loading: false,
+      messages: null
+    }
   }
 };
 
@@ -116,8 +130,8 @@ export function messagingReducer(
       return {
         ...state,
         messaging: {
+          ...state.messaging,
           loading: true,
-          messages: null
         }
       };
     case messagingActions.MessagingActionsTypes.LOAD_MESSAGES_SUCCESS:
@@ -125,7 +139,14 @@ export function messagingReducer(
         ...state,
         messaging: {
           loading: false,
-          messages: action.payload
+          allMessages: {
+            loading: false,
+            messages: action.payload
+          },
+          privateMsgs: {
+            loading: false,
+            messages: action.payload
+          }
         }
       };
     case messagingActions.MessagingActionsTypes.LOAD_MORE_MESSAGE:
