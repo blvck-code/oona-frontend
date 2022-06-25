@@ -5,7 +5,7 @@ import {MessagingService} from '../../services/messaging.service';
 import {Store} from '@ngrx/store';
 import * as messageActions from '../../state/messaging.actions';
 import { AppState } from '../../../../state/app.state';
-import {getLoadingMsg, getMessages} from '../../state/messaging.selectors';
+import {getLoadingAllMsg, getAllMessages} from '../../state/messaging.selectors';
 import {Observable} from 'rxjs';
 import {SingleChat, SingleMessageModel} from '../../models/messages.model';
 
@@ -39,25 +39,25 @@ export class LandingMessageBoardComponent implements OnInit {
   // Init Page
   initPage(): void {
 
-      const streamDetail = {
-        use_first_unread_anchor: true,
-        num_before: this.initialMessageCount,
-        type: [
-          {
-            operator: 'stream',
-            operand: 'general'
-          }
-        ]
-      };
+      // const streamDetail = {
+      //   use_first_unread_anchor: true,
+      //   num_before: this.initialMessageCount,
+      //   type: [
+      //     {
+      //       operator: 'stream',
+      //       operand: 'general'
+      //     }
+      //   ]
+      // };
 
     // fetch data from server
-      this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
+    //   this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
 
       // get Loading Message
-      this.loadingMessages = this.store.select(getLoadingMsg);
+      this.loadingMessages = this.store.select(getLoadingAllMsg);
 
       // get messages from store
-      this.messages$ = this.store.select(getMessages);
+      this.messages$ = this.store.select(getAllMessages);
 
       this.messagesLength();
 
@@ -66,7 +66,7 @@ export class LandingMessageBoardComponent implements OnInit {
   }
 
   messagesLength(): void {
-    this.store.select(getMessages).subscribe(
+    this.store.select(getAllMessages).subscribe(
       messages => {
         // @ts-ignore
         this.messageExist = messages?.length > 0;

@@ -38,6 +38,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   streams!: Observable<AllStreamsModel[]>;
   topics!: Observable<any>;
   streamIds!: any[];
+  allTopics: any = [];
 
   constructor(
     public messagingService: MessagingService,
@@ -71,26 +72,34 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   }
 
   initPage(): void {
+    // this.streamTopics();
+
     // Fetch streams
     this.streams = this.store.select(getAllStreams);
+
     // Fetch Topics
-    this.store.select(getStreamsLoading).subscribe(
-      resp => {
-        if (!resp){
-          this.streams = this.store.select(getAllStreams);
-          this.store.select(getAllStreams).subscribe(
-            data => {
-              take(data.length),
-                data.forEach((item: AllStreamsModel) => {
-                  take(1),
-                  this.store.dispatch(new messagingActions.LoadStreamTopic(item.stream_id));
-                  this.streamIds = [...this.streamMessages, item.stream_id];
-                });
-            }
+    this.streams.subscribe(streams => {
+      take(streams.length),
+        streams.map((stream: any) => {
+          const streamId = stream?.stream_id;
+          take(1),
+          this.messagingService.getTopicsOnStreams(stream.stream_id).subscribe(
+            (topicData: any) => {
+              const topicId = topicData?.oz?.stream_id;
+
+              if (topicId === streamId) {
+                stream = {
+                  ...stream,
+                  topics: topicData,
+                };
+                this.allTopics = [...this.allTopics, stream];
+              }
+
+          }
           );
-        }
-      }
-    );
+        });
+    });
+
     // Get Topics from store
     this.topics = this.store.select(getTopics);
   }
@@ -166,12 +175,16 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.publicTeams = allAvailableTeams.filter((team: { invite_only: any; }) => !team.invite_only);
   }
 
-  displayMessagesOfTopic(topic: any): void {
-    if (topic.name){
-      this.messagingService.changeTeamTopicMessages(topic.name);
-    }else{
-      this.messagingService.changeTeamTopicMessages('');
-    }
+  // displayMessagesOfTopic(topic: any): void {
+  //   if (topic.name){
+  //     this.messagingService.changeTeamTopicMessages(topic.name);
+  //   }else{
+  //     this.messagingService.changeTeamTopicMessages('');
+  //   }
+  // }
+
+  displayMessagesOfTopic(team?: any, topic?: any): void {
+
   }
 
   showAllMessages(): void {

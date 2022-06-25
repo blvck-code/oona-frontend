@@ -106,46 +106,71 @@ export function messagingReducer(
           subStreams: action?.payload?.subscriptions
         }
       };
-    // case messagingActions.MessagingActionsTypes.LOAD_STREAM_TOPIC_SUCCESS:
-    //
-    //   const topicStreamId = action.payload.oz.stream_id;
-    //   const updatedStream: any[] = state?.streams?.allStreams.map((stream: AllStreamsModel) => {
-    //     // tslint:disable-next-line:no-unused-expression
-    //     stream.stream_id === topicStreamId ? stream.topics = action.payload : null;
-    //   });
-    //
-    //   console.log('Target ==>>', updatedStream);
-    //   return {
-    //     ...state,
-    //     streams: {
-    //       ...state.streams,
-    //       // allStreams: [...state.streams.allStreams, updatedStream]
-    //       allStreams: updatedStream
-    //       // topics: [...state.streams.topics, addTopicToStream(action.payload)]
-    //     }
-    //   };
-
-    // Handle Messages
-    case messagingActions.MessagingActionsTypes.LOAD_MESSAGES:
+    // ALL MESSAGES
+    case messagingActions.MessagingActionsTypes.LOAD_ALL_MESSAGES:
       return {
         ...state,
         messaging: {
           ...state.messaging,
-          loading: true,
+          allMessages: {
+            ...state.messaging.allMessages,
+            loading: true
+          }
         }
       };
-    case messagingActions.MessagingActionsTypes.LOAD_MESSAGES_SUCCESS:
+    case messagingActions.MessagingActionsTypes.LOAD_ALL_MESSAGES_SUCCESS:
       return {
         ...state,
         messaging: {
-          loading: false,
+          ...state.messaging,
           allMessages: {
             loading: false,
             messages: action.payload
           },
+        }
+      };
+    case messagingActions.MessagingActionsTypes.LOAD_ALL_MESSAGES_FAIL:
+      return {
+        ...state,
+        messaging: {
+          ...state.messaging,
+          allMessages: {
+            loading: false,
+            messages: null
+          }
+        }
+      };
+    // PRIVATE MESSAGES
+      case messagingActions.MessagingActionsTypes.LOAD_PRIVATE_MESSAGES:
+      return {
+        ...state,
+        messaging: {
+          ...state.messaging,
+          privateMsgs: {
+            ...state.messaging.privateMsgs,
+            loading: false,
+          }
+        }
+      };
+    case messagingActions.MessagingActionsTypes.LOAD_PRIVATE_MESSAGE_SUCCESS:
+      return {
+        ...state,
+        messaging: {
+          ...state.messaging,
           privateMsgs: {
             loading: false,
             messages: action.payload
+          }
+        }
+      };
+    case messagingActions.MessagingActionsTypes.LOAD_PRIVATE_MESSAGES_FAIL:
+      return {
+        ...state,
+        messaging: {
+          ...state.messaging,
+          privateMsgs: {
+            ...state.messaging.privateMsgs,
+            loading: false,
           }
         }
       };
@@ -165,6 +190,24 @@ export function messagingReducer(
         ...state,
         msgReceiver: action.payload
       };
+// case messagingActions.MessagingActionsTypes.LOAD_STREAM_TOPIC_SUCCESS:
+    //
+    //   const topicStreamId = action.payload.oz.stream_id;
+    //   const updatedStream: any[] = state?.streams?.allStreams.map((stream: AllStreamsModel) => {
+    //     // tslint:disable-next-line:no-unused-expression
+    //     stream.stream_id === topicStreamId ? stream.topics = action.payload : null;
+    //   });
+    //
+    //   console.log('Target ==>>', updatedStream);
+    //   return {
+    //     ...state,
+    //     streams: {
+    //       ...state.streams,
+    //       // allStreams: [...state.streams.allStreams, updatedStream]
+    //       allStreams: updatedStream
+    //       // topics: [...state.streams.topics, addTopicToStream(action.payload)]
+    //     }
+    //   };
 
     default:
       return state;

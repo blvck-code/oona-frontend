@@ -5,7 +5,8 @@ import {Router} from '@angular/router';
 // NgRx
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
-import {getLoadingMsg, getMessages, getMessageType} from '../../state/messaging.selectors';
+// @Todo change this to fetch only private messages
+import {getLoadingPrivateMsgs, getMessageType, getPrivateMessages} from '../../state/messaging.selectors';
 import * as messageActions from '../../state/messaging.actions';
 import {Observable} from 'rxjs';
 import {StreamDetail} from '../../models/messages.model';
@@ -49,32 +50,28 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
   // Init page
   initPage(): void {
 
-    this.store.select(getUserDetails).subscribe(
-      data => this.operand = data?.email
-    );
-
     // Message parameters
-    const streamDetail = {
-      use_first_unread_anchor: true,
-      apply_markdown: false,
-      num_before: this.initialMessageCount,
-      type: [
-        {
-          operator: 'pm-with',
-          // change to user.email
-          operand: this.operand,
-        }
-      ]
-    };
+    // const streamDetail = {
+    //   use_first_unread_anchor: true,
+    //   apply_markdown: false,
+    //   num_before: this.initialMessageCount,
+    //   type: [
+    //     {
+    //       operator: 'pm-with',
+    //       // change to user.email
+    //       operand: this.operand,
+    //     }
+    //   ]
+    // };
 
     // fetch data from server
-    this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
+    // this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
 
     // get Loading Message
-    this.loadingMessages = this.store.select(getLoadingMsg);
+    this.loadingMessages = this.store.select(getLoadingPrivateMsgs);
 
     // get messages from store
-    this.messages$ = this.store.select(getMessages);
+    this.messages$ = this.store.select(getPrivateMessages);
 
     document?.getElementById('box')?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
 
@@ -82,7 +79,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
   }
 
   messagesLength(): void {
-    this.store.select(getMessages).subscribe(
+    this.store.select(getPrivateMessages).subscribe(
       messages => {
         // @ts-ignore
         this.messageExist = messages?.length > 0;

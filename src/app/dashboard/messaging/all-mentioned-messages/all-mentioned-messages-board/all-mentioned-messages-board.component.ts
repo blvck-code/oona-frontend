@@ -7,7 +7,8 @@ import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
 import * as messagingActions from '../../state/messaging.actions';
 import {Observable} from 'rxjs';
-import {getLoadingMsg, getMessages} from '../../state/messaging.selectors';
+// @Todo how do we handle loading for mentions?
+import {getLoadingAllMsg, getAllMessages} from '../../state/messaging.selectors';
 import {getUserDetails} from '../../../../auth/state/auth.selectors';
 
 @Component({
@@ -59,17 +60,17 @@ export class AllMentionedMessagesBoardComponent implements OnInit {
     this.store.dispatch(new messagingActions.LoadMessaging(streamDetail));
 
     // get loading messages
-    this.loadingMessages$ = this.store.select(getLoadingMsg);
+    this.loadingMessages$ = this.store.select(getLoadingAllMsg);
 
     // get messages from store
-    this.messages$ = this.store.select(getMessages);
+    this.messages$ = this.store.select(getAllMessages);
 
     // check messages length
     this.messagesLength();
   }
 
   messagesLength(): void {
-    this.store.select(getMessages).subscribe(
+    this.store.select(getAllMessages).subscribe(
       messages => {
         // @ts-ignore
         if (messages?.length > 0) {

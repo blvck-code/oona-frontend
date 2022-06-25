@@ -21,12 +21,13 @@ export const getTopics = createSelector(
   state => state.streams.topics
 );
 
-export const getLoadingMsg = createSelector(
+ // ALL MESSAGE SELECTORS
+export const getLoadingAllMsg = createSelector(
   getMessagingState,
-  state => state.messaging.loading
+  state => state.messaging.allMessages.loading
 );
 
-export const getMessages = createSelector(
+export const getAllMessages = createSelector(
   getMessagingState,
   state => state.messaging.allMessages?.messages?.zulip?.messages
 );
@@ -39,4 +40,15 @@ export const getMessageType = createSelector(
 export const getReceiverInfo = createSelector(
   getMessagingState,
   state => state.msgReceiver
+);
+
+// PRIVATE MESSAGES SELECTORS
+export const getLoadingPrivateMsgs = createSelector(
+  getMessagingState,
+  state => state.messaging.privateMsgs.loading
+);
+
+export const getPrivateMessages = createSelector(
+  getMessagingState,
+  state => state.messaging.privateMsgs?.messages?.zulip?.messages
 );

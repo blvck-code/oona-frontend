@@ -12,7 +12,8 @@ import * as messageActions from '../../state/messaging.actions';
 import * as authActions from '../../../../auth/state/auth.actions';
 import {getAllUsers, getSelectedUser} from '../../../../auth/state/auth.selectors';
 import {Observable, Subscription} from 'rxjs';
-import {getMessages} from '../../state/messaging.selectors';
+ // @Todo change this to fetch only individual messages
+import {getAllMessages} from '../../state/messaging.selectors';
 
 const turndownService = new TurndownService();
 
@@ -112,7 +113,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
 
     // get messages from store
-    this.messages$ = this.store.select(getMessages);
+    this.messages$ = this.store.select(getAllMessages);
   }
 
   privateMessages(): void{

@@ -6,7 +6,8 @@ import {Store} from '@ngrx/store';
 // NgRx
 import {AppState} from '../../../../state/app.state';
 import * as messagingActions from '../../state/messaging.actions';
-import {getLoadingMsg, getMessages} from '../../state/messaging.selectors';
+// @Todo change this to get only individual messages
+import {getLoadingAllMsg, getAllMessages} from '../../state/messaging.selectors';
 import {Observable} from 'rxjs';
 
 @Component({
@@ -53,10 +54,10 @@ export class GroupPmsMessagingBoardComponent implements OnInit {
     this.store.dispatch(new messagingActions.LoadMessaging(streamDetail));
 
     // get Loading Message
-    this.loadingMessages$ = this.store.select(getLoadingMsg);
+    this.loadingMessages$ = this.store.select(getLoadingAllMsg);
 
     // get messages from store
-    this.messages$ = this.store.select(getMessages);
+    this.messages$ = this.store.select(getAllMessages);
 
   }
 

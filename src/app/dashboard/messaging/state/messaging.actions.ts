@@ -13,6 +13,11 @@ export enum MessagingActionsTypes {
   LOAD_ALL_MESSAGES_SUCCESS = 'messaging/loadAllMessagesSuccess',
   LOAD_ALL_MESSAGES_FAIL = 'messaging/loadAllMessagesFail',
 
+  // PRIVATE MESSAGES
+  LOAD_PRIVATE_MESSAGES = 'messaging/loadPrivateMessages',
+  LOAD_PRIVATE_MESSAGE_SUCCESS = 'messaging/loadPrivateMessagesSuccess',
+  LOAD_PRIVATE_MESSAGES_FAIL = 'messaging/loadPrivateMessagesFail',
+
   // GET MORE MESSAGES
   LOAD_MORE_MESSAGE = 'messaging/loadMore',
   LOAD_MORE_MESSAGE_SUCCESS = 'messaging/loadMoreSuccess',
@@ -77,22 +82,45 @@ export class LoadMoreMessagingFail implements Action {
   }
 }
 
-// LOAD MORE MESSAGES
+// ALL MESSAGES
 export class LoadAllMessages implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES;
   constructor(public payload: any) {
-    console.log('Loaded more messages ==>>>', payload);
+    console.log('Loading all messages loading ====>>', payload);
   }
 }
 export class LoadAllMessagesSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES_SUCCESS;
   constructor(public payload: any) {
+    console.log('Loading all messages success ===>>>', payload);
+
   }
 }
 export class LoadAllMessagesFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES_FAIL;
   constructor(public payload: any) {
-    console.log('Load all messages fail ===>>>', payload);
+    console.log('Loading all messages fail ===>>>', payload);
+  }
+}
+
+// PRIVATE MESSAGES
+export class LoadPrivateMessages implements Action {
+  readonly type = MessagingActionsTypes.LOAD_PRIVATE_MESSAGES;
+  constructor(public payload: any) {
+    console.log('Loading private messages loading ====>>', payload);
+  }
+}
+export class LoadPrivateMessagesSuccess implements Action {
+  readonly type = MessagingActionsTypes.LOAD_PRIVATE_MESSAGE_SUCCESS;
+  constructor(public payload: any) {
+    console.log('Loading private messages success ===>>>', payload);
+
+  }
+}
+export class LoadPrivateMessagesFail implements Action {
+  readonly type = MessagingActionsTypes.LOAD_PRIVATE_MESSAGES_FAIL;
+  constructor(public payload: any) {
+    console.log('Loading private messages fail ===>>>', payload);
   }
 }
 
@@ -194,4 +222,8 @@ export type MessagingActions =
   // LOAD ALL MESSAGE
   | LoadAllMessages
   | LoadAllMessagesSuccess
-  | LoadAllMessagesFail;
+  | LoadAllMessagesFail
+  // LOAD PRIVATE MESSAGE
+   | LoadPrivateMessages
+   | LoadPrivateMessagesSuccess
+   | LoadPrivateMessagesFail;
