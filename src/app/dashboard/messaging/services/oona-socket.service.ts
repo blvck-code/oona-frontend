@@ -92,6 +92,7 @@ export class OonaSocketService {
   }
 
 
+
   private filterSocketData(userData: any): void {
     /*
      * Filters all active and inactive users

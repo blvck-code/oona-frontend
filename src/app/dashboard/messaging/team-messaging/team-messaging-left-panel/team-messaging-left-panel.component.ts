@@ -93,6 +93,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
                   topics: topicData,
                 };
                 this.allTopics = [...this.allTopics, stream];
+                // console.log('allTopics ===>>>>', this.allTopics);
               }
 
           }
@@ -184,8 +185,8 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   // }
 
   displayMessagesOfTopic(stream?: any, topic?: any): void {
-    console.log('Stream details ===>>>', stream);
-    console.log('Topic details ===>>>', topic);
+    // console.log('Stream details ===>>>', stream);
+    // console.log('Topic details ===>>>', topic);
 
     // @Todo change to topic incase user clicks topic instead of stream
     // if (topic){
@@ -194,7 +195,10 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     //   route = `${stream.name}`;
     // }
 
-    this.router.navigate([`/dashboard/messaging/streams/${stream.name}`]);
+    let streamName = stream.name;
+    streamName = streamName.replace(/\s+/g, '-').toLowerCase();
+
+    this.router.navigate([`/dashboard/messaging/streams/${stream.stream_id}-${streamName}`]);
     // this.router.navigate(['/dashboard/messaging/team']);
   }
 

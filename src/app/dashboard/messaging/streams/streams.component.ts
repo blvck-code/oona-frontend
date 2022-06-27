@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Params} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, NavigationError, NavigationStart, Params, Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../state/app.state';
 import {getAllMessages} from '../state/messaging.selectors';
+import {BehaviorSubject} from 'rxjs';
 
 @Component({
   selector: 'app-streams',
@@ -10,33 +11,72 @@ import {getAllMessages} from '../state/messaging.selectors';
   styleUrls: ['./streams.component.scss']
 })
 export class StreamsComponent implements OnInit {
-  currentStream: string = '';
+  currentStream = '';
+  public streamSubject = new BehaviorSubject<number>(0);
+  public streamSelected = this.streamSubject.asObservable();
 
   constructor(
     private activateRoute: ActivatedRoute,
+    private router: Router,
     private store: Store<AppState>
   ) {
+    // @ts-ignore
+    this.router.events.subscribe((event: Event) => {
+
+      if (event instanceof NavigationStart) {
+        console.log('Route change detected ===>>>', event);
+      }
+
+      if (event instanceof NavigationEnd) {
+        // Hide progress spinner or progress bar
+        // this.currentRoute = event.url;
+        console.log('Navigation ends ==>>', event);
+        const streamInfo = this.activateRoute.snapshot.paramMap.get('stream');
+        const streamId = streamInfo?.split('-')[0];
+
+        // @ts-ignore
+        this.streamSubject.next(+streamId);
+
+        this.store.select(getAllMessages).subscribe(
+          streams => {
+            // @Todo redirect if no data or no currentStream
+            if (streams) {
+              streams.map(stream => {
+                // console.log('Streams content ==>>>', stream.stream_id);
+                //
+                const streamName = stream.display_recipient;
+                let currentStreamId = 0;
+
+                this.streamSelected.subscribe(
+                  data => currentStreamId = data
+                );
+
+                if (stream.stream_id === currentStreamId) {
+                  console.log('Stream content ===>>>', stream.subject);
+                }
+              });
+            }
+          }
+        );
+
+      }
+
+      if (event instanceof NavigationError) {
+        // Hide progress spinner or progress bar
+      }
+    });
   }
 
   onInitHandler(): void {
 
+    const currentStream = this.activateRoute.snapshot.params.stream;
+
+
+
     this.currentStream = this.activateRoute.snapshot.params.stream;
-    console.log('Current stream ===>>>', this.currentStream);
 
-    this.store.select(getAllMessages).subscribe(
-      streams => {
-        // @Todo redirect if no data or no currentStream
-        if (streams) {
-          streams.map(stream => {
-            const streamName = stream.display_recipient;
+    this.streamSelected.subscribe(data => console.log('Current stream ===>>>', data));
 
-            if (streamName === this.currentStream) {
-              console.log('Stream content ===>>>', stream);
-            }
-          });
-        }
-      }
-    );
 
   }
 
