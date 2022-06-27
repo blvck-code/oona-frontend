@@ -1,11 +1,11 @@
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, NavigationError, NavigationStart, Params, Router} from '@angular/router';
-import {BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 // NgRx
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../state/app.state';
-import {getAllMessages} from '../state/messaging.selectors';
+import {getAllMessages, getLoadingAllMsg} from '../state/messaging.selectors';
 import {SingleMessageModel} from '../models/messages.model';
 import * as messagingActions from '../state/messaging.actions';
 
@@ -19,6 +19,7 @@ export class StreamsComponent implements OnInit, AfterViewInit {
   streams!: SingleMessageModel;
   public streamSubject = new BehaviorSubject<number>(0);
   public streamSelected = this.streamSubject.asObservable();
+  loadingMsgs$!: Observable<boolean>;
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -74,24 +75,34 @@ export class StreamsComponent implements OnInit, AfterViewInit {
   }
 
   handleMsgFilter(): void {
-    const selectedStream = this.activateRoute.snapshot.paramMap;
 
-    const streamId = selectedStream?.get('stream')?.split('-')[0];
-    const topic = selectedStream?.get('topic');
-    const topicInfo = topic?.replace('-', ' ');
+    this.store.select(getLoadingAllMsg).subscribe(
+      data => {
+        if (!data) {
+          const selectedStream = this.activateRoute.snapshot.paramMap;
 
-    const filteredInfo = {
-      streamId,
-      topicName: undefined
-    };
+          const streamId = selectedStream?.get('stream')?.split('-')[0];
+          const topic = selectedStream?.get('topic');
+          const topicInfo = topic?.replace('-', ' ');
+
+          const filteredInfo = {
+            streamId,
+            topicName: undefined
+          };
 
 
-    if (topicInfo) {
-      // @ts-ignore
-      filteredInfo.topicName = topicInfo;
-    }
+          if (topicInfo) {
+            // @ts-ignore
+            filteredInfo.topicName = topicInfo;
+          }
 
-    this.store.dispatch(new messagingActions.FilterMessages(filteredInfo));
+          this.store.dispatch(new messagingActions.FilterMessages(filteredInfo));
+        }
+      }
+    )
+
+
+
     // this.activateRoute.params.subscribe(data => console.log('Params ===>>', data));
 
   }
@@ -101,7 +112,7 @@ export class StreamsComponent implements OnInit, AfterViewInit {
     this.onInitHandler();
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.handleMsgFilter();
   }
 

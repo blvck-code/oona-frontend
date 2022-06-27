@@ -32,6 +32,11 @@ export const getAllMessages = createSelector(
   state => state.messaging.allMessages?.messages?.zulip?.messages
 );
 
+export const getAllFilteredMsg = createSelector(
+  getMessagingState,
+  state => state.messaging.selectedStreamMsg.messages
+);
+
 // export const filteredState = createSelector(
 //   getMessagingState,
 //   state => state.messaging.filtered

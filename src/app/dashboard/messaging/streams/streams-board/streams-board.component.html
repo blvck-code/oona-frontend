@@ -15,10 +15,10 @@
 <!--          Get more-->
 <!--        </button>-->
 <!--      </div>-->
-<!--      <app-individual-chat-card-->
-<!--        *ngFor="let chat of selectedStream"-->
-<!--        [messageDetail]="chat"-->
-<!--      ></app-individual-chat-card>-->
+      <app-individual-chat-card
+        *ngFor="let chat of (streams$ | async)"
+        [messageDetail]="chat"
+      ></app-individual-chat-card>
     </div>
 
 <!--    <div class="py-4">-->

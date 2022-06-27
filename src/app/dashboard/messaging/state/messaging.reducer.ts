@@ -27,7 +27,7 @@ export interface MessagingState {
     };
     selectedStreamMsg: {
       loading: boolean;
-      messages: MessagesModel | null;
+      messages: SingleMessageModel[] | undefined | null;
     };
   };
 }
@@ -44,7 +44,7 @@ export const initialState: MessagingState = {
   messaging: {
     loading: false,
     allMessages: {
-      loading: false,
+      loading: true,
       messages: null,
     },
     privateMsgs: {
@@ -72,12 +72,20 @@ const addTopicToStream = (payload: any) => {
 };
 
 const filterMessages = (payload: any, state: MessagingState) => {
-  const loading = state.messaging.allMessages.loading;
 
-  if (!loading) {
-    console.log('State management ===>>>', state);
+  const messages = state.messaging.allMessages.messages?.zulip.messages;
+  const streamId = payload.streamId;
+  const topic = payload.topicName;
+  let filteredMsg: SingleMessageModel[] | undefined = [];
+
+  if (topic) {
+    const unfilteredMsg = messages?.filter(msg => msg.stream_id === +streamId);
+    filteredMsg = unfilteredMsg?.filter(msg => msg.subject === topic);
+  } else {
+    filteredMsg = messages?.filter(msg => msg.stream_id === +streamId);
   }
-  console.log('Filtering content ====>>>', payload);
+  return filteredMsg;
+
 };
 
 const sortMsg = (payload: any) => {
@@ -124,17 +132,6 @@ export function messagingReducer(
         },
       };
     // ALL MESSAGES
-    case messagingActions.MessagingActionsTypes.LOAD_ALL_MESSAGES:
-      return {
-        ...state,
-        messaging: {
-          ...state.messaging,
-          allMessages: {
-            ...state.messaging.allMessages,
-            loading: true,
-          },
-        },
-      };
     case messagingActions.MessagingActionsTypes.LOAD_ALL_MESSAGES_SUCCESS:
       return {
         ...state,
@@ -193,11 +190,14 @@ export function messagingReducer(
       };
     // FILTERING MESSAGES
     case messagingActions.MessagingActionsTypes.FILTER_MESSAGES:
-      filterMessages(action.payload, state);
       return {
         ...state,
         messaging: {
           ...state.messaging,
+          selectedStreamMsg: {
+            loading: false,
+            messages: filterMessages(action.payload, state)
+          }
         },
       };
 
