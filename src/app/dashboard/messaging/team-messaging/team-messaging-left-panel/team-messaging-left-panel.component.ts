@@ -185,20 +185,38 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   // }
 
   displayMessagesOfTopic(stream?: any, topic?: any): void {
-    // console.log('Stream details ===>>>', stream);
-    // console.log('Topic details ===>>>', topic);
+    // stream
+    console.log('Stream being filtered ===>> ', stream);
 
-    // @Todo change to topic incase user clicks topic instead of stream
-    // if (topic){
-    //   route = `${stream.name}/${topic.name}`;
-    // } else {
-    //   route = `${stream.name}`;
-    // }
-
-    let streamName = stream.name;
+    let streamName = stream?.name;
     streamName = streamName.replace(/\s+/g, '-').toLowerCase();
 
-    this.router.navigate([`/dashboard/messaging/streams/${stream.stream_id}-${streamName}`]);
+    // @Todo change to topic incase user clicks topic instead of stream
+    if (topic) {
+      // topic
+      let topicName = topic?.name;
+      topicName = topicName.replace(/\s+/g, '-').toLowerCase();
+
+      this.router.navigate([`/dashboard/messaging/streams/${stream.stream_id}-${streamName}/topic/${topicName}`]);
+    } else {
+      this.router.navigate([`/dashboard/messaging/streams/${stream.stream_id}-${streamName}`]);
+    }
+
+    const topicName = topic?.name;
+
+    const filterData = {
+      streamId: stream.stream_id,
+      topic: undefined
+    };
+
+    if (topic) {
+      filterData.topic = topicName;
+    }
+    console.log('Clicked stream ===>>', filterData);
+    // this.store.dispatch(new messagingActions.FilterMessages(filterData));
+
+
+
     // this.router.navigate(['/dashboard/messaging/team']);
   }
 

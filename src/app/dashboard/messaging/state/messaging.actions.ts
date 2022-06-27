@@ -45,6 +45,10 @@ export enum MessagingActionsTypes {
 
   // HANDLE SEND MESSAGE
   HANDLE_SEND_MESSAGE = 'messaging/handleSendMessage',
+
+  // FILTER MESSAGES
+  FILTER_MESSAGES = 'messaging/filterMessages'
+
 }
 
 // LOAD MESSAGES ACTIONS
@@ -63,6 +67,12 @@ export class LoadMessagingFail implements Action {
   constructor(public payload: any) {
   }
 }
+export class FilterMessages implements Action {
+  readonly type = MessagingActionsTypes.FILTER_MESSAGES;
+  constructor(public payload: any) {
+  }
+}
+
 
 // LOAD MORE MESSAGES
 export class LoadMoreMessaging implements Action {
@@ -92,8 +102,6 @@ export class LoadAllMessages implements Action {
 export class LoadAllMessagesSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES_SUCCESS;
   constructor(public payload: any) {
-    console.log('Loading all messages success ===>>>', payload);
-
   }
 }
 export class LoadAllMessagesFail implements Action {
@@ -195,6 +203,7 @@ export class HandleSendMessage implements Action {
   }
 }
 
+
 export type MessagingActions =
   // MESSAGING ACTIONS
   | LoadMessaging
@@ -226,6 +235,7 @@ export type MessagingActions =
   | LoadAllMessages
   | LoadAllMessagesSuccess
   | LoadAllMessagesFail
+  | FilterMessages
   // LOAD PRIVATE MESSAGE
    | LoadPrivateMessages
    | LoadPrivateMessagesSuccess

@@ -28,6 +28,10 @@ const routes: Routes = [
         component: StreamsComponent
       },
       {
+        path: 'streams/:stream/topic/:topic',
+        component: StreamsComponent
+      },
+      {
         path: 'private',
         component: AllPrivateMessagingComponent
       },

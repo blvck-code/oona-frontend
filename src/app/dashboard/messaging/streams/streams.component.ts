@@ -1,17 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, NavigationError, NavigationStart, Params, Router} from '@angular/router';
+import {BehaviorSubject} from 'rxjs';
+
+// NgRx
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../state/app.state';
 import {getAllMessages} from '../state/messaging.selectors';
-import {BehaviorSubject} from 'rxjs';
+import {SingleMessageModel} from '../models/messages.model';
+import * as messagingActions from '../state/messaging.actions';
 
 @Component({
   selector: 'app-streams',
   templateUrl: './streams.component.html',
   styleUrls: ['./streams.component.scss']
 })
-export class StreamsComponent implements OnInit {
-  currentStream = '';
+export class StreamsComponent implements OnInit, AfterViewInit {
+  currentStream: any;
+  streams!: SingleMessageModel;
   public streamSubject = new BehaviorSubject<number>(0);
   public streamSelected = this.streamSubject.asObservable();
 
@@ -24,46 +29,35 @@ export class StreamsComponent implements OnInit {
     this.router.events.subscribe((event: Event) => {
 
       if (event instanceof NavigationStart) {
-        console.log('Route change detected ===>>>', event);
+
       }
 
       if (event instanceof NavigationEnd) {
         // Hide progress spinner or progress bar
         // this.currentRoute = event.url;
-        console.log('Navigation ends ==>>', event);
-        const streamInfo = this.activateRoute.snapshot.paramMap.get('stream');
-        const streamId = streamInfo?.split('-')[0];
+        const selectedStream = this.activateRoute.snapshot.paramMap;
 
-        // @ts-ignore
-        this.streamSubject.next(+streamId);
+        const streamId = selectedStream?.get('stream')?.split('-')[0];
+        const topicInfo = selectedStream?.get('topic')?.replace('-', ' ');
 
-        this.store.select(getAllMessages).subscribe(
-          streams => {
-            // @Todo redirect if no data or no currentStream
-            if (streams) {
-              streams.map(stream => {
-                // console.log('Streams content ==>>>', stream.stream_id);
-                //
-                const streamName = stream.display_recipient;
-                let currentStreamId = 0;
+        const filteredInfo = {
+          streamId,
+          topicName: undefined
+        };
 
-                this.streamSelected.subscribe(
-                  data => currentStreamId = data
-                );
+        if (topicInfo) {
+          // @ts-ignore
+          filteredInfo.topicName = topicInfo;
+        }
+        // this.store.dispatch(new messagingActions.FilterMessages(filteredInfo));
 
-                if (stream.stream_id === currentStreamId) {
-                  console.log('Stream content ===>>>', stream.subject);
-                }
-              });
-            }
-          }
-        );
-
+        this.handleMsgFilter();
       }
 
       if (event instanceof NavigationError) {
         // Hide progress spinner or progress bar
       }
+
     });
   }
 
@@ -71,19 +65,44 @@ export class StreamsComponent implements OnInit {
 
     const currentStream = this.activateRoute.snapshot.params.stream;
 
-
-
-    this.currentStream = this.activateRoute.snapshot.params.stream;
+    // this.currentStream = this.activateRoute.snapshot.params.stream;
 
     this.streamSelected.subscribe(data => console.log('Current stream ===>>>', data));
 
 
+
   }
 
+  handleMsgFilter(): void {
+    const selectedStream = this.activateRoute.snapshot.paramMap;
+
+    const streamId = selectedStream?.get('stream')?.split('-')[0];
+    const topic = selectedStream?.get('topic');
+    const topicInfo = topic?.replace('-', ' ');
+
+    const filteredInfo = {
+      streamId,
+      topicName: undefined
+    };
+
+
+    if (topicInfo) {
+      // @ts-ignore
+      filteredInfo.topicName = topicInfo;
+    }
+
+    this.store.dispatch(new messagingActions.FilterMessages(filteredInfo));
+    // this.activateRoute.params.subscribe(data => console.log('Params ===>>', data));
+
+  }
 
 
   ngOnInit(): void {
     this.onInitHandler();
+  }
+
+  ngAfterViewInit() {
+    this.handleMsgFilter();
   }
 
 }

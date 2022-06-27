@@ -1,29 +1,33 @@
 import * as messagingActions from './messaging.actions';
-import {AllStreamsModel, SubscribedStreams} from '../models/streams.model';
-import {All} from '@ngrx/store-devtools/src/actions';
-import {MessagesModel} from '../models/messages.model';
-import {TopicsModel} from '../models/topics.model';
-import {CurrentUserModel} from '../models/currentUser.model';
-import {act} from '@ngrx/effects';
+import { AllStreamsModel, SubscribedStreams } from '../models/streams.model';
+import { All } from '@ngrx/store-devtools/src/actions';
+import { MessagesModel, SingleMessageModel } from '../models/messages.model';
+import { TopicsModel } from '../models/topics.model';
+import { CurrentUserModel } from '../models/currentUser.model';
+import { act } from '@ngrx/effects';
 
 export interface MessagingState {
   loading: boolean;
   streams: {
-    allStreams: AllStreamsModel[] | any,
-    subStreams: SubscribedStreams[],
-    topics: any
+    allStreams: AllStreamsModel[] | any;
+    subStreams: SubscribedStreams[];
+    topics: any;
   };
   currentUser: CurrentUserModel | null;
   msgReceiver: any;
   messaging: {
-    loading: boolean,
+    loading: boolean;
     allMessages: {
-      loading: boolean,
-      messages: MessagesModel | null
+      loading: boolean;
+      messages: MessagesModel | null;
     };
     privateMsgs: {
-      loading: boolean,
-      messages: MessagesModel | null
+      loading: boolean;
+      messages: MessagesModel | null;
+    };
+    selectedStreamMsg: {
+      loading: boolean;
+      messages: MessagesModel | null;
     };
   };
 }
@@ -33,7 +37,7 @@ export const initialState: MessagingState = {
   streams: {
     allStreams: [],
     subStreams: [],
-    topics: []
+    topics: [],
   },
   currentUser: null,
   msgReceiver: null,
@@ -41,26 +45,39 @@ export const initialState: MessagingState = {
     loading: false,
     allMessages: {
       loading: false,
-      messages: null
+      messages: null,
     },
     privateMsgs: {
       loading: false,
-      messages: null
-    }
-  }
+      messages: null,
+    },
+    selectedStreamMsg: {
+      loading: false,
+      messages: null,
+    },
+  },
 };
 
-const addTopicToStream = ( payload: any) => {
+const addTopicToStream = (payload: any) => {
   const stream_id = payload?.oz?.stream_id;
   const content = [...payload?.zulip?.topics];
 
-  const topics  = {
+  const topics = {
     stream_id: {
-      content
-    }
+      content,
+    },
   };
 
-  return  topics;
+  return topics;
+};
+
+const filterMessages = (payload: any, state: MessagingState) => {
+  const loading = state.messaging.allMessages.loading;
+
+  if (!loading) {
+    console.log('State management ===>>>', state);
+  }
+  console.log('Filtering content ====>>>', payload);
 };
 
 const sortMsg = (payload: any) => {
@@ -79,14 +96,14 @@ export function messagingReducer(
     case messagingActions.MessagingActionsTypes.LOAD_SUB_STREAMS:
       return {
         ...state,
-        loading: true
+        loading: true,
       };
     case messagingActions.MessagingActionsTypes.LOAD_STREAM_TOPIC_FAIL:
     case messagingActions.MessagingActionsTypes.LOAD_SUB_STREAMS_FAIL:
     case messagingActions.MessagingActionsTypes.LOAD_ALL_STREAMS_FAIL:
       return {
         ...state,
-        loading: false
+        loading: false,
       };
     case messagingActions.MessagingActionsTypes.LOAD_ALL_STREAMS_SUCCESS:
       return {
@@ -94,8 +111,8 @@ export function messagingReducer(
         loading: false,
         streams: {
           ...state.streams,
-          allStreams: action?.payload?.streams
-        }
+          allStreams: action?.payload?.streams,
+        },
       };
     case messagingActions.MessagingActionsTypes.LOAD_SUB_STREAMS_SUCCESS:
       return {
@@ -103,8 +120,8 @@ export function messagingReducer(
         loading: false,
         streams: {
           ...state.streams,
-          subStreams: action?.payload?.subscriptions
-        }
+          subStreams: action?.payload?.subscriptions,
+        },
       };
     // ALL MESSAGES
     case messagingActions.MessagingActionsTypes.LOAD_ALL_MESSAGES:
@@ -114,9 +131,9 @@ export function messagingReducer(
           ...state.messaging,
           allMessages: {
             ...state.messaging.allMessages,
-            loading: true
-          }
-        }
+            loading: true,
+          },
+        },
       };
     case messagingActions.MessagingActionsTypes.LOAD_ALL_MESSAGES_SUCCESS:
       return {
@@ -125,9 +142,9 @@ export function messagingReducer(
           ...state.messaging,
           allMessages: {
             loading: false,
-            messages: action.payload
+            messages: action.payload,
           },
-        }
+        },
       };
     case messagingActions.MessagingActionsTypes.LOAD_ALL_MESSAGES_FAIL:
       return {
@@ -136,12 +153,12 @@ export function messagingReducer(
           ...state.messaging,
           allMessages: {
             loading: false,
-            messages: null
-          }
-        }
+            messages: null,
+          },
+        },
       };
     // PRIVATE MESSAGES
-      case messagingActions.MessagingActionsTypes.LOAD_PRIVATE_MESSAGES:
+    case messagingActions.MessagingActionsTypes.LOAD_PRIVATE_MESSAGES:
       return {
         ...state,
         messaging: {
@@ -149,8 +166,8 @@ export function messagingReducer(
           privateMsgs: {
             ...state.messaging.privateMsgs,
             loading: false,
-          }
-        }
+          },
+        },
       };
     case messagingActions.MessagingActionsTypes.LOAD_PRIVATE_MESSAGE_SUCCESS:
       return {
@@ -159,9 +176,9 @@ export function messagingReducer(
           ...state.messaging,
           privateMsgs: {
             loading: false,
-            messages: action.payload
-          }
-        }
+            messages: action.payload,
+          },
+        },
       };
     case messagingActions.MessagingActionsTypes.LOAD_PRIVATE_MESSAGES_FAIL:
       return {
@@ -171,15 +188,25 @@ export function messagingReducer(
           privateMsgs: {
             ...state.messaging.privateMsgs,
             loading: false,
-          }
-        }
+          },
+        },
       };
+    // FILTERING MESSAGES
+    case messagingActions.MessagingActionsTypes.FILTER_MESSAGES:
+      filterMessages(action.payload, state);
+      return {
+        ...state,
+        messaging: {
+          ...state.messaging,
+        },
+      };
+
     case messagingActions.MessagingActionsTypes.LOAD_MORE_MESSAGE:
       return {
         ...state,
         messaging: {
           ...state.messaging,
-        }
+        },
       };
     case messagingActions.MessagingActionsTypes.LOAD_MESSAGES_FAIL:
       return {
@@ -188,9 +215,10 @@ export function messagingReducer(
     case messagingActions.MessagingActionsTypes.HANDLE_SEND_MESSAGE:
       return {
         ...state,
-        msgReceiver: action.payload
+        msgReceiver: action.payload,
       };
-// case messagingActions.MessagingActionsTypes.LOAD_STREAM_TOPIC_SUCCESS:
+
+    // case messagingActions.MessagingActionsTypes.LOAD_STREAM_TOPIC_SUCCESS:
     //
     //   const topicStreamId = action.payload.oz.stream_id;
     //   const updatedStream: any[] = state?.streams?.allStreams.map((stream: AllStreamsModel) => {
@@ -213,4 +241,3 @@ export function messagingReducer(
       return state;
   }
 }
-
