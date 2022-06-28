@@ -73,7 +73,6 @@ export class FilterMessages implements Action {
   }
 }
 
-
 // LOAD MORE MESSAGES
 export class LoadMoreMessaging implements Action {
   readonly type = MessagingActionsTypes.LOAD_MORE_MESSAGE;
@@ -96,7 +95,6 @@ export class LoadMoreMessagingFail implements Action {
 export class LoadAllMessages implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES;
   constructor(public payload: any) {
-    console.log('Loading all messages loading ====>>', payload);
   }
 }
 export class LoadAllMessagesSuccess implements Action {

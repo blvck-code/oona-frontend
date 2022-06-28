@@ -2,7 +2,7 @@
   <p class="team-name">All mentions</p>
   <div class="d-flex navigation-section mt-3">
     <div class="navigation active">
-      <p>Chatters</p>
+      <p>Stream</p>
     </div>
   </div>
 
@@ -18,6 +18,7 @@
       <app-individual-chat-card
         *ngFor="let chat of (streams$ | async)"
         [messageDetail]="chat"
+        (click)="handleReply(chat)"
       ></app-individual-chat-card>
     </div>
 
@@ -32,5 +33,5 @@
 <!--      </div>-->
 <!--    </div>-->
   </div>
-  <app-group-pms-text-editor class="add-editor"></app-group-pms-text-editor>
+  <app-editor class="add-editor" [class.active]="editorActive"></app-editor>
 </div>

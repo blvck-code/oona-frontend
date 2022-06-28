@@ -140,7 +140,7 @@ export class LandingMessageBoardComponent implements OnInit {
     });
   }
 
-  selectedUser(chat: SingleChat): any {
+  selectedChat(chat: SingleChat): any {
     this.editorActive = true;
     this.store.dispatch(new messageActions.HandleSendMessage(chat));
   }

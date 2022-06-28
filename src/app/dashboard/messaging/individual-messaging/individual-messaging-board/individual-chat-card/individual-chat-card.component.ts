@@ -15,4 +15,8 @@ export class IndividualChatCardComponent implements OnInit {
     this.messageTime = new Date(this.messageDetail.timestamp * 1000).toLocaleTimeString();
   }
 
+  handleReply(message: any): void {
+    console.log('Message content ===>>>', message);
+  }
+
 }
