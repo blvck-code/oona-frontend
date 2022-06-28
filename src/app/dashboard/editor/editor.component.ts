@@ -12,6 +12,8 @@ import {AppState} from '../../state/app.state';
 import {Store} from '@ngrx/store';
 import {getReceiverInfo} from '../messaging/state/messaging.selectors';
 import { SingleChat } from '../messaging/models/messages.model';
+import {messageChannel} from '../../../environments/environment';
+import {MessagesSocketService} from '../messaging/services/messages-socket.service';
 
 const turndownService = new TurndownService();
 
@@ -38,7 +40,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     private  groupPmsService: GroupPmsServiceService,
     private  notificationService: NotificationService,
     private router: Router,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private msgSocket: MessagesSocketService,
   ) { }
 
   // @ts-ignore
@@ -170,13 +173,17 @@ export class EditorComponent implements OnInit, OnDestroy {
     //   content: markdown
     // };
 
-    this.messagingService.sendStreamMessage(messageDetail).subscribe((response: any) => {
-      if (response.zulip.result === 'success'){
-        // clear the form
-        form.value.name = '';
-        this.editorData = '';
-      }
-    });
+    this.msgSocket.messages.next(messageDetail);
+
+    console.log('Message content ===>>>', messageChannel);
+
+    // this.messagingService.sendStreamMessage(messageDetail).subscribe((response: any) => {
+    //   if (response.zulip.result === 'success'){
+    //     // clear the form
+    //     form.value.name = '';
+    //     this.editorData = '';
+    //   }
+    // });
     // clear the form
     form.value.name = '';
     this.editorData = '';

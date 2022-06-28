@@ -17,6 +17,7 @@ import { MessagingService } from './services/messaging.service';
   selector: 'app-messaging',
   templateUrl: './messaging.component.html',
   styleUrls: ['./messaging.component.scss'],
+  providers: [MessagesSocketService, MessagingService]
 })
 export class MessagingComponent implements OnInit {
   title = 'Team messaging';
@@ -33,9 +34,12 @@ export class MessagingComponent implements OnInit {
     private router: Router,
     private messageSocket: MessagesSocketService,
     private store: Store<AppState>,
-    public messagingService: MessagingService
+    public messagingService: MessagingService,
   ) {
-    this.messageSocket.messageConnect();
+    // this.messageSocket.messageConnect();
+    this.messagingService.messages.subscribe(msg => {
+      console.log('Response from websocket ===>>>', msg);
+    });
   }
 
   ngOnInit(): void {

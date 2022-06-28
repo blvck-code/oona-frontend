@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const oonaBaseUrl = 'https://192.168.0.100:2443';
-export const userChannel = 'wss://192.168.0.181:2443/ws/on/event/';
+export const userChannel = 'wss://192.168.0.100:2443/ws/on/event/';
 export const messageChannel = 'wss://192.168.0.100:2443/ws/on/message/';
 const whiteBoard = 'http://192.168.0.100:8030';
 const etherPad = 'http://192.168.0.100:9001/';

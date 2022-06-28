@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
-import { environment as env, oonaBaseUrl } from '../../../../environments/environment';
+import {environment as env, messageChannel, oonaBaseUrl} from '../../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {AuthService} from '../../../auth/services/auth.service';
-import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
 import {Router} from '@angular/router';
 import {AllStreamsModel} from '../models/streams.model';
 import {map} from 'rxjs/operators';
+import {MessagesSocketService} from './messages-socket.service';
 
 @Injectable({
   providedIn: 'root',
@@ -31,12 +32,22 @@ export class MessagingService {
 
   allPlatformMembers = [];
   subscribers: any;
+  public messages!: Subject<any>;
 
   constructor(
     private http: HttpClient,
     private authService: AuthService,
-    private router: Router) {
+    private router: Router,
+    private msgSocket: MessagesSocketService
+    ) {
     this.getAllUsers();
+
+    this.messages = <Subject<any>>msgSocket.connect(messageChannel).map(
+      (response: MessageEvent): any => {
+        let data = JSON.parse(response.data);
+        console.log('Received message ===>>>', data);
+      }
+    )
   }
 
   public memberObject = {
