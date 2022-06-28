@@ -42,7 +42,11 @@ export class EditorComponent implements OnInit, OnDestroy {
     private router: Router,
     private store: Store<AppState>,
     private msgSocket: MessagesSocketService,
-  ) { }
+  ) {
+    this.messagingService.messages.subscribe(msg => {
+      console.log('Response from websocket from server ===>>>', msg);
+    });
+  }
 
   // @ts-ignore
   editor: Editor;
@@ -173,7 +177,12 @@ export class EditorComponent implements OnInit, OnDestroy {
     //   content: markdown
     // };
 
-    this.msgSocket.messages.next(messageDetail);
+    const message = {
+      author: 'Oluoch',
+      message: 'trial message'
+    };
+
+    this.msgSocket.messages.next(message);
 
     console.log('Message content ===>>>', messageChannel);
 

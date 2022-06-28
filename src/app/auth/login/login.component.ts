@@ -48,7 +48,8 @@ export class LoginComponent implements OnInit {
     this.isLoggedIn$.subscribe(
       data => {
         if (data) {
-          this.router.navigate(['/dashboard']).then(r => console.log(123));
+          console.log('Login status: ', data);
+          this.router.navigate(['/dashboard']).then(r => console.log('Login success'));
         }
       }
     );

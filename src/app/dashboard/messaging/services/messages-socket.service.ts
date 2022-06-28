@@ -5,9 +5,10 @@ import {AuthService} from '../../../auth/services/auth.service';
 import {AnonymousSubject} from 'rxjs/internal-compatibility';
 import {map} from 'rxjs/operators';
 import {MessagingState} from '../state/messaging.reducer';
-import { webSocket } from 'rxjs/webSocket';
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 // tslint:disable-next-line:import-blacklist
 import * as Rx from 'rxjs/Rx';
+import * as io from 'socket.io-client';
 
 @Injectable({
   providedIn: 'root'
@@ -20,8 +21,7 @@ export class MessagesSocketService {
   messageCount = this.messageCountSocket.asObservable();
   public messages!: Subject<any>;
   private subject!: AnonymousSubject<MessageEvent>;
-
-  private messageSocket: WebSocket | undefined;
+  socket: any;
 
   constructor(
     private authService: AuthService,
@@ -29,7 +29,7 @@ export class MessagesSocketService {
     this.messageConnect();
     // this.messageCountManagement();
 
-    // this.messages = <Subject<any>>this.messageConnect(messageChannel).pipe(
+    // this.messages = <Subject<any>>this.connect(messageChannel).pipe(
     //   map((response: MessageEvent): any => {
     //     console.log('Message response ===>>', response.data);
     //     let data = JSON.parse(response.data);
@@ -39,6 +39,15 @@ export class MessagesSocketService {
   }
 
   messageConnect(): any {
+    this.socket = io.io(messageChannel);
+
+    this.socket.on('connect', () => {
+      console.log('Connection successful for messaging');
+    }).emit('authenticated', this.authService.getToken());
+
+    this.socket.on('message', (msg: any) => {
+      console.log('Message received from socket ===>>>', msg);
+    });
 
   }
 
@@ -51,17 +60,16 @@ export class MessagesSocketService {
   }
 
   private create(url: string): Rx.Subject<MessageEvent> {
-    let ws = new WebSocket(url);
+    const ws = new WebSocket(url);
 
-    let observable = Rx.Observable.create((obs: Rx.Observer<MessageEvent>) => {
+    const observable = Rx.Observable.create((obs: Rx.Observer<MessageEvent>) => {
       ws.onmessage = obs.next.bind(obs);
       ws.onerror = obs.error.bind(obs);
       ws.onclose = obs.complete.bind(obs);
-
       return ws.close.bind(ws);
     });
 
-    let observer = {
+    const observer = {
       next: (data: Object) => {
         if (ws.readyState === WebSocket.OPEN) {
           console.log('Sending data ===>>>', JSON.stringify(data));
@@ -69,6 +77,7 @@ export class MessagesSocketService {
         }
       }
     };
+
     return Rx.Subject.create(observer, observable);
   }
 

@@ -8,9 +8,15 @@ import {AllStreamsModel} from '../models/streams.model';
 import {map} from 'rxjs/operators';
 import {MessagesSocketService} from './messages-socket.service';
 
+export interface Message {
+  author: string;
+  message: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
+
 export class MessagingService {
   users = env.users;
   teams = env.teams;
@@ -34,6 +40,7 @@ export class MessagingService {
   subscribers: any;
   public messages!: Subject<any>;
 
+
   constructor(
     private http: HttpClient,
     private authService: AuthService,
@@ -42,12 +49,18 @@ export class MessagingService {
     ) {
     this.getAllUsers();
 
-    this.messages = <Subject<any>>msgSocket.connect(messageChannel).map(
+    this.messages = (msgSocket.connect(messageChannel).map(
       (response: MessageEvent): any => {
-        let data = JSON.parse(response.data);
+        const data = JSON.parse(response.data);
         console.log('Received message ===>>>', data);
+
+        return {
+          author: data.author,
+          message: data.message
+        };
+
       }
-    )
+    ) as Subject<Message>);
   }
 
   public memberObject = {
