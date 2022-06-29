@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {MessagingService} from '../../services/messaging.service';
 
@@ -40,6 +40,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
   userActivity: any;
   initialMessageCount = 30;
   newMessagesCount = 0;
+  @Input() currentMessages = [];
   createdAt: any;
 
   ngOnInit(): void {
@@ -47,7 +48,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
     this.messagingService.currentMemberChatDetail.subscribe(member => {
       this.memberDetail = member;
-      this.store.dispatch(new authActions.SetSelectedUser(member));
+      // this.store.dispatch(new authActions.SetSelectedUser(member));
       setTimeout(() => {
         this.privateMessages();
       }, 1000);
@@ -72,7 +73,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
        members.forEach((member: any) => {
          if (member.email === userEmail){
            localStorage.setItem('privateMsg', member.email);
-           this.store.dispatch(new authActions.SetSelectedUser(member));
+           // this.store.dispatch(new authActions.SetSelectedUser(member));
          }
        });
        // console.log('Members ===>>', members);

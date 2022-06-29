@@ -1,14 +1,22 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
 import {MessagingService} from '../../services/messaging.service';
+import * as authActions from '../../../../auth/state/auth.actions';
 import {environment} from '../../../../../environments/environment';
+
 import {NotificationService} from '../../../../shared/services/notification.service';
+import {getAllUsers, getZulipUsers} from '../../../../auth/state/auth.selectors';
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../../state/app.state';
+import {Observable} from 'rxjs';
+
 
 @Component({
   selector: 'app-individual-messaging-right-panel',
   templateUrl: './individual-messaging-right-panel.component.html',
   styleUrls: ['./individual-messaging-right-panel.component.scss']
 })
+
 export class IndividualMessagingRightPanelComponent implements OnInit {
   otherMembers: any ;
   allUsers: any;
@@ -30,12 +38,14 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
   loggedInUserProfile: any;
   oonaProfile: any ;
   profileCreationDate: any;
+  @Input() currentUser: any;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private messagingService: MessagingService,
     private  notificationService: NotificationService,
+    private store: Store<AppState>,
     private change: ChangeDetectorRef
   ) {
     this.allUsersRegistered();
@@ -47,15 +57,51 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
       const usersPresent = users.members.filter(user => user.presence );
       this.allUsers = this.messagingService.newListOfUsers(usersPresent);
     });
+
   }
 
+  getCurrentUser(): void {
+    const currentUser = this.route.snapshot.queryParams?.member;
+
+    const userId = currentUser.split('-')[0];
+    const userName = currentUser.split('-')[1].replace('.', ' ');
+
+    console.log('Current ==>>', {
+      id: userId,
+      name: userName
+    });
+
+    this.store.select(getAllUsers).subscribe(
+      data => {
+        const users = data?.members;
+
+        users?.forEach((user: any) => {
+          const name = user?.full_name.toLowerCase();
+          const id = user?.user_id;
+
+
+          if (id === userId) {
+            this.currentUser = user;
+            console.log('currentUser ===>>>', user);
+          }
+        });
+      }
+    );
+  }
+
+  onInitHandler(): void {
+  }
   ngOnInit(): void {
+    this.onInitHandler();
+
+
     this.route.queryParams
       .subscribe(params => {
           this.allOtherMembers(params.member);
           this.getCommonTeams();
         }
       );
+
   }
 
   allOtherMembers(memberName: string): void{
@@ -79,7 +125,9 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
 
   goToMemberChat(member: any): void{
     // tslint:disable-next-line:max-line-length
-    this.router.navigate(['dashboard/messaging/narrow'], { queryParams: { member: member.full_name.replace(/\s/g, '') } });
+    const userUrl = `${member.user_id}-${member.full_name.replace(/\s/g, '.')}`;
+    // this.router.navigate(['dashboard/messaging/narrow'], { queryParams: { member: member.full_name.replace(/\s/g, '') } });
+    this.router.navigate(['dashboard/messaging/narrow'], { queryParams: { member: userUrl } });
   }
   updateProfile(): void{
     this.messagingService.getOonaMemberDetail(this.memberDetails.email).subscribe((oonaProfileData: { results: any; }) => {

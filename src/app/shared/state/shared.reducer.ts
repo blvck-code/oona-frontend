@@ -1,4 +1,5 @@
 import {UsersModel} from '../models/users.model';
+import * as sharedActions from './shared.actions';
 
 export interface SharedReducerState {
   users: UsersModel[];
@@ -13,6 +14,7 @@ export function sharedReducer(
   action: any
 ): SharedReducerState{
   switch (action.type){
+
     default:
       return state;
   }

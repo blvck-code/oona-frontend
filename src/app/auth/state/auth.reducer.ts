@@ -1,5 +1,6 @@
 import { UserModel } from '../models/user.model';
 import * as authActions from './auth.actions';
+import {load} from '@syncfusion/ej2-angular-richtexteditor';
 
 export interface UserInfoState {
   first_name: string | null;
@@ -18,6 +19,7 @@ export interface AuthState {
   userInfo: UserInfoState | null;
   zulipProfile: null;
   users: {
+    loading: boolean,
     all: any;
     zulipUsers: any;
     selectedUser: any;
@@ -33,12 +35,20 @@ export const initialState: AuthState = {
   userInfo: null,
   zulipProfile: null,
   users: {
+    loading: true,
     all: null,
     zulipUsers: null,
     selectedUser: null,
   },
 };
 
+function handleSelectedUser(state: AuthState, action: any): void{
+  const loading = state?.users?.loading;
+  //
+  // if (!loading) {
+  //   console.log('All users ===>>', state);
+  // }
+}
 
 export function authReducer(state = initialState, action: any): AuthState {
   switch (action.type) {
@@ -125,6 +135,7 @@ export function authReducer(state = initialState, action: any): AuthState {
         ...state,
         users: {
           ...state.users,
+          loading: false,
           all: action.payload,
         },
       };
@@ -134,12 +145,14 @@ export function authReducer(state = initialState, action: any): AuthState {
         ...state,
         users: {
           ...state.users,
+          loading: false,
           zulipUsers: action.payload
         }
       };
     // Selected User
     case authActions.AuthActionsTypes.SET_SELECTED_USER:
       localStorage.setItem('privateMsg', action?.payload.email);
+      handleSelectedUser(state, action.payload);
       return {
         ...state,
         users: {
@@ -148,7 +161,7 @@ export function authReducer(state = initialState, action: any): AuthState {
         }
       };
 
-      default:
+    default:
       return state;
   }
 }

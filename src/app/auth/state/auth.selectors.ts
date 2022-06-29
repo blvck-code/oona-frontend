@@ -37,7 +37,7 @@ export const getZulipUsers = createSelector(
 
 export const getAllUsers = createSelector(
   getAuthState,
-  state => state.users.all
+  state => state?.users?.all?.members
 );
 
 export const getSelectedUser = createSelector(

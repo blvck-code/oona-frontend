@@ -26,7 +26,7 @@ export class MessagesSocketService {
   constructor(
     private authService: AuthService,
   ) {
-    this.messageConnect();
+    // this.messageConnect();
     // this.messageCountManagement();
 
     // this.messages = <Subject<any>>this.connect(messageChannel).pipe(

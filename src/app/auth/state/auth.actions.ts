@@ -33,8 +33,8 @@ export enum AuthActionsTypes {
   // Selected User
   SET_SELECTED_USER = 'userCenter/setSelectedUser',
   LOAD_SELECTED_USER = 'userCenter/loadSelectedUser',
-  LOAD_SELECTED_USER_SUCCESS = 'userCenter/loadSelectedUserSuccess',
-  LOAD_SELECTED_USER_FAIL = 'userCenter/loadSelectedUserFail',
+  // LOAD_SELECTED_USER_SUCCESS = 'userCenter/loadSelectedUserSuccess',
+  // LOAD_SELECTED_USER_FAIL = 'userCenter/loadSelectedUserFail',
 
   // Register
 

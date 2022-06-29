@@ -12,6 +12,8 @@ import { take } from 'rxjs/operators';
 import { AllStreamsModel } from './models/streams.model';
 import { Observable } from 'rxjs';
 import { MessagingService } from './services/messaging.service';
+import * as sharedActions from '../../shared/state/shared.actions';
+import * as authActions from '../../auth/state/auth.actions';
 
 @Component({
   selector: 'app-messaging',
@@ -62,10 +64,7 @@ export class MessagingComponent implements OnInit {
     });
   }
 
-  initPage(): void {
-    this.store.dispatch(new messagingActions.LoadAllStreams());
-    this.store.dispatch(new messagingActions.LoadSubStreams());
-
+  getAllMessages(): void {
     const streamDetail = {
       use_first_unread_anchor: true,
       num_before: this.initialMessageCount,
@@ -77,6 +76,30 @@ export class MessagingComponent implements OnInit {
       ]
     };
     this.store.dispatch(new messagingActions.LoadAllMessages(streamDetail));
+  }
+
+  getPrivateMessages(): void {
+    const streamDetail = {
+      use_first_unread_anchor: true,
+      num_before: this.initialMessageCount,
+      type: [
+        {
+          operator: 'pm-with',
+          operand: 'maurice.oluoch@8teq.co.ke'
+        }
+      ]
+    };
+    this.store.dispatch(new messagingActions.LoadPrivateMessages(streamDetail));
+  }
+
+  initPage(): void {
+    this.store.dispatch(new messagingActions.LoadAllStreams());
+    this.store.dispatch(new messagingActions.LoadSubStreams());
+    this.store.dispatch(new authActions.LoadZulipUsers());
+    this.store.dispatch(new authActions.LoadAllUsers());
+
+    this.getAllMessages();
+    this.getPrivateMessages();
   }
 
   logoutUser(): void {

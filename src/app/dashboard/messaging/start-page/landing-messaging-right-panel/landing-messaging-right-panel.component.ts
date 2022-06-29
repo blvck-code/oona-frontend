@@ -67,7 +67,10 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   goToMemberChat(member: any): void {
     this.store.dispatch(new authActions.SetSelectedUser(member));
     localStorage.setItem('privateMsg', member.email);
-    this.router.navigate(['dashboard/messaging/narrow'], { queryParams: { member: member.full_name.replace(/\s/g, '') } });
+
+    const userUrl = `${member.user_id}-${member.full_name.toLowerCase().replace(/\s/g, '.') }`;
+
+    this.router.navigate(['dashboard/messaging/narrow'], { queryParams: { member: userUrl } });
   }
 
   newListOfUsers(usersPresent: any): any[]{

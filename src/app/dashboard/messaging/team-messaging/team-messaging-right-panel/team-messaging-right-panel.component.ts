@@ -46,7 +46,8 @@ export class TeamMessagingRightPanelComponent implements OnInit {
   }
 
   goToMemberChat(member: any): void{
-    this.router.navigate(['dashboard/messaging/narrow'], { queryParams: { member: member.full_name.replace(/\s/g, '') } });
+
+    this.router.navigate(['dashboard/messaging/narrow'], { queryParams: { member: member.full_name.toLowerCase().replace(/\s/g, '.') } });
   }
 
    getAllSubscribers(): any{
