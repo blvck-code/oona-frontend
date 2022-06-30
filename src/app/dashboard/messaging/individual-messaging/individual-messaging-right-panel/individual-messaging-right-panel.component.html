@@ -3,7 +3,7 @@
 
     <div class="member-profile-details">
       <img src="assets/img/placeholder.jpg" class="rounded-circle" alt="...">
-      <p class="member-name"> {{ memberDetails.full_name }}</p>
+      <p class="member-name"> {{ currentUser?.full_name }}</p>
     </div>
 
 
@@ -23,7 +23,7 @@
 
     <div class="member-profile-date">
       <p class="title me-2">Member since:</p>
-      <p class="">{{profileCreationDate | date: 'shortDate'}}</p>
+      <p class="">{{ currentUser?.date_joined | date: 'shortDate'}}</p>
     </div>
     <div class="member-common-teams-container">
       <p class="common-teams-title">Common Teams</p>
@@ -40,7 +40,7 @@
 
   <div class="other-staff">
     <p class="other-staff-title">Other Staff</p>
-    <div class="other-staff-list">
+    <div class="other-staff-list" >
       <div class="mb-2" *ngFor="let member of otherMembers">
           <div class="member other-staff-item" (click)="goToMemberChat(member)" >
             <app-active-tag *ngIf="member.presence.aggregated.status === 'active'"></app-active-tag>

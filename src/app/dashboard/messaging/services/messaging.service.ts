@@ -159,18 +159,16 @@ export class MessagingService {
   }
 
   newListOfUsers(usersPresent: any): any[] {
-    const allOnline = usersPresent.filter(
+    const allOnline = usersPresent?.filter(
       (user: { presence: { aggregated: { status: string } } }) =>
         user.presence.aggregated.status === 'active'
     );
-    console.log('All online users ===>>', allOnline.sort(this.compare));
     // tslint:disable-next-line:max-line-length
-    const allOffline = usersPresent.filter(
+    const allOffline = usersPresent?.filter(
       (user: { presence: { aggregated: { status: string } } }) =>
         user.presence.aggregated.status === 'offline'
     );
-    console.log('All offline users ===>>', allOffline.sort(this.compare));
-    const allIdle = usersPresent.filter(
+    const allIdle = usersPresent?.filter(
       (user: { presence: { aggregated: { status: string } } }) =>
         user.presence.aggregated.status === 'idle'
     );

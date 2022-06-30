@@ -11,6 +11,11 @@ export const getAllStreams = createSelector(
   state => state.streams.allStreams
 );
 
+export const getSubStreams = createSelector(
+  getMessagingState,
+  state => state.streams.subStreams
+);
+
 export const getStreamsLoading = createSelector(
   getMessagingState,
   state => state.loading

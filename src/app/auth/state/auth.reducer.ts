@@ -42,13 +42,14 @@ export const initialState: AuthState = {
   },
 };
 
-function handleSelectedUser(state: AuthState, action: any): void{
-  const loading = state?.users?.loading;
-  //
-  // if (!loading) {
-  //   console.log('All users ===>>', state);
-  // }
-}
+// function handleSelectedUser(state: AuthState, action: any): void{
+//   const id = action.payload.userId;
+//   const users = state?.users?.all?.members;
+//
+//   // const currentUser = users?.filter((user: any) => user.user_id === id);
+//
+//   console.log('State ===>>', users);
+// }
 
 export function authReducer(state = initialState, action: any): AuthState {
   switch (action.type) {
@@ -152,13 +153,12 @@ export function authReducer(state = initialState, action: any): AuthState {
     // Selected User
     case authActions.AuthActionsTypes.SET_SELECTED_USER:
       localStorage.setItem('privateMsg', action?.payload.email);
-      handleSelectedUser(state, action.payload);
+      const id = action.payload.userId;
       return {
         ...state,
         users: {
           ...state.users,
-          selectedUser: action.payload
-        }
+          selectedUser: action.payload        }
       };
 
     default:

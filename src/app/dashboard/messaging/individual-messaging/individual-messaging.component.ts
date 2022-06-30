@@ -22,8 +22,9 @@ export class IndividualMessagingComponent implements OnInit {
   pmUser: any;
   pmMessages: any = [];
   recipientInfo!: Observable<any>;
-  currentUserSubject = new BehaviorSubject<object>({});
-  currentUserObservable = this.currentUserSubject.asObservable();
+
+  currentUserIdSubject = new BehaviorSubject<object>({});
+  currentUserIdObservable = this.currentUserIdSubject.asObservable();
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -37,51 +38,23 @@ export class IndividualMessagingComponent implements OnInit {
     const userId = +currentUser.split('-')[0];
     const userName = currentUser.split('-')[1].replace('.', ' ');
 
+
     const user = {
       userId,
       userName,
     };
 
-    console.log('This hectic user ==>>', user);
+    this.currentUserIdSubject.next(user);
 
-    // this.currentUserSubject.next(user);
-    //
-    // this.currentUserObservable.subscribe((data) =>
-    //   this.store.dispatch(new authActions.SetSelectedUser(data))
-    // );
-
-    // console.log(this.pmUser);
-
-    // this.store.select(getAllUsers).subscribe(
-    //   data => {
-    //     const users = data?.members;
-    //
-    //     users?.forEach((user: any) => {
-    //       const name = user.full_name.toLowerCase();
-    //       const id = user.user_id;
-    //
-    //       // tslint:disable-next-line:triple-equals
-    //       if (id == userId ) {
-    //         this.pmUser = user;
-    //       }
-    //
-    //     });
-    //
-    //     // console.log('Users ===>>>', users);
-    //
-    //     // users.map((user: any) => {
-    //     //   console.log('User full name ===>>>', user.full_name);
-    //     // });
-    //
-    //     // const currentUser = users.find((user: any) => user.full_name.toLowerCase() === this.pmUser);
-    //     // console.log('Current user ====>>>', currentUser);
-    //   }
-    // );
+    // set seletected user
+    this.currentUserIdObservable.subscribe(data => {
+      this.store.dispatch(new authActions.SetSelectedUser(data));
+    });
   }
 
   fetchUserMessages(): void {
     this.store.select(getPrivateMessages).subscribe((data) => {
-      data?.forEach((msg) => {
+      data?.map((msg) => {
         if (msg.recipient_id === 21) {
           this.pmMessages = [...this.pmMessages, msg];
         }

@@ -5,10 +5,12 @@ import * as authActions from '../../../../auth/state/auth.actions';
 import {environment} from '../../../../../environments/environment';
 
 import {NotificationService} from '../../../../shared/services/notification.service';
-import {getAllUsers, getZulipUsers} from '../../../../auth/state/auth.selectors';
+import {getAllUsers, getLoadingUsers, getSelectedUser, getZulipUsers} from '../../../../auth/state/auth.selectors';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
 import {Observable} from 'rxjs';
+import {getSubStreams} from '../../state/messaging.selectors';
+import {load} from '@syncfusion/ej2-angular-richtexteditor';
 
 
 @Component({
@@ -31,14 +33,15 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
     is_bot: undefined,
     is_guest: undefined,
     avatar_url: undefined,
-    email: undefined
+    email: undefined,
+    date_joined: undefined,
   };
   memberParamName = '';
   allSubscribers: any;
   loggedInUserProfile: any;
   oonaProfile: any ;
   profileCreationDate: any;
-  @Input() currentUser: any;
+  currentUser: any;
 
   constructor(
     private router: Router,
@@ -55,9 +58,22 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
   allUsersRegistered(): void {
     this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
       const usersPresent = users.members.filter(user => user.presence );
-      this.allUsers = this.messagingService.newListOfUsers(usersPresent);
+      // this.allUsers = this.messagingService.newListOfUsers(usersPresent);
     });
 
+    this.store.select(getLoadingUsers).subscribe(
+      loading => {
+        console.log('Loading status ===>>', loading);
+        if (!loading) {
+          this.store.select(getAllUsers).subscribe(
+            users => {
+              const usersPresent = users?.filter((user: any) => user.presence );
+              this.allUsers = this.messagingService.newListOfUsers(usersPresent);
+            }
+          );
+        }
+      }
+    );
   }
 
   getCurrentUser(): void {
@@ -66,41 +82,55 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
     const userId = currentUser.split('-')[0];
     const userName = currentUser.split('-')[1].replace('.', ' ');
 
-    console.log('Current ==>>', {
-      id: userId,
-      name: userName
-    });
+    if (userId) {
+      this.store.select(getAllUsers).subscribe(
+        data => {
+          // tslint:disable-next-line:no-shadowed-variable
+          this.currentUser = data?.find((user: any) => user.user_id === +userId);
+        }
+      );
+    }
 
-    this.store.select(getAllUsers).subscribe(
-      data => {
-        const users = data?.members;
-
-        users?.forEach((user: any) => {
-          const name = user?.full_name.toLowerCase();
-          const id = user?.user_id;
-
-
-          if (id === userId) {
-            this.currentUser = user;
-            console.log('currentUser ===>>>', user);
-          }
-        });
-      }
-    );
   }
 
-  onInitHandler(): void {
-  }
   ngOnInit(): void {
-    this.onInitHandler();
+    this.getCurrentUser();
 
 
     this.route.queryParams
       .subscribe(params => {
-          this.allOtherMembers(params.member);
+          const userId = params.member.split('-')[0];
+          const userName = params.member.split('-')[1].replace('.', ' ');
+          // this.onInitHandler(+userId);
+          this.allOtherMembers(userName);
           this.getCommonTeams();
         }
       );
+
+  }
+
+  onInitHandler(userId: any): void {
+    this.otherMembers = [];
+    this.store.select(getAllUsers).subscribe(
+
+      data => {
+
+        setTimeout( () => {
+          // @ts-ignore
+          this.allUsers?.forEach((user) => {
+            console.log('User info info ===>>', user);
+            if (+user.user_id === +userId){
+              this.memberDetails = user;
+              this.messagingService.changeMemberDetail(user);
+              this.updateProfile();
+            }else{
+              this.otherMembers.push(user);
+            }
+          });
+        }, 3000);
+      }
+    );
+    this.allUsers?.map((user: any) => console.log('User info: ', user))
 
   }
 
@@ -109,7 +139,7 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
 
     setTimeout( () => {
       // @ts-ignore
-      this.allUsers.forEach((user) => {
+      this.allUsers?.forEach((user) => {
         // @ts-ignore
         if (user.full_name.replace(/\s/g, '') === memberName){
           this.memberDetails = user;
@@ -119,9 +149,10 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
           this.otherMembers.push(user);
         }
       });
-    }, 500);
+    }, 3000);
 
   }
+
 
   goToMemberChat(member: any): void{
     // tslint:disable-next-line:max-line-length
@@ -157,12 +188,27 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
     this.commonTeams = [];
     this.messagingService.getAllSubscribedStreams().subscribe(
       ( subscribers: { subscriptions: any; name: any; }) => {
+        console.log('subscribers ===>>', subscribers);
         this.allSubscribers = subscribers.subscriptions;
         // tslint:disable-next-line:max-line-length
-        this.commonTeams = subscribers.subscriptions.filter((team: { subscribers: any[]; }) => team.subscribers.includes(this.memberDetails.email) && team.subscribers.includes(this.loggedInUserProfile.email));
+        this.commonTeams = subscribers.subscriptions.filter(
+          (team: { subscribers: any[]; }) =>
+            team.subscribers.includes(this.memberDetails.email) && team.subscribers.includes(this.loggedInUserProfile.email)
+        );
         this.change.detectChanges();
       });
     this.change.detectChanges();
+
+    this.store.select(getSubStreams).subscribe(
+      data => {
+        this.allSubscribers = data;
+        this.commonTeams = data?.filter(
+          (team: any) =>
+            // @Todo Subscribed api not giving subscribers, check on zulip documentation
+            team.subscribers.includes(this.memberDetails.email) && team.subscribers.includes(this.loggedInUserProfile.email)
+        );
+      }
+    );
   }
 
   generateMeeting(): void{
