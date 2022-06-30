@@ -56,18 +56,17 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
   }
 
   allUsersRegistered(): void {
-    this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
-      const usersPresent = users.members.filter(user => user.presence );
+    // this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
+      // const usersPresent = users.members.filter(user => user?.presence );
       // this.allUsers = this.messagingService.newListOfUsers(usersPresent);
-    });
+    // });
 
     this.store.select(getLoadingUsers).subscribe(
       loading => {
-        console.log('Loading status ===>>', loading);
         if (!loading) {
           this.store.select(getAllUsers).subscribe(
             users => {
-              const usersPresent = users?.filter((user: any) => user.presence );
+              const usersPresent = users?.filter((user: any) => user?.presence );
               this.allUsers = this.messagingService.newListOfUsers(usersPresent);
             }
           );
@@ -130,8 +129,7 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
         }, 3000);
       }
     );
-    this.allUsers?.map((user: any) => console.log('User info: ', user))
-
+    this.allUsers?.map((user: any) => console.log('User info: ', user));
   }
 
   allOtherMembers(memberName: string): void{
@@ -188,7 +186,6 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
     this.commonTeams = [];
     this.messagingService.getAllSubscribedStreams().subscribe(
       ( subscribers: { subscriptions: any; name: any; }) => {
-        console.log('subscribers ===>>', subscribers);
         this.allSubscribers = subscribers.subscriptions;
         // tslint:disable-next-line:max-line-length
         this.commonTeams = subscribers.subscriptions.filter(

@@ -68,6 +68,5 @@ export class IndividualMessagingComponent implements OnInit {
     this.activatedRoute.params.subscribe(
       (params: Params) => (this.myParam = params.member)
     );
-    console.log('Private messages ===>>>', this.pmMessages);
   }
 }
