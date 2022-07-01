@@ -1,6 +1,21 @@
 .individual-message-item {
   display: flex;
   margin-bottom: 20px;
+
+  &.my-message {
+    .message-sender-icon {
+      display: none;
+    }
+
+    .message-body {
+      float: right;
+      background-color: #D7ECFF;
+      width: 50%;
+      max-width: 70%;
+      border-bottom-right-radius: 0px;
+      border-bottom-left-radius: 10px;
+    }
+  }
 }
 .message-sender-icon {
   img {
@@ -25,9 +40,12 @@
   border-radius: 10px 10px 10px 0;
   box-shadow: 0 2px 4px rgba(34, 37, 52, 0.0501803);
   background-color: #fff;
+  width: auto;
+  max-width: 70%;
   overflow-y: scroll;
   scrollbar-width: thin;
   scrollbar-color: #EDEDF6 transparent;
+
 }
 
 .chat-tag {

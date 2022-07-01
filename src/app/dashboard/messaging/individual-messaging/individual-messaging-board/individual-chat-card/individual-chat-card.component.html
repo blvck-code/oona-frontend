@@ -1,11 +1,15 @@
-<div class="individual-message-item">
+<div class="individual-message-item" [class.my-message]="messageDetail?.sender_id === ( zulipProfile | async ).zulip.user_id">
   <div class="message-sender-icon">
     <img src="assets/img/placeholder.jpg" class="rounded-circle me-2" alt="...">
   </div>
   <div class="message-item-content">
     <div class="message-body">
       <div class="d-flex justify-content-between">
-        <p class="name">{{ messageDetail.sender_full_name }}</p>
+
+
+
+        <p class="name">{{ showUserInfo(messageDetail.sender_full_name, ( zulipProfile | async ).zulip.full_name) }}</p>
+<!--        <p class="name">{{ messageDetail.sender_full_name }}</p>-->
         <p class="chat-time">{{ messageTime }}</p>
       </div>
 
@@ -13,4 +17,5 @@
 
     </div>
   </div>
+  .messa
 </div>

@@ -10,6 +10,11 @@ export const getAccessToken = createSelector(
   state => state.userInfo?.access
 );
 
+export const getZulipProfile = createSelector(
+  getAuthState,
+  state => state.zulipProfile
+);
+
 export const getUserDetails = createSelector(
   getAuthState,
   state => state.userInfo

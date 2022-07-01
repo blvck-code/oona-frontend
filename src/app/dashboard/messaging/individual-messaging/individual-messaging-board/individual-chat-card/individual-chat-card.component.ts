@@ -1,4 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../../../state/app.state';
+import {getUserDetails, getZulipProfile} from '../../../../../auth/state/auth.selectors';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-individual-chat-card',
@@ -8,11 +12,25 @@ import {Component, Input, OnInit} from '@angular/core';
 export class IndividualChatCardComponent implements OnInit {
   @Input() messageDetail: any;
   messageTime = '';
+  zulipProfile!: Observable<any>;
 
-  constructor() { }
+  constructor(
+    private store: Store<AppState>
+  ) {
+    this.getUserInfo();
+  }
+
+  getUserInfo(): void {
+    this.zulipProfile = this.store.select(getZulipProfile);
+  }
+
+  showUserInfo(userName: any, zulipName: any): void {
+    return userName === zulipName ? `${userName} (Me)` : userName
+  }
 
   ngOnInit(): void {
     this.messageTime = new Date(this.messageDetail.timestamp * 1000).toLocaleTimeString();
+    console.log('Message content ===>>>', this.messageDetail);
   }
 
   handleReply(message: any): void {
