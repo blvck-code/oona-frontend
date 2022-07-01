@@ -181,7 +181,7 @@ export class OonaSocketService {
     // @ts-ignore
     this.websocket.onerror = (evt) => {
       setTimeout(() => {
-        console.log('Attempting to reconnect ...');
+        console.log('Attempting to reconnect ...', evt);
         this.connect();
       }, 1000);
     };
