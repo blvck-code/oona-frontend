@@ -55,6 +55,7 @@ export enum MessagingActionsTypes {
 export class LoadMessaging implements Action {
   readonly type = MessagingActionsTypes.LOAD_MESSAGES;
   constructor(public payload: any) {
+    console.log('Load messages ===>>>', payload);
   }
 }
 export class LoadMessagingSuccess implements Action {
@@ -95,11 +96,13 @@ export class LoadMoreMessagingFail implements Action {
 export class LoadAllMessages implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES;
   constructor(public payload: any) {
+    console.log('Load all messages ===>>>', payload);
   }
 }
 export class LoadAllMessagesSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES_SUCCESS;
   constructor(public payload: any) {
+    console.log('Loaded all messages success ====>>>>', payload);
   }
 }
 export class LoadAllMessagesFail implements Action {

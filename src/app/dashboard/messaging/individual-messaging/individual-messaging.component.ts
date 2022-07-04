@@ -58,19 +58,6 @@ export class IndividualMessagingComponent implements OnInit {
           });
         }
       );
-
-      this.store.select(getPrivateMessages).subscribe(
-        messages => {
-          messages?.map(message => {
-            if (message?.sender_id === userId) {
-              console.log('Message ===>>', message);
-            } else {
-              console.log('No messages found with the current user');
-            }
-          });
-        }
-      );
-
     }, 500);
   }
 
@@ -78,16 +65,9 @@ export class IndividualMessagingComponent implements OnInit {
   changeContentOnRouteChange(): void {
     // @ts-ignore
     this.route.events.subscribe((event: Event) => {
-      if (event instanceof NavigationStart) {
-        // Show progress spinner or progress bar
-        console.log('Route change detected');
-      }
-
       if (event instanceof NavigationEnd) {
-        // Hide progress spinner or progress bar
-        console.log('NavigationEnd', event);
+        this.onInitHandler();
       }
-
     });
   }
 

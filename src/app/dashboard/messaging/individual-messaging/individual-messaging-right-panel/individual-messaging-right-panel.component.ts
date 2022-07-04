@@ -92,6 +92,7 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
 
   }
 
+
   ngOnInit(): void {
     this.getCurrentUser();
 
@@ -190,7 +191,7 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
         // tslint:disable-next-line:max-line-length
         this.commonTeams = subscribers.subscriptions.filter(
           (team: { subscribers: any[]; }) =>
-            team.subscribers.includes(this.memberDetails.email) && team.subscribers.includes(this.loggedInUserProfile.email)
+            team.subscribers?.includes(this.memberDetails.email) && team.subscribers?.includes(this.loggedInUserProfile.email)
         );
         this.change.detectChanges();
       });
@@ -202,7 +203,7 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
         this.commonTeams = data?.filter(
           (team: any) =>
             // @Todo Subscribed api not giving subscribers, check on zulip documentation
-            team.subscribers.includes(this.memberDetails.email) && team.subscribers.includes(this.loggedInUserProfile.email)
+            team.subscribers?.includes(this.memberDetails.email) && team.subscribers?.includes(this.loggedInUserProfile.email)
         );
       }
     );

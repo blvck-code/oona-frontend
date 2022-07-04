@@ -47,6 +47,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
   ngOnInit(): void {
     // this.getUserInfo();
+    this.changeContentOnRouteChange();
 
     this.messagingService.currentMemberChatDetail.subscribe(member => {
       this.memberDetail = member;
@@ -89,6 +90,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
     private change: ChangeDetectorRef,
     private userSocketService: OonaSocketService,
   ) {
+
     this.store.select(getSelectedUser).subscribe(
       data => {
         if (data) {
@@ -97,6 +99,16 @@ export class IndividualMessagingBoardComponent implements OnInit {
         }
       }
     );
+
+  }
+
+  changeContentOnRouteChange(): void {
+    // @ts-ignore
+    this.route.events.subscribe((event: Event) => {
+      if (event instanceof NavigationEnd) {
+        this.getSelectedUser();
+      }
+    });
   }
 
   getSelectedUser(): void {
@@ -119,6 +131,10 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
     // get messages from store
     this.messages$ = this.store.select(getPrivateMessages);
+
+    // @ts-ignore
+    document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+
   }
 
   privateMessages(): void{
