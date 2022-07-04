@@ -23,7 +23,10 @@ export class AllPrivateMessagingComponent implements OnInit {
 
   onInitHandler(): void {
     this.store.select(getUserDetails).subscribe(
-      data => this.operand = data?.email
+      data => {
+        this.operand = data?.email;
+        console.log('User details ===>>>', data);
+      }
     );
 
     // Message parameters
@@ -39,9 +42,10 @@ export class AllPrivateMessagingComponent implements OnInit {
         }
       ]
     };
+    console.log('streamDetail ====>>>', streamDetail);
 
     // fetch from server
-    this.store.dispatch(new messagingActions.LoadPrivateMessages(streamDetail))
+    this.store.dispatch(new messagingActions.LoadPrivateMessages(streamDetail));
   }
 
   ngOnInit(): void {

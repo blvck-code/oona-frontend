@@ -13,7 +13,8 @@ import * as authActions from '../../../../auth/state/auth.actions';
 import {getAllUsers, getSelectedUser} from '../../../../auth/state/auth.selectors';
 import {Observable, Subscription} from 'rxjs';
  // @Todo change this to fetch only individual messages
-import {getAllMessages, getFilteredPrvMsgs} from '../../state/messaging.selectors';
+import {getAllMessages, getFilteredPrvMsgs, getPrivateMessages} from '../../state/messaging.selectors';
+import {LoadPrivateMessages} from '../../state/messaging.actions';
 
 const turndownService = new TurndownService();
 
@@ -42,9 +43,10 @@ export class IndividualMessagingBoardComponent implements OnInit {
   newMessagesCount = 0;
   @Input() currentMessages = [];
   createdAt: any;
+  operand: any;
 
   ngOnInit(): void {
-    this.getUserInfo();
+    // this.getUserInfo();
 
     this.messagingService.currentMemberChatDetail.subscribe(member => {
       this.memberDetail = member;
@@ -62,31 +64,22 @@ export class IndividualMessagingBoardComponent implements OnInit {
       }
     });
 
-    this.store.select(getFilteredPrvMsgs).subscribe(
-      data => console.log('Private filtered messages ====>>>', data)
-    );
-
   }
 
-  getUserInfo(): void {
-    const userEmail = localStorage.getItem('privateMsg');
-
-    this.store.select(getAllUsers).subscribe(
-      users => {
-       const members = users?.members;
-       members.forEach((member: any) => {
-         if (member.email === userEmail){
-           localStorage.setItem('privateMsg', member.email);
-           // this.store.dispatch(new authActions.SetSelectedUser(member));
-         }
-       });
-       // console.log('Members ===>>', members);
-
-       // const selectedUser = members?.find((user: any) => user.email = userEmail);
-       // console.log('Current user ==>>', selectedUser);
-      }
-    );
-  }
+  // getUserInfo(): void {
+  //   const userEmail = localStorage.getItem('privateMsg');
+  //
+  //   this.store.select(getAllUsers).subscribe(
+  //     users => {
+  //      const members = users?.members;
+  //      members.forEach((member: any) => {
+  //        if (member.email === userEmail){
+  //          localStorage.setItem('privateMsg', member.email);
+  //        }
+  //      });
+  //     }
+  //   );
+  // }
 
   constructor(
     private router: Router,
@@ -96,12 +89,19 @@ export class IndividualMessagingBoardComponent implements OnInit {
     private change: ChangeDetectorRef,
     private userSocketService: OonaSocketService,
   ) {
+    this.store.select(getSelectedUser).subscribe(
+      data => {
+        if (data) {
+          this.operand = data;
+          this.getSelectedUser();
+        }
+      }
+    );
   }
 
   getSelectedUser(): void {
-    const userEmail = localStorage.getItem('privateMsg');
-
     this.selectedUser$ = this.store.select(getSelectedUser);
+
     const streamDetail = {
       use_first_unread_anchor: true,
       apply_markdown: false,
@@ -109,16 +109,16 @@ export class IndividualMessagingBoardComponent implements OnInit {
       type: [
         {
           operator: 'pm-with',
-          operand: userEmail,
+          operand: this.operand?.email,
         }
       ]
     };
 
     // fetch messages from server
-    this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
+    this.store.dispatch(new messageActions.LoadPrivateMessages(streamDetail));
 
     // get messages from store
-    this.messages$ = this.store.select(getAllMessages);
+    this.messages$ = this.store.select(getPrivateMessages);
   }
 
   privateMessages(): void{
@@ -171,8 +171,8 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
   userActiveStatus(): void{
     this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
-      const usersPresent = users.members.filter(user => user.presence );
-      this.userActivity = usersPresent.find( user => user.email === this.memberDetail.email).presence.aggregated.status;
+      const usersPresent = users.members.filter(user => user?.presence );
+      this.userActivity = usersPresent.find( user => user.email === this.memberDetail.email)?.presence.aggregated.status;
     });
   }
 

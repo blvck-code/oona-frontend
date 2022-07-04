@@ -51,7 +51,7 @@ export class OonaSocketService {
   ) {
     this.getCurrentProfile();
     this.connect();
-    this.msgConnect();
+    // this.msgConnect();
     this.userManagement();
   }
 
@@ -80,20 +80,20 @@ export class OonaSocketService {
      * Creates a websocket connection to the user channel
      */
     this.websocket = new WebSocket(userChannel, this.authService.getToken());
-    console.log('Web sockets connected');
+    console.log('Events sockets successfully connected: ', userChannel);
   }
 
-  msgConnect(): void {
-    /**
-     * Creates a websocket connection to the user channel
-     */
-    this.websocket = new WebSocket(messageChannel, this.authService.getToken());
-    console.log('Message sockets connected');
-  }
+  // msgConnect(): void {
+  //   /**
+  //    * Creates a websocket connection to the user channel
+  //    */
+  //   this.websocket = new WebSocket(messageChannel, this.authService.getToken());
+  //   console.log('Message sockets connected');
+  // }
 
 
 
-  private filterSocketData(userData: any): void {
+  filterSocketData(userData: any): void {
     /*
      * Filters all active and inactive users
      * @param userData Incoming message from the server.
@@ -163,7 +163,7 @@ export class OonaSocketService {
 
   }
 
-  private userManagement(): void {
+  userManagement(): void {
     // @ts-ignore
     this.websocket.onmessage = (evt) => {
       console.log('Web socket message ====>>>', evt);

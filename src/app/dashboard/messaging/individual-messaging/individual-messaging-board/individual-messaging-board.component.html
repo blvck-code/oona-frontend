@@ -1,10 +1,10 @@
 <div class="individual-messaging-container">
   <div class="messaging-member-title">
     <img src="assets/img/placeholder.jpg" alt="...">
-    <app-idle-tag class="ms-n5 circle" *ngIf="userActivity === 'idle'"></app-idle-tag>
-    <app-active-tag class="ms-n5 circle" *ngIf="userActivity === 'active'"></app-active-tag>
-    <app-inactive-tag class="ms-n5 circle" *ngIf="userActivity === 'offline'"></app-inactive-tag>
-    <p class="member-name p-2"> {{ memberDetail.full_name }}</p>
+    <app-idle-tag class="ms-n5 circle" *ngIf="(selectedUser$ | async)?.presence?.website?.status === 'idle'"></app-idle-tag>
+    <app-active-tag class="ms-n5 circle" *ngIf="(selectedUser$ | async)?.presence?.website?.status === 'active'"></app-active-tag>
+    <app-inactive-tag class="ms-n5 circle" *ngIf="(selectedUser$ | async)?.presence?.website?.status === 'offline'"></app-inactive-tag>
+    <p class="member-name p-2">{{ (selectedUser$ | async)?.full_name }}</p>
   </div>
 
   <nav>
@@ -32,8 +32,8 @@
           <app-individual-chat-card *ngFor="let chat of messages" [messageDetail]="chat"></app-individual-chat-card>
         </div>
 
-        <div *ngIf="!(messages$ | async)" class="d-flex justify-content-center">
-          <p>No messages with {{memberDetail.full_name }}</p>
+        <div *ngIf="!(messages$ | async)?.length" class="d-flex justify-content-center">
+          <p>No messages with {{ (selectedUser$ | async)?.full_name }}</p>
         </div>
 
         </div>

@@ -11,7 +11,6 @@ export enum SharedActionsTypes {
 export class LoadUsers implements Action {
   readonly type = SharedActionsTypes.LOAD_USERS;
   constructor() {
-    console.log('Fetching users');
   }
 }
 
