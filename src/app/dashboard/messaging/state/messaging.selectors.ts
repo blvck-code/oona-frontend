@@ -72,3 +72,8 @@ export const getPrivateMessages = createSelector(
   getMessagingState,
   state => state.messaging.privateMsgs?.messages?.zulip?.messages
 );
+
+export const getFilteredPrvMsgs = createSelector(
+  getMessagingState,
+  state => state.messaging.privateMsgs.filteredMsg
+);

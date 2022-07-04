@@ -23,6 +23,7 @@ export interface MessagingState {
     };
     privateMsgs: {
       loading: boolean;
+      filteredMsg: MessagesModel | null;
       messages: MessagesModel | null;
     };
     selectedStreamMsg: {
@@ -49,6 +50,7 @@ export const initialState: MessagingState = {
     },
     privateMsgs: {
       loading: false,
+      filteredMsg: null,
       messages: null,
     },
     selectedStreamMsg: {
@@ -172,6 +174,7 @@ export function messagingReducer(
         messaging: {
           ...state.messaging,
           privateMsgs: {
+            ...state.messaging.privateMsgs,
             loading: false,
             messages: action.payload,
           },

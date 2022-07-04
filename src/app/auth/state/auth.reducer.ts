@@ -154,7 +154,7 @@ export function authReducer(state = initialState, action: any): AuthState {
     case authActions.AuthActionsTypes.SET_SELECTED_USER:
       setTimeout(() => {
         const members = state?.users?.all;
-        console.log('State members ==>', members);
+        console.log('State members ==>', state);
       }, 5000);
       return {
         ...state,

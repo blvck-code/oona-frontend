@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
+import {ActivatedRoute, NavigationEnd, NavigationStart, ParamMap, Params, Router} from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../state/app.state';
 import { getAllUsers } from '../../../auth/state/auth.selectors';
@@ -10,6 +10,7 @@ import { getPrivateMessages } from '../state/messaging.selectors';
 import { SingleMessageModel } from '../models/messages.model';
 import {BehaviorSubject, Observable} from 'rxjs';
 import { retagTsFile } from '@angular/compiler-cli/src/ngtsc/shims';
+import * as events from 'events';
 
 @Component({
   selector: 'app-individual-messaging',
@@ -39,16 +40,54 @@ export class IndividualMessagingComponent implements OnInit {
     const userName = currentUser.split('-')[1].replace('.', ' ');
 
 
-    const user = {
+    const urlUser = {
       userId,
       userName,
     };
 
-    this.currentUserIdSubject.next(user);
+    this.currentUserIdSubject.next(urlUser);
 
-    // set seletected user
-    this.currentUserIdObservable.subscribe(data => {
-      this.store.dispatch(new authActions.SetSelectedUser(data));
+    setTimeout(() => {
+      this.store.select(getAllUsers).subscribe(
+        data => {
+          // tslint:disable-next-line:no-shadowed-variable
+          data?.map((user: any) => {
+            if (+user.user_id === +userId){
+              this.store.dispatch(new authActions.SetSelectedUser(user));
+            }
+          });
+        }
+      );
+
+      this.store.select(getPrivateMessages).subscribe(
+        messages => {
+          messages?.map(message => {
+            if (message?.sender_id === userId) {
+              console.log('Message ===>>', message);
+            } else {
+              console.log('No messages found with the current user');
+            }
+          });
+        }
+      );
+
+    }, 500);
+  }
+
+  // @ts-ignore
+  changeContentOnRouteChange(): void {
+    // @ts-ignore
+    this.route.events.subscribe((event: Event) => {
+      if (event instanceof NavigationStart) {
+        // Show progress spinner or progress bar
+        console.log('Route change detected');
+      }
+
+      if (event instanceof NavigationEnd) {
+        // Hide progress spinner or progress bar
+        console.log('NavigationEnd', event);
+      }
+
     });
   }
 
@@ -65,6 +104,8 @@ export class IndividualMessagingComponent implements OnInit {
   ngOnInit(): void {
     this.onInitHandler();
     this.fetchUserMessages();
+    this.changeContentOnRouteChange();
+
     this.activatedRoute.params.subscribe(
       (params: Params) => (this.myParam = params.member)
     );

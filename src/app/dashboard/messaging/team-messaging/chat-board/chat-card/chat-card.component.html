@@ -1,45 +1,65 @@
 <div class="chart-item-container">
-    <div class="chart-item-profile">
-        <img src="https://via.placeholder.com/150" height="32px" width="32px" class="rounded-circle" alt="...">
-    </div>
-    <div class="chart-item-content-container" (click)="getMessageTopic()">
-        <div class="chart-item-content">
-            <div class="chart-item-title" title="Click to reply">
-                <p class="chat-tag">{{ messageDetail.subject }}</p>
-            </div>
-            <div class="message-card">
-                <div class="d-flex justify-content-between">
-                    <h3>{{ messageDetail.sender_full_name}}</h3>
-<!--                    <p class="chat-time">{{messageDate}}</p>-->
-                    <p class="chat-time">{{ messageTime }}</p>
-                </div>
-              <div >
-                  <showdown class="chat-msg" [value]="messageDetail.content"></showdown>
-                </div>
-              </div>
+  <div class="chart-item-profile">
+    <img
+      src="https://via.placeholder.com/150"
+      height="32px"
+      width="32px"
+      class="rounded-circle"
+      alt="..."
+    />
+  </div>
+  <div class="chart-item-content-container" (click)="getMessageTopic()">
+    <div class="chart-item-content">
+      <div class="chart-item-title" title="Click to reply">
+        <p class="chat-tag">{{ messageDetail.subject }}</p>
+      </div>
+      <div class="message-card">
+        <div class="d-flex justify-content-between">
+          <h3>{{ messageDetail.sender_full_name }}</h3>
+          <!--                    <p class="chat-time">{{messageDate}}</p>-->
+          <p class="chat-time">{{ messageTime }}</p>
         </div>
-      <div class="chat-feedback-wrap">
-        <span class="chat-feedback-tooltip" data-tooltip="Like">
-          <img src="../../../../../../assets/img/icons/like.svg" alt="">
-        </span>
-        <span class="chat-feedback-tooltip" data-tooltip="Reply">
-          <img src="../../../../../../assets/img/icons/reply.svg" alt="">
-        </span>
-        <span class="chat-feedback-tooltip" data-tooltip="Forward">
-          <img src="../../../../../../assets/img/icons/forward.svg" alt="">
-        </span>
-        <span class="chat-feedback-tooltip" data-tooltip="Copy">
-          <img src="../../../../../../assets/img/icons/copy.svg" alt="">
-        </span>
-        <span class="chat-feedback-tooltip" data-tooltip="Bookmark">
-          <img src="../../../../../../assets/img/icons/bookmark.svg" alt="">
-        </span>
-        <span class="chat-feedback-tooltip" data-tooltip="Pin">
-          <img src="../../../../../../assets/img/icons/pin.svg" alt="">
-        </span>
-        <span class="chat-feedback-tooltip" data-tooltip="Caution">
-          <img src="../../../../../../assets/img/icons/caution.svg" alt="">
-        </span>
+        <div>
+          <showdown class="chat-msg" [value]="messageDetail.content"></showdown>
+        </div>
+        <div class="chat-reactions">
+          <div class="chat-emojie">
+            <img src="../../../../../../assets/img/icons/love.svg" alt="">
+            <span>5</span>
+          </div>
+          <div class="chat-emojie">
+            <img src="../../../../../../assets/img/icons/clap.svg" alt="">
+            <span>1</span>
+          </div>
+          <div class="chat-emojie">
+            <img src="../../../../../../assets/img/icons/smile.svg" alt="">
+            <span>2</span>
+          </div>
+        </div>
       </div>
     </div>
+    <div class="chat-feedback-wrap">
+      <span class="chat-feedback-tooltip" title="Like">
+        <img src="../../../../../../assets/img/icons/like.svg" alt="" />
+      </span>
+      <span class="chat-feedback-tooltip" title="Reply">
+        <img src="../../../../../../assets/img/icons/reply.svg" alt="" />
+      </span>
+      <span class="chat-feedback-tooltip" title="Forward">
+        <img src="../../../../../../assets/img/icons/forward.svg" alt="" />
+      </span>
+      <span class="chat-feedback-tooltip" title="Copy">
+        <img src="../../../../../../assets/img/icons/copy.svg" alt="" />
+      </span>
+      <span class="chat-feedback-tooltip" title="Bookmark">
+        <img src="../../../../../../assets/img/icons/bookmark.svg" alt="" />
+      </span>
+      <span class="chat-feedback-tooltip" title="Pin">
+        <img src="../../../../../../assets/img/icons/pin.svg" alt="" />
+      </span>
+      <span class="chat-feedback-tooltip" title="Caution">
+        <img src="../../../../../../assets/img/icons/caution.svg" alt="" />
+      </span>
+    </div>
+  </div>
 </div>

@@ -13,7 +13,7 @@ import * as authActions from '../../../../auth/state/auth.actions';
 import {getAllUsers, getSelectedUser} from '../../../../auth/state/auth.selectors';
 import {Observable, Subscription} from 'rxjs';
  // @Todo change this to fetch only individual messages
-import {getAllMessages} from '../../state/messaging.selectors';
+import {getAllMessages, getFilteredPrvMsgs} from '../../state/messaging.selectors';
 
 const turndownService = new TurndownService();
 
@@ -61,6 +61,10 @@ export class IndividualMessagingBoardComponent implements OnInit {
         this.newMessagesCount = messages;
       }
     });
+
+    this.store.select(getFilteredPrvMsgs).subscribe(
+      data => console.log('Private filtered messages ====>>>', data)
+    );
 
   }
 

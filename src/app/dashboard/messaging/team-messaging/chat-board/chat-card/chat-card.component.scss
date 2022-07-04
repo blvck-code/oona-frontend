@@ -1,6 +1,6 @@
 .chart-item-container {
   display: flex;
-  margin-bottom: 60px;
+  margin-bottom: 40px;
 }
 .chart-item-profile {
   margin-right: 20px;
@@ -138,5 +138,29 @@ h3 {
 
   p {
     margin-bottom: 5px;
+  }
+
+  .chat-reactions {
+    height: 40px;
+    width: max-content;
+    display: flex;
+    align-items: center;
+
+
+    .chat-emojie {
+      height: 30px;
+      width: 50px;
+      background: #F8F8F9;
+      border-radius: 15.5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 5px;
+
+      span {
+        font-size: 13px;
+        padding-left: 5px;
+      }
+    }
   }
 }
