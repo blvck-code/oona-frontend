@@ -96,13 +96,11 @@ export class LoadMoreMessagingFail implements Action {
 export class LoadAllMessages implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES;
   constructor(public payload: any) {
-    console.log('Load all messages ===>>>', payload);
   }
 }
 export class LoadAllMessagesSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES_SUCCESS;
   constructor(public payload: any) {
-    console.log('Loaded all messages success ====>>>>', payload);
   }
 }
 export class LoadAllMessagesFail implements Action {
@@ -116,7 +114,6 @@ export class LoadAllMessagesFail implements Action {
 export class LoadPrivateMessages implements Action {
   readonly type = MessagingActionsTypes.LOAD_PRIVATE_MESSAGES;
   constructor(public payload: any) {
-    console.log('Loading private messages loading ====>>', payload);
   }
 }
 export class LoadPrivateMessagesSuccess implements Action {

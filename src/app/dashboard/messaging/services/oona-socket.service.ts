@@ -166,13 +166,13 @@ export class OonaSocketService {
   userManagement(): void {
     // @ts-ignore
     this.websocket.onmessage = (evt) => {
-      console.log('Web socket message ====>>>', evt);
+      // console.log('Web socket message ====>>>', evt);
       this.filterSocketData(evt.data);
     };
 
     // @ts-ignore
     this.websocket.onclose = (evt) => {
-      console.log('Web socket closed');
+      // console.log('Web socket closed');
       setTimeout(() => {
         this.connect();
       }, 1000);
@@ -181,7 +181,7 @@ export class OonaSocketService {
     // @ts-ignore
     this.websocket.onerror = (evt) => {
       setTimeout(() => {
-        console.log('Attempting to reconnect ...', evt);
+        // console.log('Attempting to reconnect ...', evt);
         this.connect();
       }, 1000);
     };

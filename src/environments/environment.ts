@@ -2,9 +2,10 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+// export const oonaBaseUrl = 'http://192.168.0.161:8000';
 export const oonaBaseUrl = 'https://192.168.0.100:2443';
-export const userChannel = 'wss://192.168.0.100:2443/ws/on/event/';
-export const messageChannel = 'wss://192.168.0.100:2443/ws/on/message/';
+export const userChannel = 'ws://192.168.0.161:8001/ws/on/event/';
+export const messageChannel = 'ws://192.168.0.161:8001/ws/on/message/';
 const whiteBoard = 'http://192.168.0.100:8030';
 const etherPad = 'http://192.168.0.100:9001/';
 const domain = '192.168.0.100:8443';
@@ -21,6 +22,7 @@ export const environment = {
   userProfileURL: oonaBaseUrl + '/api/v1/accounts/profile/',
   getUsersUrl: oonaBaseUrl + '/api/v1/accounts/users',
   getUserUrl: oonaBaseUrl + '/api/v1/accounts/user',
+  allUsers: oonaBaseUrl + '/api/v1/accounts/user/',
   refreshTokenUrl: oonaBaseUrl + '/api/v1/accounts/token/refresh/',
   logoutUrl: oonaBaseUrl + '/api/v1/accounts/logout',
   meetingDetailsUrl: oonaBaseUrl + '/api/v1/meet/meetings/',

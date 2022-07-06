@@ -22,6 +22,7 @@ export class MessagingService {
   teams = env.teams;
   subscribedStreams = env.subscribedStreams;
   presentUsers = env.presentUsers;
+  allUsers = env.allUsers;
   userProfile = env.userProfile;
   streamMessages = env.streamMessages;
   sendStreamMessageURL = env.sendStreamMessageURL;
@@ -128,6 +129,10 @@ export class MessagingService {
         // @ts-ignore
         this.allPlatformMembers = subscribers.members;
       });
+  }
+
+  getAllUser(): any {
+    return this.http.get(env.allUsers);
   }
 
   getAllPlatformUsers(): any {

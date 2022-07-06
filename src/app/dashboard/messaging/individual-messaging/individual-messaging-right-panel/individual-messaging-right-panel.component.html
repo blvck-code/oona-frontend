@@ -2,7 +2,10 @@
   <div class="member-details mb-2">
 
     <div class="member-profile-details">
-      <img src="assets/img/placeholder.jpg" class="rounded-circle" alt="...">
+      <img *ngIf="currentUser?.avatar_url; else noImage" [src]="currentUser?.avatar_url" class="rounded-circle" alt="...">
+      <ng-template #noImage>
+        <img src="assets/img/placeholder.jpg" class="rounded-circle" alt="...">
+      </ng-template>
       <p class="member-name"> {{ currentUser?.full_name }}</p>
     </div>
 
@@ -40,6 +43,14 @@
 
   <div class="other-staff">
     <p class="other-staff-title">Other Staff</p>
+    <div
+      *ngIf="!otherMembers.length"
+      class="d-flex justify-content-center"
+    >
+      <div>
+        <app-loading-animation></app-loading-animation>
+      </div>
+    </div>
     <div class="other-staff-list" >
       <div class="mb-2" *ngFor="let member of otherMembers">
           <div class="member other-staff-item" (click)="goToMemberChat(member)" >

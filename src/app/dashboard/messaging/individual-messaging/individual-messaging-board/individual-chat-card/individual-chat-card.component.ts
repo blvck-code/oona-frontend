@@ -25,11 +25,18 @@ export class IndividualChatCardComponent implements OnInit {
   }
 
   showUserInfo(userName: any, zulipName: any): void {
-    return userName === zulipName ? `${userName} (Me)` : userName
+    return userName === zulipName ? `${userName} (Me)` : userName;
+  }
+
+  handleDate(): void {
+    const time = this.messageDetail.timestamp;
+
   }
 
   ngOnInit(): void {
     this.messageTime = new Date(this.messageDetail.timestamp * 1000).toLocaleTimeString();
+
+    this.handleDate();
   }
 
   handleReply(message: any): void {

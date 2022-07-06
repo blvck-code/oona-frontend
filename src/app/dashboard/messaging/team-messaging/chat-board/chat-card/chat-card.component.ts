@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 import { Document } from '@contentful/rich-text-types';
 import { BLOCKS, MARKS } from '@contentful/rich-text-types';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-chat-card',
@@ -32,7 +33,18 @@ export class ChatCardComponent implements OnInit {
     ],
   };
 
-  constructor() {
+  constructor(
+    private route: Router
+  ) {
+  }
+
+  navigateSubject(message: any): void {
+    const stream = `/dashboard/messaging/streams/${+message?.stream_id}-${message?.display_recipient.replace(' ', '-')}`;
+    const topic = `topic/${message?.subject.replace(' ', '-')}`;
+    const url = `${stream}/${topic}`;
+    console.log('Url ===>>>', url);
+    this.route.navigate([url]);
+    // console.log('Message details ===>>>', message);
   }
 
   ngOnInit(): void {

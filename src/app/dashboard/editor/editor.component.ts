@@ -168,7 +168,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     const markdown = turndownService.turndown(form.value.name);
     const messageDetail = {
       to: this.receiverInfo.display_recipient,
-      topic: this.receiverInfo.subject,
+      // ToDo change this to user message id
+      topic: 60,
       content: markdown
     };
     // const messageDetail = {
@@ -176,6 +177,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     //   topic: '',
     //   content: markdown
     // };
+
+    console.log('messageDetail ====>>>', messageDetail);
 
     const message = {
       author: 'Oluoch',
@@ -186,13 +189,13 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     console.log('Message content ===>>>', messageChannel);
 
-    // this.messagingService.sendStreamMessage(messageDetail).subscribe((response: any) => {
-    //   if (response.zulip.result === 'success'){
-    //     // clear the form
-    //     form.value.name = '';
-    //     this.editorData = '';
-    //   }
-    // });
+    this.messagingService.sendStreamMessage(messageDetail).subscribe((response: any) => {
+      if (response.zulip.result === 'success'){
+        // clear the form
+        form.value.name = '';
+        this.editorData = '';
+      }
+    });
     // clear the form
     form.value.name = '';
     this.editorData = '';

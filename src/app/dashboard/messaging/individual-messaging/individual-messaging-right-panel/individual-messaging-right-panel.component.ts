@@ -1,5 +1,5 @@
 import {AfterViewInit, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
-import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, NavigationExtras, NavigationStart, Router} from '@angular/router';
 import {MessagingService} from '../../services/messaging.service';
 import * as authActions from '../../../../auth/state/auth.actions';
 import {environment} from '../../../../../environments/environment';
@@ -76,25 +76,40 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
   }
 
   getCurrentUser(): void {
-    const currentUser = this.route.snapshot.queryParams?.member;
+    // const currentUser = this.route.snapshot.queryParams?.member;
+    //
+    // const userId = currentUser.split('-')[0];
+    // const userName = currentUser.split('-')[1].replace('.', ' ');
+    //
+    // if (userId) {
+    //   this.store.select(getAllUsers).subscribe(
+    //     data => {
+    //       // tslint:disable-next-line:no-shadowed-variable
+    //       // this.currentUser = data?.find((user: any) => user.user_id === +userId);
+    //     }
+    //   );
+    // }
 
-    const userId = currentUser.split('-')[0];
-    const userName = currentUser.split('-')[1].replace('.', ' ');
+    this.store.select(getSelectedUser).subscribe(
+      user => this.currentUser = user
+    );
+  }
 
-    if (userId) {
-      this.store.select(getAllUsers).subscribe(
-        data => {
-          // tslint:disable-next-line:no-shadowed-variable
-          this.currentUser = data?.find((user: any) => user.user_id === +userId);
-        }
-      );
-    }
-
+  changeContentOnRouteChange(): void {
+    // @ts-ignore
+    this.router.events.subscribe((event: Event) => {
+      if (event instanceof NavigationStart) {
+        this.store.select(getSelectedUser).subscribe(
+          user => this.currentUser = user
+        );
+      }
+    });
   }
 
 
   ngOnInit(): void {
     this.getCurrentUser();
+    this.changeContentOnRouteChange();
 
 
     this.route.queryParams
@@ -210,10 +225,11 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
   }
 
   generateMeeting(): void{
-    this.messagingService.getOonaMemberDetail(this.memberDetails.email).subscribe((oonaProfileData: { results: any; }) => {
+    console.log('Member ==>>>', this.currentUser);
+    this.messagingService.getOonaMemberDetail(this.currentUser.email).subscribe((oonaProfileData: { results: any; }) => {
       const meetingAttendees = [];
       if (oonaProfileData.results.length < 1){
-        this.notificationService.showWarning(`${this.memberDetails.full_name} is not a member of oona`, 'Not a member of oona');
+        this.notificationService.showWarning(`${this.currentUser.full_name} is not a member of oona`, 'Not a member of oona');
         return;
       }else{
         meetingAttendees.push(oonaProfileData.results[0].id);
@@ -235,7 +251,7 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
         this.messagingService.createMeeting(meetingDetail).subscribe((response: any) => {
           // response.video_stream
           // https://192.168.0.76:8443/67830bfd-7249-4d05-b5a6-5eda9c0c30fa
-          this.notificationService.showInfo(`Meeting with ${this.memberDetails.full_name} has been created.`, 'Meeting created');
+          this.notificationService.showInfo(`Meeting with ${this.currentUser.full_name} has been created.`, 'Meeting created');
           setTimeout(() => {
             this.router.navigate(['dashboard']);
           }, 1000);

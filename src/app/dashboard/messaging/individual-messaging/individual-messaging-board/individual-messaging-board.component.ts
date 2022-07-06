@@ -45,19 +45,34 @@ export class IndividualMessagingBoardComponent implements OnInit {
   createdAt: any;
   operand: any;
 
+  onInitHandler(): void {
+    this.store.select(getSelectedUser).subscribe(member => {
+        this.memberDetail = member;
+        // this.store.dispatch(new authActions.SetSelectedUser(member));
+        setTimeout(() => {
+          this.privateMessages();
+        }, 1000);
+      }
+    );
+  }
+
   ngOnInit(): void {
     // this.getUserInfo();
+    this.onInitHandler();
     this.changeContentOnRouteChange();
 
-    this.messagingService.currentMemberChatDetail.subscribe(member => {
-      this.memberDetail = member;
-      // this.store.dispatch(new authActions.SetSelectedUser(member));
-      setTimeout(() => {
-        this.privateMessages();
-      }, 1000);
-
-    }); // always get the current value
+    // this.messagingService.currentMemberChatDetail.subscribe(member => {
+    //   this.memberDetail = member;
+    //   console.log('Member details ===>>>', member);
+    //   // this.store.dispatch(new authActions.SetSelectedUser(member));
+    //   setTimeout(() => {
+    //     this.privateMessages();
+    //   }, 1000);
+    //
+    // });
+    // always get the current value
     this.userSocketService.messageCount.subscribe(messages => {
+      console.log('Sockets finally works ===>>>', messages);
       if (this.newMessagesCount !== messages){
         // get new messages
         this.privateMessages();
@@ -66,21 +81,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
     });
 
   }
-
-  // getUserInfo(): void {
-  //   const userEmail = localStorage.getItem('privateMsg');
-  //
-  //   this.store.select(getAllUsers).subscribe(
-  //     users => {
-  //      const members = users?.members;
-  //      members.forEach((member: any) => {
-  //        if (member.email === userEmail){
-  //          localStorage.setItem('privateMsg', member.email);
-  //        }
-  //      });
-  //     }
-  //   );
-  // }
 
   constructor(
     private router: Router,
@@ -99,6 +99,8 @@ export class IndividualMessagingBoardComponent implements OnInit {
         }
       }
     );
+
+    console.log('Operand id ===>>>', this.operand);
 
   }
 
@@ -134,7 +136,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
     // @ts-ignore
     document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
-
   }
 
   privateMessages(): void{

@@ -25,7 +25,6 @@ export class AllPrivateMessagingComponent implements OnInit {
     this.store.select(getUserDetails).subscribe(
       data => {
         this.operand = data?.email;
-        console.log('User details ===>>>', data);
       }
     );
 
@@ -42,7 +41,6 @@ export class AllPrivateMessagingComponent implements OnInit {
         }
       ]
     };
-    console.log('streamDetail ====>>>', streamDetail);
 
     // fetch from server
     this.store.dispatch(new messagingActions.LoadPrivateMessages(streamDetail));

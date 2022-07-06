@@ -105,16 +105,19 @@ export class UpdateState implements Action {
 export class LoadAllUsers implements Action {
   readonly type = AuthActionsTypes.LOAD_ALL_USERS;
   constructor() {
+    console.log('Loading all users');
   }
 }
 export class LoadAllUsersSuccess implements Action {
   readonly type = AuthActionsTypes.LOAD_ALL_USERS_SUCCESS;
   constructor(public payload: any) {
+    console.log('load all users success ===>>>', payload);
   }
 }
 export class LoadAllUsersFail implements Action {
   readonly type = AuthActionsTypes.LOAD_ALL_USERS_FAIL;
   constructor(public payload: any) {
+    console.log('load all users fail ===>>', payload);
   }
 }
 
@@ -140,13 +143,11 @@ export class LoadZulipUsersFail implements Action {
 export class SetSelectedUser implements Action {
   readonly type = AuthActionsTypes.SET_SELECTED_USER;
   constructor(public payload: any) {
-    console.log('Selected user ==>>', payload);
   }
 }
 export class LoadSelectedUser implements Action {
   readonly type = AuthActionsTypes.LOAD_SELECTED_USER;
   constructor(public payload: any) {
-    console.log('Selected user ==>>', payload);
   }
 }
 

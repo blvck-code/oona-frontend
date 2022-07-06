@@ -16,21 +16,24 @@ import {SharedModule} from '../../shared/shared.module';
 // import {SearchUserPipe} from './shared/pipes/searchUser.pipe';
 
 @NgModule({
-  declarations: [
-    HomeComponent,
-    UpcomingMeetingsComponent,
-    PreviousMeetingsComponent,
-    MeetingDetailsComponent,
-    HighlightDirective,
-    LoadIndicatorComponent,
-  ],
-  imports: [
-    CommonModule,
-    HomeRoutingModule,
-    ReactiveFormsModule,
-    FormsModule,
-    FullCalendarModule,
-    SharedModule,
-  ]
+    declarations: [
+        HomeComponent,
+        UpcomingMeetingsComponent,
+        PreviousMeetingsComponent,
+        MeetingDetailsComponent,
+        HighlightDirective,
+        LoadIndicatorComponent,
+    ],
+    exports: [
+        LoadIndicatorComponent
+    ],
+    imports: [
+        CommonModule,
+        HomeRoutingModule,
+        ReactiveFormsModule,
+        FormsModule,
+        FullCalendarModule,
+        SharedModule,
+    ]
 })
 export class HomeModule { }

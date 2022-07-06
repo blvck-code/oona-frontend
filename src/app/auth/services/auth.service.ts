@@ -169,6 +169,10 @@ export class AuthService {
     return this.http.get(env.presentUsers);
   }
 
+  getAllUser(): any {
+    return this.http.get(env.allUsers);
+  }
+
   getZulipUsers(): Observable<any> {
     return this.http.get(env.zulipUsers);
   }

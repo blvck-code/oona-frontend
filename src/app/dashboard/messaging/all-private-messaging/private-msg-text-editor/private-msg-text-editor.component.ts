@@ -103,8 +103,6 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
     this.store.select(getAllUsers).subscribe((users) => {
       const presentUsers = users?.filter((user: any) => user?.presence);
       this.allUsers = users?.filter((user: any) => user?.presence);
-
-      console.log('Present users ===>>>', presentUsers);
     });
     // this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
     //   console.log('His users ====>>>', users);
@@ -215,11 +213,9 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
       to: this.chatGroup.map((member) => member.user_id),
       content: markdown,
     };
-    console.log('Private message content ==>>>', messageDetail);
     this.messagingService
       .sendIndividualMessage(messageDetail)
       .subscribe((response: any) => {
-        console.log('Response from server ==>>', response);
         if (response.zulip.result === 'success') {
           // clear the form
           form.value.name = '';
