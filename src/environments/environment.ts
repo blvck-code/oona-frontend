@@ -4,8 +4,9 @@
 
 // export const oonaBaseUrl = 'http://192.168.0.161:8000';
 export const oonaBaseUrl = 'https://192.168.0.100:2443';
-export const userChannel = 'ws://192.168.0.161:8001/ws/on/event/';
-export const messageChannel = 'ws://192.168.0.161:8001/ws/on/message/';
+// export const oonaBaseUrl = 'http://192.168.0.13:8000';
+export const userChannel = 'ws://192.168.0.100:2443/ws/on/event/';
+export const messageChannel = 'ws://192.168.0.100:2443/ws/on/message/';
 const whiteBoard = 'http://192.168.0.100:8030';
 const etherPad = 'http://192.168.0.100:9001/';
 const domain = '192.168.0.100:8443';

@@ -119,6 +119,7 @@ export class LoadPrivateMessages implements Action {
 export class LoadPrivateMessagesSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_PRIVATE_MESSAGE_SUCCESS;
   constructor(public payload: any) {
+    console.log('All private messages ====>>>',  payload);
   }
 }
 export class LoadPrivateMessagesFail implements Action {

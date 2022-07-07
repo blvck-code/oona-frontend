@@ -143,6 +143,7 @@ export class LandingMessageBoardComponent implements OnInit {
   selectedChat(chat: SingleChat): any {
     this.editorActive = true;
     this.store.dispatch(new messageActions.HandleSendMessage(chat));
+    console.log('Emit chat ===>>>', chat);
   }
 
 }

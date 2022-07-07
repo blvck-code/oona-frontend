@@ -12,6 +12,7 @@ import {Router} from '@angular/router';
 export class ChatCardComponent implements OnInit {
   @Input() messageDetail: any;
   @Output() messageTopic = new EventEmitter<any>();
+  @Output() emitReplyMsg = new EventEmitter<any>();
   messageTime = '';
   messageDate: any = '';
   document: Document = {
@@ -72,7 +73,23 @@ export class ChatCardComponent implements OnInit {
     };
   }
 
-  getMessageTopic(): void {
+  handleReactEmoji(emoji: string): void {
+    console.log('Emoji type ====>>>', emoji);
+  }
+
+  getMessageTopic(messageDetail: any): void {
+    console.log('Message details ===>>>', messageDetail.reactions);
     this.messageTopic.emit(this.messageDetail.subject);
+  }
+
+  handleReplyMsg(message: any): void {
+    this.emitReplyMsg.emit(message);
+  }
+
+  handleCopyMsg(message: any): void {
+    const content = message?.content;
+    // document.execCommand('copy');
+    navigator.clipboard.writeText(content)
+    console.log('Message to copy: ', message?.content);
   }
 }

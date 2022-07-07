@@ -22,7 +22,7 @@
 <!--      </div>-->
 
       <app-chat-card
-        (click)="selectedChat(chat)"
+        (emitReplyMsg)="selectedChat(chat)"
         *ngFor="let chat of messages"
         [messageDetail]="chat"
       ></app-chat-card>

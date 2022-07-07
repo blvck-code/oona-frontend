@@ -44,6 +44,9 @@ export class LandingMessagingRightPanelComponent implements OnInit {
       this.peopleTyping = peopleTyping;
       this.addTypingStatus(peopleTyping);
     });
+
+    // Todo change to present users
+
     this.messagingService.getUsersByAvailability().subscribe(
       (users: { members: any[] }) => {
         // @Todo Delete console log
@@ -59,6 +62,12 @@ export class LandingMessagingRightPanelComponent implements OnInit {
         );
       }
     );
+
+    // this.store.select(getZulipUsers).subscribe(
+    //   users => {
+    //     this.allUsers = users?.members;
+    //   }
+    // );
   }
 
   onInitPage(): void {
