@@ -62,6 +62,7 @@ export class AuthService {
     this.storage.removeItem('ot');
     this.storage.removeItem('or');
     this.storage.removeItem('u?');
+    localStorage.clear();
   }
 
   getToken(): any {

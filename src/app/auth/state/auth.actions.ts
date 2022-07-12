@@ -57,6 +57,7 @@ export class LoginUserSuccess implements Action {
 export class LoginUserFail implements Action {
   readonly type = AuthActionsTypes.LOGIN_USER_FAIL;
   constructor( public payload: any) {
+    console.log('Login error payload ===>>>', payload);
   }
 }
 

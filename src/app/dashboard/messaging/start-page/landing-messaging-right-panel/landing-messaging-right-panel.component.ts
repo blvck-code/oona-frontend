@@ -60,10 +60,11 @@ export class LandingMessagingRightPanelComponent implements OnInit {
       },
       // @ts-ignore
       (error) => {
-        this.notification.showError(
-          `Failed to get all users. Error ${error.status}`,
-          'Unable to get users'
-        );
+        // console.log('Get users error ===>>', error);
+        // this.notification.showError(
+        //   `Failed to get all users. Error ${error?.message}`,
+        //   'Unable to get users'
+        // );
       }
     );
 

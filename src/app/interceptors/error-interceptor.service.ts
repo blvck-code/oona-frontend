@@ -23,13 +23,14 @@ export class ErrorInterceptorService implements HttpInterceptor{
   ) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    console.log("Passed through the interceptor in request");
+
     return next.handle(req).pipe(
       retry(1),
       catchError((error: HttpErrorResponse) => {
         const errorStatus = error.status;
         console.log('Error status ==>', errorStatus);
-        let errorMsg = '';
-        console.log('Error faced ===>>>>', error);
+        let errorMsg;
 
         // Un Authorised User Access
         if (errorStatus === 401 || errorStatus === 403) {
@@ -38,33 +39,59 @@ export class ErrorInterceptorService implements HttpInterceptor{
           this.route.navigate(['/login']);
         }
 
+        // Other errors
         if (error instanceof ErrorEvent){
           // client-side error
           // errorMsg = `Error ${error.message}`
-          console.log(error);
+          console.log('Client side error ===>>> ', error);
 
         } else {
           // server-side error
-          errorMsg = `Error ${error.message}`;
+          console.log('Server side error ===>>> ', error);
+          console.log('Def error ===>>> ', error?.error[0].non_field_errors[0]);
 
-          const nonFieldError = error?.error.non_field_errors;
-          const emailError = error?.error.email;
-
-          if (nonFieldError) {
-            const errorData = {
-              message: nonFieldError.toString(),
-              status: errorStatus
+          if (error?.error) {
+            // tslint:disable-next-line:no-shadowed-variable
+            const err = {
+              status: error.status,
+              message: error.error.error
             };
+            errorMsg = err;
+          }
 
-            // this.store.dispatch(new sharedActions.ErrorHandler(errorData));
+          if (error?.error[0].non_field_errors[0]) {
+            const err = {
+              status: error.status,
+              message: error?.error[0].non_field_errors[0]
+            };
+            errorMsg = err;
+          }
 
-          } else if (emailError) {
-            const errorData = {
+          if (error.error.password1){
+            const errInfo = {
+              status: error.status,
+              message: error.error.password1[0].toString()
+            };
+            errorMsg = errInfo;
+          }
+
+          if (error.error.non_field_errors){
+            const errInfo = {
+              status: error.status,
+              message: error.error.non_field_errors[0].toString()
+            };
+            errorMsg = errInfo;
+            console.log('Error info: ', errInfo);
+          }
+
+          const emailError = error?.error?.email;
+
+          if (emailError) {
+            const errInfo = {
               message: emailError.toString(),
               status: errorStatus
             };
-
-            // this.store.dispatch(new sharedActions.ErrorHandler(errorData));
+            errorMsg = errInfo;
           }
 
         }
