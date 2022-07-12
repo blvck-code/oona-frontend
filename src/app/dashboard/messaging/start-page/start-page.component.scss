@@ -10,13 +10,15 @@
 }
 
 .message-board {
+  //width: calc(100vw - 1180px);
   width: calc(100vw - 980px);
   padding-top: 15px;
   overflow: hidden;
 }
 
 .right-all-users-panel {
-  width: 300px;
+  width: 350px;
+  border: 1px solid red;
 }
 
 @media screen and (max-width: 1700px) {

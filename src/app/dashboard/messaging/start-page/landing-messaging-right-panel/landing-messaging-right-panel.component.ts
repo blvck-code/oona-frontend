@@ -22,8 +22,12 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   allUsers = Array();
   serverUrl = oonaBaseUrl;
   recognizedUsers = Array();
+  showSearchUser = false;
+  showMoreInfo = true;
   socketUsers = Array();
   peopleTyping = Array();
+  searchText = '';
+  selectedUser: any;
 
   constructor(
     private messagingService: MessagingService,
@@ -71,7 +75,7 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   }
 
   onInitPage(): void {
-   this.store.select(getAllUsers).subscribe((users) => {
+   this.store.select(getZulipUsers).subscribe((users) => {
      const usersPresent = users?.members?.filter((user: any) => user.presence );
      this.allUsers = this.newListOfUsers(usersPresent);
    });
@@ -138,5 +142,30 @@ export class LandingMessagingRightPanelComponent implements OnInit {
         }
       });
     }
+  }
+
+  handleShowSearchUser(): void {
+    this.showSearchUser = !this.showSearchUser;
+  }
+
+  // Todo working on this
+  searchUser(event: any): any {
+    if (event.target.value !== '') {
+      // tslint:disable-next-line:max-line-length
+      this.allUsers = this.allUsers.filter(
+        (user) =>
+          user.full_name
+            .toLowerCase()
+            .includes(event.target.value.toLowerCase()) ||
+          user.email.toLowerCase().includes(event.target.value.toLowerCase())
+      );
+    } else {
+      return this.allUsers;
+    }
+  }
+
+  handleShowMoreInfo(user: any): void {
+    this.selectedUser = user;
+    this.showMoreInfo = !this.showMoreInfo;
   }
 }

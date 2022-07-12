@@ -9,7 +9,7 @@ export class UserFilterPipe implements PipeTransform {
     if (!value || !filterTerm) {
       return value;
     }
-    return value.filter((user: any) => user.name.toLowerCase().indexOf(filterTerm.toLowerCase()) !== -1);
+    return value.filter((user: any) => user.full_name.toLowerCase().indexOf(filterTerm.toLowerCase()) !== -1);
   }
 
 }

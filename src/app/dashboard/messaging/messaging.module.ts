@@ -55,11 +55,12 @@ import {DashboardModule} from '../dashboard.module';
 import {EditorComponent} from '../editor/editor.component';
 import { StreamsComponent } from './streams/streams.component';
 import { StreamsBoardComponent } from './streams/streams-board/streams-board.component';
+import {UserFilterPipe} from '../../pipes/user-filter.pipe';
 
 
 @NgModule({
   // tslint:disable-next-line:max-line-length
-  declarations: [MessagingComponent, TeamMessagingComponent, TeamMessagingLeftPanelComponent, TeamMessagingRightPanelComponent, ChatBoardComponent, ChatCardComponent, TextEditorComponent, IndividualMessagingComponent, IndividualMessagingRightPanelComponent, IndividualMessagingBoardComponent, IndividualChatCardComponent, IndividualChatCardResponseComponent, StartPageComponent, LandingMessagingRightPanelComponent, LandingMessageBoardComponent, MessageTimeBtnComponent, LoadingAnimationComponent, AllPrivateMessagingComponent, AllPrivateMessagesBoardComponent, DisplayNamesPipe, AllMentionedMessagesComponent, AllMentionedMessagesBoardComponent, CreateTeamComponent, TeamSettingsComponent, LeaveTeamComponent, GroupPmsComponent, GroupPmsMessagingBoardComponent, GroupPmsChatCardComponent, ShortenTextPipe, GroupPmsTextEditorComponent, MeetingCardComponent, TeamMeetingsComponent, AllMsgTextEditorComponent, PrivateMsgTextEditorComponent, LandingTextEditorComponent, EditorComponent, StreamsComponent, StreamsBoardComponent],
+    declarations: [MessagingComponent, TeamMessagingComponent, TeamMessagingLeftPanelComponent, TeamMessagingRightPanelComponent, ChatBoardComponent, ChatCardComponent, TextEditorComponent, IndividualMessagingComponent, IndividualMessagingRightPanelComponent, IndividualMessagingBoardComponent, IndividualChatCardComponent, IndividualChatCardResponseComponent, StartPageComponent, LandingMessagingRightPanelComponent, LandingMessageBoardComponent, MessageTimeBtnComponent, LoadingAnimationComponent, AllPrivateMessagingComponent, AllPrivateMessagesBoardComponent, DisplayNamesPipe, AllMentionedMessagesComponent, AllMentionedMessagesBoardComponent, CreateTeamComponent, TeamSettingsComponent, LeaveTeamComponent, GroupPmsComponent, GroupPmsMessagingBoardComponent, GroupPmsChatCardComponent, ShortenTextPipe, GroupPmsTextEditorComponent, MeetingCardComponent, TeamMeetingsComponent, AllMsgTextEditorComponent, PrivateMsgTextEditorComponent, LandingTextEditorComponent, EditorComponent, StreamsComponent, StreamsBoardComponent, UserFilterPipe],
   imports: [
     CommonModule,
     MessagingRoutingModule,
