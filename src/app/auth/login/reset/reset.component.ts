@@ -51,7 +51,7 @@ export class ResetComponent implements OnInit {
           this.router.navigate(['/login']);
         },
         (resetErr: any) => {
-          console.log('Error message from component ===>>>>', resetErr.message);
+          console.log('Error message from component ===>>>>', resetErr);
           this.resetPassServerError = resetErr.message;
 
           this.resetPassError = true;

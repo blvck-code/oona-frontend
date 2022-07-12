@@ -23,8 +23,6 @@ export class ErrorInterceptorService implements HttpInterceptor{
   ) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log("Passed through the interceptor in request");
-
     return next.handle(req).pipe(
       retry(1),
       catchError((error: HttpErrorResponse) => {
@@ -48,40 +46,38 @@ export class ErrorInterceptorService implements HttpInterceptor{
         } else {
           // server-side error
           console.log('Server side error ===>>> ', error);
-          console.log('Def error ===>>> ', error?.error[0].non_field_errors[0]);
 
           if (error?.error) {
             // tslint:disable-next-line:no-shadowed-variable
             const err = {
               status: error.status,
-              message: error.error.error
+              message: error?.error?.error
             };
             errorMsg = err;
           }
 
-          if (error?.error[0].non_field_errors[0]) {
+          if (error?.error[0]?.non_field_errors[0]) {
             const err = {
               status: error.status,
-              message: error?.error[0].non_field_errors[0]
+              message: error?.error[0]?.non_field_errors[0]
             };
             errorMsg = err;
           }
 
-          if (error.error.password1){
+          if (error?.error?.password1){
             const errInfo = {
               status: error.status,
-              message: error.error.password1[0].toString()
+              message: error?.error?.password1[0].toString()
             };
             errorMsg = errInfo;
           }
 
-          if (error.error.non_field_errors){
+          if (error?.error?.non_field_errors){
             const errInfo = {
               status: error.status,
-              message: error.error.non_field_errors[0].toString()
+              message: error?.error?.non_field_errors[0].toString()
             };
             errorMsg = errInfo;
-            console.log('Error info: ', errInfo);
           }
 
           const emailError = error?.error?.email;
