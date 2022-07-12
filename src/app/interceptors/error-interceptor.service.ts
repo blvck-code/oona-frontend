@@ -8,6 +8,8 @@ import * as sharedActions from '../shared/state/shared.actions';
 import {Store} from '@ngrx/store';
 import {AppState} from '../state/app.state';
 import * as authActions from '../auth/state/auth.actions';
+import {Router} from '@angular/router';
+import {NotificationService} from '../shared/services/notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,9 @@ import * as authActions from '../auth/state/auth.actions';
 export class ErrorInterceptorService implements HttpInterceptor{
 
   constructor(
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private route: Router,
+    private notify: NotificationService
   ) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -25,10 +29,13 @@ export class ErrorInterceptorService implements HttpInterceptor{
         const errorStatus = error.status;
         console.log('Error status ==>', errorStatus);
         let errorMsg = '';
+        console.log('Error faced ===>>>>', error);
 
         // Un Authorised User Access
         if (errorStatus === 401 || errorStatus === 403) {
           this.store.dispatch(new authActions.LogoutUser());
+          localStorage.clear();
+          this.route.navigate(['/login']);
         }
 
         if (error instanceof ErrorEvent){
@@ -65,6 +72,4 @@ export class ErrorInterceptorService implements HttpInterceptor{
       })
     );
   }
-
-
 }

@@ -21,6 +21,7 @@ import { environment as env } from '../environments/environment';
 import { appReducer } from './state/app.state';
 import {EffectsModule} from '@ngrx/effects';
 import {TokenInterceptorService} from './interceptors/token-interceptor.service';
+import {ErrorInterceptorService} from './interceptors/error-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,11 @@ import {TokenInterceptorService} from './interceptors/token-interceptor.service'
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptorService,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptorService,
       multi: true
     }
   ],
