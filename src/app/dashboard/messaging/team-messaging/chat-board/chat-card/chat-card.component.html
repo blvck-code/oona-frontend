@@ -16,7 +16,7 @@
             #{{ messageDetail.subject | titlecase }}
           </p>
         </div>
-        <div class="message-card" (click)="handleReplyMsg(messageDetail)">
+        <div class="message-card" (click)="handleReplyMsg(messageDetail)" title="Click to reply">
           <div class="d-flex justify-content-between">
             <h3>{{ messageDetail.sender_full_name }}</h3>
             <!--                    <p class="chat-time">{{messageDate}}</p>-->

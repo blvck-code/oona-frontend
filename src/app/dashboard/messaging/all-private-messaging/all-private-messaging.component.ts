@@ -6,6 +6,7 @@ import { Store } from '@ngrx/store';
 import * as messagingActions from '../state/messaging.actions';
 import {AppState} from '../../../state/app.state';
 import {getUserDetails} from '../../../auth/state/auth.selectors';
+import {firmName} from '../../../../environments/environment';
 
 @Component({
   selector: 'app-all-private-messaging',
@@ -22,6 +23,7 @@ export class AllPrivateMessagingComponent implements OnInit {
   ) { }
 
   onInitHandler(): void {
+    document.title = `Private messages - ${firmName} - Oona`;
     this.store.select(getUserDetails).subscribe(
       data => {
         this.operand = data?.email;

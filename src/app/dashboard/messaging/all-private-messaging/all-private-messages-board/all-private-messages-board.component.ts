@@ -6,7 +6,7 @@ import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
 // @Todo change this to fetch only private messages
-import {getLoadingPrivateMsgs, getMessageType, getPrivateMessages} from '../../state/messaging.selectors';
+import {getAllMessages, getLoadingPrivateMsgs, getMessageType, getPrivateMessages} from '../../state/messaging.selectors';
 import * as messageActions from '../../state/messaging.actions';
 import {Observable} from 'rxjs';
 import {StreamDetail} from '../../models/messages.model';
@@ -49,23 +49,6 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
 
   // Init page
   initPage(): void {
-
-    // Message parameters
-    // const streamDetail = {
-    //   use_first_unread_anchor: true,
-    //   apply_markdown: false,
-    //   num_before: this.initialMessageCount,
-    //   type: [
-    //     {
-    //       operator: 'pm-with',
-    //       // change to user.email
-    //       operand: this.operand,
-    //     }
-    //   ]
-    // };
-
-    // fetch data from server
-    // this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
 
     // get Loading Message
     this.loadingMessages = this.store.select(getLoadingPrivateMsgs);

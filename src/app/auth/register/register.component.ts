@@ -47,12 +47,13 @@ export class RegisterComponent implements OnInit {
           this.router.navigate(['/verify-account']);
         },
         (signupError: any) => {
+          console.log('Register error: ', signupError);
           this.signupError = true;
-          if (signupError.error.non_field_errors[0] === 'User with this email already exists.') {
+          if (signupError.message === 'User with this email already exists.') {
             this.signupServerError = 'A User with this email already exists.';
-          } else  if (signupError.error.non_field_errors[0] === 'The passwords don\'t match.') {
+          } else  if (signupError.message === 'The passwords don\'t match.') {
             this.signupServerError = 'The passwords do not match. Please try again.';
-          } else if (signupError.error.non_field_errors[0] === 'This field may not be blank.') {
+          } else if (signupError.message === 'This field may not be blank.') {
             this.signupServerError = 'Please fill all the required fields and try again.';
           }
         }

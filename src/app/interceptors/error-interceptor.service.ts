@@ -54,6 +54,8 @@ export class ErrorInterceptorService implements HttpInterceptor{
               message: error?.error?.error
             };
             errorMsg = err;
+
+            console.log('Error content: ', err);
           }
 
           if (error?.error[0]?.non_field_errors[0]) {

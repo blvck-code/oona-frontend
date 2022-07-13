@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
-import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, NavigationStart, Router} from '@angular/router';
 import {MessagingService} from '../../services/messaging.service';
 
 import TurndownService from 'turndown';
@@ -54,6 +54,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
         }, 1000);
       }
     );
+    setTimeout(() => { this.handleMsgGrouping(); }, 3000);
   }
 
   ngOnInit(): void {
@@ -75,7 +76,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
       console.log('Sockets finally works ===>>>', messages);
       if (this.newMessagesCount !== messages){
         // get new messages
-        this.privateMessages();
+        // this.privateMessages();
         this.newMessagesCount = messages;
       }
     });
@@ -96,6 +97,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
         if (data) {
           this.operand = data;
           this.getSelectedUser();
+          console.log('User info content: ', data);
         }
       }
     );
@@ -107,8 +109,10 @@ export class IndividualMessagingBoardComponent implements OnInit {
   changeContentOnRouteChange(): void {
     // @ts-ignore
     this.route.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd) {
-        this.getSelectedUser();
+      if (event instanceof NavigationStart) {
+        console.log('Route change start');
+        // this.getSelectedUser();
+        this.messages$ = this.store.select(getPrivateMessages);
       }
     });
   }
@@ -152,7 +156,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
       };
 
       // get Selected User
-      this.getSelectedUser();
+      // this.getSelectedUser();
 
       // @ts-ignore
       // document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
@@ -168,6 +172,36 @@ export class IndividualMessagingBoardComponent implements OnInit {
         });
       this.userActiveStatus();
   }
+
+  handleMsgGrouping(): void {
+
+    let timeStamps: any[] = [];
+
+    const currentDate = new Date();
+    const currentDay = currentDate;
+    const currentMonth = currentDate.getMonth();
+
+    console.log('Current day: ', currentDay);
+    console.log('Current month: ', currentMonth);
+    console.log('Current date: ', currentDate);
+
+    this.store.select(getPrivateMessages).subscribe(
+      messages => {
+        messages?.map(mes => {
+
+          const newDate = new Date();
+          newDate.setTime(mes.timestamp * 1000);
+          const dateString = newDate.toUTCString();
+
+          timeStamps = [...timeStamps, dateString];
+        });
+        console.log('Time stamp: ', timeStamps.sort((a: any, b: any) => a - b));
+      }
+    );
+
+
+  }
+
 
   sendMessageToIndividual(message: any): void {
     console.log('Message content ==>>> ', message);

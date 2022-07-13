@@ -8,6 +8,7 @@ import {AppState} from '../../../state/app.state';
 import {getAllMessages, getLoadingAllMsg} from '../state/messaging.selectors';
 import {SingleMessageModel} from '../models/messages.model';
 import * as messagingActions from '../state/messaging.actions';
+import {firmName} from '../../../../environments/environment';
 
 @Component({
   selector: 'app-streams',
@@ -19,7 +20,12 @@ export class StreamsComponent implements OnInit, AfterViewInit {
   streams!: SingleMessageModel;
   public streamSubject = new BehaviorSubject<number>(0);
   public streamSelected = this.streamSubject.asObservable();
+
+  public titleSubject = new BehaviorSubject<string>('');
+  public titleSelected = this.titleSubject.asObservable();
+
   loadingMsgs$!: Observable<boolean>;
+  streamName = '';
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -28,18 +34,27 @@ export class StreamsComponent implements OnInit, AfterViewInit {
   ) {
     // @ts-ignore
     this.router.events.subscribe((event: Event) => {
+      const selectedStream = this.activateRoute.snapshot.paramMap;
+
+      const streamId = selectedStream?.get('stream')?.split('-')[0];
+      const topicInfo = selectedStream?.get('topic')?.replace('-', ' ');
 
       if (event instanceof NavigationStart) {
+        const streamName = selectedStream?.get('stream')?.split('-')[1];
+        // @ts-ignore
+
+        if (topicInfo) {
+          this.titleSubject.next(topicInfo);
+        }
+        // @ts-ignore
+        this.titleSubject.next(streamName);
 
       }
 
       if (event instanceof NavigationEnd) {
         // Hide progress spinner or progress bar
         // this.currentRoute = event.url;
-        const selectedStream = this.activateRoute.snapshot.paramMap;
-
-        const streamId = selectedStream?.get('stream')?.split('-')[0];
-        const topicInfo = selectedStream?.get('topic')?.replace('-', ' ');
+        console.log('topicInfo ===>>>', topicInfo);
 
         const filteredInfo = {
           streamId,
@@ -49,7 +64,12 @@ export class StreamsComponent implements OnInit, AfterViewInit {
         if (topicInfo) {
           // @ts-ignore
           filteredInfo.topicName = topicInfo;
+          // @ts-ignore
+          this.streamName = topicInfo;
         }
+
+        // @ts-ignore
+        this.streamName = selectedStream?.get('stream')?.split('-')[1];
         // this.store.dispatch(new messagingActions.FilterMessages(filteredInfo));
 
         this.handleMsgFilter();
@@ -63,12 +83,15 @@ export class StreamsComponent implements OnInit, AfterViewInit {
   }
 
   onInitHandler(): void {
-
+    // Todo switching page title bug, not changing as expected
+    document.title = `${this.streamName} - ${firmName} - Oona`;
     const currentStream = this.activateRoute.snapshot.params.stream;
+
+    this.titleSelected.subscribe(data => console.log('Current title ===>>>', data));
 
     // this.currentStream = this.activateRoute.snapshot.params.stream;
 
-    this.streamSelected.subscribe(data => console.log('Current stream ===>>>', data));
+    // this.streamSelected.subscribe(data => console.log('Current stream ===>>>', data));
 
 
 

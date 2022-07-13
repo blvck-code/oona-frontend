@@ -5,7 +5,7 @@ import {MessagingService} from '../../services/messaging.service';
 import {Store} from '@ngrx/store';
 import * as messageActions from '../../state/messaging.actions';
 import { AppState } from '../../../../state/app.state';
-import {getLoadingAllMsg, getAllMessages} from '../../state/messaging.selectors';
+import {getLoadingAllMsg, getAllMessages, getPrivateMessages} from '../../state/messaging.selectors';
 import {Observable} from 'rxjs';
 import {SingleChat, SingleMessageModel} from '../../models/messages.model';
 
@@ -34,6 +34,40 @@ export class LandingMessageBoardComponent implements OnInit {
   ngOnInit(): void {
     setTimeout( () => {this.getMessagesOfTeams(); }, 1000);
     this.initPage();
+    this.handleMsgGrouping();
+  }
+
+  handleMsgGrouping(): void {
+
+    let timeStamps: any[] = [];
+
+    const currentDate = new Date();
+    const currentDay = currentDate;
+    const currentMonth = currentDate.getMonth();
+
+    console.log('Current day: ', currentDay);
+    console.log('Current month: ', currentMonth);
+    console.log('Current date: ', currentDate);
+
+    this.store.select(getAllMessages).subscribe(
+      messages => {
+        messages?.map(mes => {
+
+          const newDate = new Date();
+          newDate.setTime(mes.timestamp * 1000);
+          const dateString = newDate.toUTCString();
+
+          const msgMonth = newDate.getMonth();
+          timeStamps = [...timeStamps, dateString];
+
+          // Todo add grouping messages
+
+        });
+        // console.log('Time stamp: ', timeStamps.sort((a: any, b: any) => a - b));
+      }
+    );
+
+
   }
 
   // Init Page
