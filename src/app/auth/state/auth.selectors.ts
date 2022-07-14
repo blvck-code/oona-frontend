@@ -10,6 +10,11 @@ export const getAccessToken = createSelector(
   state => state.userInfo?.access
 );
 
+export const getZulipProfile = createSelector(
+  getAuthState,
+  state => state.zulipProfile
+);
+
 export const getUserDetails = createSelector(
   getAuthState,
   state => state.userInfo
@@ -30,6 +35,11 @@ export const getIsAuthLoading = createSelector(
   state => state.loginStatus.isLoading
 );
 
+export const getLoadingUsers = createSelector(
+  getAuthState,
+  state => state.users.loading
+);
+
 export const getZulipUsers = createSelector(
   getAuthState,
   state => state.users.zulipUsers
@@ -37,7 +47,7 @@ export const getZulipUsers = createSelector(
 
 export const getAllUsers = createSelector(
   getAuthState,
-  state => state.users.all
+  state => state?.users?.all?.members
 );
 
 export const getSelectedUser = createSelector(

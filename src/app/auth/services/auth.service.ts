@@ -62,6 +62,7 @@ export class AuthService {
     this.storage.removeItem('ot');
     this.storage.removeItem('or');
     this.storage.removeItem('u?');
+    localStorage.clear();
   }
 
   getToken(): any {
@@ -163,6 +164,14 @@ export class AuthService {
 
   getAllUsers(): Observable<any>{
     return this.http.get(env.presentUsers);
+  }
+
+  getUsersByAvailability(): any {
+    return this.http.get(env.presentUsers);
+  }
+
+  getAllUser(): any {
+    return this.http.get(env.allUsers);
   }
 
   getZulipUsers(): Observable<any> {

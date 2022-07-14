@@ -11,6 +11,11 @@ export const getAllStreams = createSelector(
   state => state.streams.allStreams
 );
 
+export const getSubStreams = createSelector(
+  getMessagingState,
+  state => state.streams.subStreams
+);
+
 export const getStreamsLoading = createSelector(
   getMessagingState,
   state => state.loading
@@ -21,27 +26,54 @@ export const getTopics = createSelector(
   state => state.streams.topics
 );
 
-export const getLoadingMsg = createSelector(
+ // ALL MESSAGE SELECTORS
+export const getLoadingAllMsg = createSelector(
   getMessagingState,
-  state => state.messaging.loading
+  state => state.messaging.allMessages.loading
 );
 
-export const getMessages = createSelector(
+export const getAllMessages = createSelector(
   getMessagingState,
-  state => state.messaging.messages?.zulip?.messages
+  state => state.messaging.allMessages?.messages?.zulip?.messages
 );
 
-export const filteredState = createSelector(
+export const getAllFilteredMsg = createSelector(
   getMessagingState,
-  state => state.messaging.filtered
+  state => state.messaging.selectedStreamMsg.messages
 );
 
-export const getFilteredMsg = createSelector(
-  getMessagingState,
-  state => state.messaging.filteredMsg
-);
+// export const filteredState = createSelector(
+//   getMessagingState,
+//   state => state.messaging.filtered
+// );
+
+// export const getFilteredMsg = createSelector(
+//   getMessagingState,
+//   state => state.messaging.filteredMsg
+// );
 
 export const getMessageType = createSelector(
   getMessagingState,
-  state => state.messaging.messages?.oz.type
+  state => state.messaging.allMessages?.messages?.oz.type
+);
+
+export const getReceiverInfo = createSelector(
+  getMessagingState,
+  state => state.msgReceiver
+);
+
+// PRIVATE MESSAGES SELECTORS
+export const getLoadingPrivateMsgs = createSelector(
+  getMessagingState,
+  state => state.messaging.privateMsgs.loading
+);
+
+export const getPrivateMessages = createSelector(
+  getMessagingState,
+  state => state.messaging.privateMsgs?.messages?.zulip?.messages
+);
+
+export const getFilteredPrvMsgs = createSelector(
+  getMessagingState,
+  state => state.messaging.privateMsgs.filteredMsg
 );

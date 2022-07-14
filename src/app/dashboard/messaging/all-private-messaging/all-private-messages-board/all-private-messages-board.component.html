@@ -17,11 +17,16 @@
   <div class="tab-content custom-tab" id="nav-tabContent">
     <div class="tab-pane fade show active border-bottom-0" style="height: 100%" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
       <div class="overflow-chat">
-        <div *ngIf="(messages$ | async) as messages" id="box">
-          <div class="d-flex justify-content-center">
-            <button class="btn btn-primary shadow-none" *ngIf="messageExist" (click)="getMorePrivateMessages()">Get more</button>
-          </div>
-          <app-individual-chat-card *ngFor="let chat of messages" [messageDetail]="chat"></app-individual-chat-card>
+
+<!--        <div *ngIf="(messages$ | async) as messages" id="box">-->
+<!--          <app-individual-chat-card *ngFor="let chat of messages" [messageDetail]="chat"></app-individual-chat-card>-->
+<!--        </div>-->
+
+        <div *ngIf="messagesWithIndividuals.length" id="box">
+          <!--          <div class="d-flex justify-content-center">-->
+          <!--            <button class="btn btn-primary shadow-none" *ngIf="messageExist" (click)="getMorePrivateMessages()">Get more</button>-->
+          <!--          </div>-->
+          <app-individual-chat-card *ngFor="let chat of messagesWithIndividuals" [messageDetail]="chat"></app-individual-chat-card>
         </div>
 
         <div class="py-4" *ngIf="!messageExist">
@@ -32,7 +37,6 @@
           class="d-flex justify-content-center"
         >
           <div>
-
             <app-loading-animation></app-loading-animation>
             <p class="teams-belonging me-5"> Fetching messages</p>
           </div>

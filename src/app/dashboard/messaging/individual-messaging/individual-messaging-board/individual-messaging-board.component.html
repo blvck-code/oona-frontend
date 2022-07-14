@@ -1,10 +1,10 @@
 <div class="individual-messaging-container">
   <div class="messaging-member-title">
     <img src="assets/img/placeholder.jpg" alt="...">
-    <app-idle-tag class="ms-n5 circle" *ngIf="userActivity === 'idle'"></app-idle-tag>
-    <app-active-tag class="ms-n5 circle" *ngIf="userActivity === 'active'"></app-active-tag>
-    <app-inactive-tag class="ms-n5 circle" *ngIf="userActivity === 'offline'"></app-inactive-tag>
-    <p class="member-name p-2"> {{ memberDetail.full_name }}</p>
+    <app-idle-tag class="ms-n5 circle" *ngIf="(selectedUser$ | async)?.presence?.aggregated?.status === 'idle'"></app-idle-tag>
+    <app-active-tag class="ms-n5 circle" *ngIf="(selectedUser$ | async)?.presence?.aggregated?.status === 'active'"></app-active-tag>
+    <app-inactive-tag class="ms-n5 circle" *ngIf="(selectedUser$ | async)?.presence?.aggregated?.status === 'offline'"></app-inactive-tag>
+    <p class="member-name p-2">{{ (selectedUser$ | async)?.full_name }}</p>
   </div>
 
   <nav>
@@ -21,7 +21,7 @@
     </div>
   </nav>
 
-  <div class="tab-content custom-tab" id="nav-tabContent">
+  <div class="tab-content custom-tab pt-3" id="nav-tabContent">
     <div class="tab-pane fade show active border-bottom-0" style="height: 100%" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
       <div class="overflow-chat">
 
@@ -32,8 +32,8 @@
           <app-individual-chat-card *ngFor="let chat of messages" [messageDetail]="chat"></app-individual-chat-card>
         </div>
 
-        <div *ngIf="!(messages$ | async)" class="d-flex justify-content-center">
-          <p>No messages with {{memberDetail.full_name }}</p>
+        <div *ngIf="!(messages$ | async)?.length" class="d-flex justify-content-center">
+          <p>No messages with {{ (selectedUser$ | async)?.full_name }}</p>
         </div>
 
         </div>
@@ -42,14 +42,14 @@
       </div>
     </div>
 
-<!--    <div-->
-<!--      class="tab-pane fade border-bottom-0"-->
-<!--      style="height: 100%"-->
-<!--      id="nav-profile"-->
-<!--      role="tabpanel"-->
-<!--      aria-labelledby="nav-profile-tab">-->
-<!--      <app-team-meetings></app-team-meetings>-->
-<!--    </div>-->
+    <div
+      class="tab-pane fade border-bottom-0"
+      style="height: 100%"
+      id="nav-profile"
+      role="tabpanel"
+      aria-labelledby="nav-profile-tab">
+      <app-team-meetings></app-team-meetings>
+    </div>
 
   </div>
 

@@ -8,6 +8,16 @@ export enum MessagingActionsTypes {
   LOAD_MESSAGES_SUCCESS = 'messaging/loadMessagesSuccess',
   LOAD_MESSAGES_FAIL = 'messaging/loadMessagesFail',
 
+  // All MESSAGES
+  LOAD_ALL_MESSAGES = 'messaging/loadAllMessages',
+  LOAD_ALL_MESSAGES_SUCCESS = 'messaging/loadAllMessagesSuccess',
+  LOAD_ALL_MESSAGES_FAIL = 'messaging/loadAllMessagesFail',
+
+  // PRIVATE MESSAGES
+  LOAD_PRIVATE_MESSAGES = 'messaging/loadPrivateMessages',
+  LOAD_PRIVATE_MESSAGE_SUCCESS = 'messaging/loadPrivateMessagesSuccess',
+  LOAD_PRIVATE_MESSAGES_FAIL = 'messaging/loadPrivateMessagesFail',
+
   // GET MORE MESSAGES
   LOAD_MORE_MESSAGE = 'messaging/loadMore',
   LOAD_MORE_MESSAGE_SUCCESS = 'messaging/loadMoreSuccess',
@@ -33,14 +43,19 @@ export enum MessagingActionsTypes {
   LOAD_CURRENT_USER_SUCCESS = 'messaging/loadPrivateUserSuccess',
   LOAD_CURRENT_USER_FAIL = 'messaging/loadPrivateUserFail',
 
+  // HANDLE SEND MESSAGE
+  HANDLE_SEND_MESSAGE = 'messaging/handleSendMessage',
+
   // FILTER MESSAGES
   FILTER_MESSAGES = 'messaging/filterMessages'
+
 }
 
 // LOAD MESSAGES ACTIONS
 export class LoadMessaging implements Action {
   readonly type = MessagingActionsTypes.LOAD_MESSAGES;
   constructor(public payload: any) {
+    console.log('Load messages ===>>>', payload);
   }
 }
 export class LoadMessagingSuccess implements Action {
@@ -50,6 +65,11 @@ export class LoadMessagingSuccess implements Action {
 }
 export class LoadMessagingFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_MESSAGES_FAIL;
+  constructor(public payload: any) {
+  }
+}
+export class FilterMessages implements Action {
+  readonly type = MessagingActionsTypes.FILTER_MESSAGES;
   constructor(public payload: any) {
   }
 }
@@ -69,6 +89,44 @@ export class LoadMoreMessagingSuccess implements Action {
 export class LoadMoreMessagingFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_MORE_MESSAGE_FAIL;
   constructor(public payload: any) {
+  }
+}
+
+// ALL MESSAGES
+export class LoadAllMessages implements Action {
+  readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES;
+  constructor(public payload: any) {
+  }
+}
+export class LoadAllMessagesSuccess implements Action {
+  readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES_SUCCESS;
+  constructor(public payload: any) {
+  }
+}
+export class LoadAllMessagesFail implements Action {
+  readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES_FAIL;
+  constructor(public payload: any) {
+    console.log('Loading all messages fail ===>>>', payload);
+  }
+}
+
+// PRIVATE MESSAGES
+export class LoadPrivateMessages implements Action {
+  readonly type = MessagingActionsTypes.LOAD_PRIVATE_MESSAGES;
+  constructor(public payload: any) {
+    console.log('Loading private messages: ', payload);
+  }
+}
+export class LoadPrivateMessagesSuccess implements Action {
+  readonly type = MessagingActionsTypes.LOAD_PRIVATE_MESSAGE_SUCCESS;
+  constructor(public payload: any) {
+    console.log('Successful load private messages ====>>>',  payload);
+  }
+}
+export class LoadPrivateMessagesFail implements Action {
+  readonly type = MessagingActionsTypes.LOAD_PRIVATE_MESSAGES_FAIL;
+  constructor(public payload: any) {
+    console.log('Loading private messages fail ===>>>', payload);
   }
 }
 
@@ -137,11 +195,12 @@ export class LoadCurrentPrivateUserFail implements Action {
   }
 }
 
-export class FilterMessages implements Action {
-  readonly type = MessagingActionsTypes.FILTER_MESSAGES;
+export class HandleSendMessage implements Action {
+  readonly type = MessagingActionsTypes.HANDLE_SEND_MESSAGE;
   constructor(public payload: any) {
   }
 }
+
 
 export type MessagingActions =
   // MESSAGING ACTIONS
@@ -168,5 +227,14 @@ export type MessagingActions =
   | LoadCurrentPrivateUser
   | LoadCurrentPrivateUserSuccess
   | LoadCurrentPrivateUserFail
-  // FILTER MESSAGES
-  | FilterMessages;
+  // HANDLE SEND MESSAGE
+  | HandleSendMessage
+  // LOAD ALL MESSAGE
+  | LoadAllMessages
+  | LoadAllMessagesSuccess
+  | LoadAllMessagesFail
+  | FilterMessages
+  // LOAD PRIVATE MESSAGE
+   | LoadPrivateMessages
+   | LoadPrivateMessagesSuccess
+   | LoadPrivateMessagesFail;

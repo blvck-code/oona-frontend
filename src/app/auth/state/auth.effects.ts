@@ -61,7 +61,7 @@ export class AuthEffects {
   loadAllUsers$: Observable<any> = this.actions$.pipe(
     ofType<authActions.LoadAllUsers>(authActions.AuthActionsTypes.LOAD_ALL_USERS),
     mergeMap((action: authActions.LoadAllUsers) =>
-      this.authSrv.getAllUsers().pipe(
+      this.authSrv.getUsersByAvailability().pipe(
         map((allUsers: any) =>
           new authActions.LoadAllUsersSuccess(allUsers)
         ),

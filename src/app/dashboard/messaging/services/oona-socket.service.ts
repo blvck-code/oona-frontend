@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import { userChannel, messageChannel } from '../../../../environments/environment';
+import {messageChannel, userChannel} from '../../../../environments/environment';
 import {AuthService} from '../../../auth/services/auth.service';
 import {MessagingService} from './messaging.service';
+import { webSocket } from 'rxjs/webSocket';
 
 // NgRx
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../state/app.state';
 import * as authActions from '../../../auth/state/auth.actions';
+
+const msgSocket = webSocket(messageChannel);
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +51,7 @@ export class OonaSocketService {
   ) {
     this.getCurrentProfile();
     this.connect();
+    // this.msgConnect();
     this.userManagement();
   }
 
@@ -76,10 +80,20 @@ export class OonaSocketService {
      * Creates a websocket connection to the user channel
      */
     this.websocket = new WebSocket(userChannel, this.authService.getToken());
-    console.log('Web sockets connected');
+    console.log('Events sockets successfully connected: ', userChannel);
   }
 
-  private filterSocketData(userData: any): void {
+  // msgConnect(): void {
+  //   /**
+  //    * Creates a websocket connection to the user channel
+  //    */
+  //   this.websocket = new WebSocket(messageChannel, this.authService.getToken());
+  //   console.log('Message sockets connected');
+  // }
+
+
+
+  filterSocketData(userData: any): void {
     /*
      * Filters all active and inactive users
      * @param userData Incoming message from the server.
@@ -149,16 +163,16 @@ export class OonaSocketService {
 
   }
 
-  private userManagement(): void {
+  userManagement(): void {
     // @ts-ignore
     this.websocket.onmessage = (evt) => {
-      console.log('Web socket message');
+      // console.log('Web socket message ====>>>', evt);
       this.filterSocketData(evt.data);
     };
 
     // @ts-ignore
     this.websocket.onclose = (evt) => {
-      console.log('Web socket closed');
+      // console.log('Web socket closed');
       setTimeout(() => {
         this.connect();
       }, 1000);
@@ -167,7 +181,7 @@ export class OonaSocketService {
     // @ts-ignore
     this.websocket.onerror = (evt) => {
       setTimeout(() => {
-        console.log('Attempting to reconnect ...');
+        // console.log('Attempting to reconnect ...', evt);
         this.connect();
       }, 1000);
     };

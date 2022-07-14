@@ -5,12 +5,13 @@ import {Router} from '@angular/router';
 // NgRx
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
-import {filteredState, getFilteredMsg, getLoadingMsg, getMessages, getMessageType} from '../../state/messaging.selectors';
+// @Todo change this to fetch only private messages
+import {getAllMessages, getLoadingPrivateMsgs, getMessageType, getPrivateMessages} from '../../state/messaging.selectors';
 import * as messageActions from '../../state/messaging.actions';
 import {Observable} from 'rxjs';
 import {StreamDetail} from '../../models/messages.model';
-import {getUserDetails} from '../../../../auth/state/auth.selectors';
-import {LoadMoreMessaging} from '../../state/messaging.actions';
+import {getAllUsers, getUserDetails} from '../../../../auth/state/auth.selectors';
+import {LoadMoreMessaging, LoadPrivateMessages} from '../../state/messaging.actions';
 
 @Component({
   selector: 'app-all-private-messages-board',
@@ -19,6 +20,7 @@ import {LoadMoreMessaging} from '../../state/messaging.actions';
 })
 export class AllPrivateMessagesBoardComponent implements OnInit {
   allUsers = Array();
+  stateUsers = Array();
   messagesWithIndividuals = Array();
   @Output() pmMemberNames = new EventEmitter<any>();
   initialMessageCount = 10;
@@ -40,6 +42,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
 
   ngOnInit(): void {
     this.initPage();
+    this.getAllPrivateChats();
   }
 
   // getOperator(): StreamDetail {
@@ -49,32 +52,11 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
   // Init page
   initPage(): void {
 
-    this.store.select(getUserDetails).subscribe(
-      data => this.operand = data?.email
-    );
-
-    // Message parameters
-    const streamDetail = {
-      use_first_unread_anchor: true,
-      apply_markdown: false,
-      num_before: this.initialMessageCount,
-      type: [
-        {
-          operator: 'pm-with',
-          // change to user.email
-          operand: this.operand,
-        }
-      ]
-    };
-
-    // fetch data from server
-    this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
-
     // get Loading Message
-    this.loadingMessages = this.store.select(getLoadingMsg);
+    this.loadingMessages = this.store.select(getLoadingPrivateMsgs);
 
     // get messages from store
-    this.messages$ = this.store.select(getMessages);
+    this.messages$ = this.store.select(getPrivateMessages);
 
     document?.getElementById('box')?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
 
@@ -82,7 +64,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
   }
 
   messagesLength(): void {
-    this.store.select(getMessages).subscribe(
+    this.store.select(getPrivateMessages).subscribe(
       messages => {
         // @ts-ignore
         this.messageExist = messages?.length > 0;
@@ -92,13 +74,63 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
 
   allUsersRegistered(): void {
     this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
+      console.log('All users: ', users);
       const usersPresent = users.members.filter(user => user.presence );
-      this.allUsers = this.messagingService.newListOfUsers(usersPresent);
+      // this.allUsers = this.messagingService.newListOfUsers(usersPresent);
     });
     setTimeout( () => {
     this.getAllPrivateChats();
     }, 1000);
+
+
+    this.store.select(getAllUsers).subscribe(
+      users => {
+        this.stateUsers = users?.filter((user: any) => user.presence );
+      }
+    );
+    // Todo add loading indicator for this time
+    setTimeout( () => {
+      this.getAllPrivateChatsTwo();
+    }, 2000);
   }
+
+  getAllPrivateChatsTwo(): any{
+    console.log(12356);
+    this.stateUsers.map( user => {
+      const streamDetail = {
+        use_first_unread_anchor: true,
+        apply_markdown: false,
+        num_before: this.initialMessageCount,
+        type: [
+          {
+            operator: 'pm-with',
+            operand: user.email,
+          }
+        ]
+      };
+      // this.store.dispatch(new LoadPrivateMessages(streamDetail));
+      this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
+          console.log('Responses: ', response);
+          const allMessages = response.zulip.messages;
+          if (allMessages.length >= 1){
+            this.messagesWithIndividuals.push(... allMessages);
+            // tslint:disable-next-line:max-line-length
+            this.messagingService.changePmNames(
+              this.messagesWithIndividuals.map(individualMessage => individualMessage.display_recipient)
+            );
+            // sort by timestamp
+            this.messagesWithIndividuals.sort((a, b) =>  a.timestamp - b.timestamp );
+            this.change.detectChanges();
+            // @ts-ignore
+            document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+          }
+        } ,
+        (error: any) => {
+          console.log('error', error);
+        });
+    });
+  }
+
 
   getAllPrivateChats(): void{
     this.allUsers.forEach( user => {
@@ -114,6 +146,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
         ]
       };
       this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
+        console.log('Private message content: ', response);
         const allMessages = response.zulip.messages;
         if (allMessages.length >= 1){
           this.messagesWithIndividuals.push(... allMessages);

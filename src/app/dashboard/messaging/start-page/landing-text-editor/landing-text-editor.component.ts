@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {MessagingService} from '../../services/messaging.service';
 import {NotificationService} from '../../../../shared/services/notification.service';
 import {Router} from '@angular/router';
@@ -7,6 +7,11 @@ import {NgForm} from '@angular/forms';
 
 import TurndownService from 'turndown';
 import {GroupPmsServiceService} from '../../group-pms/group-pms-service.service';
+import {Observable} from 'rxjs';
+import {AppState} from '../../../../state/app.state';
+import {Store} from '@ngrx/store';
+import {getReceiverInfo} from '../../state/messaging.selectors';
+import { SingleChat } from '../../models/messages.model';
 
 const turndownService = new TurndownService();
 
@@ -26,12 +31,14 @@ export class LandingTextEditorComponent implements OnInit, OnDestroy {
   chatGroup = Array();
   allUsers = Array();
   filteredUsers = Array();
+  receiverInfo!: SingleChat;
 
   constructor(
     private messagingService: MessagingService,
     private  groupPmsService: GroupPmsServiceService,
     private  notificationService: NotificationService,
     private router: Router,
+    private store: Store<AppState>
   ) { }
 
   // @ts-ignore
@@ -54,8 +61,18 @@ export class LandingTextEditorComponent implements OnInit, OnDestroy {
   editorData = '';
   toggled = false;
 
+  getReceiverInfo(): void {
+    this.store.select(getReceiverInfo).subscribe(
+      (data: SingleChat) => {
+        this.receiverInfo = data;
+        console.log('Recipient details ==>>>', data);
+      }
+    );
+  }
+
   onInitHandler(): void {
     this.loggedInProfile();
+    this.getReceiverInfo();
     this.editor = new Editor();
     this.editor.commands.focus().exec();
     this.groupPmsService.currentChatGroup.subscribe((chatMembers) => {
@@ -143,11 +160,17 @@ export class LandingTextEditorComponent implements OnInit, OnDestroy {
   onSubmit(form: NgForm): void {
     const markdown = turndownService.turndown(form.value.name);
     const messageDetail = {
-      to: this.chatGroup.map(member => member.id),
+      to: this.receiverInfo.display_recipient,
+      topic: this.receiverInfo.subject,
       content: markdown
     };
-    console.log('Message content ===>>>', messageDetail);
-    this.messagingService.sendIndividualMessage(messageDetail).subscribe((response: any) => {
+    // const messageDetail = {
+    //   to: this.chatGroup.map(member => member.id),
+    //   topic: '',
+    //   content: markdown
+    // };
+
+    this.messagingService.sendStreamMessage(messageDetail).subscribe((response: any) => {
       if (response.zulip.result === 'success'){
         // clear the form
         form.value.name = '';

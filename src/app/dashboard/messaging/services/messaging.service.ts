@@ -1,20 +1,28 @@
 import {Injectable} from '@angular/core';
-import { environment as env, oonaBaseUrl } from '../../../../environments/environment';
+import {environment as env, messageChannel, oonaBaseUrl} from '../../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {AuthService} from '../../../auth/services/auth.service';
-import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
 import {Router} from '@angular/router';
 import {AllStreamsModel} from '../models/streams.model';
 import {map} from 'rxjs/operators';
+import {MessagesSocketService} from './messages-socket.service';
+
+export interface Message {
+  author: string;
+  message: string;
+}
 
 @Injectable({
   providedIn: 'root',
 })
+
 export class MessagingService {
   users = env.users;
   teams = env.teams;
   subscribedStreams = env.subscribedStreams;
   presentUsers = env.presentUsers;
+  allUsers = env.allUsers;
   userProfile = env.userProfile;
   streamMessages = env.streamMessages;
   sendStreamMessageURL = env.sendStreamMessageURL;
@@ -31,12 +39,29 @@ export class MessagingService {
 
   allPlatformMembers = [];
   subscribers: any;
+  public messages!: Subject<any>;
+
 
   constructor(
     private http: HttpClient,
     private authService: AuthService,
-    private router: Router) {
+    private router: Router,
+    private msgSocket: MessagesSocketService
+    ) {
     this.getAllUsers();
+
+    this.messages = (msgSocket.connect(messageChannel).map(
+      (response: MessageEvent): any => {
+        const data = JSON.parse(response.data);
+        console.log('Received message ===>>>', data);
+
+        return {
+          author: data.author,
+          message: data.message
+        };
+
+      }
+    ) as Subject<Message>);
   }
 
   public memberObject = {
@@ -106,6 +131,10 @@ export class MessagingService {
       });
   }
 
+  getAllUser(): any {
+    return this.http.get(env.allUsers);
+  }
+
   getAllPlatformUsers(): any {
     return this.http.get(this.users, this.authService.getHeaders());
   }
@@ -135,16 +164,17 @@ export class MessagingService {
   }
 
   newListOfUsers(usersPresent: any): any[] {
-    const allOnline = usersPresent.filter(
+
+    const allOnline = usersPresent?.filter(
       (user: { presence: { aggregated: { status: string } } }) =>
         user.presence.aggregated.status === 'active'
     );
     // tslint:disable-next-line:max-line-length
-    const allOffline = usersPresent.filter(
+    const allOffline = usersPresent?.filter(
       (user: { presence: { aggregated: { status: string } } }) =>
         user.presence.aggregated.status === 'offline'
     );
-    const allIdle = usersPresent.filter(
+    const allIdle = usersPresent?.filter(
       (user: { presence: { aggregated: { status: string } } }) =>
         user.presence.aggregated.status === 'idle'
     );

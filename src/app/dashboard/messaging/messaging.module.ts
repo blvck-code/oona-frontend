@@ -51,25 +51,32 @@ import {MessagingEffects} from './state/messaging.effects';
 import { AllMsgTextEditorComponent } from './all-mentioned-messages/all-msg-text-editor/all-msg-text-editor.component';
 import { PrivateMsgTextEditorComponent } from './all-private-messaging/private-msg-text-editor/private-msg-text-editor.component';
 import { LandingTextEditorComponent } from './start-page/landing-text-editor/landing-text-editor.component';
+import {DashboardModule} from '../dashboard.module';
+import {EditorComponent} from '../editor/editor.component';
+import { StreamsComponent } from './streams/streams.component';
+import { StreamsBoardComponent } from './streams/streams-board/streams-board.component';
+import {UserFilterPipe} from '../../pipes/user-filter.pipe';
+import {AppModule} from '../../app.module';
 
 
 @NgModule({
   // tslint:disable-next-line:max-line-length
-  declarations: [MessagingComponent, TeamMessagingComponent, TeamMessagingLeftPanelComponent, TeamMessagingRightPanelComponent, ChatBoardComponent, ChatCardComponent, TextEditorComponent, IndividualMessagingComponent, IndividualMessagingRightPanelComponent, IndividualMessagingBoardComponent, IndividualChatCardComponent, IndividualChatCardResponseComponent, StartPageComponent, LandingMessagingRightPanelComponent, LandingMessageBoardComponent, MessageTimeBtnComponent, LoadingAnimationComponent, AllPrivateMessagingComponent, AllPrivateMessagesBoardComponent, DisplayNamesPipe, AllMentionedMessagesComponent, AllMentionedMessagesBoardComponent, CreateTeamComponent, TeamSettingsComponent, LeaveTeamComponent, GroupPmsComponent, GroupPmsMessagingBoardComponent, GroupPmsChatCardComponent, ShortenTextPipe, GroupPmsTextEditorComponent, MeetingCardComponent, TeamMeetingsComponent, AllMsgTextEditorComponent, PrivateMsgTextEditorComponent, LandingTextEditorComponent],
-  imports: [
-      CommonModule,
-      MessagingRoutingModule,
-      NgxEditorModule,
-      NgxEmojiPickerModule,
-      FormsModule,
-      SharedModule,
-      ReactiveFormsModule,
-      RichTextEditorModule,
-      NgxContentfulRichTextModule,
-      ShowdownModule,
-      MarkdownToHtmlModule,
-      StoreModule.forFeature('messaging', messagingReducer),
-      EffectsModule.forFeature([MessagingEffects])
-  ]
+    declarations: [MessagingComponent, TeamMessagingComponent, TeamMessagingLeftPanelComponent, TeamMessagingRightPanelComponent, ChatBoardComponent, ChatCardComponent, TextEditorComponent, IndividualMessagingComponent, IndividualMessagingRightPanelComponent, IndividualMessagingBoardComponent, IndividualChatCardComponent, IndividualChatCardResponseComponent, StartPageComponent, LandingMessagingRightPanelComponent, LandingMessageBoardComponent, MessageTimeBtnComponent, LoadingAnimationComponent, AllPrivateMessagingComponent, AllPrivateMessagesBoardComponent, DisplayNamesPipe, AllMentionedMessagesComponent, AllMentionedMessagesBoardComponent, CreateTeamComponent, TeamSettingsComponent, LeaveTeamComponent, GroupPmsComponent, GroupPmsMessagingBoardComponent, GroupPmsChatCardComponent, ShortenTextPipe, GroupPmsTextEditorComponent, MeetingCardComponent, TeamMeetingsComponent, AllMsgTextEditorComponent, PrivateMsgTextEditorComponent, LandingTextEditorComponent, EditorComponent, StreamsComponent, StreamsBoardComponent, UserFilterPipe],
+    imports: [
+        CommonModule,
+        MessagingRoutingModule,
+        NgxEditorModule,
+        NgxEmojiPickerModule,
+        FormsModule,
+        SharedModule,
+        ReactiveFormsModule,
+        RichTextEditorModule,
+        NgxContentfulRichTextModule,
+        ShowdownModule,
+        MarkdownToHtmlModule,
+        StoreModule.forFeature('messaging', messagingReducer),
+        EffectsModule.forFeature([MessagingEffects]),
+        DashboardModule,
+    ]
 })
 export class MessagingModule { }

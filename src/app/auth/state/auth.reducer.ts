@@ -1,5 +1,6 @@
 import { UserModel } from '../models/user.model';
 import * as authActions from './auth.actions';
+import {load} from '@syncfusion/ej2-angular-richtexteditor';
 
 export interface UserInfoState {
   first_name: string | null;
@@ -18,6 +19,7 @@ export interface AuthState {
   userInfo: UserInfoState | null;
   zulipProfile: null;
   users: {
+    loading: boolean,
     all: any;
     zulipUsers: any;
     selectedUser: any;
@@ -33,12 +35,21 @@ export const initialState: AuthState = {
   userInfo: null,
   zulipProfile: null,
   users: {
+    loading: true,
     all: null,
     zulipUsers: null,
     selectedUser: null,
   },
 };
 
+function handleSelectedUser(state: AuthState, action: any): void{
+  const id = action.payload.userId;
+  const users = state;
+
+  // const currentUser = users?.filter((user: any) => user.user_id === id);
+
+  console.log('State ===>>', users);
+}
 
 export function authReducer(state = initialState, action: any): AuthState {
   switch (action.type) {
@@ -73,7 +84,6 @@ export function authReducer(state = initialState, action: any): AuthState {
       };
     // Login Error
     case authActions.AuthActionsTypes.LOGIN_USER_FAIL:
-      handleLoginError(action.payload);
       return {
         ...state,
         loginStatus: {
@@ -81,10 +91,11 @@ export function authReducer(state = initialState, action: any): AuthState {
           isLoading: false,
         },
         userInfo: null,
-        message: handleLoginError(action.payload),
+        message: action.payload.message,
       };
     // Logout
     case authActions.AuthActionsTypes.LOGOUT_USER_SUCCESS:
+      console.log('Logout payload ===>>>', action.payload);
       return {
         ...state,
         loginStatus: {
@@ -125,6 +136,7 @@ export function authReducer(state = initialState, action: any): AuthState {
         ...state,
         users: {
           ...state.users,
+          loading: false,
           all: action.payload,
         },
       };
@@ -134,12 +146,12 @@ export function authReducer(state = initialState, action: any): AuthState {
         ...state,
         users: {
           ...state.users,
+          loading: false,
           zulipUsers: action.payload
         }
       };
     // Selected User
     case authActions.AuthActionsTypes.SET_SELECTED_USER:
-      localStorage.setItem('privateMsg', action?.payload.email);
       return {
         ...state,
         users: {
@@ -148,7 +160,7 @@ export function authReducer(state = initialState, action: any): AuthState {
         }
       };
 
-      default:
+    default:
       return state;
   }
 }
