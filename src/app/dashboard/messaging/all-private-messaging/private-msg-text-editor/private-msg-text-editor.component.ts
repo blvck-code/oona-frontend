@@ -1,6 +1,6 @@
 import {
   Component,
-  EventEmitter,
+  EventEmitter, Input,
   OnDestroy,
   OnInit,
   Output,
@@ -18,6 +18,8 @@ import TurndownService from 'turndown';
 import { AppState } from '../../../../state/app.state';
 import { Store } from '@ngrx/store';
 import { getAllUsers } from '../../../../auth/state/auth.selectors';
+import {SingleChat} from '../../models/messages.model';
+import {getReceiverInfo} from '../../state/messaging.selectors';
 
 const turndownService = new TurndownService();
 
@@ -29,6 +31,7 @@ const turndownService = new TurndownService();
 export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
   @Output() messageContent = new EventEmitter<any>();
   @Output() newTopic = new EventEmitter<any>();
+  @Input() chat: any;
   editorTopic = '';
   values = '';
   // tslint:disable-next-line:max-line-length
@@ -49,6 +52,8 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
   chatGroup = Array();
   allUsers = Array();
   filteredUsers = Array();
+  showEditor = false;
+  receiverInfo!: SingleChat;
   constructor(
     private store: Store<AppState>,
     private router: Router,
@@ -108,6 +113,9 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
     //   console.log('His users ====>>>', users);
     //   this.allUsers = users.members.filter(user => user.presence );
     // });
+
+    this.getReceiverInfo();
+
   }
   ngOnDestroy(): void {
     this.editor.destroy();
@@ -237,11 +245,8 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
   }
 
   addSelectedUser(user: any): any {
-    console.log('Selected user ===>>', user);
     this.chatGroup.push(user);
-    console.log('Chat group ==>>', this.chatGroup);
     const uniqueMembers = [...new Set(this.chatGroup)];
-    console.log('Unique members ===>>', uniqueMembers);
     this.groupPmsService.changeChatGroup(uniqueMembers);
   }
 
@@ -262,5 +267,18 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
 
   handleSelection(event: any): void {
     this.editorData += ' ' + event.char;
+  }
+
+  getReceiverInfo(): void {
+    this.store.select(getReceiverInfo).subscribe(
+      (data: SingleChat) => {
+        this.receiverInfo = data;
+        console.log('Data: ', data.recipient_id);
+      }
+    );
+  }
+
+  handleShowEditor(): void {
+    this.showEditor = true;
   }
 }

@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, HostListener, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
 import {MessagingService} from '../../services/messaging.service';
 
 // NgRx
@@ -94,8 +94,7 @@ export class LandingMessageBoardComponent implements OnInit {
       this.messages$ = this.store.select(getAllMessages);
 
       this.messagesLength();
-
-    // @ts-ignore
+      // @ts-ignore
       document?.getElementById('box')?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
   }
 
@@ -135,7 +134,8 @@ export class LandingMessageBoardComponent implements OnInit {
         // sort by time. latest last
         this.messagesOfStream.sort((a, b) =>  a.timestamp - b.timestamp );
         this.change.detectChanges();
-        // @ts-ignore
+
+          // @ts-ignore
         document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
         } ,
         (error: any) => {

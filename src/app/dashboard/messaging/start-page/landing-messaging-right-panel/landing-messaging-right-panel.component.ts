@@ -67,12 +67,6 @@ export class LandingMessagingRightPanelComponent implements OnInit {
         // );
       }
     );
-
-    // this.store.select(getZulipUsers).subscribe(
-    //   users => {
-    //     this.allUsers = users?.members;
-    //   }
-    // );
   }
 
   onInitPage(): void {

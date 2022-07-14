@@ -43,13 +43,14 @@
             *ngFor="let chat of messagesWithIndividuals"
             [messageDetail]="chat"
           ></app-individual-chat-card>
+          <div #endChat></div>
         </div>
 
-        <div class="py-4" *ngIf="!messageExist">
+        <div class="py-4" *ngIf="!loadingMessages && !messagesWithIndividuals.length">
           <p>No Messages</p>
         </div>
         <div
-          *ngIf="!messagesWithIndividuals.length"
+          *ngIf="loadingMessages"
           class="d-flex justify-content-center"
         >
           <div>
@@ -59,6 +60,7 @@
         </div>
       </div>
       <app-private-msg-text-editor
+        [chat]="activeMessage"
         class="add-editor"
       ></app-private-msg-text-editor>
     </div>
