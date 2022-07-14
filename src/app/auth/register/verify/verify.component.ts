@@ -44,11 +44,12 @@ export class VerifyComponent implements OnInit {
         },
         (verifyErr: any) => {
           this.verificationError = true;
-          if (verifyErr.error.error === 'Invalid or expired verification token.') {
+          console.log('verifyErr: ', verifyErr);
+          if (verifyErr.message === 'Invalid or expired verification token.') {
             this.verificationServerError = 'The verification code is Invalid or Expired.';
-          } else if (verifyErr.error.error === 'User not found.') {
+          } else if (verifyErr.message === 'User not found.') {
             this.verificationServerError = 'The user email does not exist.';
-          } else if (verifyErr.error.non_field_errors[0] === 'Your passwords do not match') {
+          } else if (verifyErr.message === 'Your passwords do not match') {
             this.verificationServerError = 'The passwords entered do not match.';
           }
         }

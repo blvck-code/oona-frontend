@@ -47,7 +47,6 @@ export class TeamMeetingsComponent implements OnInit {
   }
 
   updateMeetings(memberEmail: any): void{
-    // console.log('member email', member);
     this.commonMeetings = [];
     this.individualMessagingService.getOonaProfile(memberEmail).subscribe((res: { results: any[]; }) => {
       this.otherMemberOonaProfile = res.results[0];

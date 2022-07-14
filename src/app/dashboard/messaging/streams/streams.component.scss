@@ -1,0 +1,46 @@
+.main-mentions-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.left-panel {
+  width: 275px;
+  padding-top: 15px;
+  padding-left: 15px;
+}
+
+.message-board {
+  width: calc(100vw - 980px);
+  overflow-y: scroll;
+}
+
+.all-users-right-panel {
+  width: 350px;
+}
+
+@media screen and (max-width: 1700px) {
+  .message-board {
+    width: calc(100vw - 880px);
+    padding-top: 15px;
+  }
+}
+
+@media screen and (max-width: 1600px) {
+  .message-board {
+    width: calc(100vw - 780px);
+    padding-top: 15px;
+  }
+}
+
+@media screen and (max-width: 1400px) {
+  .left-panel {
+    width: 250px;
+  }
+  .message-board {
+    width: calc(100vw - 710px);
+    padding-top: 15px;
+  }
+  .all-users-right-panel {
+    width: 270px;
+  }
+}

@@ -5,9 +5,9 @@ import {MessagingService} from '../../services/messaging.service';
 import {Store} from '@ngrx/store';
 import * as messageActions from '../../state/messaging.actions';
 import { AppState } from '../../../../state/app.state';
-import {filteredState, getFilteredMsg, getLoadingMsg, getMessages} from '../../state/messaging.selectors';
+import {getLoadingAllMsg, getAllMessages, getPrivateMessages} from '../../state/messaging.selectors';
 import {Observable} from 'rxjs';
-import {SingleMessageModel} from '../../models/messages.model';
+import {SingleChat, SingleMessageModel} from '../../models/messages.model';
 
 @Component({
   selector: 'app-landing-message-board',
@@ -21,6 +21,7 @@ export class LandingMessageBoardComponent implements OnInit {
   messages$!: Observable<any>;
   loadingMessages!: Observable<boolean>;
   messageExist: any;
+  editorActive = false;
 
   constructor(
     private messagingService: MessagingService,
@@ -33,41 +34,64 @@ export class LandingMessageBoardComponent implements OnInit {
   ngOnInit(): void {
     setTimeout( () => {this.getMessagesOfTeams(); }, 1000);
     this.initPage();
+    this.handleMsgGrouping();
+  }
+
+  handleMsgGrouping(): void {
+
+    let timeStamps: any[] = [];
+
+    const currentDate = new Date();
+    const currentDay = currentDate;
+    const currentMonth = currentDate.getMonth();
+
+    console.log('Current day: ', currentDay);
+    console.log('Current month: ', currentMonth);
+    console.log('Current date: ', currentDate);
+
+    this.store.select(getAllMessages).subscribe(
+      messages => {
+        messages?.map(mes => {
+
+          const newDate = new Date();
+          newDate.setTime(mes.timestamp * 1000);
+          const dateString = newDate.toUTCString();
+
+          const msgMonth = newDate.getMonth();
+          timeStamps = [...timeStamps, dateString];
+
+          // Todo add grouping messages
+
+        });
+        // console.log('Time stamp: ', timeStamps.sort((a: any, b: any) => a - b));
+      }
+    );
+
+
   }
 
   // Init Page
   initPage(): void {
 
-      const streamDetail = {
-        use_first_unread_anchor: true,
-        num_before: this.initialMessageCount,
-        type: [
-          {
-            operator: 'stream',
-            operand: 'general'
-          }
-        ]
-      };
+      // const streamDetail = {
+      //   use_first_unread_anchor: true,
+      //   num_before: this.initialMessageCount,
+      //   type: [
+      //     {
+      //       operator: 'stream',
+      //       operand: 'general'
+      //     }
+      //   ]
+      // };
 
     // fetch data from server
-      this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
+    //   this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
 
       // get Loading Message
-      this.loadingMessages = this.store.select(getLoadingMsg);
+      this.loadingMessages = this.store.select(getLoadingAllMsg);
 
       // get messages from store
-      // this.messages$ = this.store.select(getMessages);
-
-      this.store.select(filteredState).subscribe(
-        filtered => {
-          if (!filtered){
-            // get messages from store
-            this.messages$ = this.store.select(getMessages);
-          } else {
-            this.messages$ = this.store.select(getFilteredMsg);
-          }
-        }
-      );
+      this.messages$ = this.store.select(getAllMessages);
 
       this.messagesLength();
 
@@ -76,25 +100,10 @@ export class LandingMessageBoardComponent implements OnInit {
   }
 
   messagesLength(): void {
-
-    this.store.select(filteredState).subscribe(
-      filtered => {
-        if (!filtered){
-          // get messages from store
-          this.store.select(getMessages).subscribe(
-            messages => {
-              // @ts-ignore
-              this.messageExist = messages?.length > 0;
-            }
-          );
-        } else {
-          this.store.select(getFilteredMsg).subscribe(
-            messages => {
-              // @ts-ignore
-              this.messageExist = messages?.length > 0;
-            }
-          );
-        }
+    this.store.select(getAllMessages).subscribe(
+      messages => {
+        // @ts-ignore
+        this.messageExist = messages?.length > 0;
       }
     );
   }
@@ -165,5 +174,10 @@ export class LandingMessageBoardComponent implements OnInit {
     });
   }
 
+  selectedChat(chat: SingleChat): any {
+    this.editorActive = true;
+    this.store.dispatch(new messageActions.HandleSendMessage(chat));
+    console.log('Emit chat ===>>>', chat);
+  }
 
 }

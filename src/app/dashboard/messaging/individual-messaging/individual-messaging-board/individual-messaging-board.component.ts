@@ -1,5 +1,5 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {ActivatedRoute, NavigationEnd, NavigationStart, Router} from '@angular/router';
 import {MessagingService} from '../../services/messaging.service';
 
 import TurndownService from 'turndown';
@@ -12,7 +12,9 @@ import * as messageActions from '../../state/messaging.actions';
 import * as authActions from '../../../../auth/state/auth.actions';
 import {getAllUsers, getSelectedUser} from '../../../../auth/state/auth.selectors';
 import {Observable, Subscription} from 'rxjs';
-import {getMessages} from '../../state/messaging.selectors';
+ // @Todo change this to fetch only individual messages
+import {getAllMessages, getFilteredPrvMsgs, getPrivateMessages} from '../../state/messaging.selectors';
+import {LoadPrivateMessages} from '../../state/messaging.actions';
 
 const turndownService = new TurndownService();
 
@@ -39,47 +41,46 @@ export class IndividualMessagingBoardComponent implements OnInit {
   userActivity: any;
   initialMessageCount = 30;
   newMessagesCount = 0;
+  @Input() currentMessages = [];
   createdAt: any;
+  operand: any;
+
+  onInitHandler(): void {
+    this.store.select(getSelectedUser).subscribe(member => {
+        this.memberDetail = member;
+        // this.store.dispatch(new authActions.SetSelectedUser(member));
+        setTimeout(() => {
+          this.privateMessages();
+        }, 1000);
+      }
+    );
+    setTimeout(() => { this.handleMsgGrouping(); }, 3000);
+  }
 
   ngOnInit(): void {
-    this.getUserInfo();
+    // this.getUserInfo();
+    this.onInitHandler();
+    this.changeContentOnRouteChange();
 
-    this.messagingService.currentMemberChatDetail.subscribe(member => {
-      this.memberDetail = member;
-      this.store.dispatch(new authActions.SetSelectedUser(member));
-      setTimeout(() => {
-        this.privateMessages();
-      }, 1000);
-
-    }); // always get the current value
+    // this.messagingService.currentMemberChatDetail.subscribe(member => {
+    //   this.memberDetail = member;
+    //   console.log('Member details ===>>>', member);
+    //   // this.store.dispatch(new authActions.SetSelectedUser(member));
+    //   setTimeout(() => {
+    //     this.privateMessages();
+    //   }, 1000);
+    //
+    // });
+    // always get the current value
     this.userSocketService.messageCount.subscribe(messages => {
+      console.log('Sockets finally works ===>>>', messages);
       if (this.newMessagesCount !== messages){
         // get new messages
-        this.privateMessages();
+        // this.privateMessages();
         this.newMessagesCount = messages;
       }
     });
 
-  }
-
-  getUserInfo(): void {
-    const userEmail = localStorage.getItem('privateMsg');
-
-    this.store.select(getAllUsers).subscribe(
-      users => {
-       const members = users?.members;
-       members.forEach((member: any) => {
-         if (member.email === userEmail){
-           localStorage.setItem('privateMsg', member.email);
-           this.store.dispatch(new authActions.SetSelectedUser(member));
-         }
-       });
-       // console.log('Members ===>>', members);
-
-       // const selectedUser = members?.find((user: any) => user.email = userEmail);
-       // console.log('Current user ==>>', selectedUser);
-      }
-    );
   }
 
   constructor(
@@ -90,12 +91,35 @@ export class IndividualMessagingBoardComponent implements OnInit {
     private change: ChangeDetectorRef,
     private userSocketService: OonaSocketService,
   ) {
+
+    this.store.select(getSelectedUser).subscribe(
+      data => {
+        if (data) {
+          this.operand = data;
+          this.getSelectedUser();
+          console.log('User info content: ', data);
+        }
+      }
+    );
+
+    console.log('Operand id ===>>>', this.operand);
+
+  }
+
+  changeContentOnRouteChange(): void {
+    // @ts-ignore
+    this.route.events.subscribe((event: Event) => {
+      if (event instanceof NavigationStart) {
+        console.log('Route change start');
+        // this.getSelectedUser();
+        this.messages$ = this.store.select(getPrivateMessages);
+      }
+    });
   }
 
   getSelectedUser(): void {
-    const userEmail = localStorage.getItem('privateMsg');
-
     this.selectedUser$ = this.store.select(getSelectedUser);
+
     const streamDetail = {
       use_first_unread_anchor: true,
       apply_markdown: false,
@@ -103,16 +127,19 @@ export class IndividualMessagingBoardComponent implements OnInit {
       type: [
         {
           operator: 'pm-with',
-          operand: userEmail,
+          operand: this.operand?.email,
         }
       ]
     };
 
     // fetch messages from server
-    this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
+    this.store.dispatch(new messageActions.LoadPrivateMessages(streamDetail));
 
     // get messages from store
-    this.messages$ = this.store.select(getMessages);
+    this.messages$ = this.store.select(getPrivateMessages);
+
+    // @ts-ignore
+    document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
   }
 
   privateMessages(): void{
@@ -129,7 +156,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
       };
 
       // get Selected User
-      this.getSelectedUser();
+      // this.getSelectedUser();
 
       // @ts-ignore
       // document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
@@ -145,6 +172,36 @@ export class IndividualMessagingBoardComponent implements OnInit {
         });
       this.userActiveStatus();
   }
+
+  handleMsgGrouping(): void {
+
+    let timeStamps: any[] = [];
+
+    const currentDate = new Date();
+    const currentDay = currentDate;
+    const currentMonth = currentDate.getMonth();
+
+    console.log('Current day: ', currentDay);
+    console.log('Current month: ', currentMonth);
+    console.log('Current date: ', currentDate);
+
+    this.store.select(getPrivateMessages).subscribe(
+      messages => {
+        messages?.map(mes => {
+
+          const newDate = new Date();
+          newDate.setTime(mes.timestamp * 1000);
+          const dateString = newDate.toUTCString();
+
+          timeStamps = [...timeStamps, dateString];
+        });
+        console.log('Time stamp: ', timeStamps.sort((a: any, b: any) => a - b));
+      }
+    );
+
+
+  }
+
 
   sendMessageToIndividual(message: any): void {
     console.log('Message content ==>>> ', message);
@@ -165,8 +222,8 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
   userActiveStatus(): void{
     this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
-      const usersPresent = users.members.filter(user => user.presence );
-      this.userActivity = usersPresent.find( user => user.email === this.memberDetail.email).presence.aggregated.status;
+      const usersPresent = users.members.filter(user => user?.presence );
+      this.userActivity = usersPresent.find( user => user.email === this.memberDetail.email)?.presence.aggregated.status;
     });
   }
 

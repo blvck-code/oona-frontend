@@ -16,30 +16,28 @@ import {EffectsModule} from '@ngrx/effects';
 import {SharedEffects} from './state/shared.effects';
 import { SearchPipe } from './pipe/search.pipe';
 
-
-
 @NgModule({
   // tslint:disable-next-line:max-line-length
-    declarations: [
-      AdminTagComponent,
-      GuestTagComponent,
-      ActiveTagComponent,
-      InactiveTagComponent,
-      IdleTagComponent,
-      TypingComponent,
-      NavbarComponent,
-      SearchPipe
-    ],
-    exports: [
-        AdminTagComponent,
-        GuestTagComponent,
-        ActiveTagComponent,
-        InactiveTagComponent,
-        IdleTagComponent,
-        TypingComponent,
-        NavbarComponent,
-        SearchPipe
-    ],
+  declarations: [
+    AdminTagComponent,
+    GuestTagComponent,
+    ActiveTagComponent,
+    InactiveTagComponent,
+    IdleTagComponent,
+    TypingComponent,
+    NavbarComponent,
+    SearchPipe
+  ],
+  exports: [
+    AdminTagComponent,
+    GuestTagComponent,
+    ActiveTagComponent,
+    InactiveTagComponent,
+    IdleTagComponent,
+    TypingComponent,
+    NavbarComponent,
+    SearchPipe,
+  ],
   imports: [
     CommonModule,
     StoreModule.forFeature(sharedSelectors, sharedReducer),

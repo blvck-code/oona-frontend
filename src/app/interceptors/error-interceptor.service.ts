@@ -8,6 +8,8 @@ import * as sharedActions from '../shared/state/shared.actions';
 import {Store} from '@ngrx/store';
 import {AppState} from '../state/app.state';
 import * as authActions from '../auth/state/auth.actions';
+import {Router} from '@angular/router';
+import {NotificationService} from '../shared/services/notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,9 @@ import * as authActions from '../auth/state/auth.actions';
 export class ErrorInterceptorService implements HttpInterceptor{
 
   constructor(
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private route: Router,
+    private notify: NotificationService
   ) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -24,40 +28,68 @@ export class ErrorInterceptorService implements HttpInterceptor{
       catchError((error: HttpErrorResponse) => {
         const errorStatus = error.status;
         console.log('Error status ==>', errorStatus);
-        let errorMsg = '';
+        let errorMsg;
 
         // Un Authorised User Access
         if (errorStatus === 401 || errorStatus === 403) {
           this.store.dispatch(new authActions.LogoutUser());
+          localStorage.clear();
+          this.route.navigate(['/login']);
         }
 
+        // Other errors
         if (error instanceof ErrorEvent){
           // client-side error
           // errorMsg = `Error ${error.message}`
-          console.log(error);
+          console.log('Client side error ===>>> ', error);
 
         } else {
           // server-side error
-          errorMsg = `Error ${error.message}`;
+          console.log('Server side error ===>>> ', error);
 
-          const nonFieldError = error?.error.non_field_errors;
-          const emailError = error?.error.email;
-
-          if (nonFieldError) {
-            const errorData = {
-              message: nonFieldError.toString(),
-              status: errorStatus
+          if (error?.error) {
+            // tslint:disable-next-line:no-shadowed-variable
+            const err = {
+              status: error.status,
+              message: error?.error?.error
             };
+            errorMsg = err;
 
-            // this.store.dispatch(new sharedActions.ErrorHandler(errorData));
+            console.log('Error content: ', err);
+          }
 
-          } else if (emailError) {
-            const errorData = {
+          if (error?.error[0]?.non_field_errors[0]) {
+            const err = {
+              status: error.status,
+              message: error?.error[0]?.non_field_errors[0]
+            };
+            errorMsg = err;
+          }
+
+          if (error?.error?.password1){
+            const errInfo = {
+              status: error.status,
+              message: error?.error?.password1[0].toString()
+            };
+            errorMsg = errInfo;
+          }
+
+          if (error?.error?.non_field_errors){
+            const errInfo = {
+              status: error.status,
+              message: error?.error?.non_field_errors[0].toString()
+            };
+            errorMsg = errInfo;
+          }
+
+          const emailError = error?.error?.email;
+
+          if (emailError) {
+            const errInfo = {
               message: emailError.toString(),
               status: errorStatus
             };
-
-            // this.store.dispatch(new sharedActions.ErrorHandler(errorData));
+            errorMsg = errInfo;
           }
 
         }
@@ -65,6 +97,4 @@ export class ErrorInterceptorService implements HttpInterceptor{
       })
     );
   }
-
-
 }

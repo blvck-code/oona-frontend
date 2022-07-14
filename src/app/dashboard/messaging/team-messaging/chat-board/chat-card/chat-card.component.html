@@ -1,23 +1,112 @@
 <div class="chart-item-container">
-    <div class="chart-item-profile">
-        <img src="https://via.placeholder.com/150" height="32px" width="32px" class="rounded-circle" alt="...">
-    </div>
-    <div class="chart-item-content-container" (click)="getMessageTopic()">
-        <div class="chart-item-content">
-            <div class="chart-item-title" title="Click to reply">
-                <p class="chat-tag">{{ messageDetail.subject }}</p>
-            </div>
-            <div class="message-card">
-                <div class="d-flex justify-content-between">
-                    <h3>{{ messageDetail.sender_full_name}}</h3>
-<!--                    <p class="chat-time">{{messageDate}}</p>-->
-                    <p class="chat-time">{{ messageTime }}</p>
-                </div>
-              <div >
-                  <showdown class="chat-msg" [value]="messageDetail.content"></showdown>
-                </div>
-              </div>
-
+  <div class="chart-item-profile">
+    <img
+      src="../../../../../../assets/img/placeholder.jpg"
+      height="32px"
+      width="32px"
+      class="rounded-circle"
+      alt="..."
+    />
+  </div>
+  <div class="chart-container-wrap">
+    <div class="chart-item-content-container" (click)="getMessageTopic(messageDetail)">
+      <div class="chart-item-content">
+        <div class="chart-item-title" (click)="navigateSubject(messageDetail)">
+          <p class="chat-tag">
+            #{{ messageDetail.subject | titlecase }}
+          </p>
+        </div>
+        <div class="message-card" (click)="handleReplyMsg(messageDetail)" title="Click to reply">
+          <div class="d-flex justify-content-between">
+            <h3>{{ messageDetail.sender_full_name }}</h3>
+            <!--                    <p class="chat-time">{{messageDate}}</p>-->
+            <p class="chat-time">{{ messageTime }}</p>
+          </div>
+          <div>
+            <showdown
+              class="chat-msg"
+              [value]="messageDetail.content"
+            ></showdown>
+          </div>
+          <div class="chat-reactions" *ngIf="messageDetail?.reactions.length">
+            <div *ngFor="let emoji of messageDetail?.reactions" class="chat-emojie" (click)="handleReactEmoji('love')">
+              <img *ngIf="emoji.emoji_name === 'octopus'" src="../../../../../../assets/img/icons/love.svg" alt="" />
+              <span>{{ messageDetail?.reactions.length }}</span>
             </div>
           </div>
+        </div>
+      </div>
+      <div class="chat-feedback-wrap">
+        <div class="chat-feedback-content">
+          <span class="chat-feedback-tooltip chat-icons" title="Like">
+            <img src="../../../../../../assets/img/icons/like.svg" alt="" />
+          </span>
+          <span (click)="handleReplyMsg(messageDetail)" class="chat-feedback-tooltip" title="Reply">
+            <img src="../../../../../../assets/img/icons/reply.svg" alt="" />
+          </span>
+          <span class="chat-feedback-tooltip" title="Forward">
+            <img src="../../../../../../assets/img/icons/forward.svg" alt="" />
+          </span>
+          <span class="chat-feedback-tooltip" title="Copy" (click)="handleCopyMsg(messageDetail)">
+            <img src="../../../../../../assets/img/icons/copy.svg" alt="" />
+          </span>
+          <span class="chat-feedback-tooltip" title="Bookmark">
+            <img src="../../../../../../assets/img/icons/bookmark.svg" alt="" />
+          </span>
+          <span class="chat-feedback-tooltip" title="Pin">
+            <img src="../../../../../../assets/img/icons/pin.svg" alt="" />
+          </span>
+          <span class="chat-feedback-tooltip" title="Caution">
+            <img src="../../../../../../assets/img/icons/caution.svg" alt="" />
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="chart-reply-wrap mt-3">
+      <div class="chart-replies my-1">
+        <div class="chart-item-profile">
+          <img
+            src="../../../../../../assets/img/victor.svg"
+            height="32px"
+            width="32px"
+            class="rounded-circle"
+            alt="..."
+          />
+        </div>
+
+        <div class="reply-message-card">
+          <div class="d-flex justify-content-between">
+            <h3>Victor Lwanga</h3>
+            <!--                    <p class="chat-time">{{messageDate}}</p>-->
+            <p class="chat-time">15:42</p>
+          </div>
+          <div>
+            <showdown class="chat-msg">Finally! Brings Snacks</showdown>
+          </div>
+        </div>
+      </div>
+      <div class="chart-replies my-1">
+        <div class="chart-item-profile">
+          <img
+            src="../../../../../../assets/img/victor.svg"
+            height="32px"
+            width="32px"
+            class="rounded-circle"
+            alt="..."
+          />
+        </div>
+
+        <div class="reply-message-card" title="Click to reply">
+          <div class="d-flex justify-content-between">
+            <h3>Victor Lwanga</h3>
+            <!--                    <p class="chat-time">{{messageDate}}</p>-->
+            <p class="chat-time">15:42</p>
+          </div>
+          <div>
+            <showdown class="chat-msg">Finally! Brings Snacks</showdown>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

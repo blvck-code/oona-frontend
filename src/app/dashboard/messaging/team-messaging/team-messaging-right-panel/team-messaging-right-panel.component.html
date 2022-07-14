@@ -7,6 +7,7 @@
         <app-active-tag *ngIf="member.presence.aggregated.status === 'active'"></app-active-tag>
         <app-inactive-tag *ngIf="member.presence.aggregated.status === 'idle'"></app-inactive-tag>
         <app-idle-tag *ngIf="member.presence.aggregated.status === 'offline'" ></app-idle-tag>
+<!--        <img *ngIf="" src="assets/img/placeholder.jpg" height="32px" width="32px" class="rounded-circle me-2" alt="...">-->
         <img src="assets/img/placeholder.jpg" height="32px" width="32px" class="rounded-circle me-2" alt="...">
         <span class="member-name">{{ member.full_name }}</span>
         <app-guest-tag *ngIf="member.is_guest" ></app-guest-tag>

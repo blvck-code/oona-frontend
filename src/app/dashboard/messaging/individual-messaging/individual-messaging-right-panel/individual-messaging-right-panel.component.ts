@@ -1,14 +1,24 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
+import {AfterViewInit, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {ActivatedRoute, NavigationEnd, NavigationExtras, NavigationStart, Router} from '@angular/router';
 import {MessagingService} from '../../services/messaging.service';
+import * as authActions from '../../../../auth/state/auth.actions';
 import {environment} from '../../../../../environments/environment';
+
 import {NotificationService} from '../../../../shared/services/notification.service';
+import {getAllUsers, getLoadingUsers, getSelectedUser, getZulipUsers} from '../../../../auth/state/auth.selectors';
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../../state/app.state';
+import {Observable} from 'rxjs';
+import {getSubStreams} from '../../state/messaging.selectors';
+import {load} from '@syncfusion/ej2-angular-richtexteditor';
+
 
 @Component({
   selector: 'app-individual-messaging-right-panel',
   templateUrl: './individual-messaging-right-panel.component.html',
   styleUrls: ['./individual-messaging-right-panel.component.scss']
 })
+
 export class IndividualMessagingRightPanelComponent implements OnInit {
   otherMembers: any ;
   allUsers: any;
@@ -23,19 +33,22 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
     is_bot: undefined,
     is_guest: undefined,
     avatar_url: undefined,
-    email: undefined
+    email: undefined,
+    date_joined: undefined,
   };
   memberParamName = '';
   allSubscribers: any;
   loggedInUserProfile: any;
   oonaProfile: any ;
   profileCreationDate: any;
+  currentUser: any;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private messagingService: MessagingService,
     private  notificationService: NotificationService,
+    private store: Store<AppState>,
     private change: ChangeDetectorRef
   ) {
     this.allUsersRegistered();
@@ -43,19 +56,96 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
   }
 
   allUsersRegistered(): void {
-    this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
-      const usersPresent = users.members.filter(user => user.presence );
-      this.allUsers = this.messagingService.newListOfUsers(usersPresent);
+    // this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
+      // const usersPresent = users.members.filter(user => user?.presence );
+      // this.allUsers = this.messagingService.newListOfUsers(usersPresent);
+    // });
+
+    this.store.select(getLoadingUsers).subscribe(
+      loading => {
+        if (!loading) {
+          this.store.select(getAllUsers).subscribe(
+            users => {
+              const usersPresent = users?.filter((user: any) => user?.presence );
+              this.allUsers = this.messagingService.newListOfUsers(usersPresent);
+            }
+          );
+        }
+      }
+    );
+  }
+
+  getCurrentUser(): void {
+    // const currentUser = this.route.snapshot.queryParams?.member;
+    //
+    // const userId = currentUser.split('-')[0];
+    // const userName = currentUser.split('-')[1].replace('.', ' ');
+    //
+    // if (userId) {
+    //   this.store.select(getAllUsers).subscribe(
+    //     data => {
+    //       // tslint:disable-next-line:no-shadowed-variable
+    //       // this.currentUser = data?.find((user: any) => user.user_id === +userId);
+    //     }
+    //   );
+    // }
+
+    this.store.select(getSelectedUser).subscribe(
+      user => this.currentUser = user
+    );
+  }
+
+  changeContentOnRouteChange(): void {
+    // @ts-ignore
+    this.router.events.subscribe((event: Event) => {
+      if (event instanceof NavigationStart) {
+        this.store.select(getSelectedUser).subscribe(
+          user => this.currentUser = user
+        );
+      }
     });
   }
 
+
   ngOnInit(): void {
+    this.getCurrentUser();
+    this.changeContentOnRouteChange();
+
+
     this.route.queryParams
       .subscribe(params => {
-          this.allOtherMembers(params.member);
+          const userId = params.member.split('-')[0];
+          const userName = params.member.split('-')[1].replace('.', ' ');
+          // this.onInitHandler(+userId);
+          this.allOtherMembers(userName);
           this.getCommonTeams();
         }
       );
+
+  }
+
+  onInitHandler(userId: any): void {
+    this.otherMembers = [];
+    this.store.select(getAllUsers).subscribe(
+
+      data => {
+
+        setTimeout( () => {
+          // @ts-ignore
+          this.allUsers?.forEach((user) => {
+            console.log('User info info ===>>', user);
+            if (+user.user_id === +userId){
+              this.memberDetails = user;
+              this.messagingService.changeMemberDetail(user);
+              this.updateProfile();
+            }else{
+              this.otherMembers.push(user);
+            }
+          });
+        }, 3000);
+      }
+    );
+    this.allUsers?.map((user: any) => console.log('User info: ', user));
   }
 
   allOtherMembers(memberName: string): void{
@@ -63,7 +153,7 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
 
     setTimeout( () => {
       // @ts-ignore
-      this.allUsers.forEach((user) => {
+      this.allUsers?.forEach((user) => {
         // @ts-ignore
         if (user.full_name.replace(/\s/g, '') === memberName){
           this.memberDetails = user;
@@ -73,13 +163,16 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
           this.otherMembers.push(user);
         }
       });
-    }, 500);
+    }, 3000);
 
   }
 
+
   goToMemberChat(member: any): void{
     // tslint:disable-next-line:max-line-length
-    this.router.navigate(['dashboard/messaging/narrow'], { queryParams: { member: member.full_name.replace(/\s/g, '') } });
+    const userUrl = `${member.user_id}-${member.full_name.replace(/\s/g, '.')}`;
+    // this.router.navigate(['dashboard/messaging/narrow'], { queryParams: { member: member.full_name.replace(/\s/g, '') } });
+    this.router.navigate(['dashboard/messaging/narrow'], { queryParams: { member: userUrl } });
   }
   updateProfile(): void{
     this.messagingService.getOonaMemberDetail(this.memberDetails.email).subscribe((oonaProfileData: { results: any; }) => {
@@ -111,17 +204,32 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
       ( subscribers: { subscriptions: any; name: any; }) => {
         this.allSubscribers = subscribers.subscriptions;
         // tslint:disable-next-line:max-line-length
-        this.commonTeams = subscribers.subscriptions.filter((team: { subscribers: any[]; }) => team.subscribers.includes(this.memberDetails.email) && team.subscribers.includes(this.loggedInUserProfile.email));
+        this.commonTeams = subscribers.subscriptions.filter(
+          (team: { subscribers: any[]; }) =>
+            team.subscribers?.includes(this.memberDetails.email) && team.subscribers?.includes(this.loggedInUserProfile.email)
+        );
         this.change.detectChanges();
       });
     this.change.detectChanges();
+
+    this.store.select(getSubStreams).subscribe(
+      data => {
+        this.allSubscribers = data;
+        this.commonTeams = data?.filter(
+          (team: any) =>
+            // @Todo Subscribed api not giving subscribers, check on zulip documentation
+            team.subscribers?.includes(this.memberDetails.email) && team.subscribers?.includes(this.loggedInUserProfile.email)
+        );
+      }
+    );
   }
 
   generateMeeting(): void{
-    this.messagingService.getOonaMemberDetail(this.memberDetails.email).subscribe((oonaProfileData: { results: any; }) => {
+    console.log('Member ==>>>', this.currentUser);
+    this.messagingService.getOonaMemberDetail(this.currentUser.email).subscribe((oonaProfileData: { results: any; }) => {
       const meetingAttendees = [];
       if (oonaProfileData.results.length < 1){
-        this.notificationService.showWarning(`${this.memberDetails.full_name} is not a member of oona`, 'Not a member of oona');
+        this.notificationService.showWarning(`${this.currentUser.full_name} is not a member of oona`, 'Not a member of oona');
         return;
       }else{
         meetingAttendees.push(oonaProfileData.results[0].id);
@@ -143,7 +251,7 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
         this.messagingService.createMeeting(meetingDetail).subscribe((response: any) => {
           // response.video_stream
           // https://192.168.0.76:8443/67830bfd-7249-4d05-b5a6-5eda9c0c30fa
-          this.notificationService.showInfo(`Meeting with ${this.memberDetails.full_name} has been created.`, 'Meeting created');
+          this.notificationService.showInfo(`Meeting with ${this.currentUser.full_name} has been created.`, 'Meeting created');
           setTimeout(() => {
             this.router.navigate(['dashboard']);
           }, 1000);

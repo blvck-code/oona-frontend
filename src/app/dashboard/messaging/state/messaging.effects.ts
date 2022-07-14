@@ -62,6 +62,38 @@ export class MessagingEffects{
   );
 
   @Effect()
+  loadAllMessages$: Observable<any> = this.actions$.pipe(
+    ofType<messagingActions.LoadAllMessages>(
+      messagingActions.MessagingActionsTypes.LOAD_ALL_MESSAGES
+    ),
+    map((action: messagingActions.LoadAllMessages) => action.payload),
+    mergeMap((streamDetail: any) =>
+      this.messagingSrv.getMessagesOfStream(streamDetail).pipe(
+        map((messages: MessagesModel) =>
+          new messagingActions.LoadAllMessagesSuccess(messages)
+        ),
+        catchError(err => of(new messagingActions.LoadAllMessagesFail(err)))
+      )
+    )
+  );
+
+  @Effect()
+  loadPrivateMessages$: Observable<any> = this.actions$.pipe(
+    ofType<messagingActions.LoadPrivateMessages>(
+      messagingActions.MessagingActionsTypes.LOAD_PRIVATE_MESSAGES
+    ),
+    map((action: messagingActions.LoadPrivateMessages) => action.payload),
+    mergeMap((streamDetail: any) =>
+      this.messagingSrv.getMessagesOfStream(streamDetail).pipe(
+        map((messages: MessagesModel) =>
+          new messagingActions.LoadPrivateMessagesSuccess(messages)
+        ),
+        catchError(err => of(new messagingActions.LoadPrivateMessagesSuccess(err)))
+      )
+    )
+  );
+
+  @Effect()
   loadMessages$: Observable<any> = this.actions$.pipe(
     ofType<messagingActions.LoadMessaging>(
       messagingActions.MessagingActionsTypes.LOAD_MESSAGES

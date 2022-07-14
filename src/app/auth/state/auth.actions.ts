@@ -33,8 +33,8 @@ export enum AuthActionsTypes {
   // Selected User
   SET_SELECTED_USER = 'userCenter/setSelectedUser',
   LOAD_SELECTED_USER = 'userCenter/loadSelectedUser',
-  LOAD_SELECTED_USER_SUCCESS = 'userCenter/loadSelectedUserSuccess',
-  LOAD_SELECTED_USER_FAIL = 'userCenter/loadSelectedUserFail',
+  // LOAD_SELECTED_USER_SUCCESS = 'userCenter/loadSelectedUserSuccess',
+  // LOAD_SELECTED_USER_FAIL = 'userCenter/loadSelectedUserFail',
 
   // Register
 
@@ -57,6 +57,7 @@ export class LoginUserSuccess implements Action {
 export class LoginUserFail implements Action {
   readonly type = AuthActionsTypes.LOGIN_USER_FAIL;
   constructor( public payload: any) {
+    console.log('Login error payload ===>>>', payload);
   }
 }
 
@@ -105,16 +106,19 @@ export class UpdateState implements Action {
 export class LoadAllUsers implements Action {
   readonly type = AuthActionsTypes.LOAD_ALL_USERS;
   constructor() {
+    console.log('Loading all users');
   }
 }
 export class LoadAllUsersSuccess implements Action {
   readonly type = AuthActionsTypes.LOAD_ALL_USERS_SUCCESS;
   constructor(public payload: any) {
+    console.log('load all users success ===>>>', payload);
   }
 }
 export class LoadAllUsersFail implements Action {
   readonly type = AuthActionsTypes.LOAD_ALL_USERS_FAIL;
   constructor(public payload: any) {
+    console.log('load all users fail ===>>', payload);
   }
 }
 
@@ -140,13 +144,11 @@ export class LoadZulipUsersFail implements Action {
 export class SetSelectedUser implements Action {
   readonly type = AuthActionsTypes.SET_SELECTED_USER;
   constructor(public payload: any) {
-    console.log('Selected user ==>>', payload);
   }
 }
 export class LoadSelectedUser implements Action {
   readonly type = AuthActionsTypes.LOAD_SELECTED_USER;
   constructor(public payload: any) {
-    console.log('Selected user ==>>', payload);
   }
 }
 

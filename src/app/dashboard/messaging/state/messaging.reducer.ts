@@ -1,23 +1,35 @@
 import * as messagingActions from './messaging.actions';
-import {AllStreamsModel, SubscribedStreams} from '../models/streams.model';
-import {All} from '@ngrx/store-devtools/src/actions';
-import {MessagesModel, SingleMessageModel} from '../models/messages.model';
-import {TopicsModel} from '../models/topics.model';
-import {CurrentUserModel} from '../models/currentUser.model';
+import { AllStreamsModel, SubscribedStreams } from '../models/streams.model';
+import { All } from '@ngrx/store-devtools/src/actions';
+import { MessagesModel, SingleMessageModel } from '../models/messages.model';
+import { TopicsModel } from '../models/topics.model';
+import { CurrentUserModel } from '../models/currentUser.model';
+import { act } from '@ngrx/effects';
 
 export interface MessagingState {
   loading: boolean;
   streams: {
-    allStreams: AllStreamsModel[] | any,
-    subStreams: SubscribedStreams[],
-    topics: any
+    allStreams: AllStreamsModel[] | any;
+    subStreams: SubscribedStreams[];
+    topics: any;
   };
   currentUser: CurrentUserModel | null;
+  msgReceiver: any;
   messaging: {
-    loading: boolean,
-    filtered: boolean,
-    messages: MessagesModel | null;
-    filteredMsg: SingleMessageModel[] | undefined;
+    loading: boolean;
+    allMessages: {
+      loading: boolean;
+      messages: MessagesModel | null;
+    };
+    privateMsgs: {
+      loading: boolean;
+      filteredMsg: MessagesModel | null;
+      messages: MessagesModel | null;
+    };
+    selectedStreamMsg: {
+      loading: boolean;
+      messages: SingleMessageModel[] | undefined | null;
+    };
   };
 }
 
@@ -26,39 +38,57 @@ export const initialState: MessagingState = {
   streams: {
     allStreams: [],
     subStreams: [],
-    topics: []
+    topics: [],
   },
   currentUser: null,
+  msgReceiver: null,
   messaging: {
     loading: false,
-    filtered: false,
-    messages: null,
-    filteredMsg: undefined,
-  }
+    allMessages: {
+      loading: true,
+      messages: null,
+    },
+    privateMsgs: {
+      loading: false,
+      filteredMsg: null,
+      messages: null,
+    },
+    selectedStreamMsg: {
+      loading: false,
+      messages: null,
+    },
+  },
 };
 
-// const addTopicToStream = ( state: MessagingState, payload: any) => {
-//   const stream_id = payload?.oz?.stream_id;
-//   const allStreams = state?.streams.allStreams;
-//
-//   let newStreams: any = [];
-//   let trys: any = [];
-//
-//   allStreams.forEach((stream: any) => {
-//     // tslint:disable-next-line:triple-equals
-//     if (stream.stream_id == stream_id){
-//       // @ts-ignore
-//       stream = {
-//         ...stream,
-//         topics: payload
-//       };
-//
-//       newStreams = [...newStreams, stream];
-//     }
-//   });
-//
-//   trys.push(newStreams);
-// };
+const addTopicToStream = (payload: any) => {
+  const stream_id = payload?.oz?.stream_id;
+  const content = [...payload?.zulip?.topics];
+
+  const topics = {
+    stream_id: {
+      content,
+    },
+  };
+
+  return topics;
+};
+
+const filterMessages = (payload: any, state: MessagingState) => {
+
+  const messages = state.messaging.allMessages.messages?.zulip.messages;
+  const streamId = payload.streamId;
+  const topic = payload.topicName;
+  let filteredMsg: SingleMessageModel[] | undefined = [];
+
+  if (topic) {
+    const unfilteredMsg = messages?.filter(msg => msg.stream_id === +streamId);
+    filteredMsg = unfilteredMsg?.filter(msg => msg.subject === topic);
+  } else {
+    filteredMsg = messages?.filter(msg => msg.stream_id === +streamId);
+  }
+  return filteredMsg;
+
+};
 
 const sortMsg = (payload: any) => {
   const messages = payload.zulip.messages;
@@ -76,14 +106,14 @@ export function messagingReducer(
     case messagingActions.MessagingActionsTypes.LOAD_SUB_STREAMS:
       return {
         ...state,
-        loading: true
+        loading: true,
       };
     case messagingActions.MessagingActionsTypes.LOAD_STREAM_TOPIC_FAIL:
     case messagingActions.MessagingActionsTypes.LOAD_SUB_STREAMS_FAIL:
     case messagingActions.MessagingActionsTypes.LOAD_ALL_STREAMS_FAIL:
       return {
         ...state,
-        loading: false
+        loading: false,
       };
     case messagingActions.MessagingActionsTypes.LOAD_ALL_STREAMS_SUCCESS:
       return {
@@ -91,8 +121,8 @@ export function messagingReducer(
         loading: false,
         streams: {
           ...state.streams,
-          allStreams: action?.payload?.streams
-        }
+          allStreams: action?.payload?.streams,
+        },
       };
     case messagingActions.MessagingActionsTypes.LOAD_SUB_STREAMS_SUCCESS:
       return {
@@ -100,93 +130,117 @@ export function messagingReducer(
         loading: false,
         streams: {
           ...state.streams,
-          subStreams: action?.payload?.subscriptions
-        }
+          subStreams: action?.payload?.subscriptions,
+        },
       };
-    case messagingActions.MessagingActionsTypes.LOAD_STREAM_TOPIC_SUCCESS:
-      // addTopicToStream(state, action.payload);
-
-      // const topicStreamId = action.payload.oz.stream_id;
-      // console.log('topicStreamId ===>>>', topicStreamId);
-      // const updatedStream: any[] = state?.streams?.allStreams.map((stream: AllStreamsModel) => {
-      //   // tslint:disable-next-line:no-unused-expression
-      //   stream.stream_id === topicStreamId ? stream.topics = action.payload : null;
-      // });
-
-      // console.log('Target ==>>', updatedStream);
-      return {
-        ...state,
-        streams: {
-          ...state.streams,
-          // allStreams: [...state.streams.allStreams, updatedStream]
-          // allStreams: updatedStream
-          // topics: [...state.streams.topics, addTopicToStream(action.payload)]
-        }
-      };
-
-    // Handle Messages
-    case messagingActions.MessagingActionsTypes.LOAD_MESSAGES:
+    // ALL MESSAGES
+    case messagingActions.MessagingActionsTypes.LOAD_ALL_MESSAGES_SUCCESS:
       return {
         ...state,
         messaging: {
           ...state.messaging,
-          loading: true,
-          filtered: false,
-          messages: null
-        }
+          allMessages: {
+            loading: false,
+            messages: action.payload,
+          },
+        },
       };
-    case messagingActions.MessagingActionsTypes.LOAD_MESSAGES_SUCCESS:
+    case messagingActions.MessagingActionsTypes.LOAD_ALL_MESSAGES_FAIL:
       return {
         ...state,
         messaging: {
           ...state.messaging,
-          loading: false,
-          filtered: false,
-          messages: action.payload
-        }
+          allMessages: {
+            loading: false,
+            messages: null,
+          },
+        },
       };
+    // PRIVATE MESSAGES
+    case messagingActions.MessagingActionsTypes.LOAD_PRIVATE_MESSAGES:
+      return {
+        ...state,
+        messaging: {
+          ...state.messaging,
+          privateMsgs: {
+            ...state.messaging.privateMsgs,
+            loading: false,
+          },
+        },
+      };
+    case messagingActions.MessagingActionsTypes.LOAD_PRIVATE_MESSAGE_SUCCESS:
+      return {
+        ...state,
+        messaging: {
+          ...state.messaging,
+          privateMsgs: {
+            ...state.messaging.privateMsgs,
+            loading: false,
+            messages: action.payload,
+          },
+        },
+      };
+    case messagingActions.MessagingActionsTypes.LOAD_PRIVATE_MESSAGES_FAIL:
+      return {
+        ...state,
+        messaging: {
+          ...state.messaging,
+          privateMsgs: {
+            ...state.messaging.privateMsgs,
+            loading: false,
+          },
+        },
+      };
+    // FILTERING MESSAGES
+    case messagingActions.MessagingActionsTypes.FILTER_MESSAGES:
+      return {
+        ...state,
+        messaging: {
+          ...state.messaging,
+          selectedStreamMsg: {
+            loading: false,
+            messages: filterMessages(action.payload, state)
+          }
+        },
+      };
+
     case messagingActions.MessagingActionsTypes.LOAD_MORE_MESSAGE:
       return {
         ...state,
         messaging: {
           ...state.messaging,
-        }
+        },
       };
     case messagingActions.MessagingActionsTypes.LOAD_MESSAGES_FAIL:
       return {
         ...state,
       };
-
-    // FILTER MESSAGES
-    case messagingActions.MessagingActionsTypes.FILTER_MESSAGES:
-      const streamId = action.payload.stream_id;
-      const topic = action.payload.topic;
-      const messages = state.messaging.messages?.zulip.messages;
-      let filteredMsg: SingleMessageModel[] | undefined;
-
-      // filteredMsg = messages?.filter(msg => msg?.stream_id === streamId);
-      // console.log('Messages ====>>>', messages);
-      // filteredMsg = messages?.filter(msg => msg?.stream_id === streamId);
-
-      // @ts-ignore
-      if (topic){
-        const unFilteredMsg = messages?.filter(msg => msg?.stream_id === streamId);
-        // @ts-ignore
-        filteredMsg = unFilteredMsg.filter(msg => msg.subject === topic);
-      } else {
-        filteredMsg = messages?.filter(msg => msg?.stream_id === streamId);
-      }
+    case messagingActions.MessagingActionsTypes.HANDLE_SEND_MESSAGE:
       return {
         ...state,
-        messaging: {
-          ...state.messaging,
-          filtered: true,
-          filteredMsg
-        }
+        msgReceiver: action.payload,
       };
+
+    // case messagingActions.MessagingActionsTypes.LOAD_STREAM_TOPIC_SUCCESS:
+    //
+    //   const topicStreamId = action.payload.oz.stream_id;
+    //   const updatedStream: any[] = state?.streams?.allStreams.map((stream: AllStreamsModel) => {
+    //     // tslint:disable-next-line:no-unused-expression
+    //     stream.stream_id === topicStreamId ? stream.topics = action.payload : null;
+    //   });
+    //
+    //   console.log('Target ==>>', updatedStream);
+    //   return {
+    //     ...state,
+    //     streams: {
+    //       ...state.streams,
+    //       // allStreams: [...state.streams.allStreams, updatedStream]
+    //       allStreams: updatedStream
+    //       // topics: [...state.streams.topics, addTopicToStream(action.payload)]
+    //     }
+    //   };
 
     default:
       return state;
   }
 }
-

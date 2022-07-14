@@ -55,8 +55,15 @@
 
 .add-editor {
   position: absolute;
-  bottom: 20px;
+  bottom: -120px;
   width: 100%;
+  opacity: 0;
+
+  &.active {
+    transition: 0.5s ease;
+    bottom: 20px;
+    opacity: 1;
+  }
 }
 
 .active{
@@ -82,4 +89,15 @@ button{
   align-items: center;
   letter-spacing: 0.01em;
   color: #323037;
+}
+
+.btn-date {
+  background: #D7ECFF;
+  border-radius: 5px;
+  height: 30px;
+  width: 88px;
+  font-family: 'Gilroy-Medium';
+  font-size: 12px;
+  line-height: 14px;
+  color: #000;
 }

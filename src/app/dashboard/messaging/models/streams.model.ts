@@ -49,7 +49,7 @@ export interface SubscribedStreams {
     stream_id: number;
     stream_post_policy: number;
     stream_weekly_traffic: number;
-    wildcard_mentions_notify: any
+    wildcard_mentions_notify: any;
 }
 
 
