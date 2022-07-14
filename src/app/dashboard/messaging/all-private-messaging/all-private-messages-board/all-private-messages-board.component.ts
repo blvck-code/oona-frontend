@@ -23,6 +23,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
   stateUsers = Array();
   messagesWithIndividuals = Array();
   @Output() pmMemberNames = new EventEmitter<any>();
+  @Output() emitReplyMsg = new EventEmitter<any>();
   initialMessageCount = 10;
   messages$!: Observable<any>;
   loadingMessages!: Observable<boolean>;
@@ -89,13 +90,17 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
       }
     );
     // Todo add loading indicator for this time
+
+    if (this.stateUsers){
+      this.getAllPrivateChatsTwo();
+    }
+
     setTimeout( () => {
       this.getAllPrivateChatsTwo();
     }, 2000);
   }
 
   getAllPrivateChatsTwo(): any{
-    console.log(12356);
     this.stateUsers.map( user => {
       const streamDetail = {
         use_first_unread_anchor: true,
@@ -110,7 +115,6 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
       };
       // this.store.dispatch(new LoadPrivateMessages(streamDetail));
       this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
-          console.log('Responses: ', response);
           const allMessages = response.zulip.messages;
           if (allMessages.length >= 1){
             this.messagesWithIndividuals.push(... allMessages);
@@ -197,6 +201,11 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
           console.log('error', error);
         });
     });
+  }
+
+  replyMessage(chat: any): void {
+    console.log('Message to be replied: ', chat);
+    this.emitReplyMsg.emit(chat);
   }
 
 }
