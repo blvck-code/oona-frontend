@@ -24,42 +24,42 @@ import {TokenInterceptorService} from './interceptors/token-interceptor.service'
 import {ErrorInterceptorService} from './interceptors/error-interceptor.service';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    LandingPageComponent,
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    MatDialogModule,
-    ReactiveFormsModule,
-    NgxEditorModule,
-    ShowdownModule,
-    ToastrModule.forRoot(),
-    NgxEmojiPickerModule.forRoot(),
-    RichTextEditorAllModule,
-    BrowserAnimationsModule, // required animations module
-    HttpClientModule,
-    StoreModule.forRoot(appReducer),
-    StoreDevtoolsModule.instrument({
-      name: 'Oona',
-      maxAge: 25,
-      logOnly: env.production
-    }),
-    EffectsModule.forRoot([]),
-  ],
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptorService,
-      multi: true
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: ErrorInterceptorService,
-      multi: true
-    }
-  ],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        LandingPageComponent,
+    ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        MatDialogModule,
+        ReactiveFormsModule,
+        NgxEditorModule,
+        ShowdownModule,
+        ToastrModule.forRoot(),
+        NgxEmojiPickerModule.forRoot(),
+        RichTextEditorAllModule,
+        BrowserAnimationsModule, // required animations module
+        HttpClientModule,
+        StoreModule.forRoot(appReducer),
+        StoreDevtoolsModule.instrument({
+            name: 'Oona',
+            maxAge: 25,
+            logOnly: env.production
+        }),
+        EffectsModule.forRoot([]),
+    ],
+    providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: TokenInterceptorService,
+            multi: true
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: ErrorInterceptorService,
+            multi: true
+        }
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

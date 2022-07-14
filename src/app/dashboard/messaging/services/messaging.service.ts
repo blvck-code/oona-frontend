@@ -164,6 +164,7 @@ export class MessagingService {
   }
 
   newListOfUsers(usersPresent: any): any[] {
+
     const allOnline = usersPresent?.filter(
       (user: { presence: { aggregated: { status: string } } }) =>
         user.presence.aggregated.status === 'active'
