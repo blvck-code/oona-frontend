@@ -108,6 +108,15 @@ form-control{
   p {
     margin: 0;
   }
+
+  .form-control {
+    background: #DADADA;
+    mix-blend-mode: normal;
+    opacity: 0.55;
+    box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.252814);
+    border-radius: 7px;
+    font-size: 13px;
+  }
 }
 .panel-box-container, .panel-box-accordion {
   padding: 12px 10px;

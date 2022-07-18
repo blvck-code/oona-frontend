@@ -70,8 +70,13 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   }
 
   onInitPage(): void {
-   this.store.select(getZulipUsers).subscribe((users) => {
-     const usersPresent = users?.members?.filter((user: any) => user.presence );
+   this.store.select(getAllUsers).subscribe((users) => {
+     console.log('Users: ', users);
+
+     const usersPresent = users?.filter((user: any) => user.presence );
+     setTimeout(() => {
+       console.log('Users present: ', usersPresent);
+     }, 1000);
      this.allUsers = this.newListOfUsers(usersPresent);
    });
   }
@@ -126,7 +131,7 @@ export class LandingMessagingRightPanelComponent implements OnInit {
 
   private addTypingStatus(peopleTyping: any[]): void {
     if (this.allUsers) {
-      this.allUsers.forEach((user) => {
+      this.allUsers?.forEach((user) => {
         const userIsTyping = peopleTyping.find(
           (person) => person.userEmail === user.email && person.op === 'start'
         );
