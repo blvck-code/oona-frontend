@@ -2,15 +2,17 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-// export const oonaBaseUrl = 'http://192.168.0.161:8000';
-export const oonaBaseUrl = 'https://192.168.0.36:2443';
-// export const oonaBaseUrl = 'http://192.168.0.13:8000';
-export const userChannel = 'ws://192.168.0.36:2443/ws/on/event/';
-export const messageChannel = 'ws://192.168.0.36:2443/ws/on/message/';
+// export const oonaBaseUrl = 'http://192.168.0.100:8000';
+export const apiURL = 'https://192.168.0.';
+export const basePort = '37';
+// export const oonaBaseUrl = 'https://192.168.0.100:2443';
+export const oonaBaseUrl = `${apiURL}${basePort}:2443`;
+export const userChannel = 'ws://192.168.0.37:2443/ws/on/event/';
+export const messageChannel = 'ws://192.168.0.37:2443/ws/on/message/';
 export const firmName = '8teq';
-const whiteBoard = 'http://192.168.0.36:8030';
-const etherPad = 'http://192.168.0.36:9001/';
-const domain = '192.168.0.100:8443';
+const whiteBoard = 'http://192.168.0.37:8030';
+const etherPad = 'http://192.168.0.37:9001/';
+const domain = '192.168.0.37:8443';
 
 export const environment = {
   production: false,

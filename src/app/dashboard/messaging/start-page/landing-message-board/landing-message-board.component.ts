@@ -21,7 +21,7 @@ export class LandingMessageBoardComponent implements OnInit {
   messages$!: Observable<any>;
   loadingMessages!: Observable<boolean>;
   messageExist: any;
-  editorActive = false;
+  editorActive = true;
   public messageTypeList = {
     Today: [],
     Yesterday: [],

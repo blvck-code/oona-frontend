@@ -27,6 +27,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   @Output() newTopic = new EventEmitter<any>();
   editorTopic = '';
   values = '';
+  currentForm = 'general';
   // tslint:disable-next-line:max-line-length
   memberDetail: { is_admin: undefined; full_name: undefined; is_active: undefined; avatar_url: undefined; user_id: undefined; is_guest: undefined; bot_type: undefined; is_bot: undefined; email: undefined; } | undefined;
   userProfile: any;
@@ -227,5 +228,9 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   handleSelection(event: any): void {
     this.editorData += ' ' + event.char;
+  }
+
+  handleShowTopic(type: string): void {
+    this.currentForm = type;
   }
 }

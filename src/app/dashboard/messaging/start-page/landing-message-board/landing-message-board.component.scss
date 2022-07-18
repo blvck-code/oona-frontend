@@ -55,9 +55,9 @@
 
 .add-editor {
   position: absolute;
-  bottom: -120px;
+  bottom: 20px;
   width: 100%;
-  opacity: 0;
+  //opacity: 0;
 
   &.active {
     transition: 0.5s ease;

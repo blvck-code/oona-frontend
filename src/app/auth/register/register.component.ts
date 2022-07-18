@@ -13,6 +13,7 @@ export class RegisterComponent implements OnInit {
   signupError = false;
   signupServerError = '';
   emptyForm = false;
+  loading = false;
 
   registrationForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
@@ -35,6 +36,7 @@ export class RegisterComponent implements OnInit {
     if (!this.registrationForm.valid) {
       return;
     }
+    this.loading = true;
     const registrationInfo = new FormData();
     registrationInfo.append('email', this.registrationForm.value.email);
     registrationInfo.append('first_name', this.registrationForm.value.firstName);
@@ -45,9 +47,11 @@ export class RegisterComponent implements OnInit {
       .subscribe(
         (res: any) => {
           this.router.navigate(['/verify-account']);
+          this.loading = false;
         },
         (signupError: any) => {
           console.log('Register error: ', signupError);
+          this.loading = false;
           this.signupError = true;
           if (signupError.message === 'User with this email already exists.') {
             this.signupServerError = 'A User with this email already exists.';

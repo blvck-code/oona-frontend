@@ -10,6 +10,8 @@
 }
 .group-pm-users {
   display: flex;
+  // Todo change to display flex
+  //display: none;
   align-items: center;
   justify-content: space-between;
   min-height: 34px;
@@ -19,21 +21,79 @@
   background: #ECF4FB;
 
   .recipient-user {
-    width: 100%;
+    width: max-content;
+  }
+}
+
+.stream-topic-name {
+  //display: none;
+  display: flex;
+  padding: 10px;
+
+  .form-control {
+    font-size: 13px;
+    background: none;
+    border: 1px solid #333;
+    padding: 5px;
+
+
+    &.active,
+    &:focus {
+      background: none;
+      border: 1px solid #333;
+      box-shadow: none;
+    }
+  }
+
+  .stream-name {
+    width: 180px;
+    margin: 0 5px;
+  }
+}
+
+.add-stream-topic-title {
+  display: flex;
+  justify-content: space-between;
+  background: #ECF4FB;
+  padding: 10px 0;
+
+  .topics-close-form {
+    display: flex;
+    align-items: center;
+    padding-right: 15px;
+
+    i {
+      font-size: 20px;
+      cursor: pointer;
+    }
+  }
+}
+
+.send-private-message {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 34px;
+  padding-left: 15px;
+  padding-right: 5px;
+  border-radius: 10px 10px 0 0;
+  background: #ECF4FB;
+
+  .recipient-user {
+    width: max-content;
   }
 }
 
 .search-pm-users-container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   width: calc(100% - 30px);
 }
 
 .list-pm-members {
   display: flex;
   flex-wrap: wrap;
-  padding-left: 10px;
 }
 
 .pm-member {
@@ -44,8 +104,8 @@
   margin-right: 5px;
   padding: 0 10px;
   border-radius: 5px;
-  background-color: #051EC4;
-  color: #fff;
+  border: 1px solid #051EC4;
+  color: #051EC4;
   font-size: 14px;
   cursor: pointer;
 
@@ -118,6 +178,7 @@
 
 .parent {
   position: relative;
+  //height: 0;
 }
 
 

@@ -60,8 +60,11 @@ import {AppModule} from '../../app.module';
 
 
 @NgModule({
-  // tslint:disable-next-line:max-line-length
+    // tslint:disable-next-line:max-line-length
     declarations: [MessagingComponent, TeamMessagingComponent, TeamMessagingLeftPanelComponent, TeamMessagingRightPanelComponent, ChatBoardComponent, ChatCardComponent, TextEditorComponent, IndividualMessagingComponent, IndividualMessagingRightPanelComponent, IndividualMessagingBoardComponent, IndividualChatCardComponent, IndividualChatCardResponseComponent, StartPageComponent, LandingMessagingRightPanelComponent, LandingMessageBoardComponent, MessageTimeBtnComponent, LoadingAnimationComponent, AllPrivateMessagingComponent, AllPrivateMessagesBoardComponent, DisplayNamesPipe, AllMentionedMessagesComponent, AllMentionedMessagesBoardComponent, CreateTeamComponent, TeamSettingsComponent, LeaveTeamComponent, GroupPmsComponent, GroupPmsMessagingBoardComponent, GroupPmsChatCardComponent, ShortenTextPipe, GroupPmsTextEditorComponent, MeetingCardComponent, TeamMeetingsComponent, AllMsgTextEditorComponent, PrivateMsgTextEditorComponent, LandingTextEditorComponent, EditorComponent, StreamsComponent, StreamsBoardComponent, UserFilterPipe],
+    exports: [
+        LoadingAnimationComponent
+    ],
     imports: [
         CommonModule,
         MessagingRoutingModule,
