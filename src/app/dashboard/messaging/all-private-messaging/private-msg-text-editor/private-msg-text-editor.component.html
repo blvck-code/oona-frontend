@@ -1,10 +1,10 @@
-<div class="group-pm-users">
+<div class="group-pm-users" (click)="handleShowEditor()">
   <span style="font-weight: bolder" class="mr-2">To :</span>
   <div class="search-pm-users-container" >
     <div class="list-pm-members">
       <div class="pm-member" *ngFor="let person of chatGroup" (click)="removeFromGroup(person)">
 <!--        <p>{{person.full_name}}</p>-->
-        <p>Oluoch</p>
+        <p>{{person.full_name}}</p>
         <i class="bi bi-x"></i>
       </div>
     </div>
@@ -21,7 +21,7 @@
   </div>
 </div>
 
-<div class="parent">
+<div class="parent" [class.hide]="!showEditor">
 
   <form #form="ngForm" (ngSubmit)="onSubmit(form)" class="text-editor-container">
     <div class="form-group ">

@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {MessagingService} from '../../services/messaging.service';
 import {Router} from '@angular/router';
 
@@ -9,9 +9,10 @@ import {AppState} from '../../../../state/app.state';
 import {getAllMessages, getLoadingPrivateMsgs, getMessageType, getPrivateMessages} from '../../state/messaging.selectors';
 import * as messageActions from '../../state/messaging.actions';
 import {Observable} from 'rxjs';
-import {StreamDetail} from '../../models/messages.model';
+import {SingleChat, StreamDetail} from '../../models/messages.model';
 import {getAllUsers, getUserDetails} from '../../../../auth/state/auth.selectors';
 import {LoadMoreMessaging, LoadPrivateMessages} from '../../state/messaging.actions';
+import {take} from 'rxjs/operators';
 
 @Component({
   selector: 'app-all-private-messages-board',
@@ -23,13 +24,16 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
   stateUsers = Array();
   messagesWithIndividuals = Array();
   @Output() pmMemberNames = new EventEmitter<any>();
+  @Output() emitReplyMsg = new EventEmitter<any>();
   initialMessageCount = 10;
   messages$!: Observable<any>;
-  loadingMessages!: Observable<boolean>;
+  loadingMessages = false;
   operator = '';
-  operand: any;
+  activeMessage: SingleChat | undefined;
   streamDetail!: Observable<StreamDetail>;
   messageExist: any;
+
+  @ViewChild('endChat') endChat: ElementRef | undefined;
 
   constructor(
     private messagingService: MessagingService,
@@ -42,7 +46,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
 
   ngOnInit(): void {
     this.initPage();
-    this.getAllPrivateChats();
+    // this.getAllPrivateChats();
   }
 
   // getOperator(): StreamDetail {
@@ -52,15 +56,15 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
   // Init page
   initPage(): void {
 
-    // get Loading Message
-    this.loadingMessages = this.store.select(getLoadingPrivateMsgs);
+    // // get Loading Message
+    // this.loadingMessages = this.store.select(getLoadingPrivateMsgs);
 
     // get messages from store
-    this.messages$ = this.store.select(getPrivateMessages);
-
-    document?.getElementById('box')?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
-
-    this.messagesLength();
+    // this.messages$ = this.store.select(getPrivateMessages);
+    //
+    // document?.getElementById('box')?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+    //
+    // this.messagesLength();
   }
 
   messagesLength(): void {
@@ -73,29 +77,29 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
   }
 
   allUsersRegistered(): void {
-    this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
-      console.log('All users: ', users);
-      const usersPresent = users.members.filter(user => user.presence );
-      // this.allUsers = this.messagingService.newListOfUsers(usersPresent);
-    });
-    setTimeout( () => {
-    this.getAllPrivateChats();
-    }, 1000);
+    // this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
+    //   console.log('All users: ', users);
+    //   const usersPresent = users.members.filter(user => user.presence );
+    //   this.allUsers = this.messagingService.newListOfUsers(usersPresent);
+    // });
+    // setTimeout( () => {
+    // this.getAllPrivateChats();
+    // }, 1000);
 
+    this.loadingMessages = true;
 
     this.store.select(getAllUsers).subscribe(
-      users => {
-        this.stateUsers = users?.filter((user: any) => user.presence );
+  users => {
+        if (users) {
+          this.stateUsers = users?.filter((user: any) => user.presence );
+          // Todo add loading indicator for this time
+          this.getAllPrivateChatsTwo();
+        }
       }
     );
-    // Todo add loading indicator for this time
-    setTimeout( () => {
-      this.getAllPrivateChatsTwo();
-    }, 2000);
   }
 
   getAllPrivateChatsTwo(): any{
-    console.log(12356);
     this.stateUsers.map( user => {
       const streamDetail = {
         use_first_unread_anchor: true,
@@ -110,7 +114,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
       };
       // this.store.dispatch(new LoadPrivateMessages(streamDetail));
       this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
-          console.log('Responses: ', response);
+          this.loadingMessages = false;
           const allMessages = response.zulip.messages;
           if (allMessages.length >= 1){
             this.messagesWithIndividuals.push(... allMessages);
@@ -122,7 +126,8 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
             this.messagesWithIndividuals.sort((a, b) =>  a.timestamp - b.timestamp );
             this.change.detectChanges();
             // @ts-ignore
-            document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+            this.scrollBottom();
+            // document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
           }
         } ,
         (error: any) => {
@@ -197,6 +202,17 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
           console.log('error', error);
         });
     });
+  }
+
+  replyMessage(chat: any): void {
+    this.activeMessage = chat;
+    this.store.dispatch(new messageActions.HandleSendMessage(chat));
+  }
+
+  scrollBottom(): any {
+    if (this.endChat) {
+      this.endChat.nativeElement.scrollIntoView({ behavior: 'smooth'});
+    }
   }
 
 }

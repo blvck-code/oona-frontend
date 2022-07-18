@@ -17,6 +17,7 @@
   padding-right: 5px;
   border-radius: 10px 10px 0 0;
   background: #ECF4FB;
+  cursor: pointer;
 }
 
 .search-pm-users-container {
@@ -114,6 +115,11 @@
 
 .parent {
   position: relative;
+
+    &.hide {
+      display: none;
+    }
+
 }
 
 

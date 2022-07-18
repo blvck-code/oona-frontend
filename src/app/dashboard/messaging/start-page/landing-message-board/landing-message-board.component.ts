@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, HostListener, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
 import {MessagingService} from '../../services/messaging.service';
 
 // NgRx
@@ -22,6 +22,11 @@ export class LandingMessageBoardComponent implements OnInit {
   loadingMessages!: Observable<boolean>;
   messageExist: any;
   editorActive = false;
+  public messageTypeList = {
+    Today: [],
+    Yesterday: [],
+    'This Week': []
+  };
 
   constructor(
     private messagingService: MessagingService,
@@ -38,34 +43,68 @@ export class LandingMessageBoardComponent implements OnInit {
   }
 
   handleMsgGrouping(): void {
+    // This sample uses a fixed date so the categories can be illustrated better:
+    const currentDate = new Date(); // Or leave out the argument for actual date
+    currentDate.setHours(0, 0, 0, 0); // set to midnight
+// Prepare all related dates: yesterday and last Monday
+    const keys: any = [];
+    keys.push(['Today', new Date(currentDate)]); // clone
+    currentDate.setDate(currentDate.getDate() - 1);
+    keys.push(['Yesterday', new Date(currentDate)]); // clone
+    currentDate.setDate(currentDate.getDate() - (currentDate.getDay() + 6) % 7);
+    keys.push(['This Week', new Date(currentDate)]); // clone
 
-    let timeStamps: any[] = [];
+    const messages = [
+      { date: '2022/07/09' },
+      { date: '2022/07/10' },
+      { date: '2022/07/11' },
+      { date: '2022/07/12' },
+      { date: '2022/07/13' },
+      { date: '2022/07/14' }, // Monday
+      { date: '2022/07/15' },
+    ];
 
-    const currentDate = new Date();
-    const currentDay = currentDate;
-    const currentMonth = currentDate.getMonth();
+    const messageTypeList = {
+      Today: [],
+      Yesterday: [],
+      'This Week': []
+    };
 
-    console.log('Current day: ', currentDay);
-    console.log('Current month: ', currentMonth);
-    console.log('Current date: ', currentDate);
+    messages.forEach( message => {
+      const date = message.date.substring(0, 10).replace(/-/g, '\/');
+      const messageDate = new Date(date);
 
-    this.store.select(getAllMessages).subscribe(
-      messages => {
-        messages?.map(mes => {
+      // tslint:disable-next-line:no-shadowed-variable
+      const key = keys?.find(([key, date]: any) => messageDate >= date ) || [];
+      console.log('Key: ', key);
 
-          const newDate = new Date();
-          newDate.setTime(mes.timestamp * 1000);
-          const dateString = newDate.toUTCString();
+      // messageTypeList.push(message);
+    });
 
-          const msgMonth = newDate.getMonth();
-          timeStamps = [...timeStamps, dateString];
+    setTimeout(() => {
+      console.log('Message Type List', messageTypeList);
+    }, 2000);
 
-          // Todo add grouping messages
-
-        });
-        // console.log('Time stamp: ', timeStamps.sort((a: any, b: any) => a - b));
-      }
-    );
+    // this.store.select(getAllMessages).subscribe(
+    //   messages => {
+    //     messages?.map((message, index) => {
+    //
+    //       const messageDate = new Date();
+    //       messageDate.setTime(message.timestamp * 1000);
+    //
+    //       const [key] = keys.find(([key, date]) => messageDate >= date) || [];
+    //       if (key) {
+    //         // @ts-ignore
+    //         this.messageTypeList[key].push(message);
+    //       }
+    //
+    //       // Todo add grouping messages
+    //       console.log('Message types list', this.messageTypeList);
+    //
+    //     });
+    //     // console.log('Time stamp: ', timeStamps.sort((a: any, b: any) => a - b));
+    //   }
+    // );
 
 
   }
@@ -94,8 +133,7 @@ export class LandingMessageBoardComponent implements OnInit {
       this.messages$ = this.store.select(getAllMessages);
 
       this.messagesLength();
-
-    // @ts-ignore
+      // @ts-ignore
       document?.getElementById('box')?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
   }
 
@@ -135,7 +173,8 @@ export class LandingMessageBoardComponent implements OnInit {
         // sort by time. latest last
         this.messagesOfStream.sort((a, b) =>  a.timestamp - b.timestamp );
         this.change.detectChanges();
-        // @ts-ignore
+
+          // @ts-ignore
         document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
         } ,
         (error: any) => {
