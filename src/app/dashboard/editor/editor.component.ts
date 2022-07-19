@@ -10,7 +10,7 @@ import {GroupPmsServiceService} from '../messaging/group-pms/group-pms-service.s
 import {Observable} from 'rxjs';
 import {AppState} from '../../state/app.state';
 import {Store} from '@ngrx/store';
-import {getReceiverInfo} from '../messaging/state/messaging.selectors';
+import {getAllStreams, getReceiverInfo} from '../messaging/state/messaging.selectors';
 import { SingleChat } from '../messaging/models/messages.model';
 import {messageChannel} from '../../../environments/environment';
 import {MessagesSocketService} from '../messaging/services/messages-socket.service';
@@ -33,8 +33,12 @@ export class EditorComponent implements OnInit, OnDestroy {
   userProfile: any;
   chatGroup = Array();
   allUsers = Array();
+  streams = Array();
+  searchStreamTerm = '';
+  filteredStreams = Array();
   filteredUsers = Array();
   receiverInfo!: SingleChat | any;
+  activeEditor = false;
 
   constructor(
     private messagingService: MessagingService,
@@ -74,13 +78,47 @@ export class EditorComponent implements OnInit, OnDestroy {
     this.store.select(getReceiverInfo).subscribe(
       (data: SingleChat) => {
         this.receiverInfo = data;
+        console.log('Receiver data: ', data);
+
+        if (data?.subject) {
+          this.searchStreamTerm = `${data?.display_recipient} > ${data?.subject}`;
+        } else {
+          this.searchStreamTerm = `${data?.display_recipient}`;
+        }
       }
     );
+  }
+
+  // get streams
+  getStreams(): void {
+    this.store.select(getAllStreams).subscribe(
+      streams => {
+        this.streams = streams;
+        const length = streams?.length;
+        const lastStream = streams[length - 1];
+
+        this.searchStreamTerm = lastStream?.name;
+      }
+    );
+    // this.handleDefaultStream();
+  }
+
+  handleDefaultStream(): void {
+    console.log('Getting length');
+    setTimeout(() => {
+      console.log('Streams: ', this.streams);
+    }, 1000);
+
+    if (this.streams.length){
+      console.log('Length: ', this.streams.length);
+
+    }
   }
 
   onInitHandler(): void {
     this.loggedInProfile();
     this.getReceiverInfo();
+    this.getStreams();
     this.editor = new Editor();
     this.editor.commands.focus().exec();
     this.groupPmsService.currentChatGroup.subscribe((chatMembers) => {
@@ -226,11 +264,31 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   }
 
+  searchStream(event: any): any {
+    const searchTerm = event.target.value;
+    if (searchTerm === '') {
+      return this.filteredStreams = [];
+    }
+    // tslint:disable-next-line:max-line-length
+    this.filteredStreams = this.streams?.filter(stream => stream.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  }
+
   handleSelection(event: any): void {
     this.editorData += ' ' + event.char;
   }
 
+  addSelectedStream(stream: any): void {
+    this.searchStreamTerm = stream.name;
+  }
+
   handleShowTopic(type: string): void {
     this.currentForm = type;
+    this.activeEditor = true;
+  }
+
+  resetEditor(): void {
+    this.currentForm = 'general';
+    this.activeEditor = false;
   }
 }

@@ -80,6 +80,7 @@ import {AppModule} from '../../app.module';
         StoreModule.forFeature('messaging', messagingReducer),
         EffectsModule.forFeature([MessagingEffects]),
         DashboardModule,
-    ]
+    ],
+
 })
 export class MessagingModule { }

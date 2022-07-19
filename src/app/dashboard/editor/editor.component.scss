@@ -15,13 +15,19 @@
   align-items: center;
   justify-content: space-between;
   min-height: 34px;
-  padding-left: 15px;
-  padding-right: 5px;
+  //padding-left: 15px;
+  //padding-right: 5px;
   border-radius: 10px 10px 0 0;
   background: #ECF4FB;
+  padding: 5px 5px 5px 15px;
 
   .recipient-user {
-    width: max-content;
+    width: 100%;
+    border: 1px solid #051EC4;
+    font-size: 14px;
+    border-radius: 5px;
+    padding: 3px 10px;
+    cursor: pointer;
   }
 }
 
@@ -48,6 +54,10 @@
   .stream-name {
     width: 180px;
     margin: 0 5px;
+
+    li {
+      font-size: 13px;
+    }
   }
 }
 
@@ -55,12 +65,11 @@
   display: flex;
   justify-content: space-between;
   background: #ECF4FB;
-  padding: 10px 0;
+  padding: 0 10px;
 
   .topics-close-form {
     display: flex;
     align-items: center;
-    padding-right: 15px;
 
     i {
       font-size: 20px;
@@ -82,13 +91,17 @@
   .recipient-user {
     width: max-content;
   }
+
+  .close-form {
+    cursor: pointer;
+  }
 }
 
 .search-pm-users-container {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  width: calc(100% - 30px);
+  width: calc(100% - 50px);
 }
 
 .list-pm-members {
@@ -178,7 +191,13 @@
 
 .parent {
   position: relative;
-  //height: 0;
+  height: 0;
+  opacity: 0;
+
+  &.active {
+    height: auto;
+    opacity: 1;
+  }
 }
 
 

@@ -60,6 +60,8 @@ import {ErrorInterceptorService} from './interceptors/error-interceptor.service'
             multi: true
         }
     ],
+    exports: [
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }
