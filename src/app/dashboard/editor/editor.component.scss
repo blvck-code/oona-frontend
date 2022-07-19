@@ -89,7 +89,9 @@
   background: #ECF4FB;
 
   .recipient-user {
-    width: max-content;
+    width: 60px;
+    padding-right: 10px;
+    align-self: flex-start;
   }
 
   .close-form {

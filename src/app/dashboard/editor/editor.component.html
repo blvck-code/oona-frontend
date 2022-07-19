@@ -9,7 +9,7 @@
   <div (click)="handleShowTopic('general')" class="d-flex recipient-user mr-2" title="Reply to selected message">
     Message to
     <span class="ps-1">
-      #{{ searchStreamTerm }}
+      #{{ defaultStream }}
     </span>
   </div>
 
@@ -102,7 +102,6 @@
 </div>
 
 <div class="parent" [class.active]="activeEditor">
-
 
   <form #form="ngForm" (ngSubmit)="onSubmit(form)" class="text-editor-container">
     <div class="form-group ">

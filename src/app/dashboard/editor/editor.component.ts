@@ -25,6 +25,7 @@ const turndownService = new TurndownService();
 export class EditorComponent implements OnInit, OnDestroy {
   @Output() messageContent = new EventEmitter<any>();
   @Output() newTopic = new EventEmitter<any>();
+  @Input() activeChat: any;
   editorTopic = '';
   values = '';
   currentForm = 'general';
@@ -34,11 +35,14 @@ export class EditorComponent implements OnInit, OnDestroy {
   chatGroup = Array();
   allUsers = Array();
   streams = Array();
-  searchStreamTerm = '';
   filteredStreams = Array();
   filteredUsers = Array();
   receiverInfo!: SingleChat | any;
   activeEditor = false;
+
+  searchStreamTerm = '';
+  recipientUser = '';
+  defaultStream = '';
 
   constructor(
     private messagingService: MessagingService,
@@ -51,6 +55,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     this.messagingService.messages.subscribe(msg => {
       console.log('Response from websocket from server ===>>>', msg);
     });
+    console.log('activeChat: ', this.activeChat);
   }
 
   // @ts-ignore
@@ -81,9 +86,9 @@ export class EditorComponent implements OnInit, OnDestroy {
         console.log('Receiver data: ', data);
 
         if (data?.subject) {
-          this.searchStreamTerm = `${data?.display_recipient} > ${data?.subject}`;
+          this.defaultStream = `${data?.display_recipient} > ${data?.subject}`;
         } else {
-          this.searchStreamTerm = `${data?.display_recipient}`;
+          this.defaultStream = `${data?.display_recipient}`;
         }
       }
     );
@@ -91,13 +96,14 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   // get streams
   getStreams(): void {
+    // TODO change to last message in the chat
     this.store.select(getAllStreams).subscribe(
       streams => {
         this.streams = streams;
         const length = streams?.length;
         const lastStream = streams[length - 1];
 
-        this.searchStreamTerm = lastStream?.name;
+        this.defaultStream = lastStream?.name;
       }
     );
     // this.handleDefaultStream();
@@ -205,28 +211,44 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   onSubmit(form: NgForm): void {
     const markdown = turndownService.turndown(form.value.name);
+
+    console.log('receiverInfo: ', this.receiverInfo);
+
+    if (this.currentForm === 'general') {
+
+      const messageDetails = {
+        to: this.currentForm,
+        // ToDo change this to user message id
+        topic: this.receiverInfo?.subject,
+        content: markdown
+      };
+
+      console.log('Message details: ', messageDetails);
+    }
+
     const messageDetail = {
-      to: this.receiverInfo.display_recipient,
+      // to: this.receiverInfo.display_recipient,
       // ToDo change this to user message id
       topic: 60,
       content: markdown
     };
+
     // const messageDetail = {
     //   to: this.chatGroup.map(member => member.id),
     //   topic: '',
     //   content: markdown
     // };
 
-    console.log('messageDetail ====>>>', messageDetail);
+    // console.log('messageDetail ====>>>', messageDetail);
 
-    const message = {
-      author: 'Oluoch',
-      message: 'trial message'
-    };
+    // const message = {
+    //   author: 'Oluoch',
+    //   message: 'trial message'
+    // };
 
-    this.msgSocket.messages.next(message);
+    // this.msgSocket.messages.next(message);
 
-    console.log('Message content ===>>>', messageChannel);
+    // console.log('Message content ===>>>', messageChannel);
 
     this.messagingService.sendStreamMessage(messageDetail).subscribe((response: any) => {
       if (response.zulip.result === 'success'){

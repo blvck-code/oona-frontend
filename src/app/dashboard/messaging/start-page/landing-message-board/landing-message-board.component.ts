@@ -22,11 +22,7 @@ export class LandingMessageBoardComponent implements OnInit {
   loadingMessages!: Observable<boolean>;
   messageExist: any;
   editorActive = true;
-  public messageTypeList = {
-    Today: [],
-    Yesterday: [],
-    'This Week': []
-  };
+  editorChat: any;
 
   constructor(
     private messagingService: MessagingService,
@@ -76,14 +72,9 @@ export class LandingMessageBoardComponent implements OnInit {
 
       // tslint:disable-next-line:no-shadowed-variable
       const key = keys?.find(([key, date]: any) => messageDate >= date ) || [];
-      console.log('Key: ', key);
 
       // messageTypeList.push(message);
     });
-
-    setTimeout(() => {
-      console.log('Message Type List', messageTypeList);
-    }, 2000);
 
     // this.store.select(getAllMessages).subscribe(
     //   messages => {
@@ -216,6 +207,7 @@ export class LandingMessageBoardComponent implements OnInit {
   selectedChat(chat: SingleChat): any {
     this.editorActive = true;
     this.store.dispatch(new messageActions.HandleSendMessage(chat));
+    this.editorChat = chat;
     console.log('Emit chat ===>>>', chat);
   }
 

@@ -10,7 +10,7 @@ export interface CurrentUserModel {
   is_bot: boolean;
   is_guest: boolean;
   is_owner: boolean;
-  presence: {
+  presence?: {
     aggregated: {
       status: string;
       timestamp: number;
@@ -24,3 +24,4 @@ export interface CurrentUserModel {
   timezone: string;
   user_id: number;
 }
+
