@@ -41,7 +41,7 @@ export class RequestComponent implements OnInit {
         },
         (resetErr: any) => {
           this.requestResetError = true;
-          if (resetErr.error.error === 'User not found.') {
+          if (resetErr.message === 'User not found.') {
             this.requestResetServerError = 'Email entered does not exist.';
           }
         }

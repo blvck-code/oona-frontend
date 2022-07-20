@@ -6,7 +6,7 @@
 <!--    <span class="ps-2" *ngIf="receiverInfo && receiverInfo.subject"> <strong>></strong> {{ receiverInfo.subject | titlecase }}</span>-->
 <!--  </div>-->
 
-  <div (click)="handleShowTopic('general')" class="d-flex recipient-user mr-2" title="Reply to selected message">
+  <div (click)="handleShowTopic('topics')" class="d-flex recipient-user mr-2" title="Reply to selected message">
     Message to
     <span class="ps-1">
       #{{ defaultStream }}
@@ -85,7 +85,7 @@
     </div>
 
     <div class="add-attendees-section dropdown">
-      <input type="text" (keyup)="searchUser($event)" class="search-meeting-attendees" placeholder="Search User" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+      <input type="text" (keyup)="searchUser($event)" class="search-meeting-attendees" autocomplete="off" placeholder="Search User" id="dropdownMenuButton1" data-bs-toggle="dropdown"
              aria-expanded="false">
       <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" #selectList >
         <li *ngFor="let user of filteredUsers" (click)="addSelectedUser(user)" class="py-2">

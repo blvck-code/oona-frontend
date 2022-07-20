@@ -103,22 +103,22 @@ export class EditorComponent implements OnInit, OnDestroy {
         const length = streams?.length;
         const lastStream = streams[length - 1];
 
-        this.defaultStream = lastStream?.name;
+        const streamId = lastStream?.stream_id;
+
+        if (streamId) {
+          this.messagingService.getTopicsOnStreams(+streamId).subscribe(
+            (data: any) => {
+              const topicName = data?.zulip?.topics[0]?.name;
+
+              this.defaultStream = `${ lastStream?.name } > ${ topicName }`;
+            }
+          );
+        } else {
+          this.defaultStream = lastStream?.name ;
+        }
       }
     );
     // this.handleDefaultStream();
-  }
-
-  handleDefaultStream(): void {
-    console.log('Getting length');
-    setTimeout(() => {
-      console.log('Streams: ', this.streams);
-    }, 1000);
-
-    if (this.streams.length){
-      console.log('Length: ', this.streams.length);
-
-    }
   }
 
   onInitHandler(): void {
@@ -211,9 +211,6 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   onSubmit(form: NgForm): void {
     const markdown = turndownService.turndown(form.value.name);
-
-    console.log('receiverInfo: ', this.receiverInfo);
-
     if (this.currentForm === 'general') {
 
       const messageDetails = {
@@ -301,16 +298,29 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   addSelectedStream(stream: any): void {
-    this.searchStreamTerm = stream.name;
+    if (stream.name) {
+      this.searchStreamTerm = stream.name;
+    } else {
+      this.searchStreamTerm = stream;
+    }
   }
 
   handleShowTopic(type: string): void {
     this.currentForm = type;
     this.activeEditor = true;
+    this.handleGeneralToTopic();
+  }
+
+  handleGeneralToTopic(): void {
+    console.log('Current stream ====>>>>', this.defaultStream);
+    this.addSelectedStream(this.defaultStream);
+    console.log('Current stream 2 ====>>>>', this.searchStreamTerm);
   }
 
   resetEditor(): void {
     this.currentForm = 'general';
+    this.searchStreamTerm = '';
+    this.defaultStream = '';
     this.activeEditor = false;
   }
 }

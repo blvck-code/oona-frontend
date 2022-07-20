@@ -133,6 +133,10 @@
       <!--        </div>-->
       <!--      </div>-->
 
+      <div *ngIf="!allTopics.length">
+        <app-load-indicator></app-load-indicator>
+      </div>
+
       <div
         *ngFor="let team of allTopics.sort(); index as i"
         class="accordion-item"

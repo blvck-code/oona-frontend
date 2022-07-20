@@ -57,6 +57,7 @@ import { StreamsComponent } from './streams/streams.component';
 import { StreamsBoardComponent } from './streams/streams-board/streams-board.component';
 import {UserFilterPipe} from '../../pipes/user-filter.pipe';
 import {AppModule} from '../../app.module';
+import {HomeModule} from '../home/home.module';
 
 
 @NgModule({
@@ -80,6 +81,7 @@ import {AppModule} from '../../app.module';
         StoreModule.forFeature('messaging', messagingReducer),
         EffectsModule.forFeature([MessagingEffects]),
         DashboardModule,
+        HomeModule,
     ],
 
 })

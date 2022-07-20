@@ -102,8 +102,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
       }
     );
 
-    console.log('Operand id ===>>>', this.operand);
-
   }
 
   changeContentOnRouteChange(): void {
@@ -218,6 +216,20 @@ export class IndividualMessagingBoardComponent implements OnInit {
       // re-fetch messages with pm
     });
     this.privateMessages();
+
+    const streamDetail = {
+      use_first_unread_anchor: true,
+      apply_markdown: false,
+      num_before: this.initialMessageCount,
+      type: [
+        {
+          operator: 'pm-with',
+          operand: this.operand?.email,
+        }
+      ]
+    };
+    // fetch messages after sending
+    this.store.dispatch(new messageActions.LoadPrivateMessages(streamDetail));
   }
 
   userActiveStatus(): void{

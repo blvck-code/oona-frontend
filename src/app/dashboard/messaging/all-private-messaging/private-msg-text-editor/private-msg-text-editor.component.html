@@ -10,7 +10,7 @@
     </div>
 
     <div class="add-attendees-section dropdown">
-      <input type="text" (keyup)="searchUser($event)" class="search-meeting-attendees" placeholder="Search User" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+      <input type="text" (keyup)="searchUser($event)" class="search-meeting-attendees" autocomplete="off" placeholder="Search User" id="dropdownMenuButton1" data-bs-toggle="dropdown"
              aria-expanded="false">
       <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" #selectList >
         <li *ngFor="let user of filteredUsers" (click)="addSelectedUser(user)" class="py-2">

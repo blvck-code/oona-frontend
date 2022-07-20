@@ -35,7 +35,6 @@ export class LandingMessageBoardComponent implements OnInit {
   ngOnInit(): void {
     setTimeout( () => {this.getMessagesOfTeams(); }, 1000);
     this.initPage();
-    this.handleMsgGrouping();
   }
 
   handleMsgGrouping(): void {
