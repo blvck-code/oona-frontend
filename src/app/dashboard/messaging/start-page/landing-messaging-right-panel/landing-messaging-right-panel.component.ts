@@ -54,7 +54,6 @@ export class LandingMessagingRightPanelComponent implements OnInit {
     this.messagingService.getUsersByAvailability().subscribe(
       (users: { members: any[] }) => {
         // @Todo Delete console log
-        console.log('Fetched users ====>>>', users);
         const usersPresent = users.members.filter((user) => user.presence);
         this.allUsers = this.newListOfUsers(usersPresent);
       },
@@ -73,14 +72,13 @@ export class LandingMessagingRightPanelComponent implements OnInit {
    this.store.select(getAllUsers).subscribe((users) => {
 
      const usersPresent = users?.filter((user: any) => user.presence );
-     setTimeout(() => {
-       console.log('Users present: ', usersPresent);
-     }, 1000);
+     // Todo change this back to active users and present users
      this.allUsers = this.newListOfUsers(usersPresent);
    });
   }
 
   goToMemberChat(member: any): void {
+
     this.store.dispatch(new authActions.SetSelectedUser(member));
     localStorage.setItem('privateMsg', member.email);
 

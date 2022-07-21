@@ -119,7 +119,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.selectedUser$ = this.store.select(getSelectedUser);
 
     const streamDetail = {
-      use_first_unread_anchor: true,
+      anchor: 'newest',
       apply_markdown: false,
       num_before: this.initialMessageCount,
       type: [

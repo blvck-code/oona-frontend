@@ -30,11 +30,12 @@ export class ErrorInterceptorService implements HttpInterceptor{
         let errorMsg;
 
         // Un Authorised User Access
-        if (errorStatus === 401 || errorStatus === 403) {
-          this.store.dispatch(new authActions.LogoutUser());
-          localStorage.clear();
-          this.route.navigate(['/login']);
-        }
+        // Todo change this back to normal
+        // if (errorStatus === 401 || errorStatus === 403) {
+        //   this.store.dispatch(new authActions.LogoutUser());
+        //   localStorage.clear();
+        //   this.route.navigate(['/login']);
+        // }
 
         // Other errors
         if (error instanceof ErrorEvent){

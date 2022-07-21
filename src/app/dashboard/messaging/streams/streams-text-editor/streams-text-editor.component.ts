@@ -1,16 +1,16 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {MessagingService } from '../../../messaging/services/messaging.service';
 import {NotificationService} from '../../../../shared/services/notification.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, NavigationStart, Router} from '@angular/router';
 import {Editor} from 'ngx-editor';
 import {NgForm} from '@angular/forms';
 
 import TurndownService from 'turndown';
 import {GroupPmsServiceService} from '../../../messaging/group-pms/group-pms-service.service';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {AppState} from '../../../../state/app.state';
 import {Store} from '@ngrx/store';
-import {getAllStreams, getReceiverInfo} from '../../../messaging/state/messaging.selectors';
+import {getAllStreams, getPrivateMessages, getReceiverInfo} from '../../../messaging/state/messaging.selectors';
 import { SingleChat } from '../../../messaging/models/messages.model';
 import {messageChannel} from '../../../../../environments/environment';
 import {MessagesSocketService} from '../../../messaging/services/messages-socket.service';
@@ -40,9 +40,14 @@ export class StreamsTextEditorComponent implements OnInit, OnDestroy {
   receiverInfo!: SingleChat | any;
   activeEditor = false;
 
+
   searchStreamTerm = '';
   recipientUser = '';
   defaultStream = '';
+  currentStream: string | undefined = '';
+  streamInfo: any;
+
+  currentStream$!: Observable<any>;
 
   constructor(
     private messagingService: MessagingService,
@@ -56,8 +61,9 @@ export class StreamsTextEditorComponent implements OnInit, OnDestroy {
     this.messagingService.messages.subscribe(msg => {
       console.log('Response from websocket from server ===>>>', msg);
     });
-  }
 
+    this.changeOnRouter();
+  }
   // @ts-ignore
   editor: Editor;
 
@@ -117,16 +123,39 @@ export class StreamsTextEditorComponent implements OnInit, OnDestroy {
         }
       }
     );
+  }
 
+  handleGetStreamDetails(): void {
     const route = this.activatedRoute.snapshot.paramMap;
 
+    const streamId = route.get('stream')?.split('-')[0];
+    const currentStream = route.get('stream')?.split('-')[1];
 
-    const stream = route.get('stream');
+
+    // @ts-ignore
+    this.searchStreamTerm = currentStream;
+      // @ts-ignore
+    this.currentStream$ = currentStream;
+
     const topic = route.get('topic');
 
-    console.log('Stream route ====>>>>', stream);
-    console.log('Topic route ====>>>>', topic);
-    // this.handleDefaultStream();
+    this.streamInfo = {
+      id: streamId,
+      streamName: currentStream,
+      streamTopic: topic ? topic : 'new streams'
+    };
+  }
+
+  changeOnRouter(): void {
+
+    // @ts-ignore
+    this.router.events.subscribe((event: Event) => {
+
+      if (event instanceof NavigationEnd) {
+        this.handleGetStreamDetails();
+      }
+
+    });
   }
 
   onInitHandler(): void {
@@ -146,6 +175,7 @@ export class StreamsTextEditorComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.onInitHandler();
+    this.handleGetStreamDetails();
   }
   ngOnDestroy(): void {
     this.editor.destroy();
@@ -212,24 +242,16 @@ export class StreamsTextEditorComponent implements OnInit, OnDestroy {
 
   onSubmit(form: NgForm): void {
     const markdown = turndownService.turndown(form.value.name);
-    if (this.currentForm === 'general') {
-
-      const messageDetails = {
-        to: this.currentForm,
-        // ToDo change this to user message id
-        topic: this.receiverInfo?.subject,
-        content: markdown
-      };
-
-      console.log('Message details: ', messageDetails);
-    }
 
     const messageDetail = {
-      // to: this.receiverInfo.display_recipient,
+      to: this.streamInfo.streamName,
       // ToDo change this to user message id
-      topic: 60,
+      topic: this.streamInfo.streamTopic,
       content: markdown
     };
+
+    console.log('Stream details: ', this.streamInfo);
+    console.log('Message details: ', messageDetail);
 
     // const messageDetail = {
     //   to: this.chatGroup.map(member => member.id),
@@ -304,11 +326,7 @@ export class StreamsTextEditorComponent implements OnInit, OnDestroy {
   }
 
   addSelectedStream(stream: any): void {
-    if (stream.name) {
-      this.searchStreamTerm = stream.name;
-    } else {
-      this.searchStreamTerm = stream;
-    }
+    this.streamInfo.streamName = stream;
   }
 
   handleShowTopic(type: string): void {

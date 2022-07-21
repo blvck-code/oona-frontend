@@ -157,7 +157,11 @@ export class LandingMessageBoardComponent implements OnInit {
         ]
       };
 
+
       this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
+
+        console.log('response for getting stream data ===>>', response);
+
         this.change.detectChanges();
         this.messagesOfStream.push(...response.zulip.messages);
         // sort by time. latest last
