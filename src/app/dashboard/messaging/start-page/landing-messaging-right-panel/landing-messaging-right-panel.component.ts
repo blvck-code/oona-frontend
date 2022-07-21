@@ -71,7 +71,6 @@ export class LandingMessagingRightPanelComponent implements OnInit {
 
   onInitPage(): void {
    this.store.select(getAllUsers).subscribe((users) => {
-     console.log('Users: ', users);
 
      const usersPresent = users?.filter((user: any) => user.presence );
      setTimeout(() => {

@@ -22,12 +22,12 @@ export class AppComponent implements OnInit {
   updateState = () => {
     if (localStorage.getItem('accessToken')){
       this.store.dispatch(new authActions.UpdateState());
+      this.store.dispatch(new sharedActions.LoadUsers());
     }
   }
 
   ngOnInit(): void {
     this.updateState();
-    this.store.dispatch(new sharedActions.LoadUsers());
   }
 
 

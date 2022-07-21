@@ -49,7 +49,7 @@ export class AllPrivateMessagingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.onInitHandler();
+    // this.onInitHandler();
     this.changeMessageCount();
   }
 

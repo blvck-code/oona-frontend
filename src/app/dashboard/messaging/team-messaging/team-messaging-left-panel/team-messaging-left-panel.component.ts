@@ -93,9 +93,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
                   topics: topicData,
                 };
                 this.allTopics = [...this.allTopics, stream];
-                console.log('allTopics ===>>>>', this.allTopics);
               }
-
           }
           );
         });

@@ -1,0 +1,11 @@
+version: '3'
+services:
+  oona-web:
+    build: .
+    ports:
+      - "443:443"
+    restart: always
+#networks:
+#  default:
+#    external: True
+#    name: oona.v2

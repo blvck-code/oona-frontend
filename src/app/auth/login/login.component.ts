@@ -81,6 +81,13 @@ export class LoginComponent implements OnInit {
       .subscribe(
         (loginRes: any) => {
           console.log('Login response ===>>>', loginRes);
+
+          if (loginRes.message === 'Verify your account to retrieve token.') {
+            this.loginServerError = 'Your account is not verified.';
+            this.loginError = true;
+            this.loading = false;
+          }
+
           this.loading = false;
           this.authService.saveToken(
             loginRes.token.access
