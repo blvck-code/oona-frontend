@@ -99,7 +99,7 @@ export class MessagingComponent implements OnInit {
     this.store.dispatch(new authActions.LoadAllUsers());
 
     this.getAllMessages();
-    this.getStreamData();
+    // this.getStreamData();
   }
 
   logoutUser(): void {

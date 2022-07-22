@@ -4,7 +4,7 @@
 
 // export const oonaBaseUrl = 'http://192.168.0.100:8000';
 export const apiURL = 'https://192.168.0.';
-export const basePort = '37';
+export const basePort = '100';
 // export const oonaBaseUrl = 'https://192.168.0.100:2443';
 export const oonaBaseUrl = `${apiURL}${basePort}:2443`;
 export const userChannel = 'ws://192.168.0.37:2443/ws/on/event/';
@@ -56,7 +56,9 @@ export const environment = {
 
   sendStreamMessageWithFileURL: oonaBaseUrl + '/api/v1/message/stream/file',
 
-  domain: apiURL + '37:8443'
+  domain: apiURL + basePort + ':8443',
+  whiteBoard: 'http://192.168.0.37:8030',
+  etherPad: 'http://192.168.0.37:9001/',
 
   // Chat
   // sendStreamMessageWithFileURL: oonaBaseUrl + '/api/v1/message/stream/file',
