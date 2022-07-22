@@ -125,6 +125,9 @@ export class MessagingEffects{
     )
   );
 
+  @Effect()
+  loadStreamData$: Observable<any> = this.actions$.pipe()
+
   // @Effect()
   // loadPrivateUser$: Observable<any> = this.actions$.pipe(
   //   ofType<messagingActions.LoadCurrentPrivateUser>(
