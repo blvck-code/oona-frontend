@@ -6,6 +6,7 @@ import { ConferenceService } from '../shared/conference.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { MeetingParticipant } from '../shared/meetingParticipant';
 import { environment as env } from '../../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 
 declare var JitsiMeetExternalAPI: any;
 
@@ -16,7 +17,7 @@ declare var JitsiMeetExternalAPI: any;
 })
 export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
   // @ToDo white domain URL not similar
-  domain = '192.168.0.76:8443';
+  domain = env.domain;
   room: any;
   options: any;
   api: any;
@@ -72,6 +73,8 @@ export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('Meeting response on iframe page', this.authService.meetingId);
+
+    console.log('Domain url ===>>>', this.domain);
     this.room = this.authService.getCurrentMeetingId();
     this.user = this.authService.getCurrentUserName();
     if (!this.room) {
@@ -215,11 +218,11 @@ export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   handleParticipantJoined = async (participant: any) => {
     console.log('handleParticipantJoined', participant);
-  };
+  }
 
   handleVideoConferenceJoined = async (participant: any) => {
     console.log('handleVideoConferenceJoined', participant);
-  };
+  }
 
   handleVideoConferenceLeft = () => {
     console.log('handleVideoConferenceLeft');

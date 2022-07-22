@@ -4,15 +4,16 @@
 
 // export const oonaBaseUrl = 'http://192.168.0.100:8000';
 export const apiURL = 'https://192.168.0.';
-export const basePort = '42';
+export const basePort = '37';
 // export const oonaBaseUrl = 'https://192.168.0.100:2443';
 export const oonaBaseUrl = `${apiURL}${basePort}:2443`;
-export const userChannel = 'ws://192.168.0.100:2443/ws/on/event/';
-export const messageChannel = 'ws://192.168.0.100:2443/ws/on/message/';
+export const userChannel = 'ws://192.168.0.37:2443/ws/on/event/';
+export const messageChannel = 'ws://192.168.0.37:2443/ws/on/message/';
 export const firmName = '8teq';
+export const domain = '192.168.0.37:8443';
 const whiteBoard = 'http://192.168.0.37:8030';
 const etherPad = 'http://192.168.0.37:9001/';
-const domain = '192.168.0.37:8443';
+
 
 export const environment = {
   production: false,
@@ -54,6 +55,8 @@ export const environment = {
   filteredAttendeeMeetings: oonaBaseUrl + '/api/v1/meet/meeting/dm/?attendees=',
 
   sendStreamMessageWithFileURL: oonaBaseUrl + '/api/v1/message/stream/file',
+
+  domain: apiURL + '37:8443'
 
   // Chat
   // sendStreamMessageWithFileURL: oonaBaseUrl + '/api/v1/message/stream/file',
