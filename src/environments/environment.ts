@@ -56,7 +56,9 @@ export const environment = {
 
   sendStreamMessageWithFileURL: oonaBaseUrl + '/api/v1/message/stream/file',
 
-  domain: apiURL + '37:8443'
+  domain: apiURL + basePort + ':8443',
+  whiteBoard: 'http://192.168.0.37:8030',
+  etherPad: 'http://192.168.0.37:9001/',
 
   // Chat
   // sendStreamMessageWithFileURL: oonaBaseUrl + '/api/v1/message/stream/file',

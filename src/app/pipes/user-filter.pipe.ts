@@ -6,6 +6,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class UserFilterPipe implements PipeTransform {
 
   transform(value: any, filterTerm: string): any {
+
+    console.log('Value ===>>', value);
+    console.log('Filter ===>>', filterTerm);
+
     if (!value || !filterTerm) {
       return value;
     }

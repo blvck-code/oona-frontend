@@ -21,8 +21,8 @@ export class DashboardComponent implements OnInit {
 
   initOnLoad(): void {
     if (localStorage.getItem('accessToken')){
-      this.store.dispatch(new authActions.LoadAllUsers());
-      this.store.dispatch(new authActions.LoadZulipUsers());
+      // this.store.dispatch(new authActions.LoadAllUsers());
+      // this.store.dispatch(new authActions.LoadZulipUsers());
     }
   }
 

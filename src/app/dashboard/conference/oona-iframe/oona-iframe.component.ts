@@ -23,7 +23,7 @@ export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
   api: any;
   user: any;
   // @ToDo white board URL not similar
-  whiteboardUrl = 'http://192.168.0.76:8030';
+  whiteboardUrl = env.whiteBoard;
 
   isAudioMuted = false;
   isVideoMuted = false;
@@ -295,14 +295,14 @@ export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
   startRecording(command: string, {}): any {}
   openWhiteBoard(): any {
     window.open(
-      'http://192.168.0.76:8030' + `/?whiteboardid=` + this.room,
+      env.whiteBoard + `/?whiteboardid=` + this.room,
       'Oona Whiteboard',
       'resizable=yes,width=800,height=600'
     );
   }
   openEtherpad(): any {
     window.open(
-      'http://192.168.0.76:9001/' +
+      env.etherPad +
         `p/` +
         this.room +
         `?userName=` +

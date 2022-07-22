@@ -206,6 +206,7 @@ export class TextEditorComponent implements OnInit, OnDestroy {
 
 
   onSubmit(form: NgForm): void {
+    console.log('Message content ===>>>', form);
     this.messageContent.emit(form.value.name);
     // clear the form
     form.value.name = '';

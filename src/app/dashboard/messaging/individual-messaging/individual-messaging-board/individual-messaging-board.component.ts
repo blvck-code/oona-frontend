@@ -97,7 +97,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
         if (data) {
           this.operand = data;
           this.getSelectedUser();
-          console.log('User info content: ', data);
         }
       }
     );
@@ -202,7 +201,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
 
   sendMessageToIndividual(message: any): void {
-    console.log('Message content ==>>> ', message);
 
     const markdown = turndownService.turndown(message);
 //
@@ -211,7 +209,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
       to: [this.memberDetail.user_id],
       content: markdown
     };
-    console.log('Message final content ===>>> ', messageDetail);
     this.messagingService.sendIndividualMessage(messageDetail).subscribe((response: any) => {
       // re-fetch messages with pm
     });
@@ -229,7 +226,9 @@ export class IndividualMessagingBoardComponent implements OnInit {
       ]
     };
     // fetch messages after sending
-    this.store.dispatch(new messageActions.LoadPrivateMessages(streamDetail));
+    setTimeout(() => {
+      this.store.dispatch(new messageActions.LoadPrivateMessages(streamDetail));
+    }, 1000);
   }
 
   userActiveStatus(): void{
