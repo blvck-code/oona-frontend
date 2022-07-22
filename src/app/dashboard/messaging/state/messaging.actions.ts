@@ -38,6 +38,11 @@ export enum MessagingActionsTypes {
   LOAD_STREAM_TOPIC_SUCCESS = 'messaging/loadStreamTopicSuccess',
   LOAD_STREAM_TOPIC_FAIL = 'messaging/loadStreamTopicFail',
 
+  // STREAM DATA
+  LOAD_STREAM_DATA = 'messaging/loadStreamData',
+  LOAD_STREAM_DATA_SUCCESS = 'messaging/loadStreamDataSuccess',
+  LOAD_STREAM_DATA_FAIL = 'messaging/loadStreamDataFail',
+
   // CURRENT USER PRIVATE MESSAGE
   LOAD_CURRENT_USER = 'messaging/loadPrivateUser',
   LOAD_CURRENT_USER_SUCCESS = 'messaging/loadPrivateUserSuccess',
@@ -130,6 +135,26 @@ export class LoadPrivateMessagesFail implements Action {
   }
 }
 
+// STREAM DATA
+export class LoadStreamData implements Action {
+  readonly type = MessagingActionsTypes.LOAD_STREAM_DATA;
+  constructor(public payload: any) {
+    console.log('Loading stream data: ', payload);
+  }
+}
+export class LoadStreamDataSuccess implements Action {
+  readonly type = MessagingActionsTypes.LOAD_STREAM_DATA_SUCCESS;
+  constructor(public payload: any) {
+    console.log('Successful load stream data ====>>>',  payload);
+  }
+}
+export class LoadStreamDataFail implements Action {
+  readonly type = MessagingActionsTypes.LOAD_STREAM_DATA_FAIL;
+  constructor(public payload: any) {
+    console.log('Loading stream data fail ===>>>', payload);
+  }
+}
+
 // ALL STREAMS ACTIONS
 export class LoadAllStreams implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_STREAMS;
@@ -200,6 +225,7 @@ export class HandleSendMessage implements Action {
   constructor(public payload: any) {
   }
 }
+
 
 
 export type MessagingActions =

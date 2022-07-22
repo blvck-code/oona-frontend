@@ -52,10 +52,11 @@ export class LandingMessagingRightPanelComponent implements OnInit {
     // Todo change to present users
 
     this.messagingService.getUsersByAvailability().subscribe(
-      (users: { members: any[] }) => {
+      (users: any) => {
         // @Todo Delete console log
-        const usersPresent = users.members.filter((user) => user.presence);
-        this.allUsers = this.newListOfUsers(usersPresent);
+        // const usersPresent = users.members.filter((user) => user.presence);
+        // this.allUsers = this.newListOfUsers(usersPresent);
+        this.allUsers = users;
       },
       // @ts-ignore
       (error) => {
@@ -73,7 +74,8 @@ export class LandingMessagingRightPanelComponent implements OnInit {
 
      const usersPresent = users?.filter((user: any) => user.presence );
      // Todo change this back to active users and present users
-     this.allUsers = this.newListOfUsers(usersPresent);
+     // this.allUsers = this.newListOfUsers(usersPresent);
+     this.allUsers = users;
    });
   }
 

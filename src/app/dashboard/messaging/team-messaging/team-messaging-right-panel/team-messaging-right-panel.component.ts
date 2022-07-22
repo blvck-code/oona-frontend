@@ -89,6 +89,7 @@ export class TeamMessagingRightPanelComponent implements OnInit {
 
         // @ts-ignore
         this.allUsers.forEach((user) => {
+          console.log('Userssssss ===>>>', user)
           // @ts-ignore
           if (allEmailsSubscribed.includes(user.email)){
             this.groupMemberDetails.push(user);
