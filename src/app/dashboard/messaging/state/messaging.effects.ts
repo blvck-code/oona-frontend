@@ -125,6 +125,17 @@ export class MessagingEffects{
     )
   );
 
+  @Effect()
+  loadStreamData$: Observable<any> = this.actions$.pipe(
+    ofType<messagingActions.LoadStreamData>(
+      messagingActions.MessagingActionsTypes.LOAD_STREAM_DATA
+    ),
+    map((messages: any) =>
+      new messagingActions.LoadStreamDataSuccess(messages)
+    ),
+    catchError( err => of(new messagingActions.LoadStreamDataFail(err)))
+  );
+
   // @Effect()
   // loadPrivateUser$: Observable<any> = this.actions$.pipe(
   //   ofType<messagingActions.LoadCurrentPrivateUser>(

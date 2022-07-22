@@ -139,13 +139,11 @@ export class LoadPrivateMessagesFail implements Action {
 export class LoadStreamData implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_DATA;
   constructor(public payload: any) {
-    console.log('Loading stream data: ', payload);
   }
 }
 export class LoadStreamDataSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_DATA_SUCCESS;
   constructor(public payload: any) {
-    console.log('Successful load stream data ====>>>',  payload);
   }
 }
 export class LoadStreamDataFail implements Action {
@@ -263,4 +261,8 @@ export type MessagingActions =
   // LOAD PRIVATE MESSAGE
    | LoadPrivateMessages
    | LoadPrivateMessagesSuccess
-   | LoadPrivateMessagesFail;
+   | LoadPrivateMessagesFail
+  // LOAD STREAM DATA
+  | LoadStreamData
+  | LoadStreamDataSuccess
+  | LoadStreamDataFail;

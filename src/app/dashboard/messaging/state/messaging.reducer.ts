@@ -10,7 +10,10 @@ export interface MessagingState {
   loading: boolean;
   streams: {
     allStreams: AllStreamsModel[] | any;
-    streamData: AllStreamsModel[] | any;
+    streamData: {
+      loading: boolean,
+      messages: any
+    };
     subStreams: SubscribedStreams[];
     topics: any;
   };
@@ -38,7 +41,10 @@ export const initialState: MessagingState = {
   loading: false,
   streams: {
     allStreams: [],
-    streamData: [],
+    streamData: {
+      loading: false,
+      messages: null
+    },
     subStreams: [],
     topics: [],
   },
@@ -206,6 +212,29 @@ export function messagingReducer(
         },
       };
 
+      // STREAM MESSAGES
+    case messagingActions.LoadStreamData:
+      return {
+        ...state,
+        streams: {
+          ...state.streams,
+          streamData: {
+            ...state.streams.streamData,
+            loading: true
+          }
+        }
+      };
+    case messagingActions.MessagingActionsTypes.LOAD_STREAM_DATA_SUCCESS:
+      return  {
+        ...state,
+        streams: {
+          ...state.streams,
+          streamData: {
+            ...state.streams.streamData,
+            messages: action.payload
+          }
+        }
+      };
     case messagingActions.MessagingActionsTypes.LOAD_MORE_MESSAGE:
       return {
         ...state,
