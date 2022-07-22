@@ -2,7 +2,14 @@ import {Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, NavigationError, NavigationStart, Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
-import {getAllFilteredMsg, getAllMessages, getLoadingPrivateMsgs, getPrivateMessages} from '../../state/messaging.selectors';
+import {
+  getAllFilteredMsg,
+  getAllMessages,
+  getLoadingPrivateMsgs,
+  getPrivateMessages,
+  getStreamData,
+  getStreamDataLoading
+} from '../../state/messaging.selectors';
 import {SingleMessageModel} from '../../models/messages.model';
 import {BehaviorSubject, Observable} from 'rxjs';
 import * as messageActions from '../../state/messaging.actions';
@@ -25,13 +32,16 @@ export class StreamsBoardComponent implements OnInit {
   }
 
   onInitHandler(): void {
-    this.streams$ = this.store.select(getPrivateMessages);
-    this.loading$ = this.store.select(getLoadingPrivateMsgs);
+    this.streams$ = this.store.select(getStreamData);
+    this.loading$ = this.store.select(getStreamDataLoading);
+
+    this.store.select(getStreamData).subscribe(
+      stream => console.log('Stream data from state =====>>>>', stream)
+    );
   }
 
   ngOnInit(): void {
     this.onInitHandler();
-    console.log('Streams junior component loaded');
   }
 
   handleReply(message: any): void {
