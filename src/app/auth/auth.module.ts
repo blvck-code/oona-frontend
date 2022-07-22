@@ -12,6 +12,7 @@ import {StoreModule} from '@ngrx/store';
 import {authReducer} from './state/auth.reducer';
 import {EffectsModule} from '@ngrx/effects';
 import {AuthEffects} from './state/auth.effects';
+import {MessagingModule} from '../dashboard/messaging/messaging.module';
 
 @NgModule({
   declarations: [
@@ -22,14 +23,15 @@ import {AuthEffects} from './state/auth.effects';
     RequestOtpComponent,
     RequestComponent
   ],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    AuthRoutingModule,
-    StoreModule.forFeature('userCenter', authReducer),
-    EffectsModule.forFeature([AuthEffects])
-  ]
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        AuthRoutingModule,
+        StoreModule.forFeature('userCenter', authReducer),
+        EffectsModule.forFeature([AuthEffects]),
+        MessagingModule
+    ]
 })
 
 export class AuthModule { }

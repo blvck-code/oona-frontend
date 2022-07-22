@@ -24,18 +24,18 @@ export class ErrorInterceptorService implements HttpInterceptor{
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
-      retry(1),
       catchError((error: HttpErrorResponse) => {
         const errorStatus = error.status;
         console.log('Error status ==>', errorStatus);
         let errorMsg;
 
         // Un Authorised User Access
-        if (errorStatus === 401 || errorStatus === 403) {
-          this.store.dispatch(new authActions.LogoutUser());
-          localStorage.clear();
-          this.route.navigate(['/login']);
-        }
+        // Todo change this back to normal
+        // if (errorStatus === 401 || errorStatus === 403) {
+        //   this.store.dispatch(new authActions.LogoutUser());
+        //   localStorage.clear();
+        //   this.route.navigate(['/login']);
+        // }
 
         // Other errors
         if (error instanceof ErrorEvent){
@@ -46,8 +46,19 @@ export class ErrorInterceptorService implements HttpInterceptor{
         } else {
           // server-side error
           console.log('Server side error ===>>> ', error);
+          console.log('Error message ===>>> ', error?.error.toString());
 
-          if (error?.error) {
+          if (error?.error.toString()) {
+            // tslint:disable-next-line:no-shadowed-variable
+            const err = {
+              status: error.status,
+              message: error?.error.toString()
+            };
+            errorMsg = err;
+            console.log('Error content: ', err);
+          }
+
+          if (error?.error?.error) {
             // tslint:disable-next-line:no-shadowed-variable
             const err = {
               status: error.status,
@@ -55,7 +66,6 @@ export class ErrorInterceptorService implements HttpInterceptor{
             };
             errorMsg = err;
 
-            console.log('Error content: ', err);
           }
 
           if (error?.error[0]?.non_field_errors[0]) {
@@ -93,6 +103,8 @@ export class ErrorInterceptorService implements HttpInterceptor{
           }
 
         }
+
+        console.log('Error Msg: ', errorMsg);
         return throwError(errorMsg);
       })
     );

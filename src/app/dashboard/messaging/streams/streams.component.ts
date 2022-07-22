@@ -20,9 +20,11 @@ export class StreamsComponent implements OnInit, AfterViewInit {
   streams!: SingleMessageModel;
   public streamSubject = new BehaviorSubject<number>(0);
   public streamSelected = this.streamSubject.asObservable();
+  streamInfo: any;
 
   public titleSubject = new BehaviorSubject<string>('');
   public titleSelected = this.titleSubject.asObservable();
+  initialMessageCount = 10;
 
   loadingMsgs$!: Observable<boolean>;
   streamName = '';
@@ -82,25 +84,73 @@ export class StreamsComponent implements OnInit, AfterViewInit {
     });
   }
 
+  changeOnRouter(): void {
+
+    this.router.events.subscribe((event: any) => {
+      if (event instanceof NavigationEnd) {
+
+        this.getStreamsMessages();
+        const route = this.activateRoute.snapshot.paramMap;
+
+        const streamId = route.get('stream')?.split('-')[0];
+        const currentStream = route.get('stream')?.split('-')[1];
+
+
+        const topic = route.get('topic');
+
+        const streamData = {
+          id: streamId,
+          streamName: currentStream,
+          streamTopic: topic ? topic : 'new streams'
+        };
+
+        this.streamInfo = streamData;
+
+        console.log('streamInfo ===>>>', streamData);
+      }
+
+    });
+
+
+  }
+
   onInitHandler(): void {
     // Todo switching page title bug, not changing as expected
     document.title = `${this.streamName} - ${firmName} - Oona`;
     const currentStream = this.activateRoute.snapshot.params.stream;
 
     this.titleSelected.subscribe(data => console.log('Current title ===>>>', data));
+  }
 
-    // this.currentStream = this.activateRoute.snapshot.params.stream;
+  getStreamsMessages(): void {
+    const route = this.activateRoute.snapshot.paramMap;
 
-    // this.streamSelected.subscribe(data => console.log('Current stream ===>>>', data));
+    console.log('New route ===>>>', route);
 
+    const streamId = route.get('stream')?.split('-')[0];
+    const currentStream = route.get('stream')?.split('-')[1];
 
+    const streamDetail = {
+      anchor: 'newest',
+      num_before: this.initialMessageCount,
+      type: [
+        {
+          operator: 'stream',
+          operand: currentStream
+        }
+      ]
+    };
 
+    console.log('streamDetail ===>>>', streamDetail);
+
+    this.store.dispatch(new messagingActions.LoadPrivateMessages(streamDetail));
   }
 
   handleMsgFilter(): void {
 
     this.store.select(getLoadingAllMsg).subscribe(
       data => {
+
         if (!data) {
           const selectedStream = this.activateRoute.snapshot.paramMap;
 
@@ -122,7 +172,7 @@ export class StreamsComponent implements OnInit, AfterViewInit {
           this.store.dispatch(new messagingActions.FilterMessages(filteredInfo));
         }
       }
-    )
+    );
 
 
 
@@ -133,6 +183,8 @@ export class StreamsComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.onInitHandler();
+    this.changeOnRouter();
+    this.getStreamsMessages();
   }
 
   ngAfterViewInit(): void {

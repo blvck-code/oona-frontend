@@ -23,6 +23,7 @@ export class LoginComponent implements OnInit {
   loginError = false;
   loginServerError = '';
   emptyForm = false;
+  loading = false;
 
   loginForm = this.formBuilder.group({
     email: ['', [Validators.email, Validators.required]],
@@ -70,6 +71,7 @@ export class LoginComponent implements OnInit {
     if (!this.loginForm.valid) {
       return;
     }
+    this.loading = true;
     this.store.dispatch(new authActions.LoginUser(this.loginForm.value));
     const loginInfo = new FormData();
     loginInfo.append('email', this.loginForm.value.email);
@@ -79,6 +81,14 @@ export class LoginComponent implements OnInit {
       .subscribe(
         (loginRes: any) => {
           console.log('Login response ===>>>', loginRes);
+
+          if (loginRes.message === 'Verify your account to retrieve token.') {
+            this.loginServerError = 'Your account is not verified.';
+            this.loginError = true;
+            this.loading = false;
+          }
+
+          this.loading = false;
           this.authService.saveToken(
             loginRes.token.access
           );
@@ -91,12 +101,8 @@ export class LoginComponent implements OnInit {
         },
         (loginErr: any) => {
           this.loginError = true;
+          this.loading = false;
           console.log('loginErr ===>>>>', loginErr);
-          // if (loginErr.error[0].non_field_errors[0] === 'Invalid login credentials') {
-          //   this.loginServerError = 'Invalid login credentials. Please try again.';
-          // } else if (loginErr.error[0].non_field_errors[0] === 'Unable to login with provided credentials') {
-          //   this.loginServerError = 'A user with the provided credentials does not exist.';
-          // }
         }
       );
   }

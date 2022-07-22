@@ -10,6 +10,7 @@ export interface MessagingState {
   loading: boolean;
   streams: {
     allStreams: AllStreamsModel[] | any;
+    streamData: AllStreamsModel[] | any;
     subStreams: SubscribedStreams[];
     topics: any;
   };
@@ -37,6 +38,7 @@ export const initialState: MessagingState = {
   loading: false,
   streams: {
     allStreams: [],
+    streamData: [],
     subStreams: [],
     topics: [],
   },

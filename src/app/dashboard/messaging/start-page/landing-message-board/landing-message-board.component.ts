@@ -21,12 +21,8 @@ export class LandingMessageBoardComponent implements OnInit {
   messages$!: Observable<any>;
   loadingMessages!: Observable<boolean>;
   messageExist: any;
-  editorActive = false;
-  public messageTypeList = {
-    Today: [],
-    Yesterday: [],
-    'This Week': []
-  };
+  editorActive = true;
+  editorChat: any;
 
   constructor(
     private messagingService: MessagingService,
@@ -39,7 +35,6 @@ export class LandingMessageBoardComponent implements OnInit {
   ngOnInit(): void {
     setTimeout( () => {this.getMessagesOfTeams(); }, 1000);
     this.initPage();
-    this.handleMsgGrouping();
   }
 
   handleMsgGrouping(): void {
@@ -76,14 +71,9 @@ export class LandingMessageBoardComponent implements OnInit {
 
       // tslint:disable-next-line:no-shadowed-variable
       const key = keys?.find(([key, date]: any) => messageDate >= date ) || [];
-      console.log('Key: ', key);
 
       // messageTypeList.push(message);
     });
-
-    setTimeout(() => {
-      console.log('Message Type List', messageTypeList);
-    }, 2000);
 
     // this.store.select(getAllMessages).subscribe(
     //   messages => {
@@ -167,7 +157,11 @@ export class LandingMessageBoardComponent implements OnInit {
         ]
       };
 
+
       this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
+
+        console.log('response for getting stream data ===>>', response);
+
         this.change.detectChanges();
         this.messagesOfStream.push(...response.zulip.messages);
         // sort by time. latest last
@@ -216,6 +210,7 @@ export class LandingMessageBoardComponent implements OnInit {
   selectedChat(chat: SingleChat): any {
     this.editorActive = true;
     this.store.dispatch(new messageActions.HandleSendMessage(chat));
+    this.editorChat = chat;
     console.log('Emit chat ===>>>', chat);
   }
 

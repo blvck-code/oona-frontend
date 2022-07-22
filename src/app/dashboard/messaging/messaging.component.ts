@@ -99,7 +99,7 @@ export class MessagingComponent implements OnInit {
     this.store.dispatch(new authActions.LoadAllUsers());
 
     this.getAllMessages();
-    this.getPrivateMessages();
+    this.getStreamData();
   }
 
   logoutUser(): void {
@@ -138,5 +138,34 @@ export class MessagingComponent implements OnInit {
           // this.streamIds = [...this.streamMessages, item.stream_id];
         });
     });
+  }
+
+  // get stream content
+  getStreamData(): void {
+    this.store.select(getAllStreams).subscribe(
+      streams => {
+        streams.map((stream: any) => {
+          const streamName = stream?.name;
+
+          console.log('Stream name ===>>>', streamName);
+
+          const streamDetails = {
+            anchor: 'newest',
+            num_before: 10,
+            type: [
+              {
+                operator: 'stream',
+                operand: streamName
+              }
+            ]
+          };
+
+
+          this.messagingService.getMessagesOfStream(streamDetails).subscribe(
+            (response: any) => console.log('Each stream response ===>>>>', response)
+          );
+        });
+      }
+    );
   }
 }

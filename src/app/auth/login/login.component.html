@@ -3,6 +3,9 @@
     <div class="branding-section">
       <img src="assets/img/oona_logo.svg" alt="" class="login-branding">
     </div>
+    <div *ngIf="loading">
+      <app-loading-animation></app-loading-animation>
+    </div>
     <div class="sign-in-content">
       <div class="sign-in-title">
         <p>Sign In</p>
@@ -30,6 +33,7 @@
         </div>
         <div class="login-error">
           <span *ngIf="errorMsg$">{{ errorMsg$ | async }}</span>
+          <span *ngIf="loginServerError">{{ loginServerError }}</span>
         </div>
         <div class="registration-option">
           <p>Don't have an Account? <span routerLink="/signup">Register Here.</span></p>

@@ -1,28 +1,28 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {MessagingService } from '../messaging/services/messaging.service';
-import {NotificationService} from '../../shared/services/notification.service';
-import {Router} from '@angular/router';
+import {MessagingService } from '../../../messaging/services/messaging.service';
+import {NotificationService} from '../../../../shared/services/notification.service';
+import {ActivatedRoute, NavigationEnd, NavigationStart, Router} from '@angular/router';
 import {Editor} from 'ngx-editor';
 import {NgForm} from '@angular/forms';
 
 import TurndownService from 'turndown';
-import {GroupPmsServiceService} from '../messaging/group-pms/group-pms-service.service';
-import {Observable} from 'rxjs';
-import {AppState} from '../../state/app.state';
+import {GroupPmsServiceService} from '../../../messaging/group-pms/group-pms-service.service';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {AppState} from '../../../../state/app.state';
 import {Store} from '@ngrx/store';
-import {getAllStreams, getReceiverInfo} from '../messaging/state/messaging.selectors';
-import { SingleChat } from '../messaging/models/messages.model';
-import {messageChannel} from '../../../environments/environment';
-import {MessagesSocketService} from '../messaging/services/messages-socket.service';
+import {getAllStreams, getPrivateMessages, getReceiverInfo} from '../../../messaging/state/messaging.selectors';
+import { SingleChat } from '../../../messaging/models/messages.model';
+import {messageChannel} from '../../../../../environments/environment';
+import {MessagesSocketService} from '../../../messaging/services/messages-socket.service';
 
 const turndownService = new TurndownService();
 
 @Component({
-  selector: 'app-editor',
-  templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.scss']
+  selector: 'app-streams-text-editor',
+  templateUrl: './streams-text-editor.component.html',
+  styleUrls: ['./streams-text-editor.component.scss']
 })
-export class EditorComponent implements OnInit, OnDestroy {
+export class StreamsTextEditorComponent implements OnInit, OnDestroy {
   @Output() messageContent = new EventEmitter<any>();
   @Output() newTopic = new EventEmitter<any>();
   @Input() activeChat: any;
@@ -40,24 +40,30 @@ export class EditorComponent implements OnInit, OnDestroy {
   receiverInfo!: SingleChat | any;
   activeEditor = false;
 
+
   searchStreamTerm = '';
   recipientUser = '';
   defaultStream = '';
+  currentStream: string | undefined = '';
+  streamInfo: any;
+
+  currentStream$!: Observable<any>;
 
   constructor(
     private messagingService: MessagingService,
     private  groupPmsService: GroupPmsServiceService,
     private  notificationService: NotificationService,
     private router: Router,
+    private activatedRoute: ActivatedRoute,
     private store: Store<AppState>,
     private msgSocket: MessagesSocketService,
   ) {
     this.messagingService.messages.subscribe(msg => {
       console.log('Response from websocket from server ===>>>', msg);
     });
-    console.log('activeChat: ', this.activeChat);
-  }
 
+    this.changeOnRouter();
+  }
   // @ts-ignore
   editor: Editor;
 
@@ -93,7 +99,6 @@ export class EditorComponent implements OnInit, OnDestroy {
       }
     );
   }
-
   // get streams
   getStreams(): void {
     // TODO change to last message in the chat
@@ -118,7 +123,39 @@ export class EditorComponent implements OnInit, OnDestroy {
         }
       }
     );
-    // this.handleDefaultStream();
+  }
+
+  handleGetStreamDetails(): void {
+    const route = this.activatedRoute.snapshot.paramMap;
+
+    const streamId = route.get('stream')?.split('-')[0];
+    const currentStream = route.get('stream')?.split('-')[1];
+
+
+    // @ts-ignore
+    this.searchStreamTerm = currentStream;
+      // @ts-ignore
+    this.currentStream$ = currentStream;
+
+    const topic = route.get('topic');
+
+    this.streamInfo = {
+      id: streamId,
+      streamName: currentStream,
+      streamTopic: topic ? topic : 'new streams'
+    };
+  }
+
+  changeOnRouter(): void {
+
+    // @ts-ignore
+    this.router.events.subscribe((event: Event) => {
+
+      if (event instanceof NavigationEnd) {
+        this.handleGetStreamDetails();
+      }
+
+    });
   }
 
   onInitHandler(): void {
@@ -138,16 +175,10 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.onInitHandler();
+    this.handleGetStreamDetails();
   }
-
   ngOnDestroy(): void {
     this.editor.destroy();
-  }
-
-  loggedInProfile(): void{
-    this.messagingService.oonaProfile().subscribe((profile: any) => {
-      this.userProfile = profile.results[0];
-    });
   }
 
   public onClick(): any {
@@ -211,24 +242,16 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   onSubmit(form: NgForm): void {
     const markdown = turndownService.turndown(form.value.name);
-    if (this.currentForm === 'general') {
-
-      const messageDetails = {
-        to: this.currentForm,
-        // ToDo change this to user message id
-        topic: this.receiverInfo?.subject,
-        content: markdown
-      };
-
-      console.log('Message details: ', messageDetails);
-    }
 
     const messageDetail = {
-      // to: this.receiverInfo.display_recipient,
+      to: this.streamInfo.streamName,
       // ToDo change this to user message id
-      topic: 60,
+      topic: this.streamInfo.streamTopic,
       content: markdown
     };
+
+    console.log('Stream details: ', this.streamInfo);
+    console.log('Message details: ', messageDetail);
 
     // const messageDetail = {
     //   to: this.chatGroup.map(member => member.id),
@@ -263,6 +286,12 @@ export class EditorComponent implements OnInit, OnDestroy {
     this.newTopic.emit(event.target.value);
   }
 
+  loggedInProfile(): void{
+    this.messagingService.oonaProfile().subscribe((profile: any) => {
+      this.userProfile = profile.results[0];
+    });
+  }
+
   removeFromGroup(person: any): void {
     this.chatGroup = this.chatGroup.filter(item => item !== person);
     this.groupPmsService.changeChatGroup(this.chatGroup);
@@ -280,7 +309,6 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
     // tslint:disable-next-line:max-line-length
     this.filteredUsers = this.allUsers.filter(user => user.full_name.toLowerCase().includes(event.target.value.toLowerCase()) || user.email.toLowerCase().includes(event.target.value.toLowerCase()));
-
   }
 
   searchStream(event: any): any {
@@ -298,11 +326,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   addSelectedStream(stream: any): void {
-    if (stream.name) {
-      this.searchStreamTerm = stream.name;
-    } else {
-      this.searchStreamTerm = stream;
-    }
+    this.streamInfo.streamName = stream;
   }
 
   handleShowTopic(type: string): void {
@@ -310,6 +334,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     this.activeEditor = true;
     this.handleGeneralToTopic();
   }
+
 
   handleGeneralToTopic(): void {
     console.log('Current stream ====>>>>', this.defaultStream);
@@ -323,4 +348,6 @@ export class EditorComponent implements OnInit, OnDestroy {
     this.defaultStream = '';
     this.activeEditor = false;
   }
+
 }
+

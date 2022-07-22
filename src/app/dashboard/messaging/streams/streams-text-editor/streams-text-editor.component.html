@@ -1,0 +1,108 @@
+<!--<div *ngIf="currentForm === 'general'" class="group-pm-users">-->
+<!--  <div (click)="handleShowTopic('topics')" class="d-flex recipient-user mr-2" title="Reply to selected message">-->
+<!--    Message to-->
+<!--    <span class="ps-1">-->
+<!--      #{{ streamInfo?.streamName }} > {{ streamInfo?.streamTopic }}-->
+<!--    </span>-->
+<!--  </div>-->
+
+<!--  <div class="search-pm-users-container" >-->
+<!--    <div class="list-pm-members">-->
+<!--    </div>-->
+<!--    <div class="add-attendees-section dropdown">-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!--<div *ngIf="currentForm === 'topics'" class="add-stream-topic-title">-->
+<!--  <div class="stream-topic-name">-->
+<!--    <div class="stream-name form-group">-->
+<!--      &lt;!&ndash;      // Todo Change value&ndash;&gt;-->
+
+<!--      <div class="stream-name form-group dropdown">-->
+<!--        <input value="{{ streamInfo?.streamName }}" type="text" (keyup)="searchStream($event)" class="form-control" id="dropdownMenuButton2" data-bs-toggle="dropdown"-->
+<!--               aria-expanded="false">-->
+<!--        <ul class="dropdown-menu p-2" aria-labelledby="dropdownMenuButton1" >-->
+<!--          <li (click)="addSelectedStream(stream)" *ngFor="let stream of filteredStreams">-->
+<!--            {{ stream.name }}-->
+<!--          </li>-->
+<!--        </ul>-->
+<!--      </div>-->
+
+<!--    </div>-->
+<!--    <div class="stream-name form-group">-->
+<!--      &lt;!&ndash;      // Todo Change value&ndash;&gt;-->
+<!--      <input type="text" value="{{ streamInfo?.streamTopic }}" placeholder="Topic" class="form-control">-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  <div (click)="resetEditor()" class="topics-close-form">-->
+<!--    <i class="bi bi-x"></i>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!--<div *ngIf="currentForm === 'private'" class="send-private-message">-->
+<!--  <div style="font-weight: bolder" class="d-flex recipient-user mr-3">-->
+<!--    To :-->
+<!--    <span class="ps-2" *ngIf="receiverInfo && receiverInfo.display_recipient">{{ receiverInfo.display_recipient | titlecase }}</span>-->
+<!--    <span class="ps-2" *ngIf="receiverInfo && receiverInfo.subject"> <strong>></strong> {{ receiverInfo.subject | titlecase }}</span>-->
+<!--  </div>-->
+<!--  &lt;!&ndash;  <span style="font-weight: bolder" class="mr-2">To : Brian Maurice</span>&ndash;&gt;-->
+
+<!--  <div class="search-pm-users-container" >-->
+<!--    <div class="list-pm-members">-->
+<!--      <div class="pm-member" *ngFor="let person of chatGroup" (click)="removeFromGroup(person)">-->
+<!--        <p>{{person.full_name}}</p>-->
+<!--        <i class="bi bi-x"></i>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--    <div class="add-attendees-section dropdown">-->
+<!--      <input type="text" (keyup)="searchUser($event)" class="search-meeting-attendees" autocomplete="off" placeholder="Search User" id="dropdownMenuButton1" data-bs-toggle="dropdown"-->
+<!--             aria-expanded="false">-->
+<!--      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" #selectList >-->
+<!--        <li *ngFor="let user of filteredUsers" (click)="addSelectedUser(user)" class="py-2">-->
+<!--          {{user.full_name}}-->
+<!--        </li>-->
+<!--      </ul>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  <div (click)="resetEditor()" class="close-form ms-2">-->
+<!--    <i class="bi bi-x"></i>-->
+<!--  </div>-->
+
+<!--</div>-->
+
+<div class="parent active">
+
+  <form #form="ngForm" (ngSubmit)="onSubmit(form)" class="text-editor-container">
+    <div class="form-group ">
+      <ejs-richtexteditor
+        #fromRTE
+        [(value)]="editorData"
+        [toolbarSettings]='tools'
+        placeholder="Write message..."
+        required
+        name="name"
+        [(ngModel)]="editorData"
+        (keydown.enter)="onSubmit(form)"
+        class="overflow-chat"
+      ></ejs-richtexteditor>
+
+      <div class="submit-pm-btn d-flex justify-content-end">
+        <button type="submit" class="border-0 submit-btn btn btn-dark shadow-none" ejs-button>
+          Send
+        </button>
+      </div>
+
+    </div>
+  </form>
+
+  <span class="d-flex justify-content-end child" title="React"
+        (click)="toggled = !toggled"
+        [(emojiPickerIf)]="toggled"
+        [emojiPickerDirection]="'bottom' || 'top' || 'left' || 'right'"
+        (emojiPickerSelect)="handleSelection($event)"
+  >😄</span>
+</div>
