@@ -5,6 +5,7 @@ import {Store} from '@ngrx/store';
 import {AppState} from './state/app.state';
 import * as authActions from './auth/state/auth.actions';
 import * as sharedActions from './shared/state/shared.actions';
+import {getIsLoggedIn} from './auth/state/auth.selectors';
 
 @Component({
   selector: 'app-root',
@@ -20,10 +21,21 @@ export class AppComponent implements OnInit {
   }
 
   updateState = () => {
-    if (localStorage.getItem('accessToken')){
-      this.store.dispatch(new authActions.UpdateState());
-      // this.store.dispatch(new sharedActions.LoadUsers());
-    }
+    // if (localStorage.getItem('accessToken')){
+    //
+    //   // this.store.dispatch(new sharedActions.LoadUsers());
+    // }
+    this.store.dispatch(new authActions.UpdateState());
+
+    this.store.select(getIsLoggedIn).subscribe(
+      status => {
+        console.log('Is logged in? ', status);
+        if (status) {
+          this.store.dispatch(new authActions.LoadAllUsers());
+          this.store.dispatch(new authActions.LoadZulipUsers());
+        }
+      }
+    );
   }
 
   ngOnInit(): void {

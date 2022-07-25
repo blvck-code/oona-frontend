@@ -5,6 +5,7 @@ import { MessagesModel, SingleMessageModel } from '../models/messages.model';
 import { TopicsModel } from '../models/topics.model';
 import { CurrentUserModel } from '../models/currentUser.model';
 import { act } from '@ngrx/effects';
+import {StreamDataModel} from '../models/streamData.model';
 
 export interface MessagingState {
   loading: boolean;
@@ -177,6 +178,7 @@ export function messagingReducer(
         },
       };
     case messagingActions.MessagingActionsTypes.LOAD_PRIVATE_MESSAGE_SUCCESS:
+      console.log('Private messages from reducer ==>>>', action.payload);
       return {
         ...state,
         messaging: {
@@ -225,13 +227,14 @@ export function messagingReducer(
         }
       };
     case messagingActions.MessagingActionsTypes.LOAD_STREAM_DATA_SUCCESS:
+      console.log('Action payload ====>>>', action.payload);
       return  {
         ...state,
         streams: {
           ...state.streams,
           streamData: {
             ...state.streams.streamData,
-            messages: action.payload
+            messages: []
           }
         }
       };

@@ -78,6 +78,7 @@ export const getLoadingPrivateMsgs = createSelector(
   state => state.messaging.privateMsgs.loading
 );
 
+// Todo Change selector for private messages
 export const getPrivateMessages = createSelector(
   getMessagingState,
   state => state.messaging.privateMsgs?.messages?.zulip?.messages

@@ -1,6 +1,7 @@
 import { Action } from '@ngrx/store';
 import { TopicsModel } from '../models/topics.model';
 import { MessagesModel } from '../models/messages.model';
+import {StreamDataModel} from '../models/streamData.model';
 
 export enum MessagingActionsTypes {
   // GET MESSAGES
@@ -124,7 +125,7 @@ export class LoadPrivateMessages implements Action {
 }
 export class LoadPrivateMessagesSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_PRIVATE_MESSAGE_SUCCESS;
-  constructor(public payload: any) {
+  constructor(public payload: MessagesModel) {
     console.log('Successful load private messages ====>>>',  payload);
   }
 }
@@ -139,16 +140,18 @@ export class LoadPrivateMessagesFail implements Action {
 export class LoadStreamData implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_DATA;
   constructor(public payload: any) {
+    console.log('Stream data details ===>>>', payload)
   }
 }
 export class LoadStreamDataSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_DATA_SUCCESS;
   constructor(public payload: any) {
+    console.log('Payload stream data success ====>>>', payload);
   }
 }
 export class LoadStreamDataFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_DATA_FAIL;
-  constructor(public payload: any) {
+  constructor(public payload: StreamDataModel) {
     console.log('Loading stream data fail ===>>>', payload);
   }
 }

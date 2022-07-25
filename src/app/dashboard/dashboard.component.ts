@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import * as authActions from '../auth/state/auth.actions'
 import {Store} from '@ngrx/store';
 import {AppState} from '../state/app.state';
+import {getToken} from 'codelyzer/angular/styles/cssLexer';
+import {getIsLoggedIn} from '../auth/state/auth.selectors';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,14 +18,21 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.initOnLoad();
+    // this.initOnLoad();
   }
 
   initOnLoad(): void {
-    if (localStorage.getItem('accessToken')){
-      // this.store.dispatch(new authActions.LoadAllUsers());
-      // this.store.dispatch(new authActions.LoadZulipUsers());
-    }
+    this.store.dispatch(new authActions.UpdateState());
+
+    this.store.select(getIsLoggedIn).subscribe(
+      status => {
+        console.log('Is logged in? ', status);
+        if (status) {
+          this.store.dispatch(new authActions.LoadAllUsers());
+          this.store.dispatch(new authActions.LoadZulipUsers());
+        }
+      }
+    );
   }
 
 }

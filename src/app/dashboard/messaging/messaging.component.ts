@@ -8,12 +8,13 @@ import { AppState } from '../../state/app.state';
 import * as messagingActions from './state/messaging.actions';
 import { MessagesSocketService } from './services/messages-socket.service';
 import { getAllStreams, getStreamsLoading } from './state/messaging.selectors';
-import { take } from 'rxjs/operators';
+import {map, take} from 'rxjs/operators';
 import { AllStreamsModel } from './models/streams.model';
 import { Observable } from 'rxjs';
 import { MessagingService } from './services/messaging.service';
 import * as sharedActions from '../../shared/state/shared.actions';
 import * as authActions from '../../auth/state/auth.actions';
+import {getAllUsers} from '../../auth/state/auth.selectors';
 
 @Component({
   selector: 'app-messaging',
@@ -79,27 +80,37 @@ export class MessagingComponent implements OnInit {
   }
 
   getPrivateMessages(): void {
-    const streamDetail = {
-      use_first_unread_anchor: true,
-      num_before: this.initialMessageCount,
-      type: [
-        {
-          operator: 'pm-with',
-          operand: 'maurice.oluoch@8teq.co.ke'
-        }
-      ]
-    };
-    this.store.dispatch(new messagingActions.LoadPrivateMessages(streamDetail));
+    this.store.select(getAllUsers).subscribe((users: any) => {
+      users?.map((user: any) => {
+        const streamDetail = {
+          use_first_unread_anchor: true,
+          num_before: this.initialMessageCount,
+          type: [
+            {
+              operator: 'pm-with',
+              operand: user?.email
+            }
+          ]
+        };
+
+        this.store.dispatch(new messagingActions.LoadPrivateMessages(streamDetail));
+
+      });
+    });
   }
 
   initPage(): void {
+    this.initializeState();
+    this.getAllMessages();
+    this.getPrivateMessages();
+    // this.getStreamData();
+  }
+
+  initializeState(): void {
     this.store.dispatch(new messagingActions.LoadAllStreams());
     this.store.dispatch(new messagingActions.LoadSubStreams());
     this.store.dispatch(new authActions.LoadZulipUsers());
     this.store.dispatch(new authActions.LoadAllUsers());
-
-    this.getAllMessages();
-    this.getStreamData();
   }
 
   logoutUser(): void {
@@ -130,7 +141,6 @@ export class MessagingComponent implements OnInit {
                       topics: data,
                     };
                     this.allTopics = [...this.allTopics, stream];
-                    // console.log('Latest all topics ===>>> ', this.allTopics);
                   }
                 }
               );

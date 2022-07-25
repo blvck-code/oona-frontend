@@ -31,6 +31,20 @@ export class StreamsBoardComponent implements OnInit {
   ) {
   }
 
+  changeRouterObserver(): void {
+    // @ts-ignore
+    this.router.events.subscribe((event: Event) => {
+
+      if (event instanceof NavigationEnd){
+
+        const stream = this.activateRoute.snapshot.paramMap.get('stream');
+
+        console.log('Route event ===>>>', stream);
+      }
+
+    });
+  }
+
   onInitHandler(): void {
     this.streams$ = this.store.select(getStreamData);
     this.loading$ = this.store.select(getStreamDataLoading);
@@ -42,6 +56,7 @@ export class StreamsBoardComponent implements OnInit {
 
   ngOnInit(): void {
     this.onInitHandler();
+    this.changeRouterObserver();
   }
 
   handleReply(message: any): void {

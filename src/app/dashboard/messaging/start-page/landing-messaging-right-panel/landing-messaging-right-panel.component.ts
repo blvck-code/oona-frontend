@@ -130,7 +130,7 @@ export class LandingMessagingRightPanelComponent implements OnInit {
 
   private addTypingStatus(peopleTyping: any[]): void {
     if (this.allUsers) {
-      this.allUsers?.forEach((user) => {
+      this.allUsers?.map((user) => {
         const userIsTyping = peopleTyping.find(
           (person) => person.userEmail === user.email && person.op === 'start'
         );
