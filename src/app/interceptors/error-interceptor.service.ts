@@ -26,7 +26,7 @@ export class ErrorInterceptorService implements HttpInterceptor{
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
         const errorStatus = error.status;
-        console.log('Error status ==>', errorStatus);
+        console.log('Error status code ==>', errorStatus);
         let errorMsg;
 
         // Un Authorised User Access
@@ -36,7 +36,6 @@ export class ErrorInterceptorService implements HttpInterceptor{
           // localStorage.clear();
           // this.route.navigate(['/login']);
 
-          console.log('Authorization error ====>>>', error);
         }
 
         // Other errors
@@ -47,8 +46,8 @@ export class ErrorInterceptorService implements HttpInterceptor{
 
         } else {
           // server-side error
-          console.log('Server side error ===>>> ', error);
-          console.log('Error message ===>>> ', error?.error.toString());
+          // console.log('Server side error ===>>> ', error);
+          // console.log('Error message ===>>> ', error?.error.toString());
 
           if (error?.error.toString()) {
             // tslint:disable-next-line:no-shadowed-variable
@@ -57,7 +56,7 @@ export class ErrorInterceptorService implements HttpInterceptor{
               message: error?.error.toString()
             };
             errorMsg = err;
-            console.log('Error content: ', err);
+            // console.log('Error content: ', err);
           }
 
           if (error?.error?.error) {

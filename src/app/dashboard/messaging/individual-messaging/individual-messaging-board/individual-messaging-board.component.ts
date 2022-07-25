@@ -68,7 +68,7 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
         this.newMessagesCount = messages;
       }
     });
-
+    this.updateState();
   }
 
   constructor(
@@ -286,5 +286,34 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
       // @ts-ignore
       document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
     }
+  }
+
+  getLatestMessage(): void {
+    const streamDetail = {
+      anchor: 'newest',
+      num_before: 30,
+      type: [
+        {
+          operator: 'pm-with',
+          operand: this.operand?.email,
+        }
+      ]
+    };
+
+    this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
+        console.log('Latest update message ===>>>', response);
+        // this.messagesWithPerson.unshift(... response.zulip.messages.slice(0, 10));
+        this.change.detectChanges();
+      } ,
+      (error: any) => {
+        console.log('error', error);
+      });
+    this.userActiveStatus();
+  }
+
+  updateState(): void {
+    setInterval(() => {
+      // this.getLatestMessage();
+    }, 60000);
   }
 }
