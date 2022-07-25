@@ -10,7 +10,7 @@ import {GroupPmsServiceService} from '../../../messaging/group-pms/group-pms-ser
 import {BehaviorSubject, Observable} from 'rxjs';
 import {AppState} from '../../../../state/app.state';
 import {Store} from '@ngrx/store';
-import {getAllStreams, getPrivateMessages, getReceiverInfo} from '../../../messaging/state/messaging.selectors';
+import {getAllStreams, getReceiverInfo} from '../../../messaging/state/messaging.selectors';
 import { SingleChat } from '../../../messaging/models/messages.model';
 import {messageChannel} from '../../../../../environments/environment';
 import {MessagesSocketService} from '../../../messaging/services/messages-socket.service';

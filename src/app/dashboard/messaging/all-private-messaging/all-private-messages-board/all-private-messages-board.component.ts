@@ -6,7 +6,7 @@ import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
 // @Todo change this to fetch only private messages
-import {getAllMessages, getLoadingPrivateMsgs, getMessageType, getPrivateMessages} from '../../state/messaging.selectors';
+import {getAllMessages, getLoadingPrivateMsgs, getMessageType } from '../../state/messaging.selectors';
 import * as messageActions from '../../state/messaging.actions';
 import {Observable} from 'rxjs';
 import {SingleChat, StreamDetail} from '../../models/messages.model';
@@ -67,14 +67,15 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
     // this.messagesLength();
   }
 
-  messagesLength(): void {
-    this.store.select(getPrivateMessages).subscribe(
-      messages => {
-        // @ts-ignore
-        this.messageExist = messages?.length > 0;
-      }
-    );
-  }
+  // Todo add private messages
+  // messagesLength(): void {
+  //   this.store.select(getPrivateMessages).subscribe(
+  //     messages => {
+  //       // @ts-ignore
+  //       this.messageExist = messages?.length > 0;
+  //     }
+  //   );
+  // }
 
   allUsersRegistered(): void {
     // this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {

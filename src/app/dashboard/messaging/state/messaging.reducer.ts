@@ -5,16 +5,12 @@ import { MessagesModel, SingleMessageModel } from '../models/messages.model';
 import { TopicsModel } from '../models/topics.model';
 import { CurrentUserModel } from '../models/currentUser.model';
 import { act } from '@ngrx/effects';
-import {StreamDataModel} from '../models/streamData.model';
 
 export interface MessagingState {
   loading: boolean;
   streams: {
     allStreams: AllStreamsModel[] | any;
-    streamData: {
-      loading: boolean,
-      messages: any
-    };
+    streamData: AllStreamsModel[] | any;
     subStreams: SubscribedStreams[];
     topics: any;
   };
@@ -42,10 +38,7 @@ export const initialState: MessagingState = {
   loading: false,
   streams: {
     allStreams: [],
-    streamData: {
-      loading: false,
-      messages: null
-    },
+    streamData: [],
     subStreams: [],
     topics: [],
   },
@@ -173,12 +166,11 @@ export function messagingReducer(
           ...state.messaging,
           privateMsgs: {
             ...state.messaging.privateMsgs,
-            loading: false,
+            loading: true,
           },
         },
       };
     case messagingActions.MessagingActionsTypes.LOAD_PRIVATE_MESSAGE_SUCCESS:
-      console.log('Private messages from reducer ==>>>', action.payload);
       return {
         ...state,
         messaging: {
@@ -214,30 +206,6 @@ export function messagingReducer(
         },
       };
 
-      // STREAM MESSAGES
-    case messagingActions.LoadStreamData:
-      return {
-        ...state,
-        streams: {
-          ...state.streams,
-          streamData: {
-            ...state.streams.streamData,
-            loading: true
-          }
-        }
-      };
-    case messagingActions.MessagingActionsTypes.LOAD_STREAM_DATA_SUCCESS:
-      console.log('Action payload ====>>>', action.payload);
-      return  {
-        ...state,
-        streams: {
-          ...state.streams,
-          streamData: {
-            ...state.streams.streamData,
-            messages: []
-          }
-        }
-      };
     case messagingActions.MessagingActionsTypes.LOAD_MORE_MESSAGE:
       return {
         ...state,

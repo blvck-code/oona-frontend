@@ -2,14 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, NavigationError, NavigationStart, Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
-import {
-  getAllFilteredMsg,
-  getAllMessages,
-  getLoadingPrivateMsgs,
-  getPrivateMessages,
-  getStreamData,
-  getStreamDataLoading
-} from '../../state/messaging.selectors';
+import {getAllFilteredMsg, getAllMessages, getLoadingPrivateMsgs, getPrivateMessages} from '../../state/messaging.selectors';
 import {SingleMessageModel} from '../../models/messages.model';
 import {BehaviorSubject, Observable} from 'rxjs';
 import * as messageActions from '../../state/messaging.actions';
@@ -22,7 +15,7 @@ import * as messageActions from '../../state/messaging.actions';
 export class StreamsBoardComponent implements OnInit {
   streams$: Observable<any> | undefined;
   loading$!: Observable<boolean>;
-  editorActive: boolean = false;
+  editorActive = false;
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -31,32 +24,14 @@ export class StreamsBoardComponent implements OnInit {
   ) {
   }
 
-  changeRouterObserver(): void {
-    // @ts-ignore
-    this.router.events.subscribe((event: Event) => {
-
-      if (event instanceof NavigationEnd){
-
-        const stream = this.activateRoute.snapshot.paramMap.get('stream');
-
-        console.log('Route event ===>>>', stream);
-      }
-
-    });
-  }
-
   onInitHandler(): void {
-    this.streams$ = this.store.select(getStreamData);
-    this.loading$ = this.store.select(getStreamDataLoading);
-
-    this.store.select(getStreamData).subscribe(
-      stream => console.log('Stream data from state =====>>>>', stream)
-    );
+    this.streams$ = this.store.select(getPrivateMessages);
+    this.loading$ = this.store.select(getLoadingPrivateMsgs);
   }
 
   ngOnInit(): void {
     this.onInitHandler();
-    this.changeRouterObserver();
+    console.log('Streams junior component loaded');
   }
 
   handleReply(message: any): void {

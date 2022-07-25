@@ -5,7 +5,7 @@ import {MessagingService} from '../../services/messaging.service';
 import {Store} from '@ngrx/store';
 import * as messageActions from '../../state/messaging.actions';
 import { AppState } from '../../../../state/app.state';
-import {getLoadingAllMsg, getAllMessages, getPrivateMessages} from '../../state/messaging.selectors';
+import {getLoadingAllMsg, getAllMessages } from '../../state/messaging.selectors';
 import {Observable} from 'rxjs';
 import {SingleChat, SingleMessageModel} from '../../models/messages.model';
 
@@ -37,84 +37,8 @@ export class LandingMessageBoardComponent implements OnInit {
     this.initPage();
   }
 
-  handleMsgGrouping(): void {
-    // This sample uses a fixed date so the categories can be illustrated better:
-    const currentDate = new Date(); // Or leave out the argument for actual date
-    currentDate.setHours(0, 0, 0, 0); // set to midnight
-// Prepare all related dates: yesterday and last Monday
-    const keys: any = [];
-    keys.push(['Today', new Date(currentDate)]); // clone
-    currentDate.setDate(currentDate.getDate() - 1);
-    keys.push(['Yesterday', new Date(currentDate)]); // clone
-    currentDate.setDate(currentDate.getDate() - (currentDate.getDay() + 6) % 7);
-    keys.push(['This Week', new Date(currentDate)]); // clone
-
-    const messages = [
-      { date: '2022/07/09' },
-      { date: '2022/07/10' },
-      { date: '2022/07/11' },
-      { date: '2022/07/12' },
-      { date: '2022/07/13' },
-      { date: '2022/07/14' }, // Monday
-      { date: '2022/07/15' },
-    ];
-
-    const messageTypeList = {
-      Today: [],
-      Yesterday: [],
-      'This Week': []
-    };
-
-    messages.forEach( message => {
-      const date = message.date.substring(0, 10).replace(/-/g, '\/');
-      const messageDate = new Date(date);
-
-      // tslint:disable-next-line:no-shadowed-variable
-      const key = keys?.find(([key, date]: any) => messageDate >= date ) || [];
-
-      // messageTypeList.push(message);
-    });
-
-    // this.store.select(getAllMessages).subscribe(
-    //   messages => {
-    //     messages?.map((message, index) => {
-    //
-    //       const messageDate = new Date();
-    //       messageDate.setTime(message.timestamp * 1000);
-    //
-    //       const [key] = keys.find(([key, date]) => messageDate >= date) || [];
-    //       if (key) {
-    //         // @ts-ignore
-    //         this.messageTypeList[key].push(message);
-    //       }
-    //
-    //       // Todo add grouping messages
-    //       console.log('Message types list', this.messageTypeList);
-    //
-    //     });
-    //     // console.log('Time stamp: ', timeStamps.sort((a: any, b: any) => a - b));
-    //   }
-    // );
-
-
-  }
-
   // Init Page
   initPage(): void {
-
-      // const streamDetail = {
-      //   use_first_unread_anchor: true,
-      //   num_before: this.initialMessageCount,
-      //   type: [
-      //     {
-      //       operator: 'stream',
-      //       operand: 'general'
-      //     }
-      //   ]
-      // };
-
-    // fetch data from server
-    //   this.store.dispatch(new messageActions.LoadMessaging(streamDetail));
 
       // get Loading Message
       this.loadingMessages = this.store.select(getLoadingAllMsg);
@@ -144,7 +68,8 @@ export class LandingMessageBoardComponent implements OnInit {
 
   getMessagesOfTeams(): void{
     // get messages of each team
-    this.allTeams.forEach( (teamName: any) => {
+
+    this.allTeams?.map( (teamName: any) => {
 
       const streamDetail = {
         use_first_unread_anchor: true,
@@ -159,9 +84,6 @@ export class LandingMessageBoardComponent implements OnInit {
 
 
       this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
-
-        console.log('response for getting stream data ===>>', response);
-
         this.change.detectChanges();
         this.messagesOfStream.push(...response.zulip.messages);
         // sort by time. latest last
@@ -181,7 +103,7 @@ export class LandingMessageBoardComponent implements OnInit {
   getMorePrivateMessages(): void {
     this.initialMessageCount = this.initialMessageCount + 10;
     // get messages of each team
-    this.allTeams.forEach( (teamName: any) => {
+    this.allTeams?.map( (teamName: any) => {
       const streamDetail = {
         use_first_unread_anchor: true,
         num_before: this.initialMessageCount,

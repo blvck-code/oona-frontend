@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, Observable, Observer, Subject} from 'rxjs';
-import {userChannel, messageChannel} from '../../../../environments/environment';
+import { environment as env} from '../../../../environments/environment';
 import {AuthService} from '../../../auth/services/auth.service';
 import {AnonymousSubject} from 'rxjs/internal-compatibility';
 import {map} from 'rxjs/operators';
@@ -21,12 +21,12 @@ export class MessagesSocketService {
   messageCount = this.messageCountSocket.asObservable();
   public messages!: Subject<any>;
   private subject!: AnonymousSubject<MessageEvent>;
-  socket: any;
+  private websocket: WebSocket | undefined;
 
   constructor(
     private authService: AuthService,
   ) {
-    // this.messageConnect();
+    this.messageConnect();
     // this.messageCountManagement();
 
     // this.messages = <Subject<any>>this.connect(messageChannel).pipe(
@@ -39,15 +39,16 @@ export class MessagesSocketService {
   }
 
   messageConnect(): any {
-    this.socket = io.io(messageChannel);
 
-    this.socket.on('connect', () => {
-      console.log('Connection successful for messaging');
-    }).emit('authenticated', this.authService.getToken());
+    const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
 
-    this.socket.on('message', (msg: any) => {
-      console.log('Message received from socket ===>>>', msg);
-    });
+    const url: string = env.messageChannel;
+    const messageChannelURL = protocol + url;
+
+    console.log('userChannel URL ===>>>', messageChannelURL);
+
+    this.websocket = new WebSocket(messageChannelURL, this.authService.getToken());
+    console.log('Messages sockets successfully connected: ', messageChannelURL);
 
   }
 
@@ -70,7 +71,7 @@ export class MessagesSocketService {
     });
 
     const observer = {
-      next: (data: Object) => {
+      next: (data: object) => {
         if (ws.readyState === WebSocket.OPEN) {
           console.log('Sending data ===>>>', JSON.stringify(data));
           ws.send(JSON.stringify(data));
@@ -81,42 +82,19 @@ export class MessagesSocketService {
     return Rx.Subject.create(observer, observable);
   }
 
-  // messageConnect(msgUrl: any): AnonymousSubject<MessageEvent> {
-  //   /**
-  //    * Creates a websocket connection to the message channel
-  //    */
-  //   // this.messageSocket = new WebSocket(messageChannel, this.authService.getToken());
-  //   // console.log('message connected');
-  //   if (!this.subject){
-  //     this.subject = this.create(msgUrl);
-  //     console.log('Successfully connected ===>>' + msgUrl);
-  //   }
-  //   return this.subject;
-  // }
-  //
-  // private create(url: any): AnonymousSubject<MessageEvent> {
-  //   let ws = new WebSocket(url, this.authService.getToken());
-  //   let observable = new Observable((obs: Observer<MessageEvent>) => {
-  //     ws.onmessage = obs.next.bind(obs);
-  //     ws.onerror = obs.error.bind(obs);
-  //     ws.onclose = obs.complete.bind(obs);
-  //
-  //     return ws.close.bind(ws);
-  //   });
-  //
-  //   let observer = {
-  //     error: null,
-  //     complete: null,
-  //     next: (data: any) => {
-  //       console.log('Message sent to websocket: ', data);
-  //       if (ws.readyState === WebSocket.OPEN) {
-  //         ws.send(JSON.stringify(data));
-  //       }
-  //     }
-  //   };
-  //   // @ts-ignore
-  //   return new AnonymousSubject<MessageEvent>(observer, observable);
-  // }
+  messageConnect2(msgUrl: any): AnonymousSubject<MessageEvent> {
+    /**
+     * Creates a websocket connection to the message channel
+     */
+    // this.messageSocket = new WebSocket(messageChannel, this.authService.getToken());
+    // console.log('message connected');
+    if (!this.subject){
+      this.subject = this.create(msgUrl);
+      console.log('Successfully connected ===>>' + msgUrl);
+    }
+    return this.subject;
+  }
+
 
   // messageCountManagement(): void {
   //   // @ts-ignore
@@ -140,26 +118,26 @@ export class MessagesSocketService {
   //     }, 1000);
   //   };
   // }
-
-  private filterSocketMessages(data: any): void {
-    /*
- * Filters all active and inactive users
- * @param userData Incoming message from the server.
- * @return void
- */
-    const socketData  = JSON.parse(data);
-    console.log('data', socketData);
-    if (socketData){
-      if (socketData.message.type === 'message'){
-        console.log('pushing message data', socketData);
-        this.newMessageCount += 1;
-      } else if (socketData.message.type === 'update_message_flags'){
-        // how many messages have been read
-        const messagesRead = socketData.message.messages.length;
-        this.newMessageCount = this.newMessageCount - messagesRead;
-
-      }
-    }
-
-  }
+ //
+ //  private filterSocketMessages(data: any): void {
+ //    /*
+ // * Filters all active and inactive users
+ // * @param userData Incoming message from the server.
+ // * @return void
+ // */
+ //    const socketData  = JSON.parse(data);
+ //    console.log('data', socketData);
+ //    if (socketData){
+ //      if (socketData.message.type === 'message'){
+ //        console.log('pushing message data', socketData);
+ //        this.newMessageCount += 1;
+ //      } else if (socketData.message.type === 'update_message_flags'){
+ //        // how many messages have been read
+ //        const messagesRead = socketData.message.messages.length;
+ //        this.newMessageCount = this.newMessageCount - messagesRead;
+ //
+ //      }
+ //    }
+ //
+ //  }
 }
