@@ -15,7 +15,7 @@ export class IndividualChatCardComponent implements OnInit {
   zulipProfile!: Observable<any>;
 
   constructor(
-    private store: Store<AppState>
+    private store: Store<AppState>,
   ) {
     this.getUserInfo();
   }
