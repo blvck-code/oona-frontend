@@ -51,20 +51,22 @@ export class LandingMessagingRightPanelComponent implements OnInit {
 
     // Todo change to present users
 
-    this.messagingService.getUsersByAvailability().subscribe(
+    this.messagingService.getZulipUsers().subscribe(
       (users: any) => {
         // @Todo Delete console log
         const usersPresent = users.members.filter((user: any) => user.presence);
-        this.allUsers = this.newListOfUsers(usersPresent);
-        // this.allUsers = users;
+        // this.allUsers = this.newListOfUsers(usersPresent);
+
+        console.log('Zulip usrs ===>>', users);
+        this.allUsers = users?.members;
       },
       // @ts-ignore
       (error) => {
         // console.log('Get users error ===>>', error);
-        // this.notification.showError(
-        //   `Failed to get all users. Error ${error?.message}`,
-        //   'Unable to get users'
-        // );
+        this.notification.showError(
+          `Failed to get all users. Error ${error?.message}`,
+          'Unable to get users'
+        );
       }
     );
   }
@@ -74,13 +76,13 @@ export class LandingMessagingRightPanelComponent implements OnInit {
 
      // Todo change this back to active users and present users
      const usersPresent = users?.filter((user: any) => user.presence );
-     this.allUsers = this.newListOfUsers(usersPresent);
-     // this.allUsers = users;
+     // this.allUsers = this.newListOfUsers(usersPresent);
+     console.log('Zulip usrs ===>>', users);
+     this.allUsers = users;
    });
   }
 
   goToMemberChat(member: any): void {
-
 
     const userUrl = `${member.user_id}-${member.full_name
       .toLowerCase()

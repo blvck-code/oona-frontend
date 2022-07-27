@@ -97,6 +97,7 @@ export class OonaSocketService {
      * @param userData Incoming message from the server.
      * @return void
      */
+
     const socketData  = JSON.parse(userData);
     // {
     //   "message": {
@@ -114,7 +115,7 @@ export class OonaSocketService {
     //     "flag": "read"
     // }
     // }
-    console.log('Socket data ===>>>', socketData);
+
     if (socketData.message.type === 'presence'){
         // console.log('pushing user presence data');
         this.recognizedUsers.push(socketData);
@@ -126,6 +127,7 @@ export class OonaSocketService {
         // this.newMessagesUnique = new Set(this.newMessages.map(item => item.message.message.id));
         this.newMessageCount = this.newMessages.length;
         this.changeNewMessageCount(this.newMessageCount);
+
       } else if (socketData.message.type === 'update_message_flags'){
         // how many messages have been read
         const messagesRead = socketData.message.messages.length;
@@ -196,6 +198,7 @@ export class OonaSocketService {
       this.changeNewStreamMessageCount(this.removeLoggedInUserMessages(this.messagesToStreams));
     }else if (socketData.message.message.type === 'private'){
       this.messagesInPrivate.push(socketData.message.message);
+
       this.messagesInPrivate = this.messagesInPrivate.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
       this.changeNewPrivateMessageCount(this.removeLoggedInUserMessages(this.messagesInPrivate));
     }

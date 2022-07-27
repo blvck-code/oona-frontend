@@ -54,9 +54,9 @@
     <div class="other-staff-list" >
       <div class="mb-2" *ngFor="let member of otherMembers">
           <div class="member other-staff-item" (click)="goToMemberChat(member)" >
-            <app-active-tag *ngIf="member.presence.aggregated.status === 'active'"></app-active-tag>
-            <app-inactive-tag *ngIf="member.presence.aggregated.status === 'idle'"></app-inactive-tag>
-            <app-idle-tag *ngIf="member.presence.aggregated.status === 'offline'" ></app-idle-tag>
+<!--            <app-active-tag *ngIf="member.presence.aggregated.status === 'active'"></app-active-tag>-->
+<!--            <app-inactive-tag *ngIf="member.presence.aggregated.status === 'idle'"></app-inactive-tag>-->
+<!--            <app-idle-tag *ngIf="member.presence.aggregated.status === 'offline'" ></app-idle-tag>-->
             <img src="assets/img/placeholder.jpg" height="32px" width="32px" class="rounded-circle me-2" alt="...">
             <p class="member-name">{{ member.full_name }}</p>
          </div>

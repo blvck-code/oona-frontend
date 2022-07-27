@@ -34,6 +34,7 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
     email: undefined,
   };
   messages$!: Observable<any>;
+  selectedUserId: any;
   selectedUser$!: Observable<any>;
   messagesWithPerson = Array();
   userActivity: any;
@@ -46,30 +47,32 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
   @ViewChild('endPrivateChat') endPrivateChat: ElementRef | undefined;
 
   ngOnInit(): void {
-    console.log('Page initialized');
     this.getIndividualUser();
     // this.changeContentOnRouteChange();
 
     this.messagingService.currentMemberChatDetail.subscribe(member => {
       this.memberDetail = member;
-      console.log('Member details ===>>>', member);
       // this.store.dispatch(new authActions.SetSelectedUser(member));
       setTimeout(() => {
         this.privateMessages();
       }, 1000);
+      });
 
-    });
     // always get the current value
     this.userSocketService.messageCount.subscribe(messages => {
       console.log('Sockets finally works ===>>>', messages);
       if (this.newMessagesCount !== messages){
         // get new messages
-        // this.privateMessages();
+        this.privateMessages();
         this.newMessagesCount = messages;
       }
     });
     this.updateState();
   }
+
+  // handleSocket(): void {
+  //   this.userSocketService.
+  // }
 
   constructor(
     private router: Router,
@@ -115,6 +118,13 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
   getSelectedUser(): void {
     this.selectedUser$ = this.store.select(getSelectedUser);
 
+    // get User Id
+    this.store.select(getSelectedUser).subscribe(
+      user => {
+        this.selectedUserId = +user?.id;
+      }
+    );
+
     if (this.selectedUser$) {
       const streamDetail = {
         anchor: 'newest',
@@ -147,6 +157,8 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
 
     this.store.select(getPrivateMessages).subscribe(
       (response: any) => {
+        console.log('Messages ====>>>', response)
+
         this.messagesWithPerson = response.zulip.messages;
       }
     );

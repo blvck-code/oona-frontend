@@ -105,14 +105,15 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
       this.chatGroup = chatMembers;
     });
 
-    this.store.select(getAllUsers).subscribe((users) => {
-      const presentUsers = users?.filter((user: any) => user?.presence);
-      this.allUsers = users?.filter((user: any) => user?.presence);
-    });
-    // this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
-    //   console.log('His users ====>>>', users);
-    //   this.allUsers = users.members.filter(user => user.presence );
+    // this.store.select(getAllUsers).subscribe((users) => {
+    //   const presentUsers = users?.filter((user: any) => user?.presence);
+    //   this.allUsers = users?.filter((user: any) => user?.presence);
     // });
+    this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
+      // Todo change back to present users
+      // this.allUsers = users.members.filter(user => user.presence );
+      this.allUsers = users.members;
+    });
 
     this.getReceiverInfo();
 
