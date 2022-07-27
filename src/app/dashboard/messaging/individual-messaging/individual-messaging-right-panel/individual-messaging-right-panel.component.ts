@@ -1,22 +1,19 @@
-import {AfterViewInit, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
-import {ActivatedRoute, NavigationEnd, NavigationExtras, NavigationStart, Router} from '@angular/router';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ActivatedRoute, NavigationStart, Router} from '@angular/router';
 import {MessagingService} from '../../services/messaging.service';
-import * as authActions from '../../../../auth/state/auth.actions';
-import {environment} from '../../../../../environments/environment';
 
 import {NotificationService} from '../../../../shared/services/notification.service';
-import {getAllUsers, getLoadingUsers, getSelectedUser, getZulipUsers} from '../../../../auth/state/auth.selectors';
+import {getAllUsers, getLoadingUsers, getSelectedUser} from '../../../../auth/state/auth.selectors';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
-import {Observable} from 'rxjs';
 import {getSubStreams} from '../../state/messaging.selectors';
-import {load} from '@syncfusion/ej2-angular-richtexteditor';
 
 
 @Component({
   selector: 'app-individual-messaging-right-panel',
   templateUrl: './individual-messaging-right-panel.component.html',
-  styleUrls: ['./individual-messaging-right-panel.component.scss']
+  styleUrls: ['./individual-messaging-right-panel.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class IndividualMessagingRightPanelComponent implements OnInit {
@@ -111,6 +108,7 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
     this.getCurrentUser();
     this.changeContentOnRouteChange();
 
+    console.log('Right panel loaded');
 
     this.route.queryParams
       .subscribe(params => {

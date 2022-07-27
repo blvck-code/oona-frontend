@@ -186,31 +186,30 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     // stream
     console.log('Stream being filtered ===>> ', stream);
 
-    let streamName = stream?.name;
-    streamName = streamName.replace(/\s+/g, '-').toLowerCase();
-
-    // @Todo change to topic incase user clicks topic instead of stream
-    if (topic) {
-      // topic
-      let topicName = topic?.name;
-      topicName = topicName.replace(/\s+/g, '-').toLowerCase();
-
-      this.router.navigate([`/dashboard/messaging/streams/${stream.stream_id}-${streamName}/topic/${topicName}`]);
-    } else {
-      this.router.navigate([`/dashboard/messaging/streams/${stream.stream_id}-${streamName}`]);
-    }
-
-    const topicName = topic?.name;
-
-    const filterData = {
-      streamId: stream.stream_id,
-      topic: undefined
-    };
-
-    if (topic) {
-      filterData.topic = topicName;
-    }
-    console.log('Clicked stream ===>>', filterData);
+    // let streamName = stream?.name;
+    // streamName = streamName.replace(/\s+/g, '-').toLowerCase();
+    //
+    // // @Todo change to topic incase user clicks topic instead of stream
+    // if (topic) {
+    //   // topic
+    //   let topicName = topic?.name;
+    //   topicName = topicName.replace(/\s+/g, '-').toLowerCase();
+    //
+    //   this.router.navigate([`/dashboard/messaging/streams/${stream.stream_id}-${streamName}/topic/${topicName}`]);
+    // } else {
+    //   this.router.navigate([`/dashboard/messaging/streams/${stream.stream_id}-${streamName}`]);
+    // }
+    //
+    // const topicName = topic?.name;
+    //
+    // const filterData = {
+    //   streamId: stream.stream_id,
+    //   topic: undefined
+    // };
+    //
+    // if (topic) {
+    //   filterData.topic = topicName;
+    // }
     // this.store.dispatch(new messagingActions.FilterMessages(filterData));
 
 

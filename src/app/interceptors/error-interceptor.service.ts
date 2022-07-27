@@ -31,11 +31,13 @@ export class ErrorInterceptorService implements HttpInterceptor{
 
         // Un Authorised User Access
         // Todo change this back to normal
-        // if (errorStatus === 401 || errorStatus === 403) {
-        //   this.store.dispatch(new authActions.LogoutUser());
-        //   localStorage.clear();
-        //   this.route.navigate(['/login']);
-        // }
+        if (errorStatus === 401 || errorStatus === 403) {
+          // this.store.dispatch(new authActions.LogoutUser());
+          // localStorage.clear();
+          // this.route.navigate(['/login']);
+
+          console.log('Authorization error ====>>>', error);
+        }
 
         // Other errors
         if (error instanceof ErrorEvent){

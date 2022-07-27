@@ -120,7 +120,7 @@ export function authReducer(state = initialState, action: any): AuthState {
       return {
         ...state,
         loginStatus: {
-          isLoggedIn: true,
+          isLoggedIn: localStorage.getItem('accessToken') ? true : false,
           isLoading: false,
         },
         userInfo: updateState(),

@@ -125,16 +125,33 @@ export class MessagingEffects{
     )
   );
 
-  @Effect()
-  loadStreamData$: Observable<any> = this.actions$.pipe(
-    ofType<messagingActions.LoadStreamData>(
-      messagingActions.MessagingActionsTypes.LOAD_STREAM_DATA
-    ),
-    map((messages: any) =>
-      new messagingActions.LoadStreamDataSuccess(messages)
-    ),
-    catchError( err => of(new messagingActions.LoadStreamDataFail(err)))
-  );
+  // @Effect()
+  // loadStreamData$: Observable<any> = this.actions$.pipe(
+  //   ofType<messagingActions.LoadStreamData>(
+  //     messagingActions.MessagingActionsTypes.LOAD_STREAM_DATA
+  //   ),
+  //   map((action: messagingActions.LoadStreamData) => action.payload),
+  //   mergeMap((messages: any) =>
+  //     this.messagingSrv.getMessagesOfStream(messages).pipe(
+  //       new messagingActions.LoadStreamDataSuccess(messages)
+  //     )
+  //   ),
+  //   catchError(err => of(new messagingActions.LoadStreamDataFail(err)))
+  // );
+
+  // @Effect()
+  // loadStreamData$: Observable<any> = this.actions$.pipe(
+  //   ofType<messagingActions.LoadStreamData>(
+  //     messagingActions.MessagingActionsTypes.LOAD_STREAM_DATA
+  //   ),
+  //   map(( action: messagingActions.LoadStreamData) => action.payload),
+  //   mergeMap((messages: any) =>
+  //     this.messagingSrv.getMessagesOfStream(messages).pipe(
+  //       new messagingActions.LoadStreamDataSuccess(messages)
+  //     )
+  //   ),
+  //   catchError( err => of(new messagingActions.LoadStreamDataFail(err)))
+  // );
 
   // @Effect()
   // loadPrivateUser$: Observable<any> = this.actions$.pipe(
