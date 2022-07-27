@@ -1,19 +1,22 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {ActivatedRoute, NavigationStart, Router} from '@angular/router';
+import {AfterViewInit, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {ActivatedRoute, NavigationEnd, NavigationExtras, NavigationStart, Router} from '@angular/router';
 import {MessagingService} from '../../services/messaging.service';
+import * as authActions from '../../../../auth/state/auth.actions';
+import {environment} from '../../../../../environments/environment';
 
 import {NotificationService} from '../../../../shared/services/notification.service';
-import {getAllUsers, getLoadingUsers, getSelectedUser} from '../../../../auth/state/auth.selectors';
+import {getAllUsers, getLoadingUsers, getSelectedUser, getZulipUsers} from '../../../../auth/state/auth.selectors';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
+import {Observable} from 'rxjs';
 import {getSubStreams} from '../../state/messaging.selectors';
+import {load} from '@syncfusion/ej2-angular-richtexteditor';
 
 
 @Component({
   selector: 'app-individual-messaging-right-panel',
   templateUrl: './individual-messaging-right-panel.component.html',
-  styleUrls: ['./individual-messaging-right-panel.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./individual-messaging-right-panel.component.scss']
 })
 
 export class IndividualMessagingRightPanelComponent implements OnInit {
@@ -40,6 +43,7 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
   profileCreationDate: any;
   currentUser: any;
 
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -48,14 +52,15 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
     private store: Store<AppState>,
     private change: ChangeDetectorRef
   ) {
+    this.filterURL();
     this.allUsersRegistered();
     this.getAllSubscribers();
   }
 
   allUsersRegistered(): void {
-    // this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
-      // const usersPresent = users.members.filter(user => user?.presence );
-      // this.allUsers = this.messagingService.newListOfUsers(usersPresent);
+    // this.messagingService.getZulipUsers().subscribe((users: { members: any[]; }) => {
+    //   const usersPresent = users.members.filter(user => user?.presence );
+    //   this.allUsers = this.messagingService.newListOfUsers(usersPresent);
     // });
 
     this.store.select(getLoadingUsers).subscribe(
@@ -72,23 +77,33 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
     );
   }
 
-  getCurrentUser(): void {
+  getCurrentUser(userId: number): void {
     // const currentUser = this.route.snapshot.queryParams?.member;
     //
     // const userId = currentUser.split('-')[0];
     // const userName = currentUser.split('-')[1].replace('.', ' ');
     //
-    // if (userId) {
-    //   this.store.select(getAllUsers).subscribe(
-    //     data => {
-    //       // tslint:disable-next-line:no-shadowed-variable
-    //       // this.currentUser = data?.find((user: any) => user.user_id === +userId);
-    //     }
-    //   );
-    // }
+    if (userId) {
+      this.store.select(getAllUsers).subscribe(
+        data => {
+          // tslint:disable-next-line:no-shadowed-variable
+          // this.currentUser = data?.find((user: any) => user.user_id === +userId);
+          const currentUser = data?.filter((user: any) => user.user_id === +userId);
+
+          data?.map((user: any) => {
+            user?.userId === userId ? console.log('User found ===>>>', user) : null;
+          });
+
+          console.log('currentUser ===>>>', userId);
+        }
+      );
+    }
 
     this.store.select(getSelectedUser).subscribe(
-      user => this.currentUser = user
+      user => {
+        this.currentUser = user;
+        console.log('User from state ===>>>', user);
+      }
     );
   }
 
@@ -101,25 +116,24 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
         );
       }
     });
+
   }
 
-
   ngOnInit(): void {
-    this.getCurrentUser();
     this.changeContentOnRouteChange();
+  }
 
-    console.log('Right panel loaded');
-
+  filterURL(): void {
     this.route.queryParams
       .subscribe(params => {
           const userId = params.member.split('-')[0];
           const userName = params.member.split('-')[1].replace('.', ' ');
-          // this.onInitHandler(+userId);
+          this.getCurrentUser(+userId);
+          this.onInitHandler(+userId);
           this.allOtherMembers(userName);
           this.getCommonTeams();
         }
       );
-
   }
 
   onInitHandler(userId: any): void {
@@ -131,13 +145,16 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
         setTimeout( () => {
           // @ts-ignore
           this.allUsers?.forEach((user) => {
-            console.log('User info info ===>>', user);
             if (+user.user_id === +userId){
               this.memberDetails = user;
+              this.currentUser = user;
               this.messagingService.changeMemberDetail(user);
               this.updateProfile();
             }else{
-              this.otherMembers.push(user);
+              this.otherMembers = [...this.otherMembers, user];
+              // this.otherMembers.push(user);
+
+              console.log('Other members ===>>>', this.otherMembers);
             }
           });
         }, 3000);
@@ -165,13 +182,13 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
 
   }
 
-
   goToMemberChat(member: any): void{
     // tslint:disable-next-line:max-line-length
     const userUrl = `${member.user_id}-${member.full_name.replace(/\s/g, '.')}`;
     // this.router.navigate(['dashboard/messaging/narrow'], { queryParams: { member: member.full_name.replace(/\s/g, '') } });
     this.router.navigate(['dashboard/messaging/narrow'], { queryParams: { member: userUrl } });
   }
+
   updateProfile(): void{
     this.messagingService.getOonaMemberDetail(this.memberDetails.email).subscribe((oonaProfileData: { results: any; }) => {
       if (oonaProfileData.results[0]){

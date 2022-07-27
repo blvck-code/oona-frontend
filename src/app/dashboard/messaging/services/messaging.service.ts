@@ -150,6 +150,10 @@ export class MessagingService {
     return this.http.get(this.presentUsers, this.authService.getHeaders());
   }
 
+  getZulipUsers(): Observable<any> {
+    return this.http.get(env.zulipUsers);
+  }
+
   getAllTeams(): any {
     return this.http.get(this.teams, this.authService.getHeaders());
   }
