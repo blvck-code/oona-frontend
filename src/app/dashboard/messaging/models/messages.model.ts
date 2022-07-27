@@ -42,7 +42,7 @@ export interface SingleMessageModel {
       sender_full_name: string;
       sender_email: string;
       sender_realm_str: string;
-      display_recipient: string;
+      display_recipient: any;
       type: string;
       stream_id: number;
       avatar_url: any;

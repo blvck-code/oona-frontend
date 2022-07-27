@@ -190,7 +190,7 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
 
   goToMemberChat(member: any): void{
     // tslint:disable-next-line:max-line-length
-    const userUrl = `${member.user_id}-${member.full_name.replace(/\s/g, '.')}`;
+    const userUrl = `${member.user_id}-${member.full_name.replace(/\s/g, '.').toLowerCase()}`;
     // this.router.navigate(['dashboard/messaging/narrow'], { queryParams: { member: member.full_name.replace(/\s/g, '') } });
     this.router.navigate(['dashboard/messaging/narrow'], { queryParams: { member: userUrl } });
   }
