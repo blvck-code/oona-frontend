@@ -47,7 +47,7 @@ export class MessagingComponent implements OnInit {
 
   ngOnInit(): void {
     this.initPage();
-    this.getStreams();
+    this.getStreamsTopics();
 
     this.authService.getCurrentUser().subscribe((userData: any) => {
       this.firstName = userData.results[0].first_name;
@@ -119,7 +119,7 @@ export class MessagingComponent implements OnInit {
   }
 
   // get streams for left handle
-  getStreams(): void {
+  getStreamsTopics(): void {
     this.streams = this.store.select(getAllStreams);
 
     this.store.select(getAllStreams).subscribe((streams) => {

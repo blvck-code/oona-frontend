@@ -126,6 +126,7 @@ export class LoadAllUsersFail implements Action {
 export class LoadZulipUsers implements Action {
   readonly type = AuthActionsTypes.LOAD_ZULIP_USERS;
   constructor() {
+    console.log('Loading zulip users');
   }
 }
 export class LoadZulipUsersSuccess implements Action {

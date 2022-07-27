@@ -314,6 +314,7 @@ export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getCurrentMembers(): void {
     this.getMeetingDetails();
+
     this.conferenceService.getAllUsers().subscribe(
       (allUsersRes: any) => {
         this.allUsers = allUsersRes.results;

@@ -3,7 +3,7 @@ import {Actions, Effect, ofType} from '@ngrx/effects';
 import { Injectable } from '@angular/core';
 import * as messagingActions from './messaging.actions';
 import { MessagingService } from '../services/messaging.service';
-import { catchError, map, mergeMap } from 'rxjs/operators';
+import {catchError, map, mergeMap, take} from 'rxjs/operators';
 import {MessagesModel} from '../models/messages.model';
 
 @Injectable()
@@ -83,6 +83,7 @@ export class MessagingEffects{
       messagingActions.MessagingActionsTypes.LOAD_PRIVATE_MESSAGES
     ),
     map((action: messagingActions.LoadPrivateMessages) => action.payload),
+    take(1),
     mergeMap((streamDetail: any) =>
       this.messagingSrv.getMessagesOfStream(streamDetail).pipe(
         map((messages: MessagesModel) =>

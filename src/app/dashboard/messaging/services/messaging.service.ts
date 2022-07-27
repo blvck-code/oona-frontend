@@ -50,7 +50,14 @@ export class MessagingService {
     ) {
     this.getAllUsers();
 
-    this.messages = (msgSocket.connect(messageChannel).map(
+    const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+
+    const url: string = env.messageChannel;
+    const messageChannelURL = protocol + url;
+
+    console.log('messageChannelURL ===>>>', messageChannelURL);
+
+    this.messages = (msgSocket.connect(messageChannelURL).map(
       (response: MessageEvent): any => {
         const data = JSON.parse(response.data);
         console.log('Received message ===>>>', data);

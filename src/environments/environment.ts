@@ -2,15 +2,15 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-// export const oonaBaseUrl = 'http://192.168.0.100:8000';
 export const apiURL = 'https://192.168.0.';
-export const basePort = '42';
+export const basePort = '100';
 // export const oonaBaseUrl = 'https://192.168.0.100:2443';
 export const oonaBaseUrl = `${apiURL}${basePort}:2443`;
-export const userChannel = 'ws://192.168.0.42:2443/ws/on/event/';
-export const messageChannel = 'ws://192.168.0.42:2443/ws/on/message/';
+export const channelBaseUrl = '192.168.0.100:2443';
+export const userChannel = 'wss://192.168.0.100:2443/ws/on/event/';
+export const messageChannel = 'wss://192.168.0.100:2443/ws/on/message/';
 export const firmName = '8teq';
-export const domain = '192.168.0.42:8443';
+export const domain = '192.168.0.100:8443';
 const whiteBoard = 'http://192.168.0.37:8030';
 const etherPad = 'http://192.168.0.37:9001/';
 
@@ -59,6 +59,8 @@ export const environment = {
   domain: apiURL + basePort + ':8443',
   whiteBoard: 'http://192.168.0.37:8030',
   etherPad: 'http://192.168.0.37:9001/',
+  userChannel: channelBaseUrl + '/ws/on/event/',
+  messageChannel: channelBaseUrl + '/ws/on/message/',
 
   // Chat
   // sendStreamMessageWithFileURL: oonaBaseUrl + '/api/v1/message/stream/file',

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import {messageChannel, userChannel} from '../../../../environments/environment';
+import {messageChannel} from '../../../../environments/environment';
 import {AuthService} from '../../../auth/services/auth.service';
 import {MessagingService} from './messaging.service';
 import { webSocket } from 'rxjs/webSocket';
+import { environment as env } from '../../../../environments/environment';
 
 // NgRx
 import {Store} from '@ngrx/store';
@@ -79,19 +80,16 @@ export class OonaSocketService {
     /**
      * Creates a websocket connection to the user channel
      */
+    const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+
+    const url: string = env.userChannel;
+    const userChannel = protocol + url;
+
+    console.log('userChannel URL ===>>>', userChannel);
+
     this.websocket = new WebSocket(userChannel, this.authService.getToken());
     console.log('Events sockets successfully connected: ', userChannel);
   }
-
-  // msgConnect(): void {
-  //   /**
-  //    * Creates a websocket connection to the user channel
-  //    */
-  //   this.websocket = new WebSocket(messageChannel, this.authService.getToken());
-  //   console.log('Message sockets connected');
-  // }
-
-
 
   filterSocketData(userData: any): void {
     /*

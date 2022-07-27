@@ -54,9 +54,9 @@ export class LandingMessagingRightPanelComponent implements OnInit {
     this.messagingService.getUsersByAvailability().subscribe(
       (users: any) => {
         // @Todo Delete console log
-        // const usersPresent = users.members.filter((user) => user.presence);
-        // this.allUsers = this.newListOfUsers(usersPresent);
-        this.allUsers = users;
+        const usersPresent = users.members.filter((user: any) => user.presence);
+        this.allUsers = this.newListOfUsers(usersPresent);
+        // this.allUsers = users;
       },
       // @ts-ignore
       (error) => {
@@ -72,17 +72,15 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   onInitPage(): void {
    this.store.select(getAllUsers).subscribe((users) => {
 
-     const usersPresent = users?.filter((user: any) => user.presence );
      // Todo change this back to active users and present users
-     // this.allUsers = this.newListOfUsers(usersPresent);
-     this.allUsers = users;
+     const usersPresent = users?.filter((user: any) => user.presence );
+     this.allUsers = this.newListOfUsers(usersPresent);
+     // this.allUsers = users;
    });
   }
 
   goToMemberChat(member: any): void {
 
-    this.store.dispatch(new authActions.SetSelectedUser(member));
-    localStorage.setItem('privateMsg', member.email);
 
     const userUrl = `${member.user_id}-${member.full_name
       .toLowerCase()
@@ -91,6 +89,9 @@ export class LandingMessagingRightPanelComponent implements OnInit {
     this.router.navigate(['dashboard/messaging/narrow'], {
       queryParams: { member: userUrl },
     });
+
+    this.store.dispatch(new authActions.SetSelectedUser(member));
+
   }
 
   newListOfUsers(usersPresent: any): any[] {
