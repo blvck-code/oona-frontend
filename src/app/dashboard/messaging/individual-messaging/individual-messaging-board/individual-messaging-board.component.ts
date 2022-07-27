@@ -48,7 +48,7 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
 
   ngOnInit(): void {
     this.getIndividualUser();
-    // this.changeContentOnRouteChange();
+    this.changeContentOnRouteChange();
 
     this.messagingService.currentMemberChatDetail.subscribe(member => {
       this.memberDetail = member;
@@ -96,12 +96,12 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
   }
 
   changeContentOnRouteChange(): void {
-    // @ts-ignore
-    this.route.events.subscribe((event: Event) => {
+    this.router.events.subscribe((event: any) => {
       if (event instanceof NavigationStart) {
         console.log('Route change start');
         // this.getSelectedUser();
-        this.messages$ = this.store.select(getPrivateMessages);
+        // this.messages$ = this.store.select(getPrivateMessages);
+        this.ngOnInit();
       }
     });
   }
@@ -201,13 +201,13 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
   }
 
   sendMessageToIndividual(message: any): void {
-    console.log('Message content ==>>> ', message);
-
     const markdown = turndownService.turndown(message);
+
+    // let userId = this.selectedUserId
 //
     // console.log('markdown', markdown);
     const messageDetail = {
-      to: [this.memberDetail.user_id],
+      to: [this.operand?.user_id],
       content: markdown
     };
     console.log('Message final content ===>>> ', messageDetail);

@@ -20,7 +20,7 @@ import {load} from '@syncfusion/ej2-angular-richtexteditor';
 })
 
 export class IndividualMessagingRightPanelComponent implements OnInit {
-  otherMembers: any ;
+  // otherMembers: any ;
   allUsers: any;
   loadingUsers = false;
   // serverUrl = environment.oona;
@@ -43,6 +43,7 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
   oonaProfile: any ;
   profileCreationDate: any;
   currentUser: any;
+  currentUser$!: Observable<any>;
   zulipUsers$!: Observable<any>;
 
 
@@ -133,59 +134,59 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
           const userId = params.member.split('-')[0];
           const userName = params.member.split('-')[1].replace('.', ' ');
           this.getCurrentUser(+userId);
-          this.onInitHandler(+userId);
-          this.allOtherMembers(userName);
+          // this.onInitHandler(+userId);
+          // this.allOtherMembers(userName);
           this.getCommonTeams();
         }
       );
   }
 
-  onInitHandler(userId: any): void {
-    this.otherMembers = [];
-    this.store.select(getAllUsers).subscribe(
+  // onInitHandler(userId: any): void {
+  //   this.otherMembers = [];
+  //   this.store.select(getAllUsers).subscribe(
+  //
+  //     data => {
+  //
+  //       setTimeout( () => {
+  //         // @ts-ignore
+  //         this.allUsers?.forEach((user) => {
+  //           if (+user.user_id === +userId){
+  //             this.memberDetails = user;
+  //             this.currentUser = user;
+  //             this.messagingService.changeMemberDetail(user);
+  //             this.updateProfile();
+  //           }else{
+  //             this.otherMembers = [...this.otherMembers, user];
+  //             // this.otherMembers.push(user);
+  //
+  //             console.log('Other members ===>>>', this.otherMembers);
+  //           }
+  //         });
+  //       }, 3000);
+  //     }
+  //   );
+  //   this.allUsers?.map((user: any) => console.log('User info: ', user));
+  // }
 
-      data => {
-
-        setTimeout( () => {
-          // @ts-ignore
-          this.allUsers?.forEach((user) => {
-            if (+user.user_id === +userId){
-              this.memberDetails = user;
-              this.currentUser = user;
-              this.messagingService.changeMemberDetail(user);
-              this.updateProfile();
-            }else{
-              this.otherMembers = [...this.otherMembers, user];
-              // this.otherMembers.push(user);
-
-              console.log('Other members ===>>>', this.otherMembers);
-            }
-          });
-        }, 3000);
-      }
-    );
-    this.allUsers?.map((user: any) => console.log('User info: ', user));
-  }
-
-  allOtherMembers(memberName: string): void{
-    this.otherMembers = [];
-
-    setTimeout( () => {
-      // @ts-ignore
-      this.allUsers?.forEach((user) => {
-        // @ts-ignore
-        if (user.full_name.replace(/\s/g, '') === memberName){
-          this.memberDetails = user;
-          this.messagingService.changeMemberDetail(user);
-          this.updateProfile();
-        }else{
-          this.otherMembers = [...this.otherMembers, user];
-          // this.otherMembers.push(user);
-        }
-      });
-    }, 3000);
-
-  }
+  // allOtherMembers(memberName: string): void{
+  //   this.otherMembers = [];
+  //
+  //   setTimeout( () => {
+  //     // @ts-ignore
+  //     this.allUsers?.forEach((user) => {
+  //       // @ts-ignore
+  //       if (user.full_name.replace(/\s/g, '') === memberName){
+  //         this.memberDetails = user;
+  //         this.messagingService.changeMemberDetail(user);
+  //         this.updateProfile();
+  //       }else{
+  //         this.otherMembers = [...this.otherMembers, user];
+  //         // this.otherMembers.push(user);
+  //       }
+  //     });
+  //   }, 3000);
+  //
+  // }
 
   goToMemberChat(member: any): void{
     // tslint:disable-next-line:max-line-length
