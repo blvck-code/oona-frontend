@@ -116,6 +116,7 @@ export class OonaSocketService {
     // }
     // }
 
+    console.log('Socket data ===>>>', socketData);
     if (socketData.message.type === 'presence'){
         // console.log('pushing user presence data');
         this.recognizedUsers.push(socketData);

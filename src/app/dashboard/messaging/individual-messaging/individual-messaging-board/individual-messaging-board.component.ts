@@ -140,7 +140,7 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
 
       this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
           console.log('Individual messages ===>>>', response);
-          this.messagesWithPerson = response.zulip.messages;
+          this.messagesWithPerson = response?.zulip?.messages;
           this.scrollBottom();
           // @ts-ignore
           // document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
@@ -157,14 +157,13 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
 
     this.store.select(getPrivateMessages).subscribe(
       (response: any) => {
-        console.log('Messages ====>>>', response)
+        console.log('Messages with the person ====>>>', response);
 
-        this.messagesWithPerson = response.zulip.messages;
+        // this.messagesWithPerson = response.zulip.messages;
+        this.messagesWithPerson = response;
       }
     );
-
-    // @ts-ignore
-    document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+    this.scrollBottom();
   }
 
   privateMessages(): void{
@@ -183,14 +182,16 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
     // get Selected User
     // this.getSelectedUser();
 
+    this.scrollBottom();
     // @ts-ignore
-    document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+    // document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
 
     this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
         console.log('Individual messages ===>>>', response);
         this.messagesWithPerson = response.zulip.messages;
         // @ts-ignore
-        document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+        this.scrollBottom();
+        // document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
         // this.sortMessageDates();
       } ,
       (error: any) => {
@@ -291,15 +292,6 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
     }
   }
 
-  scrollBottom(): any {
-    // Todo Add scroll effect
-    if (this.endPrivateChat) {
-      this.endPrivateChat.nativeElement.scrollIntoView({ behavior: 'smooth'});
-      // @ts-ignore
-      document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
-    }
-  }
-
   getLatestMessage(): void {
     const streamDetail = {
       anchor: 'newest',
@@ -327,5 +319,14 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
     setInterval(() => {
       // this.getLatestMessage();
     }, 60000);
+  }
+
+  scrollBottom(): any {
+    // Todo Add scroll effect
+    if (this.endPrivateChat) {
+      this.endPrivateChat.nativeElement.scrollIntoView({ behavior: 'smooth'});
+      // @ts-ignore
+      // document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+    }
   }
 }

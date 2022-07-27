@@ -5,7 +5,7 @@ import * as authActions from '../../../../auth/state/auth.actions';
 import {environment} from '../../../../../environments/environment';
 
 import {NotificationService} from '../../../../shared/services/notification.service';
-import {getAllUsers, getLoadingUsers, getSelectedUser, getZulipUsers} from '../../../../auth/state/auth.selectors';
+import {getAllUsers, getLoadingUsers, getSelectedUser, getZulipUsers, getZulipUsersMembers} from '../../../../auth/state/auth.selectors';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
 import {Observable} from 'rxjs';
@@ -22,6 +22,7 @@ import {load} from '@syncfusion/ej2-angular-richtexteditor';
 export class IndividualMessagingRightPanelComponent implements OnInit {
   otherMembers: any ;
   allUsers: any;
+  loadingUsers = false;
   // serverUrl = environment.oona;
   commonTeams = Array();
   memberDetails = {
@@ -42,6 +43,7 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
   oonaProfile: any ;
   profileCreationDate: any;
   currentUser: any;
+  zulipUsers$!: Observable<any>;
 
 
   constructor(
@@ -63,18 +65,21 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
     //   this.allUsers = this.messagingService.newListOfUsers(usersPresent);
     // });
 
-    this.store.select(getLoadingUsers).subscribe(
-      loading => {
-        if (!loading) {
-          this.store.select(getAllUsers).subscribe(
-            users => {
-              const usersPresent = users?.filter((user: any) => user?.presence );
-              this.allUsers = this.messagingService.newListOfUsers(usersPresent);
-            }
-          );
-        }
-      }
-    );
+    this.zulipUsers$ = this.store.select(getZulipUsers);
+
+    // this.store.select(getLoadi).subscribe(
+    //   loading => {
+    //     if (!loading) {
+    //       this.store.select(getZulipUsers).subscribe(
+    //         users => {
+    //           console.log('Zulip users ===>>>', users);
+    //           const usersPresent = users?.filter((user: any) => user?.presence );
+    //           this.allUsers = this.messagingService.newListOfUsers(usersPresent);
+    //         }
+    //       );
+    //     }
+    //   }
+    // );
   }
 
   getCurrentUser(userId: number): void {
@@ -102,7 +107,6 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
     this.store.select(getSelectedUser).subscribe(
       user => {
         this.currentUser = user;
-        console.log('User from state ===>>>', user);
       }
     );
   }
@@ -175,7 +179,8 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
           this.messagingService.changeMemberDetail(user);
           this.updateProfile();
         }else{
-          this.otherMembers.push(user);
+          this.otherMembers = [...this.otherMembers, user];
+          // this.otherMembers.push(user);
         }
       });
     }, 3000);
