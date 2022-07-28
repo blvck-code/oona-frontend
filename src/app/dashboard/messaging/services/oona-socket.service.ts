@@ -10,6 +10,7 @@ import { environment as env } from '../../../../environments/environment';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../state/app.state';
 import * as authActions from '../../../auth/state/auth.actions';
+import {take} from 'rxjs/operators';
 
 const msgSocket = webSocket(messageChannel);
 
@@ -116,7 +117,7 @@ export class OonaSocketService {
     // }
     // }
 
-    console.log('Socket data ===>>>', socketData);
+    console.log('Socket data first time ===>>>', socketData);
 
     if (socketData.message.type === 'presence'){
       // console.log('pushing user presence data');
@@ -168,7 +169,7 @@ export class OonaSocketService {
   userManagement(): void {
     // @ts-ignore
     this.websocket.onmessage = (evt) => {
-      // console.log('Web socket message ====>>>', evt);
+      console.log('Web socket message ====>>>', evt);
       this.filterSocketData(evt.data);
     };
 
@@ -199,8 +200,9 @@ export class OonaSocketService {
       this.messagesToStreams = this.messagesToStreams.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i); // have unique messages by id
       this.changeNewStreamMessageCount(this.removeLoggedInUserMessages(this.messagesToStreams));
     }else if (socketData.message.message.type === 'private'){
+      take(1),
+      console.log('Private message sent');
       this.messagesInPrivate.push(socketData.message.message);
-
       this.messagesInPrivate = this.messagesInPrivate.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
       this.changeNewPrivateMessageCount(this.removeLoggedInUserMessages(this.messagesInPrivate));
     }
