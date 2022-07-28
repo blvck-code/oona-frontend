@@ -33,7 +33,7 @@ export class OonaSocketService {
   streamMessageSocket = this.streamMessageCountSocket.asObservable();
 
   messagesInPrivate = Array();
-  private privateMessageCountSocket = new BehaviorSubject(this.messagesInPrivate);
+  privateMessageCountSocket = new BehaviorSubject(this.messagesInPrivate);
   privateMessageSocket = this.privateMessageCountSocket.asObservable();
 
   peopleType = Array();
@@ -66,7 +66,7 @@ export class OonaSocketService {
   }
 
   changeNewPrivateMessageCount(newPrivateMessages: any): void {
-    console.log('newPrivateMessages ==>>', newPrivateMessages);
+    console.log('changeNewPrivateMessageCount ==>>', newPrivateMessages);
     this.privateMessageCountSocket.next(newPrivateMessages);
   }
 
@@ -116,30 +116,32 @@ export class OonaSocketService {
     // }
     // }
 
-    if (socketData.message.type === 'presence'){
-        // console.log('pushing user presence data');
-        this.recognizedUsers.push(socketData);
-      } else if (socketData.message.type === 'message'){
-        // console.log('message', socketData);
-        this.setMessageType(socketData);
-        // this.newMessages.push(socketData);
-        // create a new set unique by message id
-        // this.newMessagesUnique = new Set(this.newMessages.map(item => item.message.message.id));
-        this.newMessageCount = this.newMessages.length;
-        this.changeNewMessageCount(this.newMessageCount);
+    console.log('Socket data ===>>>', socketData);
 
-      } else if (socketData.message.type === 'update_message_flags'){
-        // how many messages have been read
-        const messagesRead = socketData.message.messages.length;
-        this.newMessageCount = this.newMessageCount - messagesRead;
-        const newRead = this.newMessageCount - messagesRead;
-        if (newRead < 0){
-          this.newMessageCount = 0;
-          this.changeNewMessageCount(this.newMessageCount);
-        }else{
-          this.changeNewMessageCount(this.newMessageCount);
-        }
-      }else if (socketData.message.type === 'typing'){
+    if (socketData.message.type === 'presence'){
+      // console.log('pushing user presence data');
+      this.recognizedUsers.push(socketData);
+    } else if (socketData.message.type === 'message'){
+      // console.log('message', socketData);
+      this.setMessageType(socketData);
+      // this.newMessages.push(socketData);
+      // create a new set unique by message id
+      // this.newMessagesUnique = new Set(this.newMessages.map(item => item.message.message.id));
+      this.newMessageCount = this.newMessages.length;
+      this.changeNewMessageCount(this.newMessageCount);
+
+    } else if (socketData.message.type === 'update_message_flags'){
+      // how many messages have been read
+      const messagesRead = socketData.message.messages.length;
+      this.newMessageCount = this.newMessageCount - messagesRead;
+      const newRead = this.newMessageCount - messagesRead;
+      if (newRead < 0){
+        this.newMessageCount = 0;
+        this.changeNewMessageCount(this.newMessageCount);
+      }else{
+        this.changeNewMessageCount(this.newMessageCount);
+      }
+    }else if (socketData.message.type === 'typing'){
       const typeData = {
         userId: socketData.message.sender.user_id,
         userEmail: socketData.message.sender.email,

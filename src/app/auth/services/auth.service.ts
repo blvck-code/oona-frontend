@@ -163,11 +163,11 @@ export class AuthService {
   }
 
   getAllUsers(): Observable<any>{
-    return this.http.get(env.presentUsers);
+    return this.http.get(env.presentUsers, this.getToken());
   }
 
   getUsersByAvailability(): any {
-    return this.http.get(env.presentUsers);
+    return this.http.get(env.presentUsers, this.getToken());
   }
 
   getAllUser(): any {
@@ -175,7 +175,7 @@ export class AuthService {
   }
 
   getZulipUsers(): Observable<any> {
-    return this.http.get(env.zulipUsers);
+    return this.http.get(env.zulipUsers, this.getToken());
   }
 
 }
