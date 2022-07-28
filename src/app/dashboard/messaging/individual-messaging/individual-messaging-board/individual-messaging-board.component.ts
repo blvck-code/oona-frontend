@@ -127,7 +127,13 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
   incomingMessage(): void {
     this.userSocketService.privateMessageSocket.subscribe(
-        newMsg => console.log('New message from component ===>>>', newMsg)
+        newMsgs => {
+          newMsgs.map(msg => {
+            this.messagesWithPerson.push(msg);
+            this.scrollBottom();
+            console.log('New messages list ===>>>', this.messagesWithPerson);
+          });
+        }
     );
 
     this.messagesSubject$.subscribe(
