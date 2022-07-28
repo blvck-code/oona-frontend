@@ -6,6 +6,7 @@ import {AppState} from './state/app.state';
 import * as authActions from './auth/state/auth.actions';
 import * as sharedActions from './shared/state/shared.actions';
 import {getIsLoggedIn} from './auth/state/auth.selectors';
+import {OonaSocketService} from './dashboard/messaging/services/oona-socket.service';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     private store: Store<AppState>,
+    private sockets: OonaSocketService
   ) {
   }
 
@@ -41,6 +43,5 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.updateState();
   }
-
 
 }
