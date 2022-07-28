@@ -11,6 +11,7 @@ import {Store} from '@ngrx/store';
 import {AppState} from '../../../state/app.state';
 import * as authActions from '../../../auth/state/auth.actions';
 import {take} from 'rxjs/operators';
+import {getSelectedUser} from '../../../auth/state/auth.selectors';
 
 const msgSocket = webSocket(messageChannel);
 
@@ -18,6 +19,14 @@ const msgSocket = webSocket(messageChannel);
   providedIn: 'root'
 })
 export class OonaSocketService {
+
+  allMessagesCounter = 0;
+  allMsgCounterSubject = new BehaviorSubject<number>(this.allMessagesCounter);
+  allMsgCounter = this.allMsgCounterSubject.asObservable();
+
+  privateMessagesCounter = 0;
+  privateMsgCounterSubject = new BehaviorSubject<number>(this.privateMessagesCounter);
+  privateMsgCounter = this.privateMsgCounterSubject.asObservable();
 
   public recognizedUsers = Array();
   private usersSocket = new BehaviorSubject(this.recognizedUsers);
@@ -36,6 +45,10 @@ export class OonaSocketService {
   messagesInPrivate = Array();
   privateMessageCountSocket = new BehaviorSubject(this.messagesInPrivate);
   privateMessageSocket = this.privateMessageCountSocket.asObservable();
+
+  myMessages = Array();
+  myMessagesSocketSubject = new BehaviorSubject(this.myMessages);
+  myMessagesSocket = this.myMessagesSocketSubject.asObservable();
 
   peopleType = Array();
   public typingStatus = Array();
@@ -124,6 +137,7 @@ export class OonaSocketService {
       this.recognizedUsers.push(socketData);
     } else if (socketData.message.type === 'message'){
       // console.log('message', socketData);
+      this.allMsgCounterSubject.next(this.allMessagesCounter + 1);
       this.setMessageType(socketData);
       // this.newMessages.push(socketData);
       // create a new set unique by message id
@@ -169,13 +183,12 @@ export class OonaSocketService {
   userManagement(): void {
     // @ts-ignore
     this.websocket.onmessage = (evt) => {
-      console.log('Web socket message ====>>>', evt);
       this.filterSocketData(evt.data);
     };
 
     // @ts-ignore
     this.websocket.onclose = (evt) => {
-      // console.log('Web socket closed');
+      console.log('Web socket closed');
       setTimeout(() => {
         this.connect();
       }, 1000);
@@ -200,11 +213,20 @@ export class OonaSocketService {
       this.messagesToStreams = this.messagesToStreams.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i); // have unique messages by id
       this.changeNewStreamMessageCount(this.removeLoggedInUserMessages(this.messagesToStreams));
     }else if (socketData.message.message.type === 'private'){
-      take(1),
-      console.log('Private message sent');
-      this.messagesInPrivate.push(socketData.message.message);
-      this.messagesInPrivate = this.messagesInPrivate.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
-      this.changeNewPrivateMessageCount(this.removeLoggedInUserMessages(this.messagesInPrivate));
+      this.privateMsgCounterSubject.next(this.privateMessagesCounter + 1);
+
+      const currentUserId =  this.loggedInUserProfile?.user_id;
+      const msgSenderId = socketData.message?.message?.sender_id;
+
+      if (msgSenderId === currentUserId){
+        this.myMessagesSocketSubject.next(socketData.message.message);
+      } else {
+        this.messagesInPrivate.push(socketData.message.message);
+        this.messagesInPrivate = this.messagesInPrivate.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
+
+        console.log('His messages list ===>>>', this.messagesInPrivate);
+        this.changeNewPrivateMessageCount(this.removeLoggedInUserMessages(this.messagesInPrivate));
+      }
     }
 
     this.newMessages = this.removeLoggedInUserMessages([...this.messagesToStreams, ...this.messagesInPrivate]);

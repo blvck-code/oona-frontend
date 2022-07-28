@@ -51,10 +51,9 @@ export class IndividualMessagingBoardComponent implements OnInit {
   @ViewChild('endPrivateChat') endPrivateChat: ElementRef | undefined;
 
   ngOnInit(): void {
-    console.log('This component was initialized ASAP');
     this.getIndividualUser();
     this.changeContentOnRouteChange();
-    this.incomingMessage();
+    this.inComingMessage();
 
     this.messagingService.currentMemberChatDetail.subscribe(member => {
       this.memberDetail = member;
@@ -69,7 +68,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
       console.log('Sockets finally works ===>>>', messages);
       if (this.newMessagesCount !== messages){
         // get new messages
-        this.privateMessages();
+        // this.privateMessages();
         this.newMessagesCount = messages;
       }
     });
@@ -113,20 +112,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
     });
   }
 
-  incomingMessage(): void {
-      take(1),
-      this.userSocketService.privateMessageSocket.subscribe(
-        newMsgs => {
-          newMsgs.map(msg => {
-            this.messagesWithPerson.push(msg);
-            this.change.detectChanges();
-            this.scrollBottom();
-            console.log('New messages list ===>>>', this.messagesWithPerson);
-          });
-        }
-    );
-  }
-
   getIndividualUser(): void {
     this.store.select(getSelectedUser).subscribe(
       user => {
@@ -161,9 +146,9 @@ export class IndividualMessagingBoardComponent implements OnInit {
       };
 
       this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
-          console.log('Individual messages ===>>>', response);
-          this.messagesSubject$.next(response?.zulip?.messages);
           this.messagesWithPerson = response?.zulip?.messages;
+          this.messagesSubject$.next(response?.zulip.messages);
+
           this.change.detectChanges();
         } ,
         (error: any) => {
@@ -193,7 +178,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
     this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
         console.log('Individual messages ===>>>', response);
-        this.messagesSubject$.next(response?.zulip?.messages);
+        // this.messagesSubject$.next(response?.zulip?.messages);
 
         this.scrollBottom();
         this.change.detectChanges();
@@ -209,6 +194,45 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.change.detectChanges();
   }
 
+  inComingMessage(): void {
+    let newMsgArray = Array();
+    this.userSocketService.privateMessageCountSocket.subscribe(
+      prvMsg => {
+        prvMsg.map(msg => {
+
+          newMsgArray = [...newMsgArray, msg];
+          newMsgArray.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
+
+          this.messagesWithPerson.push(msg);
+          this.change.detectChanges();
+          this.scrollBottom();
+          console.log('New unique list of message ===>>>', newMsgArray);
+        });
+      }
+    );
+  }
+
+  outGoingMsg(): void{
+    this.userSocketService.myMessagesSocketSubject.subscribe(
+      (msg: any) => {
+        console.log('My sent message content ===>>>', msg);
+        // this.messagesWithPerson.push(myMsg);
+        // this.messagesWithPerson.push(msg);
+        this.messagesSubject$.subscribe( messages => {
+          messages.push(msg);
+          this.change.detectChanges();
+          this.scrollBottom();
+          }
+        );
+
+        this.messagesSubject$.subscribe(
+          messages => console.log('New messages list ===>>', messages)
+        );
+
+      }
+    );
+  }
+
   sendMessageToIndividual(message: any): void {
     const markdown = turndownService.turndown(message);
 
@@ -220,6 +244,8 @@ export class IndividualMessagingBoardComponent implements OnInit {
       content: markdown
     };
     console.log('Message final content ===>>> ', messageDetail);
+    this.outGoingMsg();
+    // Todo uncomment to send message to backend
     this.messagingService.sendIndividualMessage(messageDetail).subscribe((response: any) => {
       // re-fetch messages with pm
     });
