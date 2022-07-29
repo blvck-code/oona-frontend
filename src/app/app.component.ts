@@ -7,6 +7,7 @@ import * as authActions from './auth/state/auth.actions';
 import * as sharedActions from './shared/state/shared.actions';
 import {getIsLoggedIn} from './auth/state/auth.selectors';
 import {OonaSocketService} from './dashboard/messaging/services/oona-socket.service';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -15,10 +16,12 @@ import {OonaSocketService} from './dashboard/messaging/services/oona-socket.serv
 })
 export class AppComponent implements OnInit {
   title = 'oona';
+  navTitle = '';
 
   constructor(
     private store: Store<AppState>,
-    private sockets: OonaSocketService
+    private sockets: OonaSocketService,
+    private route: ActivatedRoute,
   ) {
   }
 
@@ -40,8 +43,19 @@ export class AppComponent implements OnInit {
     );
   }
 
+  tabNotification(): void {
+    let unreadMessages = 0;
+
+    this.sockets.messageCount.subscribe(
+      (unreadMsg: number) => {
+        unreadMsg > 0 ? unreadMessages = unreadMsg : null;
+      }
+    );
+  }
+
   ngOnInit(): void {
     this.updateState();
+    this.tabNotification();
   }
 
 }

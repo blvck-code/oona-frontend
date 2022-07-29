@@ -153,7 +153,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
       this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
           this.messagesWithPerson = response?.zulip?.messages;
-          console.log('Message content ===>>>', response.zulip.messages)
+          console.log('Message content ===>>>', response.zulip.messages);
           this.updateMessageId();
           this.messagesSubject$.next(response?.zulip.messages);
 
@@ -207,6 +207,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
   inComingMessage(): void {
     this.userSocketService.privateMessageCountSocket.subscribe(
       prvMsg => {
+        console.log('Unread messages for particular user dm ===>>>', prvMsg.length);
         prvMsg.map(msg => {
 
           if (this.messagesId.includes(msg.id)){
@@ -228,6 +229,10 @@ export class IndividualMessagingBoardComponent implements OnInit {
         this.messagesSubject$.subscribe( messages => {
 
           if (this.messagesId.includes(msg.id)){
+            return;
+          }
+
+          if (!msg.id){
             return;
           }
 
