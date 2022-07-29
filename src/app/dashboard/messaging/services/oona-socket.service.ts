@@ -12,6 +12,7 @@ import {AppState} from '../../../state/app.state';
 import * as authActions from '../../../auth/state/auth.actions';
 import {take} from 'rxjs/operators';
 import {getSelectedUser} from '../../../auth/state/auth.selectors';
+import {ActivatedRoute, Event, Params, Router} from '@angular/router';
 
 const msgSocket = webSocket(messageChannel);
 
@@ -35,7 +36,7 @@ export class OonaSocketService {
   newMessages = Array();
   newMessagesUnique = new Set();
   newMessageCount = 0;
-  private messageCountSocket = new BehaviorSubject(this.newMessageCount);
+  messageCountSocket = new BehaviorSubject(this.newMessageCount);
   messageCount = this.messageCountSocket.asObservable();
 
   messagesToStreams = Array();
@@ -62,6 +63,7 @@ export class OonaSocketService {
   constructor(
     private authService: AuthService,
     private messagingService: MessagingService,
+    private route: Router,
     private store: Store<AppState>
   ) {
     this.getCurrentProfile();
@@ -92,6 +94,12 @@ export class OonaSocketService {
   changeTypingStatus(status: any): void {
     console.log('Typing status ==>>', status);
     this.typingStatusSocket.next(status);
+  }
+
+  getCurrentURL(): void {
+    this.route.events.subscribe((params: Params) => {
+      console.log('Latest URL content ===>>>', params)
+    });
   }
 
 

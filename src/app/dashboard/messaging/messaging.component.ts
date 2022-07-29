@@ -15,6 +15,7 @@ import { MessagingService } from './services/messaging.service';
 import * as sharedActions from '../../shared/state/shared.actions';
 import * as authActions from '../../auth/state/auth.actions';
 import {getAllUsers} from '../../auth/state/auth.selectors';
+import {Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-messaging',
@@ -38,6 +39,7 @@ export class MessagingComponent implements OnInit {
     private messageSocket: MessagesSocketService,
     private store: Store<AppState>,
     public messagingService: MessagingService,
+    private titleService: Title
   ) {
     // this.messageSocket.messageConnect();
     this.messagingService.messages.subscribe(msg => {
