@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import { Title } from '@angular/platform-browser';
 
 // NgRx
 import {Store} from '@ngrx/store';
@@ -22,6 +23,7 @@ export class AppComponent implements OnInit {
     private store: Store<AppState>,
     private sockets: OonaSocketService,
     private route: ActivatedRoute,
+    private titleService: Title
   ) {
   }
 
@@ -46,7 +48,7 @@ export class AppComponent implements OnInit {
   tabNotification(): void {
     let unreadMessages = 0;
 
-    this.sockets.messageCount.subscribe(
+    this.sockets.messageCountSocket.subscribe(
       (unreadMsg: number) => {
         unreadMsg > 0 ? unreadMessages = unreadMsg : null;
       }
@@ -56,6 +58,19 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.updateState();
     this.tabNotification();
+    this.updateTabNotification();
+  }
+
+  updateTabNotification(): void {
+    this.sockets.messageCountSocket.subscribe(
+      msg => {
+        if (msg > 0) {
+          this.titleService.setTitle(`(${msg}) - AVL - Oona`);
+        } else {
+          this.titleService.setTitle(`AVL - Oona`);
+        }
+      }
+    );
   }
 
 }

@@ -96,7 +96,15 @@
         font-size: 14px;
         font-weight: 500;
         margin-right: 15px;
+        display: flex;
+        flex-direction: column;
+
+        .typing {
+          font-size: 12px;
+          color: #1f78fd;
+        }
       }
+
       .member-role {
         width: max-content;
         border-radius: 60px;
