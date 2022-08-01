@@ -40,6 +40,7 @@
     "ngx-emoji-picker": "^0.1.6",
     "ngx-showdown": "^6.0.0",
     "ngx-toastr": "^14.0.0",
+    "onesignal-ngx": "^1.0.2",
     "rxjs": "~6.6.0",
     "showdown": "^1.9.1",
     "socket.io-client": "^4.5.1",
