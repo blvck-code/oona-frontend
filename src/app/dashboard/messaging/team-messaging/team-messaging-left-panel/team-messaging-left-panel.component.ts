@@ -85,7 +85,12 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   }
 
   getPrivateUnreadMsgs(): void {
-    this.unreadsSubject$.next(this.userSocketService.messagesInPrivate.length);
+    this.userSocketService.messageCountSocket.subscribe(
+      newMessage => {
+        this.unreads = newMessage;
+        console.log('New messages ===>>>', newMessage);
+      }
+    );
   }
 
   initPage(): void {

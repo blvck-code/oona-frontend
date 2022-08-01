@@ -73,8 +73,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.userSocketService.messageCount.subscribe(messages => {
       console.log('Sockets finally works ===>>>', messages);
       if (this.newMessagesCount !== messages){
-        // get new messages
-        // this.privateMessages();
         this.newMessagesCount = messages;
       }
     });
@@ -112,8 +110,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.router.events.subscribe((event: any) => {
       if (event instanceof NavigationStart) {
         console.log('Route change start');
-        // this.getSelectedUser();
-        // this.messages$ = this.store.select(getPrivateMessages);
         this.ngOnInit();
       }
     });
@@ -250,31 +246,26 @@ export class IndividualMessagingBoardComponent implements OnInit {
   // resets unread messages to zero when page in loaded
   resetDmUnreads(): void {
 
-    // this.userSocketService.privateMessageSocket.subscribe(
-    //   newMessage => console.log('New message from socket ===>>>', newMessage)
-    // );
-
     this.userSocketService.privateMessageSocket.subscribe(
       newMessage => {
-        console.log('Private messages in array ===>>>>', newMessage);
-        console.log('Current dm user id ===>>>>', this.operand?.user_id);
-
+        console.log('Before updating messages in array ===>>>>', newMessage);
         const dmMsg = newMessage.filter(msg => +msg.sender_id === +this.operand?.user_id);
-
         newMessage.map(msg => {
-          if (msg.sender_id === +this.operand?.user_id){
+          if (msg.sender_id === +this.operand?.user_id) {
             newMessage.splice(msg);
           }
         });
-
-        console.log('Updated   messages in array ===>>>>', newMessage);
-
-
         console.log('This users dm message ===>>>', dmMsg);
         console.log('Length of this dm messages ===>>>', dmMsg.length);
 
+        this.userSocketService.privateMessageSocket.subscribe(
+          messages => console.log('After updating messages in array ===>>>>', messages)
+        );
+
       }
     );
+
+
 
   }
 
@@ -299,7 +290,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
           'Sending message error'
       ); }
     );
-    // this.privateMessages();
 
     const streamDetail = {
       use_first_unread_anchor: true,
@@ -312,8 +302,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
         }
       ]
     };
-    // fetch messages after sending
-    // this.store.dispatch(new messageActions.LoadPrivateMessages(streamDetail));
   }
 
   getIndividualMessage(): void {

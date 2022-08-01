@@ -137,6 +137,14 @@ export function messagingReducer(
       };
     // ALL MESSAGES
     case messagingActions.MessagingActionsTypes.LOAD_ALL_MESSAGES_SUCCESS:
+      const payload = action.payload.zulip.messages;
+      let messages: any[] = [];
+
+      payload.map((message: any) => {
+        if (message){
+          messages = [...messages, message];
+        }
+      });
       return {
         ...state,
         messaging: {
