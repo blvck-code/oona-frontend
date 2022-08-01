@@ -1,0 +1,41 @@
+<div class="create-dialog">
+  <div class="d-flex justify-content-end mb-2" >
+    <i style="cursor: pointer" mat-dialog-close  class="bi bi-x fa-2x close-btn"></i>
+  </div>
+  <h6 class="mt-n1 p-1 d-flex justify-content-center">Create Channel</h6>
+  <form [formGroup]="channelForm" (ngSubmit)="submitForm()">
+    <div class="modal-meeting-names mb-2">
+      <!--                <label for="meetingName" class="form-label">Meeting Name</label>-->
+      <input class="form-control shadow-none" id="meetingName" placeholder="Type the name of your channel" formControlName="channelName"
+             [class.invalid]="channelFormControls.channelName.touched && channelFormControls.channelName.errors?.required">
+      <span class="text-danger p-0 m-0" *ngIf="channelFormControls.channelName.touched && channelFormControls.channelName.errors?.required">
+        <small>
+          Please enter the name of your channel.
+        </small>
+      </span>
+    </div>
+
+    <div class="modal-meeting-names">
+      <!--                <label for="meetingName" class="form-label">Meeting Name</label>-->
+      <input class="form-control shadow-none" id="channelDesc" placeholder="Description of your channel" formControlName="channelDescription"
+             [class.invalid]="channelFormControls.channelDescription.touched && channelFormControls.channelDescription.errors?.required">
+      <span class="text-danger" *ngIf="channelFormControls.channelDescription.touched && channelFormControls.channelDescription.errors?.required">
+        <small>
+        Please enter a description of your channel.
+        </small>
+      </span>
+    </div>
+
+
+  </form>
+
+  <div class="mt-1 d-flex p-2 justify-content-evenly">
+    <button class="btn btn-primary schedule-meeting-btn shadow-none">Cancel</button>
+    <button
+      class="btn btn-primary schedule-meeting-btn shadow-none"
+      type="submit"
+      >
+      Create channel
+    </button>
+  </div>
+</div>

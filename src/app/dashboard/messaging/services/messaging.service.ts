@@ -261,6 +261,10 @@ export class MessagingService {
     return this.http.post(this.newTeam, teamData, this.authService.getHeaders());
   }
 
+  createChannel(channelData: any): any {
+    return this.http.post(this.newTeam, channelData, this.authService.getHeaders());
+  }
+
   getOonaMemberDetail(email: any): any {
     return this.http.get(this.oonaMemberProfileDetail + email, this.authService.getHeaders());
   }

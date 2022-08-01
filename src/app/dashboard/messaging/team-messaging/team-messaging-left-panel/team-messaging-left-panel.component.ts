@@ -14,6 +14,7 @@ import {getAllStreams, getStreamsLoading, getTopics} from '../../state/messaging
 import {AllStreamsModel, SubscribedStreams} from '../../models/streams.model';
 import * as messagingActions from '../../state/messaging.actions';
 import {take} from 'rxjs/operators';
+import {ChannelSettingsComponent} from "../channel-settings/channel-settings.component";
 
 @Component({
   selector: 'app-team-messaging-left-panel',
@@ -28,11 +29,13 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   @Output() topicToDisplay = new EventEmitter<any>();
   displayCreateTeamComponentRef: MatDialogRef<CreateTeamComponent> | undefined;
   displayTeamSettingsComponentRef: MatDialogRef<TeamSettingsComponent> | undefined;
+  displayCreatChannelComponentRef: MatDialogRef<ChannelSettingsComponent> | undefined;
   allUsers = Array();
   pmNames = Array();
   privateChatMembers = Array();
   loggedInUserProfile: any;
   private privateAndPublicTeams: any;
+  private privateAndPublicChannels: any;
   newMessagesCount: number | undefined;
   streamMessages = Array();
   streams!: Observable<AllStreamsModel[]>;
@@ -249,6 +252,21 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     dialogConfig.data = {allTeams: this.privateAndPublicTeams};
     this.displayTeamSettingsComponentRef = this.dialog.open(TeamSettingsComponent, dialogConfig);
     this.displayTeamSettingsComponentRef.afterClosed().subscribe(
+      data => {
+        if (data === 'success'){
+          this.listAllTeams();
+        }
+      }
+    );
+  }
+
+  channelSettings(): void{
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.height = '80vh';
+    dialogConfig.width = '70vw';
+    dialogConfig.data = {allTeams: this.privateAndPublicChannels};
+    this.displayCreatChannelComponentRef = this.dialog.open(ChannelSettingsComponent, dialogConfig);
+    this.displayCreatChannelComponentRef.afterClosed().subscribe(
       data => {
         if (data === 'success'){
           this.listAllTeams();
