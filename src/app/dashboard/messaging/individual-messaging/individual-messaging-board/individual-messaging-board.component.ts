@@ -59,6 +59,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.getIndividualUser();
     this.changeContentOnRouteChange();
     this.inComingMessage();
+    this.resetDmUnreads();
 
     this.messagingService.currentMemberChatDetail.subscribe(member => {
       this.memberDetail = member;
@@ -244,6 +245,37 @@ export class IndividualMessagingBoardComponent implements OnInit {
         );
       }
     );
+  }
+
+  // resets unread messages to zero when page in loaded
+  resetDmUnreads(): void {
+
+    // this.userSocketService.privateMessageSocket.subscribe(
+    //   newMessage => console.log('New message from socket ===>>>', newMessage)
+    // );
+
+    this.userSocketService.privateMessageSocket.subscribe(
+      newMessage => {
+        console.log('Private messages in array ===>>>>', newMessage);
+        console.log('Current dm user id ===>>>>', this.operand?.user_id);
+
+        const dmMsg = newMessage.filter(msg => +msg.sender_id === +this.operand?.user_id);
+
+        newMessage.map(msg => {
+          if (msg.sender_id === +this.operand?.user_id){
+            newMessage.splice(msg);
+          }
+        });
+
+        console.log('Updated   messages in array ===>>>>', newMessage);
+
+
+        console.log('This users dm message ===>>>', dmMsg);
+        console.log('Length of this dm messages ===>>>', dmMsg.length);
+
+      }
+    );
+
   }
 
   sendMessageToIndividual(message: any): void {

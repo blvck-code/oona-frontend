@@ -96,13 +96,6 @@ export class OonaSocketService {
     this.typingStatusSocket.next(status);
   }
 
-  getCurrentURL(): void {
-    this.route.events.subscribe((params: Params) => {
-      console.log('Latest URL content ===>>>', params)
-    });
-  }
-
-
   connect(): void {
     /**
      * Creates a websocket connection to the user channel
@@ -143,7 +136,7 @@ export class OonaSocketService {
     // }
     // }
 
-    console.log('Socket data first time ===>>>', socketData);
+    // console.log('Socket data first time ===>>>', socketData);
 
     if (socketData.message.type === 'presence'){
       // console.log('pushing user presence data');
@@ -216,9 +209,12 @@ export class OonaSocketService {
     };
   }
 
+  // Filter message types from the socket
   private setMessageType(socketData: any): void {
     if (socketData.message.message.type === 'stream'){
-      this.messagesToStreams.push(socketData.message.message);
+      // this.messagesToStreams.push(socketData.message.message);
+      this.messagesToStreams = [...this.messagesToStreams, socketData.message.message];
+      console.log('Messages to stream ===>>>>', socketData.message.message);
       // let the array have unique messages
       // ! below is done because this socket service is called multiple times across multiple components
       // hence a tendency to have it with duplicate items for each time it is called
@@ -226,19 +222,26 @@ export class OonaSocketService {
       this.messagesToStreams = this.messagesToStreams.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i); // have unique messages by id
       this.changeNewStreamMessageCount(this.removeLoggedInUserMessages(this.messagesToStreams));
     }else if (socketData.message.message.type === 'private'){
-      this.privateMsgCounterSubject.next(this.privateMessagesCounter + 1);
+      console.log('Messages to private user ===>>>>', socketData.message.message);
 
+      this.privateMsgCounterSubject.next(this.privateMessagesCounter + 1);
       const currentUserId =  this.loggedInUserProfile?.user_id;
       const msgSenderId = socketData.message?.message?.sender_id;
 
+      // Check if am the sender or not me
       if (msgSenderId === currentUserId){
+        // My outgoing message from the socket
+        console.log('Incoming message from other user ===>>>', socketData.message.message);
         this.myMessagesSocketSubject.next(socketData.message.message);
       } else {
-        this.messagesInPrivate.push(socketData.message.message);
+        // Incoming message from other user in socket
+
+        this.messagesInPrivate = [...this.messagesInPrivate, socketData.message.message];
         this.messagesInPrivate = this.messagesInPrivate.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
 
-        console.log('His messages list ===>>>', this.messagesInPrivate);
+        console.log('Others private messages in my dm ====>>>>', this.messagesInPrivate);
         this.changeNewPrivateMessageCount(this.removeLoggedInUserMessages(this.messagesInPrivate));
+
       }
     }
 

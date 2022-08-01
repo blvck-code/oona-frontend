@@ -95,7 +95,8 @@ export class MessagingComponent implements OnInit {
           ]
         };
 
-        this.store.dispatch(new messagingActions.LoadPrivateMessages(streamDetail));
+
+        this.store.dispatch(new messagingActions.LoadAllMessages(streamDetail));
 
       });
     });

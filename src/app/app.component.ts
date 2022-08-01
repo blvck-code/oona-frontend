@@ -46,11 +46,14 @@ export class AppComponent implements OnInit {
   }
 
   tabNotification(): void {
-    let unreadMessages = 0;
+    // let unreadMessages = 0;
 
-    this.sockets.messageCountSocket.subscribe(
-      (unreadMsg: number) => {
-        unreadMsg > 0 ? unreadMessages = unreadMsg : null;
+    this.sockets.privateMsgCounterSubject.subscribe(
+      newMessage => {
+        const messages = this.sockets.messagesInPrivate;
+
+        console.log('Latest message content ====>>', messages);
+        console.log('Messages counter ===>>> ', newMessage);
       }
     );
   }

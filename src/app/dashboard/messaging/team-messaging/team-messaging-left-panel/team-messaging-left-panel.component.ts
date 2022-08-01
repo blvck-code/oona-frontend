@@ -5,7 +5,7 @@ import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog
 import {CreateTeamComponent} from '../create-team/create-team.component';
 import {TeamSettingsComponent} from '../team-settings/team-settings.component';
 import {OonaSocketService} from '../../services/oona-socket.service';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 // NgRx
 import {Store} from '@ngrx/store';
@@ -39,6 +39,11 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   topics!: Observable<any>;
   streamIds!: any[];
   allTopics: any = [];
+
+  unreads = 0;
+  unreadsSubject$ = new BehaviorSubject<number>(this.unreads);
+  unreadsObservable = this.unreadsSubject$.asObservable();
+
 
   constructor(
     public messagingService: MessagingService,
@@ -79,8 +84,13 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     });
   }
 
+  getPrivateUnreadMsgs(): void {
+    this.unreadsSubject$.next(this.userSocketService.messagesInPrivate.length);
+  }
+
   initPage(): void {
     // this.streamTopics();
+    this.getPrivateUnreadMsgs();
 
     // Fetch streams
     this.streams = this.store.select(getAllStreams);
