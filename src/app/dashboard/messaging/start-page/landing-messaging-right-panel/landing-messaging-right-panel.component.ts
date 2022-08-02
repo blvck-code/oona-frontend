@@ -80,7 +80,6 @@ export class LandingMessagingRightPanelComponent implements OnInit {
      // Todo change this back to active users and present users
      const usersPresent = users?.filter((user: any) => user.presence );
      // this.allUsers = this.newListOfUsers(usersPresent);
-     console.log('Zulip usrs ===>>', users);
      this.allUsers = users;
    });
   }

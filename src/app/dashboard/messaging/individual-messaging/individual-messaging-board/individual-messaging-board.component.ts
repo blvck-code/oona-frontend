@@ -44,6 +44,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
   @Input() currentMessages = [];
   createdAt: any;
   operand: any;
+  loading = false;
 
   messagesWithPerson = Array();
   messagesSubject$ = new BehaviorSubject<SingleMessageModel[]>(this.messagesWithPerson);
@@ -79,10 +80,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
     this.updateState();
   }
-
-  // handleSocket(): void {
-  //   this.userSocketService.
-  // }
 
   constructor(
     private router: Router,
@@ -169,6 +166,8 @@ export class IndividualMessagingBoardComponent implements OnInit {
   }
 
   privateMessages(): void{
+    this.loading = true;
+
     const streamDetail = {
       use_first_unread_anchor: true,
       apply_markdown: false,
@@ -176,7 +175,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
       type: [
         {
           operator: 'pm-with',
-          operand: this.memberDetail.email,
+          operand: this.operand?.email,
         }
       ]
     };
@@ -184,6 +183,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
         console.log('Individual messages ===>>>', response);
         // this.messagesSubject$.next(response?.zulip?.messages);
+        this.loading = false;
 
         this.scrollBottom();
         this.change.detectChanges();
@@ -261,12 +261,8 @@ export class IndividualMessagingBoardComponent implements OnInit {
         this.userSocketService.privateMessageSocket.subscribe(
           messages => console.log('After updating messages in array ===>>>>', messages)
         );
-
       }
     );
-
-
-
   }
 
   sendMessageToIndividual(message: any): void {
@@ -312,7 +308,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
       type: [
         {
           operator: 'pm-with',
-          operand: this.memberDetail.email,
+          operand: this.operand?.email,
         }
       ]
     };

@@ -40,7 +40,7 @@
           <!--          </div>-->
           <app-individual-chat-card
             (click)="replyMessage(chat)"
-            *ngFor="let chat of messagesWithIndividuals"
+            *ngFor="let chat of dateSortedPrivateMessages"
             [messageDetail]="chat"
           ></app-individual-chat-card>
           <div #endChat></div>

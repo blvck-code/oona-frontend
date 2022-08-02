@@ -69,12 +69,7 @@ export class OonaSocketService {
     this.getCurrentProfile();
     this.connect();
     // this.msgConnect();
-    this.updateNotification();
     this.userManagement();
-  }
-
-  updateNotification(): void {
-    console.log('Updating notifications');
   }
 
   changeNewMessageCount(newCount: any): void {

@@ -5,8 +5,10 @@ import {OonaSocketService} from '../services/oona-socket.service';
 import { Store } from '@ngrx/store';
 import * as messagingActions from '../state/messaging.actions';
 import {AppState} from '../../../state/app.state';
-import {getUserDetails} from '../../../auth/state/auth.selectors';
+import {getAllUsers, getUserDetails, getZulipUsers} from '../../../auth/state/auth.selectors';
 import {firmName} from '../../../../environments/environment';
+import {MessagingService} from '../services/messaging.service';
+import {BehaviorSubject} from 'rxjs';
 
 @Component({
   selector: 'app-all-private-messaging',
@@ -19,7 +21,8 @@ export class AllPrivateMessagingComponent implements OnInit {
 
   constructor(
     private userSocketService: OonaSocketService,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private messagesService: MessagingService
   ) { }
 
   onInitHandler(): void {
@@ -49,7 +52,6 @@ export class AllPrivateMessagingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.onInitHandler();
     this.changeMessageCount();
   }
 
