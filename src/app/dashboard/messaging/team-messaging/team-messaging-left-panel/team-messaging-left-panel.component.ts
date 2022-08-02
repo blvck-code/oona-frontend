@@ -262,8 +262,8 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
   channelSettings(): void{
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.height = '80vh';
-    dialogConfig.width = '70vw';
+    dialogConfig.height = '30rem';
+    dialogConfig.width = '25rem';
     dialogConfig.data = {allTeams: this.privateAndPublicChannels};
     this.displayCreatChannelComponentRef = this.dialog.open(ChannelSettingsComponent, dialogConfig);
     this.displayCreatChannelComponentRef.afterClosed().subscribe(

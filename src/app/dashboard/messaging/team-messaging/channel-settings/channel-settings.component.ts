@@ -1,8 +1,8 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {MessagingService} from "../../services/messaging.service";
-import {NotificationService} from "../../../../shared/services/notification.service";
+import {MessagingService} from '../../services/messaging.service';
+import {NotificationService} from '../../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-channel-settings',

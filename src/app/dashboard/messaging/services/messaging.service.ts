@@ -31,6 +31,7 @@ export class MessagingService {
   individualMessage = env.individualMessage;
   streamTopic = env.streamTopic;
   newTeam = env.newTeam;
+  newChannel = env.newTeam;
   newMeeting = env.newMeeting;
   oonaMemberProfileDetail = env.oonaMemberProfileDetail;
   oonaProfileUrl = env.oonaProfileUrl;
@@ -262,7 +263,7 @@ export class MessagingService {
   }
 
   createChannel(channelData: any): any {
-    return this.http.post(this.newTeam, channelData, this.authService.getHeaders());
+    return this.http.post(this.newChannel, channelData, this.authService.getHeaders());
   }
 
   getOonaMemberDetail(email: any): any {
