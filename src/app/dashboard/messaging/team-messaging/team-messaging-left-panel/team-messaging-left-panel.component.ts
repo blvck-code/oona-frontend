@@ -24,7 +24,7 @@ import {ChannelSettingsComponent} from "../channel-settings/channel-settings.com
 export class TeamMessagingLeftPanelComponent implements OnInit {
 
   allTeams: any;
-  streamId: any;
+  streamName: any;
   publicTeams: any;
   private allAvailableTeams: any;
   @Output() topicToDisplay = new EventEmitter<any>();
@@ -204,9 +204,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
   displayMessagesOfTopic(stream?: any, topic?: any): void {
     // stream
-    console.log('Stream being filtered ===>> ', stream);
-    this.streamId = stream.name;
-    localStorage.setItem('str', this.streamId);
+
 
     // let streamName = stream?.name;
     // streamName = streamName.replace(/\s+/g, '-').toLowerCase();
@@ -281,18 +279,13 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   }
 
   channelSettings(): void {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.height = '20rem';
-    dialogConfig.width = '25rem';
-    dialogConfig.data = {allTeams: this.privateAndPublicChannels};
-    this.displayCreatChannelComponentRef = this.dialog.open(ChannelSettingsComponent, dialogConfig);
-    this.displayCreatChannelComponentRef.afterClosed().subscribe(
-      data => {
-        if (data === 'success') {
-          this.listAllTeams();
-        }
+    const dialogRef = this.dialog.open(ChannelSettingsComponent, {
+      height: '20rem',
+      width: '25rem',
+      data: {
+        name: this.streamName,
       }
-    );
+    });
   }
 
   showAllGroupPms(): void {
@@ -309,5 +302,10 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
         team.messageCount = messages.filter(message => message.stream_id === team.stream_id).length;
       });
     }
+  }
+
+  getStreamName(stream?: any, topic?: any): void {
+    // stream
+    this.streamName = stream.name;
   }
 }

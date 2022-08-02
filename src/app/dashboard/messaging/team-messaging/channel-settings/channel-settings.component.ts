@@ -1,8 +1,9 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {MessagingService} from '../../services/messaging.service';
 import {NotificationService} from '../../../../shared/services/notification.service';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-channel-settings',
@@ -16,9 +17,10 @@ export class ChannelSettingsComponent implements OnInit {
   });
   emptyForm = false;
   private loggedUserProfile: any;
-  streamId:any;
+  streamName: any;
 
   constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
     private dialogRef: MatDialogRef<ChannelSettingsComponent>,
     private formBuilder: FormBuilder,
     private change: ChangeDetectorRef,
@@ -29,7 +31,7 @@ export class ChannelSettingsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.streamId = localStorage.getItem('str');
+    this.streamName = this.data.name;
     this.messagingService.currentUserProfile().subscribe((loggedUser: any) => {
       this.loggedUserProfile = loggedUser.zulip;
     });
@@ -39,7 +41,7 @@ export class ChannelSettingsComponent implements OnInit {
   submitForm(): any {
     const channelData = {
       // tslint:disable-next-line:radix
-      to: this.streamId,
+      to: this.streamName,
       type: 'stream',
       topic: this.channelForm.value.channelName,
       content: this.channelForm.value.channelDescription,
@@ -52,6 +54,7 @@ export class ChannelSettingsComponent implements OnInit {
       if (response['zulip message'].result === 'success') {
         this.dialogRef.close('success');
         this.notificationService.showSuccess(`channel ${channelData.topic} created`, 'channel created');
+        this.dialogRef.close();
       } else {
         this.notificationService.showError(`Unable to create ${channelData.topic} at this time`, 'channel not created');
       }

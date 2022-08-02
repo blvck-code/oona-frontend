@@ -139,7 +139,7 @@
 
       <div
         *ngFor="let team of allTopics.sort(); index as i"
-        class="accordion-item"
+        class="accordion-item" (click)="getStreamName(team)"
       >
         <h2 class="accordion-header" id="flush-headingOne">
           <button
@@ -160,7 +160,7 @@
           data-bs-parent="#teamsAccordion"
         >
           <div class="accordion-body">
-            <div class="accordion-body-item" (click)="displayMessagesOfTopic(team)"  >
+            <div class="accordion-body-item"   >
               <p class="accordion-body-item__text">All Channels</p>
 
               <p class="create-teams__icon"
