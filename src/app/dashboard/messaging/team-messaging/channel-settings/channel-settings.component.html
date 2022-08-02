@@ -1,6 +1,6 @@
 <div class="create-dialog">
-  <div class="d-flex justify-content-end mb-2" >
-    <i style="cursor: pointer" mat-dialog-close  class="bi bi-x fa-2x close-btn"></i>
+  <div class="d-flex justify-content-end mb-2">
+    <i style="cursor: pointer" mat-dialog-close  class="bi bi-x fa-2x close-btn"  (click)="cancelChannelCreate($event)"></i>
   </div>
   <h6 class="mt-n1 p-1 d-flex justify-content-center">Create Channel</h6>
   <form [formGroup]="channelForm" (ngSubmit)="submitForm()" class="create-channel-form">
@@ -30,7 +30,7 @@
   </form>
 
   <div class="create-channel-btn__container">
-    <a class="btn btn-primary create-channel-btn__btn" (click)="cancelChannelCreate()">Cancel</a>
+    <a class="btn btn-primary create-channel-btn__btn" (click)="cancelChannelCreate($event)">Cancel</a>
     <a
       class="btn btn-primary create-channel-btn__btn"
       type="submit"

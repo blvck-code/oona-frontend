@@ -1,7 +1,6 @@
-.create-dialog {
-
+.close-btn {
+  font-size: 20px;
 }
-
 .create-channel-form {
   &__group {
     margin-bottom: 2rem;
@@ -9,7 +8,7 @@
 
   &__input {
     border-radius: 5px;
-    width: 80%;
+    width: 100%;
     padding: 5px;
     display: block;
     border: 1px solid gainsboro;;
@@ -24,10 +23,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 80%;
+  width:100%;
 
   &__btn {
-    &:focus{outline: none; border: none}
+    width: 40px;
+    height: 30px;
+    &:focus{ box-shadow: none;}
   }
 
 }

@@ -60,7 +60,8 @@ export class ChannelSettingsComponent implements OnInit {
 
   }
 
-  cancelChannelCreate(): void {
+  cancelChannelCreate(event: any): void {
+    event.preventDefault();
     this.dialogRef.close();
   }
 
