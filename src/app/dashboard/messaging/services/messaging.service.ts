@@ -31,7 +31,7 @@ export class MessagingService {
   individualMessage = env.individualMessage;
   streamTopic = env.streamTopic;
   newTeam = env.newTeam;
-  newChannel = env.newTeam;
+  newChannel = env.newChannel;
   newMeeting = env.newMeeting;
   oonaMemberProfileDetail = env.oonaMemberProfileDetail;
   oonaProfileUrl = env.oonaProfileUrl;

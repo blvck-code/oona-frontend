@@ -16,6 +16,7 @@ export class ChannelSettingsComponent implements OnInit {
   });
   emptyForm = false;
   private loggedUserProfile: any;
+  streamId:any;
 
   constructor(
     private dialogRef: MatDialogRef<ChannelSettingsComponent>,
@@ -23,12 +24,12 @@ export class ChannelSettingsComponent implements OnInit {
     private change: ChangeDetectorRef,
     private dialog: MatDialog,
     public messagingService: MessagingService,
-    private  notificationService: NotificationService
-
+    private notificationService: NotificationService
   ) {
   }
 
   ngOnInit(): void {
+    this.streamId = localStorage.getItem('str');
     this.messagingService.currentUserProfile().subscribe((loggedUser: any) => {
       this.loggedUserProfile = loggedUser.zulip;
     });
@@ -37,18 +38,22 @@ export class ChannelSettingsComponent implements OnInit {
   // tslint:disable-next-line:typedef
   submitForm(): any {
     const channelData = {
-      name: this.channelForm.value.channelName,
-      description: this.channelForm.value.channelDescription,
+      // tslint:disable-next-line:radix
+      to: this.streamId,
+      type: 'stream',
+      topic: this.channelForm.value.channelName,
+      content: this.channelForm.value.channelDescription,
       // Todo add more members here. Automatically add current logged in user
-      user_id: [this.loggedUserProfile.email]
+      // user_id: [this.loggedUserProfile.email]
     };
 
     this.messagingService.createChannel(channelData).subscribe((response: any) => {
+      console.log('My response', response);
       if (response['zulip message'].result === 'success') {
         this.dialogRef.close('success');
-        this.notificationService.showSuccess(`channel ${channelData.name} created`, 'channel created');
+        this.notificationService.showSuccess(`channel ${channelData.topic} created`, 'channel created');
       } else {
-        this.notificationService.showError(`Unable to create ${channelData.name} at this time`, 'channel not created');
+        this.notificationService.showError(`Unable to create ${channelData.topic} at this time`, 'channel not created');
       }
 
     });
@@ -62,7 +67,7 @@ export class ChannelSettingsComponent implements OnInit {
   isSubmitted(): any {
     if (!this.channelForm.valid) {
       this.emptyForm = true;
-    }else {
+    } else {
       this.submitForm();
 
     }

@@ -116,6 +116,8 @@ export class OonaSocketService {
     // }
     // }
 
+    console.log('Socket data', socketData);
+
     if (socketData.message.type === 'presence'){
         // console.log('pushing user presence data');
         this.recognizedUsers.push(socketData);
@@ -189,6 +191,7 @@ export class OonaSocketService {
 
   private setMessageType(socketData: any): void {
     if (socketData.message.message.type === 'stream'){
+      console.log('Steam socket ===>>>', socketData);
       this.messagesToStreams.push(socketData.message.message);
       // let the array have unique messages
       // ! below is done because this socket service is called multiple times across multiple components

@@ -160,8 +160,8 @@
           data-bs-parent="#teamsAccordion"
         >
           <div class="accordion-body">
-            <div class="accordion-body-item">
-              <p (click)="displayMessagesOfTopic(team)"  class="accordion-body-item__text">All Channels</p>
+            <div class="accordion-body-item" (click)="displayMessagesOfTopic(team)"  >
+              <p class="accordion-body-item__text">All Channels</p>
 
               <p class="create-teams__icon"
                  (click)="channelSettings()"
