@@ -29,6 +29,8 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   searchText = '';
   selectedUser: any;
 
+  newMsgUsersId: number[] = [];
+
   constructor(
     private messagingService: MessagingService,
     private userSocketService: OonaSocketService,
@@ -40,6 +42,7 @@ export class LandingMessagingRightPanelComponent implements OnInit {
 
   ngOnInit(): void {
     this.onInitPage();
+    this.unreadMsg();
 
     this.userSocketService.currentUsers.subscribe(
       (users) => (this.socketUsers = users)
@@ -93,6 +96,11 @@ export class LandingMessagingRightPanelComponent implements OnInit {
     });
 
     this.store.dispatch(new authActions.SetSelectedUser(member));
+
+    this.newMsgUsersId.filter(id => id === member.user_id);
+
+    console.log('New messages list ===>>>', this.newMsgUsersId);
+
 
   }
 
@@ -169,5 +177,25 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   handleShowMoreInfo(user: any): void {
     this.selectedUser = user;
     this.showMoreInfo = !this.showMoreInfo;
+  }
+
+  unreadMsg(): void {
+    this.userSocketService.privateMessageCountSocket.subscribe(
+      prvMsg => {
+        console.log('Unread messages for particular user dm ===>>>', prvMsg.length);
+        prvMsg.map(msg => {
+          console.log('Unread messages ===>>>', msg);
+          this.newMsgUsersId.push(msg.sender_id);
+          // if (this.messagesId.includes(msg.id)){
+          //   return;
+          // }
+
+          // this.messagesId.push(msg.id);
+          // this.messagesWithPerson.push(msg);
+          // this.change.detectChanges();
+          // this.scrollBottom();
+        });
+      }
+    );
   }
 }

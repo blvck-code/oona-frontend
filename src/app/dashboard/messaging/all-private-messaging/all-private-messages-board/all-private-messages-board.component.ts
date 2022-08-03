@@ -139,6 +139,10 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
 
 
   getAllPrivateChats(): void{
+
+    console.log('Fetching all users');
+
+
     this.allUsers.forEach( user => {
       const streamDetail = {
         use_first_unread_anchor: true,
@@ -151,25 +155,26 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
           }
         ]
       };
-      this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
-        console.log('Private message content: ', response);
-        const allMessages = response.zulip.messages;
-        if (allMessages.length >= 1){
-          this.messagesWithIndividuals.push(... allMessages);
-          // tslint:disable-next-line:max-line-length
-          this.messagingService.changePmNames(
-            this.messagesWithIndividuals.map(individualMessage => individualMessage.display_recipient)
-          );
-          // sort by timestamp
-          this.messagesWithIndividuals.sort((a, b) =>  a.timestamp - b.timestamp );
-          this.change.detectChanges();
-          // @ts-ignore
-          document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
-          }
-        } ,
-        (error: any) => {
-          console.log('error', error);
-        });
+      console.log('Stream detail ====>>', streamDetail);
+      // this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
+      //   console.log('Private message content: ', response);
+      //   const allMessages = response.zulip.messages;
+      //   if (allMessages.length >= 1){
+      //     this.messagesWithIndividuals.push(... allMessages);
+      //     // tslint:disable-next-line:max-line-length
+      //     this.messagingService.changePmNames(
+      //       this.messagesWithIndividuals.map(individualMessage => individualMessage.display_recipient)
+      //     );
+      //     // sort by timestamp
+      //     this.messagesWithIndividuals.sort((a, b) =>  a.timestamp - b.timestamp );
+      //     this.change.detectChanges();
+      //     // @ts-ignore
+      //     document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+      //     }
+      //   } ,
+    //     (error: any) => {
+    //       console.log('error', error);
+    //     });
     });
   }
 

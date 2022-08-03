@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, NavigationStart, Router} from '@angular/router';
 import {MessagingService} from '../../services/messaging.service';
 
@@ -8,11 +8,13 @@ import {OonaSocketService} from '../../services/oona-socket.service';
 // NgRx
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
-import * as messageActions from '../../state/messaging.actions';
 import {getSelectedUser} from '../../../../auth/state/auth.selectors';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 // @Todo change this to fetch only individual messages
-import {getPrivateMessages} from '../../state/messaging.selectors';
+import {SingleMessageModel} from '../../models/messages.model';
+import {take} from 'rxjs/operators';
+import {NotificationService} from '../../../../shared/services/notification.service';
+import {numbers} from '@material/dialog/constants';
 
 const turndownService = new TurndownService();
 
@@ -20,8 +22,9 @@ const turndownService = new TurndownService();
   selector: 'app-individual-messaging-board',
   templateUrl: './individual-messaging-board.component.html',
   styleUrls: ['./individual-messaging-board.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit {
+export class IndividualMessagingBoardComponent implements OnInit {
   memberDetail = {
     full_name: undefined,
     bot_type: undefined,
@@ -33,10 +36,8 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
     avatar_url: undefined,
     email: undefined,
   };
-  messages$!: Observable<any>;
   selectedUserId: any;
   selectedUser$!: Observable<any>;
-  messagesWithPerson = Array();
   userActivity: any;
   initialMessageCount = 30;
   newMessagesCount = 0;
@@ -44,11 +45,20 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
   createdAt: any;
   operand: any;
 
+  messagesWithPerson = Array();
+  messagesSubject$ = new BehaviorSubject<SingleMessageModel[]>(this.messagesWithPerson);
+  messagesObserver = this.messagesSubject$.asObservable();
+
+  messagesId: number[] = [];
+
+
   @ViewChild('endPrivateChat') endPrivateChat: ElementRef | undefined;
 
   ngOnInit(): void {
+    console.log('Page loaded');
     this.getIndividualUser();
-    // this.changeContentOnRouteChange();
+    this.changeContentOnRouteChange();
+    this.inComingMessage();
 
     this.messagingService.currentMemberChatDetail.subscribe(member => {
       this.memberDetail = member;
@@ -63,10 +73,11 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
       console.log('Sockets finally works ===>>>', messages);
       if (this.newMessagesCount !== messages){
         // get new messages
-        this.privateMessages();
+        // this.privateMessages();
         this.newMessagesCount = messages;
       }
     });
+
     this.updateState();
   }
 
@@ -81,6 +92,7 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
     private messagingService: MessagingService,
     private change: ChangeDetectorRef,
     private userSocketService: OonaSocketService,
+    private notify: NotificationService
   ) {
 
     this.store.select(getSelectedUser).subscribe(
@@ -96,12 +108,12 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
   }
 
   changeContentOnRouteChange(): void {
-    // @ts-ignore
-    this.route.events.subscribe((event: Event) => {
+    this.router.events.subscribe((event: any) => {
       if (event instanceof NavigationStart) {
         console.log('Route change start');
         // this.getSelectedUser();
-        this.messages$ = this.store.select(getPrivateMessages);
+        // this.messages$ = this.store.select(getPrivateMessages);
+        this.ngOnInit();
       }
     });
   }
@@ -111,6 +123,7 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
       user => {
         this.memberDetail = user;
         this.privateMessages();
+        this.change.detectChanges();
       }
     );
   }
@@ -139,32 +152,23 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
       };
 
       this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
-          console.log('Individual messages ===>>>', response);
-          this.messagesWithPerson = response.zulip.messages;
-          this.scrollBottom();
-          // @ts-ignore
-          // document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
-          // this.sortMessageDates();
+          this.messagesWithPerson = response?.zulip?.messages;
+          console.log('Message content ===>>>', response.zulip.messages);
+          this.updateMessageId();
+          this.messagesSubject$.next(response?.zulip.messages);
+
+          this.change.detectChanges();
         } ,
         (error: any) => {
           console.log('Get Messages Error ===>>', error);
         });
 
+      setTimeout(() => {
+        this.scrollBottom();
+      }, 500);
     }
 
-    // get messages from store
-    this.messages$ = this.store.select(getPrivateMessages);
-
-    this.store.select(getPrivateMessages).subscribe(
-      (response: any) => {
-        console.log('Messages ====>>>', response)
-
-        this.messagesWithPerson = response.zulip.messages;
-      }
-    );
-
-    // @ts-ignore
-    document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+    this.scrollBottom();
   }
 
   privateMessages(): void{
@@ -180,40 +184,90 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
       ]
     };
 
-    // get Selected User
-    // this.getSelectedUser();
-
-    // @ts-ignore
-    document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
-
     this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
         console.log('Individual messages ===>>>', response);
-        this.messagesWithPerson = response.zulip.messages;
-        // @ts-ignore
-        document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
-        // this.sortMessageDates();
+        // this.messagesSubject$.next(response?.zulip?.messages);
+
+        this.scrollBottom();
+        this.change.detectChanges();
       } ,
       (error: any) => {
         console.log('Get Messages Error ===>>', error);
       });
     this.userActiveStatus();
+    this.change.detectChanges();
+  }
+
+  updateMessageId(): void {
+    this.messagesWithPerson.forEach(
+      message => this.messagesId.push(message.id)
+    );
+  }
+
+  inComingMessage(): void {
+    this.userSocketService.privateMessageCountSocket.subscribe(
+      prvMsg => {
+        console.log('Unread messages for particular user dm ===>>>', prvMsg.length);
+        prvMsg.map(msg => {
+
+          if (this.messagesId.includes(msg.id)){
+            return;
+          }
+
+          this.messagesId.push(msg.id);
+          this.messagesWithPerson.push(msg);
+          this.change.detectChanges();
+          this.scrollBottom();
+        });
+      }
+    );
+  }
+
+  outGoingMsg(): void{
+    this.userSocketService.myMessagesSocketSubject.subscribe(
+      (msg: any) => {
+        this.messagesSubject$.subscribe( messages => {
+
+          if (this.messagesId.includes(msg.id)){
+            return;
+          }
+
+          if (!msg.id){
+            return;
+          }
+
+          this.messagesId.push(msg.id);
+          messages.push(msg);
+          this.change.detectChanges();
+          this.scrollBottom();
+          }
+        );
+      }
+    );
   }
 
   sendMessageToIndividual(message: any): void {
-    console.log('Message content ==>>> ', message);
-
     const markdown = turndownService.turndown(message);
+
+    // let userId = this.selectedUserId
 //
     // console.log('markdown', markdown);
     const messageDetail = {
-      to: [this.memberDetail.user_id],
+      to: [this.operand?.user_id],
       content: markdown
     };
     console.log('Message final content ===>>> ', messageDetail);
-    this.messagingService.sendIndividualMessage(messageDetail).subscribe((response: any) => {
-      // re-fetch messages with pm
-    });
-    this.privateMessages();
+    // Todo uncomment to send message to backend
+    this.messagingService.sendIndividualMessage(messageDetail).subscribe(
+      (response: any) => { this.outGoingMsg(); },
+      // (response: any) => { this.outGoingMsg(); },
+      (error: any) => {
+        this.notify.showError(
+        'Your message could not be sent, please try again.',
+          'Sending message error'
+      ); }
+    );
+    // this.privateMessages();
 
     const streamDetail = {
       use_first_unread_anchor: true,
@@ -227,14 +281,7 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
       ]
     };
     // fetch messages after sending
-    this.store.dispatch(new messageActions.LoadPrivateMessages(streamDetail));
-  }
-
-  userActiveStatus(): void{
-    this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
-      const usersPresent = users.members.filter(user => user?.presence );
-      this.userActivity = usersPresent.find( user => user.email === this.memberDetail.email)?.presence.aggregated.status;
-    });
+    // this.store.dispatch(new messageActions.LoadPrivateMessages(streamDetail));
   }
 
   getIndividualMessage(): void {
@@ -270,7 +317,7 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
       type: [
         {
           operator: 'pm-with',
-          operand: this.memberDetail.email,
+          operand: this.operand?.email,
         }
       ]
     };
@@ -283,21 +330,6 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
         console.log('error', error);
       });
     this.userActiveStatus();
-  }
-
-  ngAfterViewInit(): void {
-    if (this.messagesWithPerson.length) {
-      this.scrollBottom();
-    }
-  }
-
-  scrollBottom(): any {
-    // Todo Add scroll effect
-    if (this.endPrivateChat) {
-      this.endPrivateChat.nativeElement.scrollIntoView({ behavior: 'smooth'});
-      // @ts-ignore
-      document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
-    }
   }
 
   getLatestMessage(): void {
@@ -327,5 +359,21 @@ export class IndividualMessagingBoardComponent implements OnInit, AfterViewInit 
     setInterval(() => {
       // this.getLatestMessage();
     }, 60000);
+  }
+
+  userActiveStatus(): void{
+    this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
+      const usersPresent = users.members.filter(user => user?.presence );
+      this.userActivity = usersPresent.find( user => user.email === this.memberDetail.email)?.presence.aggregated.status;
+    });
+  }
+
+  scrollBottom(): any {
+    // Todo Add scroll effect
+    if (this.endPrivateChat) {
+      this.endPrivateChat.nativeElement.scrollIntoView({ behavior: 'smooth'});
+      // @ts-ignore
+      // document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+    }
   }
 }

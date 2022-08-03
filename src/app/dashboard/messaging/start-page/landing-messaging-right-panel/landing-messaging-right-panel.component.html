@@ -92,7 +92,10 @@
                 class="rounded-circle me-2"
                 alt="..."
               />
-              <span class="member-name">{{ member?.full_name }}</span>
+              <div class="member-name">
+                <span>{{ member?.full_name }}</span>
+                <span *ngIf="newMsgUsersId.includes(member.user_id)" class="typing">New message</span>
+              </div>
               <span
                 *ngIf="member.role === 100 || member.role === 200"
                 class="member-role"

@@ -44,7 +44,7 @@
   <div class="other-staff">
     <p class="other-staff-title">Other Staff</p>
     <div
-      *ngIf="!otherMembers.length"
+      *ngIf="!(zulipUsers$ | async)"
       class="d-flex justify-content-center"
     >
       <div>
@@ -52,13 +52,13 @@
       </div>
     </div>
     <div class="other-staff-list" >
-      <div class="mb-2" *ngFor="let member of otherMembers">
+      <div class="mb-2" *ngFor="let member of (zulipUsers$ | async)?.members">
           <div class="member other-staff-item" (click)="goToMemberChat(member)" >
 <!--            <app-active-tag *ngIf="member.presence.aggregated.status === 'active'"></app-active-tag>-->
 <!--            <app-inactive-tag *ngIf="member.presence.aggregated.status === 'idle'"></app-inactive-tag>-->
 <!--            <app-idle-tag *ngIf="member.presence.aggregated.status === 'offline'" ></app-idle-tag>-->
             <img src="assets/img/placeholder.jpg" height="32px" width="32px" class="rounded-circle me-2" alt="...">
-            <p class="member-name">{{ member.full_name }}</p>
+            <p class="member-name">{{ member?.full_name }}</p>
          </div>
       </div>
   </div>

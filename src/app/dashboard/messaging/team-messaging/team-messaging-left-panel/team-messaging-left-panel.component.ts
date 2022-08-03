@@ -58,6 +58,14 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     // Get All Streams
     this.initPage();
 
+    this.userSocketService.allMsgCounterSubject.subscribe(
+      msgNumber => console.log('All messages number ==>>', msgNumber)
+    );
+
+    this.userSocketService.privateMsgCounterSubject.subscribe(
+      msgNumber => console.log('Private messages number ==>>', msgNumber)
+    );
+
     this.userSocketService.messageCount.subscribe(messages => {
       this.newMessagesCount = messages;
     });

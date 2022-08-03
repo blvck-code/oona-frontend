@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../../state/app.state';
 import {getUserDetails, getZulipProfile} from '../../../../../auth/state/auth.selectors';
