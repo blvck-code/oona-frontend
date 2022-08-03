@@ -59,6 +59,7 @@ import { UserFilterPipe } from '../../pipes/user-filter.pipe';
 import { AppModule } from '../../app.module';
 import { HomeModule } from '../home/home.module';
 import { StreamsTextEditorComponent } from './streams/streams-text-editor/streams-text-editor.component';
+import { ChannelSettingsComponent } from './team-messaging/channel-settings/channel-settings.component';
 
 @NgModule({
   // tslint:disable-next-line:max-line-length
@@ -102,7 +103,8 @@ import { StreamsTextEditorComponent } from './streams/streams-text-editor/stream
     StreamsComponent,
     StreamsBoardComponent,
     UserFilterPipe,
-    StreamsTextEditorComponent
+    StreamsTextEditorComponent,
+    ChannelSettingsComponent
   ],
   exports: [LoadingAnimationComponent],
   imports: [

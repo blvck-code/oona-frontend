@@ -1,0 +1,42 @@
+<div class="create-dialog">
+  <div class="d-flex justify-content-end mb-2">
+    <i style="cursor: pointer" mat-dialog-close  class="bi bi-x fa-2x close-btn"  (click)="cancelChannelCreate($event)"></i>
+  </div>
+  <h6 class="mt-n1 p-1 d-flex justify-content-center">Create Channel</h6>
+  <form [formGroup]="channelForm" (ngSubmit)="submitForm()" class="create-channel-form">
+    <div class="create-channel-form__group">
+      <!--                <label for="meetingName" class="form-label">Meeting Name</label>-->
+      <input class="create-channel-form__input" id="meetingName" placeholder="Type the name of your channel" formControlName="channelName"
+             [class.invalid]="channelFormControls.channelName.touched && channelFormControls.channelName.errors?.required">
+      <label for="meetingName" class="text-danger p-0 m-0" *ngIf="channelFormControls.channelName.touched && channelFormControls.channelName.errors?.required">
+        <small>
+          Please enter the name of your channel.
+        </small>
+      </label>
+    </div>
+
+    <div class="create-channel-form__group">
+      <!--                <label for="meetingName" class="form-label">Meeting Name</label>-->
+      <input class="create-channel-form__input" id="channelDesc" placeholder="Description of your channel" formControlName="channelDescription"
+             [class.invalid]="channelFormControls.channelDescription.touched && channelFormControls.channelDescription.errors?.required">
+      <label for="channelDesc" class="text-danger" *ngIf="channelFormControls.channelDescription.touched && channelFormControls.channelDescription.errors?.required">
+        <small>
+        Please enter a description of your channel.
+        </small>
+      </label>
+    </div>
+
+
+  </form>
+
+  <div class="create-channel-btn__container">
+    <a class="btn btn-primary create-channel-btn__btn" (click)="cancelChannelCreate($event)">Cancel</a>
+    <a
+      class="btn btn-primary create-channel-btn__btn"
+      type="submit"
+      (click)="isSubmitted()"
+      >
+      Create channel
+    </a>
+  </div>
+</div>
