@@ -261,6 +261,7 @@ form-control{
 .accordion-body-item {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   min-height: 26px;
   margin-bottom: 3px;
   padding-left: 10px;
@@ -268,7 +269,21 @@ form-control{
   color: #2D1A14;
   cursor: pointer;
 
-  p {
+  &__text {
     font-size: 14px;
+    width: 75%;
+  }
+}
+
+//Create teams styles
+.create-teams__icon {
+  font-weight: bold;
+  color: #023BE8;
+  font-size: 20px;
+  text-align: center;
+  width: 20%;
+
+  &:hover {
+    cursor: pointer;
   }
 }

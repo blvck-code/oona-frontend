@@ -46,6 +46,7 @@ export const environment = {
   individualMessage: oonaBaseUrl + '/api/v1/message/',
   streamTopic: oonaBaseUrl + '/api/v1/streams/all/topic?stream_id=',
   newTeam: oonaBaseUrl + '/api/v1/streams/subscribe',
+  newChannel: oonaBaseUrl + '/api/v1/streams/message',
   newMeeting: oonaBaseUrl + '/api/v1/meet/meetings/',
   oonaProfileUrl: oonaBaseUrl + '/api/v1/accounts/users/',
   streamUnsubscribe: oonaBaseUrl + '/api/v1/streams/unsubscribe',
