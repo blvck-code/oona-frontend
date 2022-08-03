@@ -277,8 +277,10 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
   getReceiverInfo(): void {
     this.store.select(getReceiverInfo).subscribe(
       (data: SingleChat) => {
-        this.receiverInfo = data;
-        console.log('Data: ', data.recipient_id);
+        if (data) {
+          this.receiverInfo = data;
+          console.log('Data: ', data.recipient_id);
+        }
       }
     );
   }

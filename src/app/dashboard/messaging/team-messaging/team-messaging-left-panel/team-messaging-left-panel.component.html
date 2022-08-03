@@ -74,7 +74,7 @@
         routerLinkActive="active"
         class="panel-box-item"
       >
-        <p>Private Messages</p>
+        <p>Private Messages <span *ngIf="unreads > 0" class="badge mat-badge-before">{{ unreads }}</span></p>
       </a>
 <!--      <a-->
 <!--        routerLink="/dashboard/messaging/mentions"-->

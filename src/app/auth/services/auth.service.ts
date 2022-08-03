@@ -1,16 +1,17 @@
-import {Inject, Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment as env } from '../../../environments/environment';
-import {BROWSER_STORAGE} from '../storage';
-import {OonaMeeting} from '../../dashboard/home/shared/oonaMeeting';
-import {Form} from '@angular/forms';
-import {Observable} from 'rxjs';
+import { BROWSER_STORAGE } from '../storage';
+import { OonaMeeting } from '../../dashboard/home/shared/oonaMeeting';
+import { Form } from '@angular/forms';
+import { combineLatest, Observable } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import {PresentUsersResponse, ZulipSingleUser, ZulipUsersResponse} from '../models/user.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
   loginUrl = env.loginUrl;
   requestResetUrl = env.requestResetUrl;
   resetPassUrl = env.resetPassUrl;
@@ -31,7 +32,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     @Inject(BROWSER_STORAGE) private storage: Storage
-   ) { }
+  ) {}
 
   login(loginData: FormData): any {
     return this.http.post(this.loginUrl, loginData);
@@ -85,7 +86,7 @@ export class AuthService {
     const token: string = this.getToken();
     if (token) {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.exp > (Date.now() / 1000);
+      return payload.exp > Date.now() / 1000;
     } else {
       return false;
     }
@@ -94,15 +95,15 @@ export class AuthService {
   getHeaders(): any {
     return {
       headers: new HttpHeaders({
-        Authorization: `Bearer ${this.getToken()}`
-      })
+        Authorization: `Bearer ${this.getToken()}`,
+      }),
     };
   }
 
   isTokenExpiring(): boolean {
     const token: string = this.getToken();
     const payload = JSON.parse(atob(token.split('.')[1]));
-    const tokenValidity = payload.exp - (Date.now() / 1000);
+    const tokenValidity = payload.exp - Date.now() / 1000;
     if (this.isLoggedIn()) {
       return tokenValidity < 43200;
     } else {
@@ -111,13 +112,13 @@ export class AuthService {
   }
 
   refreshToken(): any {
-    if (this.isLoggedIn() && this.isTokenExpiring() ) {
-      this.http.post(this.refreshTokenUrl, this.getRefreshToken(), this.getHeaders()).subscribe(
-        (tokenResponse: any) => {
+    if (this.isLoggedIn() && this.isTokenExpiring()) {
+      this.http
+        .post(this.refreshTokenUrl, this.getRefreshToken(), this.getHeaders())
+        .subscribe((tokenResponse: any) => {
           this.saveToken(tokenResponse.access);
           this.saveRefreshToken(tokenResponse.refresh);
-        }
-      );
+        });
     }
   }
 
@@ -159,10 +160,14 @@ export class AuthService {
   }
 
   updateUserPassword(passwordData: any): any {
-    return this.http.post(this.changePasswordUrl, passwordData, this.getHeaders());
+    return this.http.post(
+      this.changePasswordUrl,
+      passwordData,
+      this.getHeaders()
+    );
   }
 
-  getAllUsers(): Observable<any>{
+  getAllUsers(): Observable<any> {
     return this.http.get(env.presentUsers, this.getToken());
   }
 
@@ -178,4 +183,34 @@ export class AuthService {
     return this.http.get(env.zulipUsers, this.getToken());
   }
 
+  zulipUsers$ = this.http
+    .get<ZulipUsersResponse>(env.zulipUsers)
+    .pipe(tap((data) => console.log(JSON.stringify(data))));
+
+  presentUsers$ = this.http
+    .get<PresentUsersResponse>(env.presentUsers)
+    .pipe(tap((data) => console.log(JSON.stringify(data))));
+
+  oonaUsers$ = this.http
+    .get(env.presentUsers)
+    .pipe(tap((data) => console.log(JSON.stringify(data))));
+
+  allUsers$ = combineLatest([
+    this.zulipUsers$,
+    this.presentUsers$,
+    this.oonaUsers$,
+  ]).pipe(
+    map(([
+      zulipUsers,
+      presentUsers,
+      oonaUsers
+     ]) =>
+      zulipUsers.members?.map((zulipUser: ZulipSingleUser) => ({
+        ...zulipUsers,
+        presence: presentUsers?.members.find(
+          oonaUser => oonaUser.user_id === zulipUser.user_id
+        )?.presence
+      }))
+    )
+  );
 }

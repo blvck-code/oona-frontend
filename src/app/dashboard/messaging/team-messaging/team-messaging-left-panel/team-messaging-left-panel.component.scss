@@ -155,6 +155,11 @@ form-control{
   p {
     font-size: 14px;
     font-weight: 500;
+
+    .badge {
+      background: #EC5985;
+      margin-left: 10px;
+    }
   }
 
   &:hover, .active {

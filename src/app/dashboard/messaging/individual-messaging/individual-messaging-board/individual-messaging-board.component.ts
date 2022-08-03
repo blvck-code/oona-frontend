@@ -44,6 +44,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
   @Input() currentMessages = [];
   createdAt: any;
   operand: any;
+  loading = false;
 
   messagesWithPerson = Array();
   messagesSubject$ = new BehaviorSubject<SingleMessageModel[]>(this.messagesWithPerson);
@@ -59,6 +60,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.getIndividualUser();
     this.changeContentOnRouteChange();
     this.inComingMessage();
+    this.resetDmUnreads();
 
     this.messagingService.currentMemberChatDetail.subscribe(member => {
       this.memberDetail = member;
@@ -72,18 +74,12 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.userSocketService.messageCount.subscribe(messages => {
       console.log('Sockets finally works ===>>>', messages);
       if (this.newMessagesCount !== messages){
-        // get new messages
-        // this.privateMessages();
         this.newMessagesCount = messages;
       }
     });
 
     this.updateState();
   }
-
-  // handleSocket(): void {
-  //   this.userSocketService.
-  // }
 
   constructor(
     private router: Router,
@@ -111,8 +107,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.router.events.subscribe((event: any) => {
       if (event instanceof NavigationStart) {
         console.log('Route change start');
-        // this.getSelectedUser();
-        // this.messages$ = this.store.select(getPrivateMessages);
         this.ngOnInit();
       }
     });
@@ -172,6 +166,8 @@ export class IndividualMessagingBoardComponent implements OnInit {
   }
 
   privateMessages(): void{
+    this.loading = true;
+
     const streamDetail = {
       use_first_unread_anchor: true,
       apply_markdown: false,
@@ -179,7 +175,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
       type: [
         {
           operator: 'pm-with',
-          operand: this.memberDetail.email,
+          operand: this.operand?.email,
         }
       ]
     };
@@ -187,6 +183,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
         console.log('Individual messages ===>>>', response);
         // this.messagesSubject$.next(response?.zulip?.messages);
+        this.loading = false;
 
         this.scrollBottom();
         this.change.detectChanges();
@@ -246,6 +243,28 @@ export class IndividualMessagingBoardComponent implements OnInit {
     );
   }
 
+  // resets unread messages to zero when page in loaded
+  resetDmUnreads(): void {
+
+    this.userSocketService.privateMessageSocket.subscribe(
+      newMessage => {
+        console.log('Before updating messages in array ===>>>>', newMessage);
+        const dmMsg = newMessage.filter(msg => +msg.sender_id === +this.operand?.user_id);
+        newMessage.map(msg => {
+          if (msg.sender_id === +this.operand?.user_id) {
+            newMessage.splice(msg);
+          }
+        });
+        console.log('This users dm message ===>>>', dmMsg);
+        console.log('Length of this dm messages ===>>>', dmMsg.length);
+
+        this.userSocketService.privateMessageSocket.subscribe(
+          messages => console.log('After updating messages in array ===>>>>', messages)
+        );
+      }
+    );
+  }
+
   sendMessageToIndividual(message: any): void {
     const markdown = turndownService.turndown(message);
 
@@ -267,7 +286,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
           'Sending message error'
       ); }
     );
-    // this.privateMessages();
 
     const streamDetail = {
       use_first_unread_anchor: true,
@@ -280,8 +298,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
         }
       ]
     };
-    // fetch messages after sending
-    // this.store.dispatch(new messageActions.LoadPrivateMessages(streamDetail));
   }
 
   getIndividualMessage(): void {
@@ -292,7 +308,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
       type: [
         {
           operator: 'pm-with',
-          operand: this.memberDetail.email,
+          operand: this.operand?.email,
         }
       ]
     };

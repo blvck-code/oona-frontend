@@ -3,7 +3,7 @@ import {Actions, Effect, ofType} from '@ngrx/effects';
 import { Injectable } from '@angular/core';
 import * as messagingActions from './messaging.actions';
 import { MessagingService } from '../services/messaging.service';
-import {catchError, map, mergeMap, take} from 'rxjs/operators';
+import {catchError, delay, map, mergeMap, take} from 'rxjs/operators';
 import {MessagesModel} from '../models/messages.model';
 
 @Injectable()

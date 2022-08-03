@@ -9,6 +9,9 @@ import * as sharedActions from './shared/state/shared.actions';
 import {getIsLoggedIn} from './auth/state/auth.selectors';
 import {OonaSocketService} from './dashboard/messaging/services/oona-socket.service';
 import {ActivatedRoute} from '@angular/router';
+import {Notification} from 'rxjs';
+
+import { OneSignal} from 'onesignal-ngx';
 
 @Component({
   selector: 'app-root',
@@ -23,15 +26,13 @@ export class AppComponent implements OnInit {
     private store: Store<AppState>,
     private sockets: OonaSocketService,
     private route: ActivatedRoute,
-    private titleService: Title
+    private titleService: Title,
+    private oneSignal: OneSignal
   ) {
   }
 
   updateState = () => {
-    // if (localStorage.getItem('accessToken')){
-    //
-    //   // this.store.dispatch(new sharedActions.LoadUsers());
-    // }
+
     this.store.dispatch(new authActions.UpdateState());
 
     this.store.select(getIsLoggedIn).subscribe(
@@ -46,11 +47,14 @@ export class AppComponent implements OnInit {
   }
 
   tabNotification(): void {
-    let unreadMessages = 0;
+    // let unreadMessages = 0;
 
-    this.sockets.messageCountSocket.subscribe(
-      (unreadMsg: number) => {
-        unreadMsg > 0 ? unreadMessages = unreadMsg : null;
+    this.sockets.privateMsgCounterSubject.subscribe(
+      newMessage => {
+        const messages = this.sockets.messagesInPrivate;
+
+        console.log('Latest message content ====>>', messages);
+        console.log('Messages counter ===>>> ', newMessage);
       }
     );
   }
@@ -71,6 +75,12 @@ export class AppComponent implements OnInit {
         }
       }
     );
+  }
+
+  handleWebPush(): void {
+    this.oneSignal.init({
+      appId: '41d455ec-e448-416c-a089-c8ac0ebb5f4d'
+    });
   }
 
 }

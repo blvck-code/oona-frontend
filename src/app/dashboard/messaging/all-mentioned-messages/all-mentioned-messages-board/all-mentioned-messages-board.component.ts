@@ -74,7 +74,7 @@ export class AllMentionedMessagesBoardComponent implements OnInit {
       messages => {
         // @ts-ignore
         if (messages?.length > 0) {
-          console.log('Messages length ==>>', messages?.length);
+          // console.log('Messages length ==>>', messages?.length);
           this.messageExist = true;
         } else {
           this.messageExist = false;

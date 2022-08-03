@@ -34,7 +34,7 @@ export const getLoadingAllMsg = createSelector(
 
 export const getAllMessages = createSelector(
   getMessagingState,
-  state => state.messaging.allMessages?.messages?.zulip?.messages
+  state => state.messaging.allMessages?.messages
 );
 
 export const getAllFilteredMsg = createSelector(

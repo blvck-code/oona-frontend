@@ -14,7 +14,7 @@ import { Observable } from 'rxjs';
 import { MessagingService } from './services/messaging.service';
 import * as sharedActions from '../../shared/state/shared.actions';
 import * as authActions from '../../auth/state/auth.actions';
-import {getAllUsers} from '../../auth/state/auth.selectors';
+import {getAllUsers, getZulipUsers} from '../../auth/state/auth.selectors';
 import {Title} from '@angular/platform-browser';
 
 @Component({
@@ -95,7 +95,7 @@ export class MessagingComponent implements OnInit {
           ]
         };
 
-        this.store.dispatch(new messagingActions.LoadPrivateMessages(streamDetail));
+        this.store.dispatch(new messagingActions.LoadAllMessages(streamDetail));
 
       });
     });
