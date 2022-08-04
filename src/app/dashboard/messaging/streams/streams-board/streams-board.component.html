@@ -7,7 +7,7 @@
   </div>
 
   <div class="overflow-chat">
-    <div *ngIf="!(streams$ | async ) && !(streams$ | async)?.length" class="py-4">
+    <div *ngIf="!dateSortedPrivateMessages?.length" class="py-4">
       <p>No Messages</p>
     </div>
 
@@ -19,13 +19,13 @@
     </div>
     <div  id="box">
       <app-individual-chat-card
-        *ngFor="let chat of streams$ | async"
+        *ngFor="let chat of dateSortedPrivateMessages"
         [messageDetail]="chat"
         (click)="handleReply(chat)"
       ></app-individual-chat-card>
       <div #endChat></div>
 
-        <div *ngFor="let chat of streamMsg">123</div>
+<!--        <div *ngFor="let chat of streamMsg">123</div>-->
 
     </div>
 

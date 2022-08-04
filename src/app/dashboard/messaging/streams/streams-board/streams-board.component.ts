@@ -12,6 +12,7 @@ import {
 import {SingleMessageModel} from '../../models/messages.model';
 import {BehaviorSubject, Observable} from 'rxjs';
 import * as messageActions from '../../state/messaging.actions';
+import {getSelectedUser} from '../../../../auth/state/auth.selectors';
 
 @Component({
   selector: 'app-streams-board',
@@ -27,6 +28,13 @@ export class StreamsBoardComponent implements OnInit {
   streamMsgSubject = new BehaviorSubject<SingleMessageModel[]>(this.streamMsg);
   streamMsgObserver = this.streamMsgSubject.asObservable();
 
+  selectedStreamId = 1;
+  selectedStreamIdSubject = new BehaviorSubject<number>(+this.selectedStreamId);
+  selectedStreamIdObservable = this.selectedStreamIdSubject.asObservable();
+
+  dateSortedPrivateMessages: any[] = [];
+
+
   topicsId: any[] = [];
   @ViewChild('endChat') endChat: ElementRef | undefined;
 
@@ -35,6 +43,11 @@ export class StreamsBoardComponent implements OnInit {
     private router: Router,
     private store: Store<AppState>
   ) {
+    this.activateRoute.paramMap.subscribe((event: any) => {
+      const streamId = event?.get('stream')?.split('-')[0];
+      const topicInfo = event?.get('topic')?.replace('-', ' ');
+      this.selectedStreamId = streamId;
+    });
   }
 
   onInitHandler(): void {
@@ -45,6 +58,16 @@ export class StreamsBoardComponent implements OnInit {
   ngOnInit(): void {
     this.onInitHandler();
     this.getStreamData();
+    this.handleRouterChange();
+  }
+
+  handleRouterChange(): void {
+    // @ts-ignore
+    this.router.events.subscribe((event: Event) => {
+      if (event instanceof NavigationEnd) {
+        this.getStreamData();
+      }
+    });
   }
 
   handleReply(message: any): void {
@@ -56,28 +79,31 @@ export class StreamsBoardComponent implements OnInit {
     this.streams$ = this.store.select(getAllStreamData);
     this.store.select(getAllStreamData).subscribe(
       (response: SingleMessageModel[] | any) => {
-        const topicMsg = response?.filter((msg: SingleMessageModel) => msg.stream_id === 10);
+        response?.map(
+          (content: SingleMessageModel) => {
 
-
-        setTimeout(() => {
-          if (this.topicsId.includes(topicMsg?.id)) {
-            return;
+            if (+content.stream_id === +this.selectedStreamId) {
+              this.streamMsg.push(content);
+              this.sortMessages();
+            } else {
+              this.streamMsg = [];
+            }
           }
-          console.log('topicMsg ==>>>>', topicMsg)
-          this.streamMsg.push(topicMsg);
-          this.topicsId.push(topicMsg?.id);
-        }, 1000);
+        );
 
         this.scrollBottom();
-        console.log('Stream content ===>>>>', this.streamMsg)
-
-
       }
     );
 
+
     this.streamMsgObserver.subscribe(
       item => console.log('Item ===>>>', item)
-    )
+    );
+  }
+
+  sortMessages(): void{
+    this.dateSortedPrivateMessages = this.streamMsg.sort((a, b ) => a.timestamp - b.timestamp);
+    this.scrollBottom();
   }
 
   scrollBottom(): any {

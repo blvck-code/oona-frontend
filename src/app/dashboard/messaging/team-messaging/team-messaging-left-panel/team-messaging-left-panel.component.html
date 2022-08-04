@@ -161,7 +161,7 @@
         >
           <div class="accordion-body">
             <div class="accordion-body-item"   >
-              <p class="accordion-body-item__text">All Channels</p>
+              <p class="accordion-body-item__text" (click)="handleNavigateTopic(team)">All Channels</p>
 
               <p class="create-teams__icon"
                  (click)="channelSettings()"
@@ -172,7 +172,7 @@
               class="accordion-body-item"
             >
               <p (click)="handleNavigateTopic(team, topic)">
-                # {{ topic?.name | titlecase }}
+                {{ topic?.name | titlecase }}
               </p>
 
             </div>
