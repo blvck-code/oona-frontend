@@ -44,6 +44,8 @@ export enum MessagingActionsTypes {
   LOAD_STREAM_DATA_SUCCESS = 'messaging/loadStreamDataSuccess',
   LOAD_STREAM_DATA_FAIL = 'messaging/loadStreamDataFail',
 
+  HANDLE_STREAM_DATA = 'messaging/updateStreamData',
+
   // CURRENT USER PRIVATE MESSAGE
   LOAD_CURRENT_USER = 'messaging/loadPrivateUser',
   LOAD_CURRENT_USER_SUCCESS = 'messaging/loadPrivateUserSuccess',
@@ -139,7 +141,7 @@ export class LoadPrivateMessagesFail implements Action {
 export class LoadStreamData implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_DATA;
   constructor(public payload: any) {
-    console.log('Stream data details ===>>>', payload)
+    console.log('Stream data details ===>>>', payload);
   }
 }
 export class LoadStreamDataSuccess implements Action {
@@ -152,6 +154,13 @@ export class LoadStreamDataFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_DATA_FAIL;
   constructor(public payload: StreamDataModel) {
     console.log('Loading stream data fail ===>>>', payload);
+  }
+}
+
+
+export class HandleStreamData implements Action {
+  readonly type = MessagingActionsTypes.HANDLE_STREAM_DATA;
+  constructor(public payload: any) {
   }
 }
 
@@ -267,4 +276,5 @@ export type MessagingActions =
   // LOAD STREAM DATA
   | LoadStreamData
   | LoadStreamDataSuccess
-  | LoadStreamDataFail;
+  | LoadStreamDataFail
+  | HandleStreamData;

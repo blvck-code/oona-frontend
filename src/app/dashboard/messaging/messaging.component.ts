@@ -16,6 +16,7 @@ import * as sharedActions from '../../shared/state/shared.actions';
 import * as authActions from '../../auth/state/auth.actions';
 import {getAllUsers, getZulipUsers} from '../../auth/state/auth.selectors';
 import {Title} from '@angular/platform-browser';
+import {SingleMessageModel} from './models/messages.model';
 
 @Component({
   selector: 'app-messaging',
@@ -105,6 +106,7 @@ export class MessagingComponent implements OnInit {
     this.initializeState();
     this.getAllMessages();
     this.getPrivateMessages();
+    this.getAllStreamData();
     // this.getStreamData();
   }
 
@@ -176,4 +178,38 @@ export class MessagingComponent implements OnInit {
       }
     );
   }
+
+  getAllStreamData(): void {
+    this.store.select(getAllStreams).subscribe((streams: any) => {
+
+      streams?.map((stream: any) => {
+        const streamDetail = {
+          anchor: 'newest',
+          num_before: 100,
+          num_after: 0,
+          type: [
+            {
+              operator: 'stream',
+              operand: stream?.name,
+            },
+          ],
+        };
+
+        this.messagingService
+          .getMessagesOfStream(streamDetail)
+          .subscribe((response: any) => {
+
+              const messages = response?.zulip?.messages;
+
+              messages?.forEach((msg: SingleMessageModel) => {
+                if (msg) {
+                  this.store.dispatch(new messagingActions.HandleStreamData(msg));
+                }
+              });
+            }
+          );
+      });
+    });
+  }
+
 }

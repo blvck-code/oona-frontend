@@ -171,7 +171,6 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
 
             messages?.forEach((msg: SingleMessageModel) => {
               if (msg) {
-                console.log('Individual message content ===>>>', msg);
                 this.privateMessages.push(msg);
                 this.sortMessages();
               }

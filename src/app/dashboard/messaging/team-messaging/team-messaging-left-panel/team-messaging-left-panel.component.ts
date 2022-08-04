@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {MessagingService} from '../../services/messaging.service';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
@@ -10,16 +10,16 @@ import {BehaviorSubject, Observable} from 'rxjs';
 // NgRx
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
-import {getAllStreams, getStreamsLoading, getTopics} from '../../state/messaging.selectors';
-import {AllStreamsModel, SubscribedStreams} from '../../models/streams.model';
-import * as messagingActions from '../../state/messaging.actions';
+import {getAllStreams, getTopics} from '../../state/messaging.selectors';
+import {AllStreamsModel} from '../../models/streams.model';
 import {take} from 'rxjs/operators';
-import {ChannelSettingsComponent} from "../channel-settings/channel-settings.component";
+import {ChannelSettingsComponent} from '../channel-settings/channel-settings.component';
 
 @Component({
   selector: 'app-team-messaging-left-panel',
   templateUrl: './team-messaging-left-panel.component.html',
-  styleUrls: ['./team-messaging-left-panel.component.scss']
+  styleUrls: ['./team-messaging-left-panel.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TeamMessagingLeftPanelComponent implements OnInit {
 
@@ -55,7 +55,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     private dialog: MatDialog,
     private change: ChangeDetectorRef,
     private userSocketService: OonaSocketService,
-    private store: Store<AppState>
+    private store: Store<AppState>,
   ) {
   }
 
@@ -107,7 +107,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
     // Fetch Topics
     this.streams.subscribe(streams => {
-      console.log('This is the topics=====>', streams);
 
       take(streams.length),
         streams.map((stream: any) => {
@@ -124,6 +123,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
                     topics: topicData,
                   };
                   this.allTopics = [...this.allTopics, stream];
+                  this.change.detectChanges();
                 }
               }
             );
@@ -134,8 +134,8 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.topics = this.store.select(getTopics);
   }
 
-  getTopics(team: any): any {
-    this.store.dispatch(new messagingActions.LoadStreamTopic(team.stream_id));
+  handleStreamSocket(team: any): any {
+    // this.userSocketService.
   }
 
   listAllTeams(): any {
@@ -225,38 +225,23 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   //   }
   // }
 
-  displayMessagesOfTopic(stream?: any, topic?: any): void {
+  handleNavigateTopic(stream?: any, topic?: any): void {
     // stream
 
 
-    // let streamName = stream?.name;
-    // streamName = streamName.replace(/\s+/g, '-').toLowerCase();
-    //
+    let streamName = stream?.name;
+    streamName = streamName.replace(/\s+/g, '-').toLowerCase();
+
     // // @Todo change to topic incase user clicks topic instead of stream
-    // if (topic) {
-    //   // topic
-    //   let topicName = topic?.name;
-    //   topicName = topicName.replace(/\s+/g, '-').toLowerCase();
-    //
-    //   this.router.navigate([`/dashboard/messaging/streams/${stream.stream_id}-${streamName}/topic/${topicName}`]);
-    // } else {
-    //   this.router.navigate([`/dashboard/messaging/streams/${stream.stream_id}-${streamName}`]);
-    // }
-    //
-    // const topicName = topic?.name;
-    //
-    // const filterData = {
-    //   streamId: stream.stream_id,
-    //   topic: undefined
-    // };
-    //
-    // if (topic) {
-    //   filterData.topic = topicName;
-    // }
-    // this.store.dispatch(new messagingActions.FilterMessages(filterData));
+    if (topic) {
+      // topic
+      let topicName = topic?.name;
+      topicName = topicName.replace(/\s+/g, '-').toLowerCase();
 
-
-    // this.router.navigate(['/dashboard/messaging/team']);
+      this.router.navigate([`/dashboard/messaging/streams/${stream.stream_id}-${streamName}/topic/${topicName}`]);
+    } else {
+      this.router.navigate([`/dashboard/messaging/streams/${stream.stream_id}-${streamName}`]);
+    }
   }
 
   showAllMessages(): void {

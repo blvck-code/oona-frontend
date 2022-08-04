@@ -42,6 +42,11 @@ export const getAllFilteredMsg = createSelector(
   state => state.messaging.selectedStreamMsg.messages
 );
 
+export const getAllStreamData = createSelector(
+  getMessagingState,
+  state => state.streams.streamData
+);
+
 // export const filteredState = createSelector(
 //   getMessagingState,
 //   state => state.messaging.filtered

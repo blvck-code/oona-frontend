@@ -238,6 +238,10 @@ export class OonaSocketService {
         this.changeNewPrivateMessageCount(this.removeLoggedInUserMessages(this.messagesInPrivate));
 
       }
+    } else if (socketData.message.message.type === 'subscription') {
+
+      console.log('Subscription socket fired ===>>>>', socketData);
+
     }
 
     this.newMessages = this.removeLoggedInUserMessages([...this.messagesToStreams, ...this.messagesInPrivate]);

@@ -106,15 +106,8 @@ export class IndividualMessagingComponent implements OnInit {
       ]
     };
 
-    console.log('Message being fetched payload: ', streamDetail);
-
     // fetch messages from server
     this.store.dispatch(new messageActions.LoadPrivateMessages(streamDetail));
-
-    // get messages from store
-    this.store.select(getPrivateMessages).subscribe(
-      messages => console.log('Messages: ', messages)
-    );
 
     // @ts-ignore
     document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });

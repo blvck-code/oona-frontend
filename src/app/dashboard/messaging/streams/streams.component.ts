@@ -1,19 +1,33 @@
-import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
-import {ActivatedRoute, NavigationEnd, NavigationError, NavigationStart, Params, Router} from '@angular/router';
-import {BehaviorSubject, Observable} from 'rxjs';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  NavigationError,
+  NavigationStart,
+  Params,
+  Router,
+} from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 // NgRx
-import {Store} from '@ngrx/store';
-import {AppState} from '../../../state/app.state';
-import {getAllMessages, getLoadingAllMsg} from '../state/messaging.selectors';
-import {SingleMessageModel} from '../models/messages.model';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../state/app.state';
+import {
+  getAllMessages,
+  getAllStreams,
+  getLoadingAllMsg,
+} from '../state/messaging.selectors';
+import { SingleMessageModel } from '../models/messages.model';
 import * as messagingActions from '../state/messaging.actions';
-import {firmName} from '../../../../environments/environment';
+import { firmName } from '../../../../environments/environment';
+import { map } from 'rxjs/operators';
+import { MessagingService } from '../services/messaging.service';
+import {HandleStreamData} from '../state/messaging.actions';
 
 @Component({
   selector: 'app-streams',
   templateUrl: './streams.component.html',
-  styleUrls: ['./streams.component.scss']
+  styleUrls: ['./streams.component.scss'],
 })
 export class StreamsComponent implements OnInit, AfterViewInit {
   currentStream: any;
@@ -28,11 +42,12 @@ export class StreamsComponent implements OnInit, AfterViewInit {
 
   loadingMsgs$!: Observable<boolean>;
   streamName = '';
+  privateMessages = Array();
 
   constructor(
     private activateRoute: ActivatedRoute,
     private router: Router,
-    private store: Store<AppState>
+    private store: Store<AppState>,
   ) {
     // @ts-ignore
     this.router.events.subscribe((event: Event) => {
@@ -50,7 +65,6 @@ export class StreamsComponent implements OnInit, AfterViewInit {
         }
         // @ts-ignore
         this.titleSubject.next(streamName);
-
       }
 
       if (event instanceof NavigationEnd) {
@@ -60,7 +74,7 @@ export class StreamsComponent implements OnInit, AfterViewInit {
 
         const filteredInfo = {
           streamId,
-          topicName: undefined
+          topicName: undefined,
         };
 
         if (topicInfo) {
@@ -80,38 +94,31 @@ export class StreamsComponent implements OnInit, AfterViewInit {
       if (event instanceof NavigationError) {
         // Hide progress spinner or progress bar
       }
-
     });
   }
 
   changeOnRouter(): void {
-
     this.router.events.subscribe((event: any) => {
       if (event instanceof NavigationEnd) {
-
         this.getStreamsMessages();
         const route = this.activateRoute.snapshot.paramMap;
 
         const streamId = route.get('stream')?.split('-')[0];
         const currentStream = route.get('stream')?.split('-')[1];
 
-
         const topic = route.get('topic');
 
         const streamData = {
           id: streamId,
           streamName: currentStream,
-          streamTopic: topic ? topic : 'new streams'
+          streamTopic: topic ? topic : 'new streams',
         };
 
         this.streamInfo = streamData;
 
         console.log('streamInfo ===>>>', streamData);
       }
-
     });
-
-
   }
 
   onInitHandler(): void {
@@ -119,7 +126,9 @@ export class StreamsComponent implements OnInit, AfterViewInit {
     document.title = `${this.streamName} - ${firmName} - Oona`;
     const currentStream = this.activateRoute.snapshot.params.stream;
 
-    this.titleSelected.subscribe(data => console.log('Current title ===>>>', data));
+    this.titleSelected.subscribe((data) =>
+      console.log('Current title ===>>>', data)
+    );
   }
 
   getStreamsMessages(): void {
@@ -136,9 +145,9 @@ export class StreamsComponent implements OnInit, AfterViewInit {
       type: [
         {
           operator: 'stream',
-          operand: currentStream
-        }
-      ]
+          operand: currentStream,
+        },
+      ],
     };
 
     console.log('streamDetail ===>>>', streamDetail);
@@ -147,39 +156,30 @@ export class StreamsComponent implements OnInit, AfterViewInit {
   }
 
   handleMsgFilter(): void {
+    this.store.select(getLoadingAllMsg).subscribe((data) => {
+      if (!data) {
+        const selectedStream = this.activateRoute.snapshot.paramMap;
 
-    this.store.select(getLoadingAllMsg).subscribe(
-      data => {
+        const streamId = selectedStream?.get('stream')?.split('-')[0];
+        const topic = selectedStream?.get('topic');
+        const topicInfo = topic?.replace('-', ' ');
 
-        if (!data) {
-          const selectedStream = this.activateRoute.snapshot.paramMap;
+        const filteredInfo = {
+          streamId,
+          topicName: undefined,
+        };
 
-          const streamId = selectedStream?.get('stream')?.split('-')[0];
-          const topic = selectedStream?.get('topic');
-          const topicInfo = topic?.replace('-', ' ');
-
-          const filteredInfo = {
-            streamId,
-            topicName: undefined
-          };
-
-
-          if (topicInfo) {
-            // @ts-ignore
-            filteredInfo.topicName = topicInfo;
-          }
-
-          this.store.dispatch(new messagingActions.FilterMessages(filteredInfo));
+        if (topicInfo) {
+          // @ts-ignore
+          filteredInfo.topicName = topicInfo;
         }
+
+        this.store.dispatch(new messagingActions.FilterMessages(filteredInfo));
       }
-    );
-
-
+    });
 
     // this.activateRoute.params.subscribe(data => console.log('Params ===>>', data));
-
   }
-
 
   ngOnInit(): void {
     this.onInitHandler();
@@ -189,6 +189,14 @@ export class StreamsComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.handleMsgFilter();
+  }
+
+
+
+  sortMessages(): void{
+    this.privateMessages.sort((a, b ) => a.timestamp - b.timestamp).map(
+      streamMsg => console.log('Stream message ===>>>', streamMsg)
+    );
   }
 
 }

@@ -155,6 +155,14 @@ export function messagingReducer(
           },
         },
       };
+    case messagingActions.MessagingActionsTypes.HANDLE_STREAM_DATA:
+      return {
+        ...state,
+        streams: {
+         ...state.streams,
+         streamData: [...state.streams.streamData, action.payload]
+        }
+      };
     case messagingActions.MessagingActionsTypes.LOAD_ALL_MESSAGES_FAIL:
       return {
         ...state,
