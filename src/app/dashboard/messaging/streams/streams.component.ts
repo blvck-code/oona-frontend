@@ -23,6 +23,7 @@ import { firmName } from '../../../../environments/environment';
 import { map } from 'rxjs/operators';
 import { MessagingService } from '../services/messaging.service';
 import {HandleStreamData} from '../state/messaging.actions';
+import {OonaSocketService} from '../services/oona-socket.service';
 
 @Component({
   selector: 'app-streams',
@@ -45,9 +46,9 @@ export class StreamsComponent implements OnInit, AfterViewInit {
   privateMessages = Array();
 
   constructor(
-    private activateRoute: ActivatedRoute,
     private router: Router,
     private store: Store<AppState>,
+    private activateRoute: ActivatedRoute,
   ) {
     // @ts-ignore
     this.router.events.subscribe((event: Event) => {
@@ -126,9 +127,8 @@ export class StreamsComponent implements OnInit, AfterViewInit {
     document.title = `${this.streamName} - ${firmName} - Oona`;
     const currentStream = this.activateRoute.snapshot.params.stream;
 
-    this.titleSelected.subscribe((data) =>
-      console.log('Current title ===>>>', data)
-    );
+    this.changeOnRouter();
+    this.getStreamsMessages();
   }
 
   getStreamsMessages(): void {
@@ -181,10 +181,9 @@ export class StreamsComponent implements OnInit, AfterViewInit {
     // this.activateRoute.params.subscribe(data => console.log('Params ===>>', data));
   }
 
+
   ngOnInit(): void {
     this.onInitHandler();
-    this.changeOnRouter();
-    this.getStreamsMessages();
   }
 
   ngAfterViewInit(): void {

@@ -13,6 +13,7 @@ import {SingleMessageModel} from '../../models/messages.model';
 import {BehaviorSubject, Observable} from 'rxjs';
 import * as messageActions from '../../state/messaging.actions';
 import {getSelectedUser} from '../../../../auth/state/auth.selectors';
+import {OonaSocketService} from '../../services/oona-socket.service';
 
 @Component({
   selector: 'app-streams-board',
@@ -28,31 +29,38 @@ export class StreamsBoardComponent implements OnInit {
   streamMsgSubject = new BehaviorSubject<SingleMessageModel[]>(this.streamMsg);
   streamMsgObserver = this.streamMsgSubject.asObservable();
 
-  selectedStreamId = 1;
-  selectedStreamIdSubject = new BehaviorSubject<number>(+this.selectedStreamId);
-  selectedStreamIdObservable = this.selectedStreamIdSubject.asObservable();
+  selectedStreamId: any;
+  selectedTopicName = '';
 
   dateSortedPrivateMessages: any[] = [];
 
 
-  topicsId: any[] = [];
+  messagesId: number[] = [];
+
   @ViewChild('endChat') endChat: ElementRef | undefined;
 
   constructor(
     private activateRoute: ActivatedRoute,
     private router: Router,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private oonaSocket: OonaSocketService
   ) {
     this.activateRoute.paramMap.subscribe((event: any) => {
       const streamId = event?.get('stream')?.split('-')[0];
-      const topicInfo = event?.get('topic')?.replace('-', ' ');
+      const topicInfo = event?.get('topic')?.replace(/-/g, ' ');
+
       this.selectedStreamId = streamId;
+      if (topicInfo) {
+        this.selectedTopicName = topicInfo;
+      }
+
     });
   }
 
   onInitHandler(): void {
     this.streams$ = this.store.select(getPrivateMessages);
     this.loading$ = this.store.select(getLoadingPrivateMsgs);
+    this.inComingMessage();
   }
 
   ngOnInit(): void {
@@ -82,24 +90,82 @@ export class StreamsBoardComponent implements OnInit {
         response?.map(
           (content: SingleMessageModel) => {
 
+            if (this.selectedTopicName) {
+              console.log('Selected stream topic ===>>', this.selectedTopicName);
+              const filteredTopics = response.find((streamData: SingleMessageModel) =>
+                streamData.subject.toLowerCase() === this.selectedTopicName
+              );
+
+              console.log('Filtered stream content ===>>>>', filteredTopics);
+              this.streamMsg.push(filteredTopics);
+
+            }
+
+
+
             if (+content.stream_id === +this.selectedStreamId) {
               this.streamMsg.push(content);
               this.sortMessages();
             } else {
               this.streamMsg = [];
             }
+
           }
         );
-
         this.scrollBottom();
       }
     );
+  }
 
+  inComingMessage(): void {
+    this.oonaSocket.streamMessageCountSocket.subscribe(
+      streamData => {
+        streamData?.map((newMessage: SingleMessageModel) => {
 
-    this.streamMsgObserver.subscribe(
-      item => console.log('Item ===>>>', item)
+          if (+newMessage.stream_id === +this.selectedStreamId) {
+
+            if (this.messagesId.includes(+newMessage.id)){
+              return;
+            }
+
+            console.log('New message content ===>>>', newMessage);
+            this.streamMsg = [...this.dateSortedPrivateMessages, newMessage];
+            this.messagesId.push(newMessage.id);
+            this.sortMessages();
+            this.scrollBottom();
+          }
+
+        });
+      }
     );
   }
+
+  // outGoingMsg(): void{
+  //   this.oonaSocket.myMessagesSocketSubject.subscribe(
+  //     (msg: any) => {
+  //
+  //       console.log('My sent outgoing message content ===>>>', msg);
+  //
+  //       this.privateMessagesSubject.subscribe( messages => {
+  //
+  //           console.log('Private messages content ===>>>', messages);
+  //
+  //           if (this.messagesId.includes(msg.id)){
+  //             return;
+  //           }
+  //
+  //           if (!msg.id){
+  //             return;
+  //           }
+  //
+  //           this.messagesId.push(msg.id);
+  //           this.dateSortedPrivateMessages.push(msg);
+  //         }
+  //       );
+  //
+  //     }
+  //   );
+  // }
 
   sortMessages(): void{
     this.dateSortedPrivateMessages = this.streamMsg.sort((a, b ) => a.timestamp - b.timestamp);

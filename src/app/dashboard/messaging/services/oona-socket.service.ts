@@ -40,7 +40,7 @@ export class OonaSocketService {
   messageCount = this.messageCountSocket.asObservable();
 
   messagesToStreams = Array();
-  private streamMessageCountSocket = new BehaviorSubject(this.messagesToStreams);
+  streamMessageCountSocket = new BehaviorSubject(this.messagesToStreams);
   streamMessageSocket = this.streamMessageCountSocket.asObservable();
 
   messagesInPrivate = Array();
