@@ -107,7 +107,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
     // Fetch Topics
     this.streams.subscribe(streams => {
-      console.log('This is the topics=====>', streams);
 
       take(streams.length),
         streams.map((stream: any) => {
@@ -134,8 +133,8 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.topics = this.store.select(getTopics);
   }
 
-  getTopics(team: any): any {
-    this.store.dispatch(new messagingActions.LoadStreamTopic(team.stream_id));
+  handleStreamSocket(team: any): any {
+    // this.userSocketService.
   }
 
   listAllTeams(): any {
@@ -225,23 +224,25 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   //   }
   // }
 
-  displayMessagesOfTopic(stream?: any, topic?: any): void {
+  handleNavigateTopic(stream?: any, topic?: any): void {
     // stream
 
 
-    // let streamName = stream?.name;
-    // streamName = streamName.replace(/\s+/g, '-').toLowerCase();
-    //
+    let streamName = stream?.name;
+    streamName = streamName.replace(/\s+/g, '-').toLowerCase();
+
+    console.log('Stream to navigate ===>>', streamName)
+
     // // @Todo change to topic incase user clicks topic instead of stream
-    // if (topic) {
-    //   // topic
-    //   let topicName = topic?.name;
-    //   topicName = topicName.replace(/\s+/g, '-').toLowerCase();
-    //
-    //   this.router.navigate([`/dashboard/messaging/streams/${stream.stream_id}-${streamName}/topic/${topicName}`]);
-    // } else {
-    //   this.router.navigate([`/dashboard/messaging/streams/${stream.stream_id}-${streamName}`]);
-    // }
+    if (topic) {
+      // topic
+      let topicName = topic?.name;
+      topicName = topicName.replace(/\s+/g, '-').toLowerCase();
+
+      this.router.navigate([`/dashboard/messaging/streams/${stream.stream_id}-${streamName}/topic/${topicName}`]);
+    } else {
+      this.router.navigate([`/dashboard/messaging/streams/${stream.stream_id}-${streamName}`]);
+    }
     //
     // const topicName = topic?.name;
     //

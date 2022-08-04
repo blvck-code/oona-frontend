@@ -36,6 +36,7 @@ export class IndividualChatCardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
     this.messageTime = new Date(this.messageDetail.timestamp * 1000).toLocaleTimeString();
     this.imageURL = `${this.baseURL}${this.messageDetail?.avatar_url}&s=50`;
 

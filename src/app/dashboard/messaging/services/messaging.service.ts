@@ -7,6 +7,8 @@ import {Router} from '@angular/router';
 import {AllStreamsModel} from '../models/streams.model';
 import {map} from 'rxjs/operators';
 import {MessagesSocketService} from './messages-socket.service';
+import {AllStreamsResponseModel} from '../models/allStreamsResponse.model';
+import {Topics, TopicsModel} from '../models/topics.model';
 
 export interface Message {
   author: string;
@@ -305,4 +307,5 @@ export class MessagingService {
       this.streamTopic + streamId,
     );
   }
+
 }

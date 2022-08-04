@@ -7,29 +7,26 @@
   </div>
 
   <div class="overflow-chat">
-    <div *ngIf="!(loading$ | async ) && !(streams$ | async)" class="py-4">
+    <div *ngIf="!(streams$ | async ) && !(streams$ | async)?.length" class="py-4">
       <p>No Messages</p>
     </div>
 
-    <div *ngIf="( loading$ | async )" class="d-flex justify-content-center mb-5">
+    <div *ngIf="!( streams$ | async )" class="d-flex justify-content-center mb-5">
       <div>
         <app-loading-animation></app-loading-animation>
         <p class="teams-belonging">Fetching messages</p>
       </div>
     </div>
     <div  id="box">
-<!--      <div class="d-flex justify-content-center">-->
-<!--        <button-->
-<!--          class="get-more-messages-btn btn"-->
-<!--        >-->
-<!--          Get more-->
-<!--        </button>-->
-<!--      </div>-->
       <app-individual-chat-card
-        *ngFor="let chat of (streams$ | async)"
+        *ngFor="let chat of streams$ | async"
         [messageDetail]="chat"
         (click)="handleReply(chat)"
       ></app-individual-chat-card>
+      <div #endChat></div>
+
+        <div *ngFor="let chat of streamMsg">123</div>
+
     </div>
 
   </div>

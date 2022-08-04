@@ -171,7 +171,7 @@
               *ngFor="let topic of team?.topics?.zulip?.topics"
               class="accordion-body-item"
             >
-              <p (click)="displayMessagesOfTopic(team, topic)">
+              <p (click)="handleNavigateTopic(team, topic)">
                 # {{ topic?.name | titlecase }}
               </p>
 
@@ -215,14 +215,14 @@
         >
           <div class="accordion-body">
             <div
-              (click)="displayMessagesOfTopic('', '')"
+              (click)="handleNavigateTopic('', '')"
               class="accordion-body-item"
             >
               <p>All Topics</p>
             </div>
             <div
               *ngFor="let topic of team.topics"
-              (click)="displayMessagesOfTopic(team, topic)"
+              (click)="handleNavigateTopic(team, topic)"
               class="accordion-body-item"
             >
               <p>{{ topic.name }}</p>
