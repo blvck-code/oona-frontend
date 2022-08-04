@@ -43,8 +43,8 @@
             *ngFor="let chat of dateSortedPrivateMessages"
             [messageDetail]="chat"
           ></app-individual-chat-card>
-          <div #endChat></div>
         </div>
+        <div #endChat></div>
 
         <div class="py-4" *ngIf="!loadingMessages && !messagesWithIndividuals.length">
           <p>No Messages</p>

@@ -39,6 +39,7 @@
   justify-content: center;
   height: 26px;
   margin-right: 5px;
+  margin-top: 3px;
   padding: 0 10px;
   border-radius: 5px;
   background-color: #051EC4;
@@ -47,7 +48,7 @@
   cursor: pointer;
 
   p {
-    min-width: 115px;
+    min-width: max-content;
     margin-right: 5px;
     margin-bottom: 0;
   }

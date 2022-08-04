@@ -36,8 +36,9 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
 
   privateMessages = Array();
   dateSortedPrivateMessages = Array();
-  // privateMessagesSubject = new BehaviorSubject(this.privateMessages);
-  // privateMessageObservable = this.privateMessagesSubject.asObservable();
+  privateMessagesSubject = new BehaviorSubject(this.privateMessages);
+  privateMessageObservable = this.privateMessagesSubject.asObservable();
+
   messagesId: number[] = [];
 
   @ViewChild('endChat') endChat: ElementRef | undefined;
@@ -56,6 +57,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
     this.initPage();
     this.getAllPrivateMessages();
     this.inComingMessage();
+    this.outGoingMsg();
   }
 
   // getOperator(): StreamDetail {
@@ -165,13 +167,11 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
 
         this.messagingService.getMessagesOfStream(streamDetail).subscribe(
           (response: any) => {
-
-            console.log('Response for each Oona user ===>>>>', response);
-
             const messages = response?.zulip?.messages;
 
             messages?.forEach((msg: SingleMessageModel) => {
               if (msg) {
+                console.log('Individual message content ===>>>', msg);
                 this.privateMessages.push(msg);
                 this.sortMessages();
               }
@@ -286,20 +286,24 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
     this.userSocketService.myMessagesSocketSubject.subscribe(
       (msg: any) => {
 
-        // this.messagesSubject$.subscribe( messages => {
-        //
-        //     if (this.messagesId.includes(msg.id)){
-        //       return;
-        //     }
-        //
-        //     if (!msg.id){
-        //       return;
-        //     }
-        //
-        //     this.messagesId.push(msg.id);
-        //     messages.push(msg);
-        //   }
-        // );
+        console.log('My sent outgoing message content ===>>>', msg);
+
+        this.privateMessagesSubject.subscribe( messages => {
+
+          console.log('Private messages content ===>>>', messages);
+
+          if (this.messagesId.includes(msg.id)){
+            return;
+          }
+
+          if (!msg.id){
+            return;
+          }
+
+          this.messagesId.push(msg.id);
+          this.dateSortedPrivateMessages.push(msg);
+          }
+        );
 
       }
     );
@@ -308,12 +312,14 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
   replyMessage(chat: any): void {
     this.activeMessage = chat;
     this.store.dispatch(new messageActions.HandleSendMessage(chat));
-    console.log('Message to be replied ===>>>', chat)
   }
 
   scrollBottom(): any {
     if (this.endChat) {
-      this.endChat.nativeElement.scrollIntoView({ behavior: 'smooth'});
+      setTimeout(() => {
+        // @ts-ignore
+        this.endChat.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest'});
+      }, 500);
     }
   }
 

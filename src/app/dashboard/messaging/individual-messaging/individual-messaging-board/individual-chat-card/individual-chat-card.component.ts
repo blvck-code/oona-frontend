@@ -3,6 +3,7 @@ import {Store} from '@ngrx/store';
 import {AppState} from '../../../../../state/app.state';
 import {getUserDetails, getZulipProfile} from '../../../../../auth/state/auth.selectors';
 import {Observable} from 'rxjs';
+import { oonaFrontendUrl } from '../../../../../../environments/environment';
 
 @Component({
   selector: 'app-individual-chat-card',
@@ -13,6 +14,8 @@ export class IndividualChatCardComponent implements OnInit {
   @Input() messageDetail: any;
   messageTime = '';
   zulipProfile!: Observable<any>;
+  baseURL = oonaFrontendUrl;
+  imageURL = '';
 
   constructor(
     private store: Store<AppState>,
@@ -30,11 +33,12 @@ export class IndividualChatCardComponent implements OnInit {
 
   handleDate(): void {
     const time = this.messageDetail.timestamp;
-
   }
 
   ngOnInit(): void {
     this.messageTime = new Date(this.messageDetail.timestamp * 1000).toLocaleTimeString();
+    this.imageURL = `${this.baseURL}${this.messageDetail?.avatar_url}&s=50`;
+
 
     this.handleDate();
   }

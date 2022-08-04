@@ -1,6 +1,6 @@
 .individual-message-item {
   display: flex;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 
   &.my-message {
     .message-sender-icon {
@@ -20,8 +20,8 @@
 }
 .message-sender-icon {
   img {
-    height: 32px;
-    width: 32px;
+    height: 35px;
+    width: 35px;
   }
 }
 .message-item-content {
@@ -37,7 +37,6 @@
 
 .message-body {
   padding: 15px;
-  border: none;
   border-radius: 10px 10px 10px 0;
   box-shadow: 0 2px 4px rgba(34, 37, 52, 0.0501803);
   background-color: #fff;

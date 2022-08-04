@@ -1,9 +1,9 @@
 import {
-  Component,
+  Component, ElementRef,
   EventEmitter, Input,
   OnDestroy,
   OnInit,
-  Output,
+  Output, ViewChild,
 } from '@angular/core';
 import { MessagingService } from '../../services/messaging.service';
 import { NotificationService } from '../../../../shared/services/notification.service';
@@ -54,6 +54,9 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
   filteredUsers = Array();
   showEditor = false;
   receiverInfo!: SingleChat;
+
+  @ViewChild('endChat') endChat: ElementRef | undefined;
+
   constructor(
     private store: Store<AppState>,
     private router: Router,
@@ -223,9 +226,6 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
       content: markdown,
     };
 
-    console.log('Private message content =====>>>>', messageDetail);
-
-
     this.messagingService
       .sendIndividualMessage(messageDetail)
       .subscribe((response: any) => {
@@ -233,9 +233,15 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
           // clear the form
           form.value.name = '';
           this.editorData = '';
+          this.scrollBottom();
         }
       });
     // clear the form
+
+    if (this.chatGroup.length < 1) {
+      this.notificationService.showError('Select at least one user', 'Message sent fail.');
+      return;
+    }
     form.value.name = '';
     this.editorData = '';
   }
@@ -287,5 +293,11 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
 
   handleShowEditor(): void {
     this.showEditor = true;
+  }
+
+  scrollBottom(): any {
+    if (this.endChat) {
+      this.endChat.nativeElement.scrollIntoView({ behavior: 'smooth'});
+    }
   }
 }

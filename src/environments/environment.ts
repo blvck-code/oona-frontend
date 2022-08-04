@@ -4,8 +4,11 @@
 
 export const apiURL = 'https://192.168.0.';
 export const basePort = '42';
-// export const oonaBaseUrl = 'https://192.168.0.100:2443';
-export const oonaBaseUrl = `${apiURL}${basePort}:2443`;
+export const backendPort = '2443';
+export const frontendPort = '3443';
+
+export const oonaBaseUrl = `${apiURL}${basePort}:${backendPort}`;
+export const oonaFrontendUrl = `${apiURL}${basePort}:${frontendPort}`;
 export const channelBaseUrl = '192.168.0.42:2443';
 export const userChannel = 'wss://192.168.0.42:2443/ws/on/event/';
 export const messageChannel = 'wss://192.168.0.42:2443/ws/on/message/';
@@ -13,7 +16,6 @@ export const firmName = '8teq';
 export const domain = '192.168.0.42:8443';
 const whiteBoard = 'http://192.168.0.37:8030';
 const etherPad = 'http://192.168.0.37:9001/';
-
 
 export const environment = {
   production: false,
