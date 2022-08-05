@@ -129,7 +129,9 @@ export class StreamsTextEditorComponent implements OnInit, OnDestroy {
     const route = this.activatedRoute.snapshot.paramMap;
 
     const streamId = route.get('stream')?.split('-')[0];
-    const currentStream = route.get('stream')?.split('-')[1];
+    const currentStream = route.get('stream')?.split('-').slice(1, ).toString().replace(/,/g, ' ');
+
+    console.log('currentStream ====>>>>>', currentStream)
 
 
     // @ts-ignore
@@ -246,29 +248,13 @@ export class StreamsTextEditorComponent implements OnInit, OnDestroy {
     const messageDetail = {
       to: this.streamInfo.streamName,
       // ToDo change this to user message id
-      topic: this.streamInfo.streamTopic,
+      topic: this.streamInfo.streamTopic?.replace(/-/g, ' '),
       content: markdown
     };
 
     console.log('Stream details: ', this.streamInfo);
-    console.log('Message details: ', messageDetail);
+    console.log('Message details ===>>>> ', messageDetail);
 
-    // const messageDetail = {
-    //   to: this.chatGroup.map(member => member.id),
-    //   topic: '',
-    //   content: markdown
-    // };
-
-    // console.log('messageDetail ====>>>', messageDetail);
-
-    // const message = {
-    //   author: 'Oluoch',
-    //   message: 'trial message'
-    // };
-
-    // this.msgSocket.messages.next(message);
-
-    // console.log('Message content ===>>>', messageChannel);
 
     this.messagingService.sendStreamMessage(messageDetail).subscribe((response: any) => {
       if (response.zulip.result === 'success'){

@@ -7,7 +7,8 @@ export const basePort = '42';
 export const backendPort = '2443';
 export const frontendPort = '3443';
 
-export const oonaBaseUrl = `${apiURL}${basePort}:${backendPort}`;
+// export const oonaBaseUrl = `${apiURL}${basePort}:${backendPort}`;
+export const oonaBaseUrl = 'https://65.20.69.213:2443';
 export const oonaFrontendUrl = `${apiURL}${basePort}:${frontendPort}`;
 export const channelBaseUrl = '192.168.0.42:2443';
 export const userChannel = 'wss://192.168.0.42:2443/ws/on/event/';
