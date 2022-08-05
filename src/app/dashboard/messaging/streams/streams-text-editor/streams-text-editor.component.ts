@@ -129,7 +129,9 @@ export class StreamsTextEditorComponent implements OnInit, OnDestroy {
     const route = this.activatedRoute.snapshot.paramMap;
 
     const streamId = route.get('stream')?.split('-')[0];
-    const currentStream = route.get('stream')?.split('-')[1];
+    const currentStream = route.get('stream')?.split('-').slice(1, ).toString().replace(/,/g, ' ');
+
+    console.log('currentStream ====>>>>>', currentStream)
 
 
     // @ts-ignore
@@ -251,7 +253,7 @@ export class StreamsTextEditorComponent implements OnInit, OnDestroy {
     };
 
     console.log('Stream details: ', this.streamInfo);
-    console.log('Message details: ', messageDetail);
+    console.log('Message details ===>>>> ', messageDetail);
 
 
     this.messagingService.sendStreamMessage(messageDetail).subscribe((response: any) => {

@@ -51,6 +51,10 @@ export class OonaSocketService {
   myMessagesSocketSubject = new BehaviorSubject(this.myMessages);
   myMessagesSocket = this.myMessagesSocketSubject.asObservable();
 
+  myStreamMessages = Array();
+  myStreamMessagesSocketSubject = new BehaviorSubject(this.myStreamMessages);
+  myStreamMessagesSocket = this.myStreamMessagesSocketSubject.asObservable();
+
   peopleType = Array();
   public typingStatus = Array();
   private typingStatusSocket = new BehaviorSubject(this.recognizedUsers);
@@ -131,7 +135,7 @@ export class OonaSocketService {
     // }
     // }
 
-    // console.log('Socket data first time ===>>>', socketData);
+    console.log('Socket data first time ===>>>', socketData);
 
     if (socketData.message.type === 'presence'){
       // console.log('pushing user presence data');
@@ -206,10 +210,19 @@ export class OonaSocketService {
 
   // Filter message types from the socket
   private setMessageType(socketData: any): void {
+    const currentUserId =  this.loggedInUserProfile?.user_id;
+    const msgSenderId = socketData.message?.message?.sender_id;
+
     if (socketData.message.message.type === 'stream'){
-      // this.messagesToStreams.push(socketData.message.message);
+
+      // If i send message to the stream listener
+      if (msgSenderId === currentUserId){
+        // My outgoing message from the socket
+        console.log('My stream outgoing message content ===>>>', socketData);
+        this.myStreamMessagesSocketSubject.next(socketData.message.message);
+      }
+
       this.messagesToStreams = [...this.messagesToStreams, socketData.message.message];
-      console.log('Messages to stream ===>>>>', socketData.message.message);
       // let the array have unique messages
       // ! below is done because this socket service is called multiple times across multiple components
       // hence a tendency to have it with duplicate items for each time it is called
@@ -217,11 +230,9 @@ export class OonaSocketService {
       this.messagesToStreams = this.messagesToStreams.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i); // have unique messages by id
       this.changeNewStreamMessageCount(this.removeLoggedInUserMessages(this.messagesToStreams));
     }else if (socketData.message.message.type === 'private'){
-      console.log('Messages to private user ===>>>>', socketData.message.message);
 
       this.privateMsgCounterSubject.next(this.privateMessagesCounter + 1);
-      const currentUserId =  this.loggedInUserProfile?.user_id;
-      const msgSenderId = socketData.message?.message?.sender_id;
+
 
       // Check if am the sender or not me
       if (msgSenderId === currentUserId){

@@ -30,6 +30,7 @@ export class StreamsBoardComponent implements OnInit {
   streamMsgObserver = this.streamMsgSubject.asObservable();
 
   selectedStreamId: any;
+  selectedStreamName = '';
   selectedTopicName = '';
 
   dateSortedPrivateMessages: any[] = [];
@@ -47,6 +48,7 @@ export class StreamsBoardComponent implements OnInit {
   ) {
     this.activateRoute.paramMap.subscribe((event: any) => {
       const streamId = event?.get('stream')?.split('-')[0];
+      this.selectedStreamName = event?.get('stream')?.split('-')[1]?.replace(/-/g, ' ');
       const topicInfo = event?.get('topic')?.replace(/-/g, ' ');
 
       this.selectedStreamId = streamId;
@@ -61,6 +63,7 @@ export class StreamsBoardComponent implements OnInit {
     this.streams$ = this.store.select(getPrivateMessages);
     this.loading$ = this.store.select(getLoadingPrivateMsgs);
     this.inComingMessage();
+    this.outGoingMsg();
   }
 
   ngOnInit(): void {
@@ -89,30 +92,21 @@ export class StreamsBoardComponent implements OnInit {
       (response: SingleMessageModel[] | any) => {
         response?.map(
           (content: SingleMessageModel) => {
-
-            if (this.selectedTopicName) {
-              console.log('Selected stream topic ===>>', this.selectedTopicName);
-              const filteredTopics = response.find((streamData: SingleMessageModel) =>
-                streamData.subject.toLowerCase() === this.selectedTopicName
-              );
-
-              console.log('Filtered stream content ===>>>>', filteredTopics);
-              this.streamMsg.push(filteredTopics);
-
-            }
-
-
-
-            if (+content.stream_id === +this.selectedStreamId) {
-              this.streamMsg.push(content);
-              this.sortMessages();
-            } else {
+              if (+content.stream_id === +this.selectedStreamId) {
+                if (this.selectedTopicName && content.subject.toLowerCase() === this.selectedTopicName.toLowerCase()){
+                  this.streamMsg.push(content);
+                }else {
+                  this.streamMsg.push(content);
+                }
+                this.sortMessages();
+                // this.scrollBottom();
+              } else {
               this.streamMsg = [];
             }
 
+
           }
         );
-        this.scrollBottom();
       }
     );
   }
@@ -140,32 +134,33 @@ export class StreamsBoardComponent implements OnInit {
     );
   }
 
-  // outGoingMsg(): void{
-  //   this.oonaSocket.myMessagesSocketSubject.subscribe(
-  //     (msg: any) => {
-  //
-  //       console.log('My sent outgoing message content ===>>>', msg);
-  //
-  //       this.privateMessagesSubject.subscribe( messages => {
-  //
-  //           console.log('Private messages content ===>>>', messages);
-  //
-  //           if (this.messagesId.includes(msg.id)){
-  //             return;
-  //           }
-  //
-  //           if (!msg.id){
-  //             return;
-  //           }
-  //
-  //           this.messagesId.push(msg.id);
-  //           this.dateSortedPrivateMessages.push(msg);
-  //         }
-  //       );
-  //
-  //     }
-  //   );
-  // }
+  outGoingMsg(): void{
+    this.oonaSocket.myStreamMessagesSocketSubject.subscribe(
+      (msg: any) => {
+
+        console.log('My sent outgoing message content ===>>>', msg);
+
+        this.oonaSocket.myStreamMessagesSocketSubject.subscribe( messages => {
+
+            console.log('Private messages content ===>>>', messages);
+
+            if (this.messagesId.includes(msg.id)){
+              return;
+            }
+
+            if (!msg.id){
+              return;
+            }
+
+            this.messagesId.push(msg.id);
+            this.dateSortedPrivateMessages.push(msg);
+            this.scrollBottom();
+          }
+        );
+
+      }
+    );
+  }
 
   sortMessages(): void{
     this.dateSortedPrivateMessages = this.streamMsg.sort((a, b ) => a.timestamp - b.timestamp);
