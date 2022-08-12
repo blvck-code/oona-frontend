@@ -64,6 +64,9 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     // Get All Streams
     this.initPage();
 
+    // get unread message
+    this.handleUnreadMessage();
+
     this.userSocketService.allMsgCounterSubject.subscribe(
       msgNumber => console.log('All messages number ==>>', msgNumber)
     );
@@ -90,12 +93,31 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     });
   }
 
-  handleSoocketsMessages(): void {
+  handleUnreadMessage(): void {
+    this.messagingService.unreadMessagesSubject.subscribe(
+      message => {
+        this.unreadsSubject$.next(+message);
+        this.unreads = +message;
+      }
+    );
+
+    this.unreadsSubject$.subscribe(
+      unread => console.log('Total unread messages from left ====>>>', unread)
+    );
+
+    // handle All Unread Msg
+    this.messagingService.allUnreadMsgSubject.subscribe(
+      num => console.log('All unread message numbers ===>>>', num)
+    );
+  }
+
+  handleSocketsMessages(): void {
     this.userSocketService.streamMessageCountSocket.subscribe(
       (messages: SingleMessageModel[]) =>
        messages.map(singleMessage => {
          const streamName = singleMessage.display_recipient;
          const streamTopic = singleMessage.subject;
+         this.unreads += 1;
 
          console.log('Message content ===>>>', singleMessage);
        })
@@ -105,17 +127,21 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   getPrivateUnreadMsgs(): void {
     this.userSocketService.messageCountSocket.subscribe(
       newMessage => {
-        this.unreads = newMessage;
+        this.unreads += +newMessage;
         console.log('New messages ===>>>', newMessage);
       }
     );
+  }
+
+  handleUpdateStreamUnreadCount(): void {
+
   }
 
   initPage(): void {
     // this.streamTopics();
     this.getPrivateUnreadMsgs();
     // init sockets
-    this.handleSoocketsMessages();
+    this.handleSocketsMessages();
     // Fetch streams
     this.streams = this.store.select(getAllStreams);
 
@@ -230,7 +256,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.allTeams = allAvailableTeams.filter((team: { invite_only: any; }) => team.invite_only);
     this.publicTeams = allAvailableTeams.filter((team: { invite_only: any; }) => !team.invite_only);
   }
-
 
   handleNavigateTopic(stream?: any, topic?: any): void {
     // stream
