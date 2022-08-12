@@ -93,14 +93,8 @@ export class LandingMessagingRightPanelComponent implements OnInit {
     this.router.navigate(['dashboard/messaging/narrow'], {
       queryParams: { member: userUrl },
     });
-
     this.store.dispatch(new authActions.SetSelectedUser(member));
-
     this.newMsgUsersId.filter(id => id === member.user_id);
-
-    console.log('New messages list ===>>>', this.newMsgUsersId);
-
-
   }
 
   newListOfUsers(usersPresent: any): any[] {

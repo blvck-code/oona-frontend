@@ -154,7 +154,6 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
 
         this.messagingService.getMessagesOfStream(streamDetail).subscribe(
           (response: any) => {
-            console.log('Getting messages from all users ===>>>', response);
             const messages = response?.zulip?.messages;
 
             messages?.forEach((msg: SingleMessageModel) => {
@@ -170,16 +169,13 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
     });
   }
 
-
   sortMessages(): void{
     this.dateSortedPrivateMessages = this.privateMessages.sort((a, b ) => a.timestamp - b.timestamp);
     this.scrollBottom();
   }
 
-
   getAllPrivateChats(): void{
 
-    console.log('Fetching all users');
 
 
     this.allUsers.forEach( user => {
@@ -194,7 +190,6 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
           }
         ]
       };
-      console.log('Stream detail ====>>', streamDetail);
       // this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
       //   console.log('Private message content: ', response);
       //   const allMessages = response.zulip.messages;
@@ -234,7 +229,6 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
       // console.log('user stream detail', streamDetail);
       this.messagingService.getMessagesOfStream(streamDetail).subscribe( (response: any) => {
           const allMessages = response.zulip.messages;
-          console.log('All messages content ===>>>', allMessages);
           if (allMessages.length >= 1){
             this.store.dispatch(new messageActions.LoadMoreMessaging(allMessages.slice(0, 10)));
             this.messagesWithIndividuals.push(... allMessages.slice(0, 10));
@@ -253,7 +247,6 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
   inComingMessage(): void {
     this.userSocketService.privateMessageCountSocket.subscribe(
       prvMsg => {
-        console.log('Unread messages for particular user dm ===>>>', prvMsg.length);
         prvMsg.map(msg => {
 
           if (this.messagesId.includes(msg.id)){
@@ -273,11 +266,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
     this.userSocketService.myMessagesSocketSubject.subscribe(
       (msg: any) => {
 
-        console.log('My sent outgoing message content ===>>>', msg);
-
         this.privateMessagesSubject.subscribe( messages => {
-
-          console.log('Private messages content ===>>>', messages);
 
           if (this.messagesId.includes(msg.id)){
             return;
