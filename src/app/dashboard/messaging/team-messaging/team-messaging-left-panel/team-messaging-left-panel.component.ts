@@ -89,6 +89,12 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     });
   }
 
+  handleSoocketsMessages(): void {
+    this.userSocketService.streamMessageCountSocket.subscribe(
+      message => console.log('New socket message here ===>>>', message)
+    )
+  }
+
   getPrivateUnreadMsgs(): void {
     this.userSocketService.messageCountSocket.subscribe(
       newMessage => {
@@ -102,6 +108,8 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     // this.streamTopics();
     this.getPrivateUnreadMsgs();
 
+    // init sockets
+    this.handleSoocketsMessages();
     // Fetch streams
     this.streams = this.store.select(getAllStreams);
 
@@ -217,13 +225,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.publicTeams = allAvailableTeams.filter((team: { invite_only: any; }) => !team.invite_only);
   }
 
-  // displayMessagesOfTopic(topic: any): void {
-  //   if (topic.name){
-  //     this.messagingService.changeTeamTopicMessages(topic.name);
-  //   }else{
-  //     this.messagingService.changeTeamTopicMessages('');
-  //   }
-  // }
 
   handleNavigateTopic(stream?: any, topic?: any): void {
     // stream
