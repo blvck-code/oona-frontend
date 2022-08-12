@@ -136,7 +136,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
 
   getAllPrivateMessages(): void{
     this.store.select(getAllUsers).subscribe(users => {
-      console.log('All users fetched ===>>>>', users);
+      // console.log('All users fetched ===>>>>', users);
 
       users?.map((user: any) => {
 
