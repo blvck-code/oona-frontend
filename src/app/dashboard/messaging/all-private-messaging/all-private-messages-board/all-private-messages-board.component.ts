@@ -136,7 +136,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
 
   getAllPrivateMessages(): void{
     this.store.select(getAllUsers).subscribe(users => {
-      console.log('All users fetched ===>>>>', users);
+      // console.log('All users fetched ===>>>>', users);
 
       users?.map((user: any) => {
 
@@ -154,7 +154,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
 
         this.messagingService.getMessagesOfStream(streamDetail).subscribe(
           (response: any) => {
-            console.log('Getting messages from all users ===>>>', response);
+            // console.log('Getting messages from all users ===>>>', response);
             const messages = response?.zulip?.messages;
 
             messages?.forEach((msg: SingleMessageModel) => {

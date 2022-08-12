@@ -9,6 +9,10 @@ import {map} from 'rxjs/operators';
 import {MessagesSocketService} from './messages-socket.service';
 import {AllStreamsResponseModel} from '../models/allStreamsResponse.model';
 import {Topics, TopicsModel} from '../models/topics.model';
+import {getAllStreams} from "../state/messaging.selectors";
+import {SingleMessageModel} from "../models/messages.model";
+import {Store} from "@ngrx/store";
+import {AppState} from "../../../state/app.state";
 
 export interface Message {
   author: string;
@@ -41,6 +45,7 @@ export class MessagingService {
   streamSubscribe = env.streamSubscribe;
 
   allPlatformMembers = [];
+  unreadCount = [];
   subscribers: any;
   public messages!: Subject<any>;
 
@@ -49,8 +54,9 @@ export class MessagingService {
     private http: HttpClient,
     private authService: AuthService,
     private router: Router,
-    private msgSocket: MessagesSocketService
-    ) {
+    private msgSocket: MessagesSocketService,
+    private store: Store<AppState>
+  ) {
     this.getAllUsers();
 
     const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
@@ -306,6 +312,74 @@ export class MessagingService {
     return this.http.get(
       this.streamTopic + streamId,
     );
+  }
+
+  getUnreadMessages(): any {
+    this.store.select(getAllStreams).subscribe(streams => {
+      // console.log('Stream details ===>>>>', streams);
+
+      streams?.map((user: any) => {
+
+        const streamDetail = {
+          anchor: 'newest',
+          num_before: 100,
+          num_after: 0,
+          type: [
+            {
+              operator: 'stream',
+              operand: user?.name
+            }
+          ]
+        };
+
+        // console.log('streamDetail', streamDetail);
+
+        this.getMessagesOfStream(streamDetail).subscribe(
+          (response: any) => {
+            // console.log('Getting messages from all users ===>>>', response);
+            const messages = response?.zulip?.messages;
+            // console.log('stream messages ', messages?.length);
+
+            const res = messages.reduce((x: any, cur: any) => {
+              const item = cur.flags.includes('read');
+              if (!x[item]) {
+                x[item] = 0;
+              }
+              x[item] = x[item] + 1;
+              return x;
+            }, {});
+
+            // tslint:disable-next-line:forin
+            for (const key in res) {
+              const count = res[key];
+              const data = key.slice(0, 2);
+              const service = key.slice(2);
+              this.unreadCount.push({
+                // @ts-ignore
+                count
+              });
+            }
+            console.log('The unread count ===>', this.unreadCount[1]);
+            messages?.forEach((msg: SingleMessageModel) => {
+              if (msg) {
+                // this.privateMessages.push(msg);
+                // this.sortMessages();
+                if (msg.flags.includes('read')) {
+                  console.log('returned');
+                } else {
+                  msg.flags.push('read');
+                }
+
+                console.log('Streams messages ===>>>>', msg.flags);
+              }
+
+            });
+
+
+          }
+        );
+      });
+    });
   }
 
 }
