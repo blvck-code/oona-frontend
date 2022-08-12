@@ -12,8 +12,9 @@ import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
 import {getAllStreams, getTopics} from '../../state/messaging.selectors';
 import {AllStreamsModel} from '../../models/streams.model';
-import {take} from 'rxjs/operators';
+import {map, take} from 'rxjs/operators';
 import {ChannelSettingsComponent} from '../channel-settings/channel-settings.component';
+import {SingleMessageModel} from '../../models/messages.model';
 
 @Component({
   selector: 'app-team-messaging-left-panel',
@@ -91,8 +92,14 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
   handleSoocketsMessages(): void {
     this.userSocketService.streamMessageCountSocket.subscribe(
-      message => console.log('New socket message here ===>>>', message)
-    )
+      (messages: SingleMessageModel[]) =>
+       messages.map(singleMessage => {
+         const streamName = singleMessage.display_recipient;
+         const streamTopic = singleMessage.subject;
+
+         console.log('Message content ===>>>', singleMessage);
+       })
+    );
   }
 
   getPrivateUnreadMsgs(): void {
@@ -107,7 +114,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   initPage(): void {
     // this.streamTopics();
     this.getPrivateUnreadMsgs();
-
     // init sockets
     this.handleSoocketsMessages();
     // Fetch streams
@@ -255,7 +261,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
   allUsersRegistered(): void {
     this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
-      const usersPresent = users.members.filter(user => user.presence);
+      const usersPresent = users?.members.filter(user => user.presence);
       this.allUsers = this.messagingService.newListOfUsers(usersPresent);
     });
   }
@@ -305,6 +311,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     if (messages.length > 0) {
       this.allTeams.forEach((team: { messageCount: number; stream_id: any; }) => {
         team.messageCount = messages.filter(message => message.stream_id === team.stream_id).length;
+        console.log('Message Count left panel ===>>>>', team.messageCount);
       });
 
       this.publicTeams.forEach((team: { messageCount: number; stream_id: any; }) => {
