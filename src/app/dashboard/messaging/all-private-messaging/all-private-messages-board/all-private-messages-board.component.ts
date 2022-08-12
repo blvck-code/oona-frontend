@@ -60,22 +60,8 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
     this.outGoingMsg();
   }
 
-  // getOperator(): StreamDetail {
-  //   this.store.select();
-  // }
-
   // Init page
   initPage(): void {
-
-    // // get Loading Message
-    // this.loadingMessages = this.store.select(getLoadingPrivateMsgs);
-
-    // get messages from store
-    // this.messages$ = this.store.select(getPrivateMessages);
-    //
-    // document?.getElementById('box')?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
-    //
-    // this.messagesLength();
   }
 
   // Todo add private messages
@@ -150,6 +136,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
 
   getAllPrivateMessages(): void{
     this.store.select(getAllUsers).subscribe(users => {
+      console.log('All users fetched ===>>>>', users);
 
       users?.map((user: any) => {
 
@@ -167,6 +154,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit {
 
         this.messagingService.getMessagesOfStream(streamDetail).subscribe(
           (response: any) => {
+            console.log('Getting messages from all users ===>>>', response);
             const messages = response?.zulip?.messages;
 
             messages?.forEach((msg: SingleMessageModel) => {

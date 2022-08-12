@@ -135,7 +135,7 @@ export class OonaSocketService {
     // }
     // }
 
-    console.log('Socket data first time ===>>>', socketData);
+    // console.log('Socket data first time ===>>>', socketData);
 
     if (socketData.message.type === 'presence'){
       // console.log('pushing user presence data');
@@ -228,6 +228,7 @@ export class OonaSocketService {
       // hence a tendency to have it with duplicate items for each time it is called
       // tslint:disable-next-line:max-line-length
       this.messagesToStreams = this.messagesToStreams.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i); // have unique messages by id
+      console.log('Messages to streams ===>>>>', this.messagesToStreams);
       this.changeNewStreamMessageCount(this.removeLoggedInUserMessages(this.messagesToStreams));
     }else if (socketData.message.message.type === 'private'){
 
