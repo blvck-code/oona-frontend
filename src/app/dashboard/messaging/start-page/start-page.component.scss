@@ -11,9 +11,11 @@
 
 .message-board {
   //width: calc(100vw - 1180px);
-  width: calc(100vw - 980px);
+  width: calc(100vw - 780px);
   padding-top: 15px;
   overflow: hidden;
+  justify-self: center;
+  margin-left: 0;
 }
 
 .right-all-users-panel {
@@ -45,4 +47,8 @@
   .right-all-users-panel {
     width: 270px;
   }
+}
+
+.message-wrap {
+  display: flex;
 }

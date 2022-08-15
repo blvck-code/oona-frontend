@@ -1,18 +1,24 @@
-.main-messaging-container {
+.main-start-page-container {
   display: flex;
   justify-content: space-between;
 }
-.left-messages-panel {
-  width: 285px;
+
+.left-panel {
+  width: 275px;
   padding-top: 15px;
   padding-left: 15px;
 }
+
 .message-board {
-  height: 100%;
-  width: calc(100vw - 980px);
+  //width: calc(100vw - 1180px);
+  width: calc(100vw - 780px);
   padding-top: 15px;
+  overflow: hidden;
+  justify-self: center;
+  margin-left: 0;
 }
-.right-users-panel {
+
+.right-all-users-panel {
   width: 350px;
 }
 
@@ -31,14 +37,18 @@
 }
 
 @media screen and (max-width: 1400px) {
-  .left-messages-panel {
+  .left-panel {
     width: 250px;
   }
   .message-board {
     width: calc(100vw - 710px);
     padding-top: 15px;
   }
-  .right-users-panel {
+  .right-all-users-panel {
     width: 270px;
   }
+}
+
+.message-wrap {
+  display: flex;
 }

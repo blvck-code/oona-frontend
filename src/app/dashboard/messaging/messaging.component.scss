@@ -34,11 +34,11 @@
 .profile-section-text p:nth-child(2) {
   font-size: 12px;
   font-weight: 600;
-  color: #A6ACBE;
+  color: #a6acbe;
 }
 .profile-section-image {
   border-radius: 50%;
-  border: 1px solid #023BE8;
+  border: 1px solid #023be8;
   margin-left: 20px;
 }
 .profile-section-image img {
@@ -59,7 +59,7 @@
   cursor: pointer;
 }
 .profile-section-caret svg:hover path {
-  fill: #023BE8;
+  fill: #023be8;
 }
 .right-notifications-section {
   display: flex;
@@ -71,7 +71,7 @@
   cursor: pointer;
 }
 .right-notifications-section svg:hover path {
-  stroke: #023BE8;
+  stroke: #023be8;
 }
 .right-logout-section {
   margin-left: 5px;
@@ -80,7 +80,7 @@
   cursor: pointer;
 }
 .right-logout-section svg:hover path {
-  stroke: #023BE8;
+  stroke: #023be8;
 }
 .home-content-section {
   height: calc(100vh - 65px);
@@ -95,15 +95,16 @@
   font-weight: 600;
   font-size: 20px;
 }
-.user-settings-tab, .application-settings-tab {
+.user-settings-tab,
+.application-settings-tab {
   margin-right: 30px;
   padding-bottom: 5px;
   color: #979797;
   cursor: pointer;
 }
 .active-settings-tab {
-  color: #051EC4;
-  border-bottom: 2px solid #051EC4;
+  color: #051ec4;
+  border-bottom: 2px solid #051ec4;
 }
 
 .dropdown-menu.show {
@@ -128,14 +129,26 @@
   font-weight: 500;
 }
 .profile-dropdown-item:hover {
-  background-color: #D4EDF9;
+  background-color: #d4edf9;
 }
 .profile-dropdown-item:hover.fill path {
-  fill: #051EC4;
+  fill: #051ec4;
 }
 .profile-dropdown-item:hover.stroke path {
-  stroke: #051EC4;
+  stroke: #051ec4;
 }
 .profile-dropdown-item:hover p {
-  color: #051EC4;
+  color: #051ec4;
+}
+
+.main-start-page-container {
+  display: flex;
+  border: 1px solid blue;
+  justify-content: space-between;
+}
+
+.left-panel {
+  width: 275px;
+  padding-top: 15px;
+  padding-left: 15px;
 }
