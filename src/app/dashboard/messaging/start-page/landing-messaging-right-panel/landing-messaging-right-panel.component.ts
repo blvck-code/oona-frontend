@@ -31,6 +31,7 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   peopleTyping = Array();
   searchText = '';
   selectedUser: any;
+  loadedUsers: boolean = false;
 
   newMsgUsersId: number[] = [];
 
@@ -78,14 +79,18 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   }
 
   onInitPage(): void {
-    this.store.select(getAllUsers).subscribe((users) => {
-      // Todo change this back to active users and present users
-      const usersPresent = users?.filter((user: any) => user.presence);
-      // this.allUsers = this.newListOfUsers(usersPresent);
-      this.allUsers = users;
-    });
+    if (!this.allUsers  ) {
+      return;
+    } else {
+      this.store.select(getAllUsers).subscribe((users) => {
+        // Todo change this back to active users and present users
+        const usersPresent = users?.filter((user: any) => user.presence);
+        // this.allUsers = this.newListOfUsers(usersPresent);
+        this.allUsers = users;
+      });
+    }
 
-    console.log('Right panel content loaded');
+    this.loadedUsers = true;
   }
 
   goToMemberChat(member: any): void {

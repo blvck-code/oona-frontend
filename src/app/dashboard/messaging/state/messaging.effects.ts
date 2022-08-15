@@ -1,18 +1,20 @@
 import { Observable, of } from 'rxjs';
-import {Actions, Effect, ofType} from '@ngrx/effects';
+import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Injectable } from '@angular/core';
 import * as messagingActions from './messaging.actions';
 import { MessagingService } from '../services/messaging.service';
-import {catchError, delay, map, mergeMap, take} from 'rxjs/operators';
-import {MessagesModel} from '../models/messages.model';
+import { catchError, delay, map, mergeMap, take } from 'rxjs/operators';
+import { MessagesModel } from '../models/messages.model';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/state/app.state';
 
 @Injectable()
-export class MessagingEffects{
+export class MessagingEffects {
   constructor(
     private actions$: Actions,
-    private messagingSrv: MessagingService
+    private messagingSrv: MessagingService,
+    private store: Store<AppState>
   ) {}
-
 
   @Effect()
   loadAllStreams$: Observable<any> = this.actions$.pipe(
@@ -21,11 +23,11 @@ export class MessagingEffects{
     ),
     mergeMap((action: messagingActions.LoadAllStreams) =>
       this.messagingSrv.fetchAllStreams().pipe(
-        map((streams: any) =>
-          new messagingActions.LoadAllStreamsSuccess(streams)
+        map(
+          (streams: any) => new messagingActions.LoadAllStreamsSuccess(streams)
         ),
         // @Todo Error handler
-        catchError(err => of(new messagingActions.LoadAllStreamsFail(err)))
+        catchError((err) => of(new messagingActions.LoadAllStreamsFail(err)))
       )
     )
   );
@@ -37,10 +39,11 @@ export class MessagingEffects{
     ),
     mergeMap((action: messagingActions.LoadSubStreams) =>
       this.messagingSrv.fetchSubStreams().pipe(
-        map((subStreams: any) =>
-          new messagingActions.LoadSubStreamsSuccess(subStreams)
+        map(
+          (subStreams: any) =>
+            new messagingActions.LoadSubStreamsSuccess(subStreams)
         ),
-        catchError(err => of(new messagingActions.LoadSubStreamsFail(err)))
+        catchError((err) => of(new messagingActions.LoadSubStreamsFail(err)))
       )
     )
   );
@@ -53,29 +56,30 @@ export class MessagingEffects{
     map((action: messagingActions.LoadStreamTopic) => action.payload),
     mergeMap((streamId: any) =>
       this.messagingSrv.getStreamTopics(streamId).pipe(
-        map((topicData: any) =>
-          new messagingActions.LoadStreamTopicSuccess(topicData)
+        map(
+          (topicData: any) =>
+            new messagingActions.LoadStreamTopicSuccess(topicData)
         ),
-        catchError(err => of(new messagingActions.LoadStreamTopicFail(err)))
+        catchError((err) => of(new messagingActions.LoadStreamTopicFail(err)))
       )
     )
   );
 
-  @Effect()
-  loadAllMessages$: Observable<any> = this.actions$.pipe(
-    ofType<messagingActions.LoadAllMessages>(
-      messagingActions.MessagingActionsTypes.LOAD_ALL_MESSAGES
-    ),
-    map((action: messagingActions.LoadAllMessages) => action.payload),
-    mergeMap((streamDetail: any) =>
-      this.messagingSrv.getMessagesOfStream(streamDetail).pipe(
-        map((messages: MessagesModel) =>
-          new messagingActions.LoadAllMessagesSuccess(messages)
-        ),
-        catchError(err => of(new messagingActions.LoadAllMessagesFail(err)))
-      )
-    )
-  );
+  // @Effect()
+  // loadAllMessages$: Observable<any> = this.actions$.pipe(
+  //   ofType<messagingActions.LoadAllMessages>(
+  //     messagingActions.MessagingActionsTypes.LOAD_ALL_MESSAGES
+  //   ),
+  //   map((action: messagingActions.LoadAllMessages) => action.payload),
+  //   mergeMap((streamDetail: any) =>
+  //     this.messagingSrv.getMessagesOfStream(streamDetail).pipe(
+  //       map((messages: MessagesModel) =>
+  //         new messagingActions.LoadAllMessagesSuccess(messages)
+  //       ),
+  //       catchError(err => of(new messagingActions.LoadAllMessagesFail(err)))
+  //     )
+  //   )
+  // );
 
   @Effect()
   loadPrivateMessages$: Observable<any> = this.actions$.pipe(
@@ -86,10 +90,13 @@ export class MessagingEffects{
     take(1),
     mergeMap((streamDetail: any) =>
       this.messagingSrv.getMessagesOfStream(streamDetail).pipe(
-        map((messages: MessagesModel) =>
-          new messagingActions.LoadPrivateMessagesSuccess(messages)
+        map(
+          (messages: MessagesModel) =>
+            new messagingActions.LoadPrivateMessagesSuccess(messages)
         ),
-        catchError(err => of(new messagingActions.LoadPrivateMessagesSuccess(err)))
+        catchError((err) =>
+          of(new messagingActions.LoadPrivateMessagesSuccess(err))
+        )
       )
     )
   );
@@ -102,10 +109,11 @@ export class MessagingEffects{
     map((action: messagingActions.LoadMessaging) => action.payload),
     mergeMap((streamDetail: any) =>
       this.messagingSrv.getMessagesOfStream(streamDetail).pipe(
-        map((messages: MessagesModel) =>
-          new messagingActions.LoadMessagingSuccess(messages)
+        map(
+          (messages: MessagesModel) =>
+            new messagingActions.LoadMessagingSuccess(messages)
         ),
-        catchError(err => of(new messagingActions.LoadMessagingFail(err)))
+        catchError((err) => of(new messagingActions.LoadMessagingFail(err)))
       )
     )
   );
@@ -118,10 +126,11 @@ export class MessagingEffects{
     map((action: messagingActions.LoadMoreMessaging) => action.payload),
     mergeMap((streamData: any) =>
       this.messagingSrv.getMessagesOfStream(streamData).pipe(
-        map((messages: MessagesModel) =>
-          new messagingActions.LoadMoreMessagingSuccess(messages)
+        map(
+          (messages: MessagesModel) =>
+            new messagingActions.LoadMoreMessagingSuccess(messages)
         ),
-        catchError(err => of(new messagingActions.LoadMoreMessagingFail(err)))
+        catchError((err) => of(new messagingActions.LoadMoreMessagingFail(err)))
       )
     )
   );
@@ -169,5 +178,4 @@ export class MessagingEffects{
   //     )
   //   )
   // );
-
 }

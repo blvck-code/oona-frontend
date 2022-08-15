@@ -23,7 +23,7 @@
 
       <app-chat-card
         (emitReplyMsg)="selectedChat(chat)"
-        *ngFor="let chat of messages"
+        *ngFor="let chat of (messages$ | async)?.messages"
         [messageDetail]="chat"
       ></app-chat-card>
       <div>

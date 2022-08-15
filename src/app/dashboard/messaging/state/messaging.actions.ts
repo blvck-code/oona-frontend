@@ -1,7 +1,7 @@
 import { Action } from '@ngrx/store';
 import { TopicsModel } from '../models/topics.model';
 import { MessagesModel } from '../models/messages.model';
-import {StreamDataModel} from '../models/streamData.model';
+import { StreamDataModel } from '../models/streamData.model';
 
 export enum MessagingActionsTypes {
   // GET MESSAGES
@@ -55,8 +55,7 @@ export enum MessagingActionsTypes {
   HANDLE_SEND_MESSAGE = 'messaging/handleSendMessage',
 
   // FILTER MESSAGES
-  FILTER_MESSAGES = 'messaging/filterMessages'
-
+  FILTER_MESSAGES = 'messaging/filterMessages',
 }
 
 // LOAD MESSAGES ACTIONS
@@ -68,18 +67,15 @@ export class LoadMessaging implements Action {
 }
 export class LoadMessagingSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_MESSAGES_SUCCESS;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 export class LoadMessagingFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_MESSAGES_FAIL;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 export class FilterMessages implements Action {
   readonly type = MessagingActionsTypes.FILTER_MESSAGES;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 // LOAD MORE MESSAGES
@@ -91,25 +87,21 @@ export class LoadMoreMessaging implements Action {
 }
 export class LoadMoreMessagingSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_MORE_MESSAGE_SUCCESS;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 export class LoadMoreMessagingFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_MORE_MESSAGE_FAIL;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 // ALL MESSAGES
 export class LoadAllMessages implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 export class LoadAllMessagesSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES_SUCCESS;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 export class LoadAllMessagesFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES_FAIL;
@@ -121,14 +113,11 @@ export class LoadAllMessagesFail implements Action {
 // PRIVATE MESSAGES
 export class LoadPrivateMessages implements Action {
   readonly type = MessagingActionsTypes.LOAD_PRIVATE_MESSAGES;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 export class LoadPrivateMessagesSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_PRIVATE_MESSAGE_SUCCESS;
-  constructor(public payload: MessagesModel) {
-    console.log('Loaded messages success ===>>>', payload);
-  }
+  constructor(public payload: MessagesModel) {}
 }
 export class LoadPrivateMessagesFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_PRIVATE_MESSAGES_FAIL;
@@ -157,23 +146,19 @@ export class LoadStreamDataFail implements Action {
   }
 }
 
-
 export class HandleStreamData implements Action {
   readonly type = MessagingActionsTypes.HANDLE_STREAM_DATA;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 // ALL STREAMS ACTIONS
 export class LoadAllStreams implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_STREAMS;
-  constructor() {
-  }
+  constructor() {}
 }
 export class LoadAllStreamsSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_STREAMS_SUCCESS;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 export class LoadAllStreamsFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_STREAMS_FAIL;
@@ -197,30 +182,25 @@ export class LoadSubStreamsFail implements Action {
 // STREAM TOPICS
 export class LoadStreamTopic implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_TOPIC;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 export class LoadStreamTopicSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_TOPIC_SUCCESS;
-  constructor(public payload: TopicsModel) {
-  }
+  constructor(public payload: TopicsModel) {}
 }
 export class LoadStreamTopicFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_TOPIC_FAIL;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
 // CURRENT USER PRIVATE MESSAGE
 export class LoadCurrentPrivateUser implements Action {
   readonly type = MessagingActionsTypes.LOAD_CURRENT_USER;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 export class LoadCurrentPrivateUserSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_CURRENT_USER_SUCCESS;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 export class LoadCurrentPrivateUserFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_CURRENT_USER_FAIL;
@@ -231,11 +211,8 @@ export class LoadCurrentPrivateUserFail implements Action {
 
 export class HandleSendMessage implements Action {
   readonly type = MessagingActionsTypes.HANDLE_SEND_MESSAGE;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
-
-
 
 export type MessagingActions =
   // MESSAGING ACTIONS
@@ -270,9 +247,9 @@ export type MessagingActions =
   | LoadAllMessagesFail
   | FilterMessages
   // LOAD PRIVATE MESSAGE
-   | LoadPrivateMessages
-   | LoadPrivateMessagesSuccess
-   | LoadPrivateMessagesFail
+  | LoadPrivateMessages
+  | LoadPrivateMessagesSuccess
+  | LoadPrivateMessagesFail
   // LOAD STREAM DATA
   | LoadStreamData
   | LoadStreamDataSuccess

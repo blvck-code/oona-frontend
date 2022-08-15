@@ -40,23 +40,25 @@
           <!--          </div>-->
           <app-individual-chat-card
             (click)="replyMessage(chat)"
+            class="mt-4"
             *ngFor="let chat of dateSortedPrivateMessages"
             [messageDetail]="chat"
           ></app-individual-chat-card>
         </div>
         <div #endChat></div>
 
-        <div class="py-4" *ngIf="!loadingMessages && !messagesWithIndividuals.length">
-          <p>No Messages</p>
-        </div>
-        <div
-          *ngIf="loadingMessages"
-          class="d-flex justify-content-center"
-        >
+        <div *ngIf="loadingMessages" class="d-flex justify-content-center">
           <div>
             <app-loading-animation></app-loading-animation>
             <p class="teams-belonging me-5">Fetching messages</p>
           </div>
+        </div>
+
+        <div
+          class="py-4"
+          *ngIf="!loadingMessages && !dateSortedPrivateMessages.length"
+        >
+          <p>No Messages</p>
         </div>
       </div>
       <app-private-msg-text-editor

@@ -20,7 +20,7 @@ export interface MessagingState {
     loading: boolean;
     allMessages: {
       loading: boolean;
-      messages: MessagesModel | null;
+      messages: SingleMessageModel[];
     };
     privateMsgs: {
       loading: boolean;
@@ -48,7 +48,7 @@ export const initialState: MessagingState = {
     loading: false,
     allMessages: {
       loading: true,
-      messages: null,
+      messages: [],
     },
     privateMsgs: {
       loading: false,
@@ -75,22 +75,22 @@ const addTopicToStream = (payload: any) => {
   return topics;
 };
 
-const filterMessages = (payload: any, state: MessagingState) => {
+// const filterMessages = (payload: any, state: MessagingState) => {
+//   const messages = state.messaging.allMessages.messages?.zulip.messages;
+//   const streamId = payload.streamId;
+//   const topic = payload.topicName;
+//   let filteredMsg: SingleMessageModel[] | undefined = [];
 
-  const messages = state.messaging.allMessages.messages?.zulip.messages;
-  const streamId = payload.streamId;
-  const topic = payload.topicName;
-  let filteredMsg: SingleMessageModel[] | undefined = [];
-
-  if (topic) {
-    const unfilteredMsg = messages?.filter(msg => msg.stream_id === +streamId);
-    filteredMsg = unfilteredMsg?.filter(msg => msg.subject === topic);
-  } else {
-    filteredMsg = messages?.filter(msg => msg.stream_id === +streamId);
-  }
-  return filteredMsg;
-
-};
+//   if (topic) {
+//     const unfilteredMsg = messages?.filter(
+//       (msg) => msg.stream_id === +streamId
+//     );
+//     filteredMsg = unfilteredMsg?.filter((msg) => msg.subject === topic);
+//   } else {
+//     filteredMsg = messages?.filter((msg) => msg.stream_id === +streamId);
+//   }
+//   return filteredMsg;
+// };
 
 const sortMsg = (payload: any) => {
   const messages = payload.zulip.messages;
@@ -137,21 +137,22 @@ export function messagingReducer(
       };
     // ALL MESSAGES
     case messagingActions.MessagingActionsTypes.LOAD_ALL_MESSAGES_SUCCESS:
-      const payload = action.payload.zulip.messages;
+      let msgId: any[] = [];
       let messages: any[] = [];
 
-      payload.map((message: any) => {
-        if (message){
-          messages = [...messages, message];
-        }
-      });
+      if (msgId.includes(action.payload.id)) {
+      } else {
+        messages = [...messages, action.payload];
+      }
+      msgId = [...msgId, action.payload.id];
+
       return {
         ...state,
         messaging: {
           ...state.messaging,
           allMessages: {
             loading: false,
-            messages: action.payload,
+            messages: [...state?.messaging?.allMessages?.messages, ...messages],
           },
         },
       };
@@ -159,9 +160,9 @@ export function messagingReducer(
       return {
         ...state,
         streams: {
-         ...state.streams,
-         streamData: [...state.streams.streamData, action.payload]
-        }
+          ...state.streams,
+          streamData: [...state.streams.streamData, action.payload],
+        },
       };
     case messagingActions.MessagingActionsTypes.LOAD_ALL_MESSAGES_FAIL:
       return {
@@ -170,7 +171,7 @@ export function messagingReducer(
           ...state.messaging,
           allMessages: {
             loading: false,
-            messages: null,
+            messages: [],
           },
         },
       };
@@ -217,8 +218,8 @@ export function messagingReducer(
           ...state.messaging,
           selectedStreamMsg: {
             loading: false,
-            messages: filterMessages(action.payload, state)
-          }
+            messages: [],
+          },
         },
       };
 

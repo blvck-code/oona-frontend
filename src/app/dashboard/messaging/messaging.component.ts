@@ -8,21 +8,21 @@ import { AppState } from '../../state/app.state';
 import * as messagingActions from './state/messaging.actions';
 import { MessagesSocketService } from './services/messages-socket.service';
 import { getAllStreams, getStreamsLoading } from './state/messaging.selectors';
-import {map, take} from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { AllStreamsModel } from './models/streams.model';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { MessagingService } from './services/messaging.service';
 import * as sharedActions from '../../shared/state/shared.actions';
 import * as authActions from '../../auth/state/auth.actions';
-import {getAllUsers, getZulipUsers} from '../../auth/state/auth.selectors';
-import {Title} from '@angular/platform-browser';
-import {SingleMessageModel} from './models/messages.model';
+import { getAllUsers, getZulipUsers } from '../../auth/state/auth.selectors';
+import { Title } from '@angular/platform-browser';
+import { SingleMessageModel } from './models/messages.model';
 
 @Component({
   selector: 'app-messaging',
   templateUrl: './messaging.component.html',
   styleUrls: ['./messaging.component.scss'],
-  providers: [MessagesSocketService, MessagingService]
+  providers: [MessagesSocketService, MessagingService],
 })
 export class MessagingComponent implements OnInit {
   title = 'Team messaging';
@@ -31,7 +31,11 @@ export class MessagingComponent implements OnInit {
   secondName = '';
   streams!: Observable<AllStreamsModel[]>;
   allTopics: any = [];
-  initialMessageCount =  30;
+  initialMessageCount = 30;
+
+  allUsers: any = [];
+  allUsersSubject = new BehaviorSubject<any>(this.allUsers);
+  allUserObservable = this.allUsersSubject.asObservable();
 
   constructor(
     private route: ActivatedRoute,
@@ -43,7 +47,7 @@ export class MessagingComponent implements OnInit {
     private titleService: Title
   ) {
     // this.messageSocket.messageConnect();
-    this.messagingService.messages.subscribe(msg => {
+    this.messagingService.messages.subscribe((msg) => {
       console.log('Response from websocket ===>>>', msg);
     });
   }
@@ -75,9 +79,9 @@ export class MessagingComponent implements OnInit {
       type: [
         {
           operator: 'stream',
-          operand: 'general'
-        }
-      ]
+          operand: 'general',
+        },
+      ],
     };
     this.store.dispatch(new messagingActions.LoadAllMessages(streamDetail));
   }
@@ -91,13 +95,12 @@ export class MessagingComponent implements OnInit {
           type: [
             {
               operator: 'pm-with',
-              operand: user?.email
-            }
-          ]
+              operand: user?.email,
+            },
+          ],
         };
 
         this.store.dispatch(new messagingActions.LoadAllMessages(streamDetail));
-
       });
     });
   }
@@ -107,6 +110,8 @@ export class MessagingComponent implements OnInit {
     this.getAllMessages();
     this.getPrivateMessages();
     this.getAllStreamData();
+    this.getUsersFromStore();
+    this.getAllPrivateMessages();
     // this.getStreamData();
   }
 
@@ -127,7 +132,6 @@ export class MessagingComponent implements OnInit {
     this.streams = this.store.select(getAllStreams);
 
     this.store.select(getAllStreams).subscribe((streams) => {
-
       take(streams.length),
         streams.map((stream: AllStreamsModel) => {
           const streamId = stream?.stream_id;
@@ -156,32 +160,28 @@ export class MessagingComponent implements OnInit {
 
   // get stream content
   getStreamData(): void {
-    this.store.select(getAllStreams).subscribe(
-      streams => {
-        streams.map((stream: any) => {
-          const streamName = stream?.name;
+    this.store.select(getAllStreams).subscribe((streams) => {
+      streams.map((stream: any) => {
+        const streamName = stream?.name;
 
-          const streamDetails = {
-            anchor: 'newest',
-            num_before: 10,
-            type: [
-              {
-                operator: 'stream',
-                operand: streamName
-              }
-            ]
-          };
+        const streamDetails = {
+          anchor: 'newest',
+          num_before: 10,
+          type: [
+            {
+              operator: 'stream',
+              operand: streamName,
+            },
+          ],
+        };
 
-          this.store.dispatch(new messagingActions.LoadStreamData(streamDetails));
-
-        });
-      }
-    );
+        this.store.dispatch(new messagingActions.LoadStreamData(streamDetails));
+      });
+    });
   }
 
   getAllStreamData(): void {
     this.store.select(getAllStreams).subscribe((streams: any) => {
-
       streams?.map((stream: any) => {
         const streamDetail = {
           anchor: 'newest',
@@ -198,18 +198,60 @@ export class MessagingComponent implements OnInit {
         this.messagingService
           .getMessagesOfStream(streamDetail)
           .subscribe((response: any) => {
+            const messages = response?.zulip?.messages;
 
-              const messages = response?.zulip?.messages;
-
-              messages?.forEach((msg: SingleMessageModel) => {
-                if (msg) {
-                  this.store.dispatch(new messagingActions.HandleStreamData(msg));
-                }
-              });
-            }
-          );
+            messages?.forEach((msg: SingleMessageModel) => {
+              if (msg) {
+                this.store.dispatch(new messagingActions.HandleStreamData(msg));
+              }
+            });
+          });
       });
     });
   }
 
+  getAllPrivateMessages(): void {
+    this.store.select(getAllUsers).subscribe((users) => {
+      users?.map((user: any) => {
+        const streamDetail = {
+          anchor: 'newest',
+          num_before: 100,
+          num_after: 0,
+          type: [
+            {
+              operator: 'pm-with',
+              operand: user?.email,
+            },
+          ],
+        };
+
+        this.messagingService
+          .getMessagesOfStream(streamDetail)
+          .subscribe((response: any) => {
+            const messages = response?.zulip?.messages;
+
+            if(!messages.length){
+              return
+            }
+            messages?.forEach((msg: SingleMessageModel) => {
+              if (msg) {
+                // this.privateMessages.push(msg);
+                // this.sortMessages();
+                this.store.dispatch(new messagingActions.LoadAllMessagesSuccess(msg))
+              }
+            });
+          });
+      });
+    });
+  }
+
+  getUsersFromStore(): void {
+    console.log('Getting users from store');
+
+    take(1),
+      this.store.select('userCenter').subscribe((userState: any) => {
+        const allUserState = userState?.users?.all;
+        this.allUsersSubject.next(allUserState?.members);
+      });
+  }
 }
