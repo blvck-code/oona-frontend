@@ -10,7 +10,10 @@ import { AuthService } from '../../../../auth/services/auth.service';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../state/app.state';
 import * as authActions from '../../../../auth/state/auth.actions';
-import {getAllUsers, getZulipUsers} from '../../../../auth/state/auth.selectors';
+import {
+  getAllUsers,
+  getZulipUsers,
+} from '../../../../auth/state/auth.selectors';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -75,17 +78,17 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   }
 
   onInitPage(): void {
-   this.store.select(getAllUsers).subscribe((users) => {
+    this.store.select(getAllUsers).subscribe((users) => {
+      // Todo change this back to active users and present users
+      const usersPresent = users?.filter((user: any) => user.presence);
+      // this.allUsers = this.newListOfUsers(usersPresent);
+      this.allUsers = users;
+    });
 
-     // Todo change this back to active users and present users
-     const usersPresent = users?.filter((user: any) => user.presence );
-     // this.allUsers = this.newListOfUsers(usersPresent);
-     this.allUsers = users;
-   });
+    console.log('Right panel content loaded');
   }
 
   goToMemberChat(member: any): void {
-
     const userUrl = `${member.user_id}-${member.full_name
       .toLowerCase()
       .replace(/\s/g, '.')}`;
@@ -96,11 +99,9 @@ export class LandingMessagingRightPanelComponent implements OnInit {
 
     this.store.dispatch(new authActions.SetSelectedUser(member));
 
-    this.newMsgUsersId.filter(id => id === member.user_id);
+    this.newMsgUsersId.filter((id) => id === member.user_id);
 
     console.log('New messages list ===>>>', this.newMsgUsersId);
-
-
   }
 
   newListOfUsers(usersPresent: any): any[] {
@@ -179,22 +180,23 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   }
 
   unreadMsg(): void {
-    this.userSocketService.privateMessageCountSocket.subscribe(
-      prvMsg => {
-        console.log('Unread messages for particular user dm ===>>>', prvMsg.length);
-        prvMsg.map(msg => {
-          console.log('Unread messages ===>>>', msg);
-          this.newMsgUsersId.push(msg.sender_id);
-          // if (this.messagesId.includes(msg.id)){
-          //   return;
-          // }
+    this.userSocketService.privateMessageCountSocket.subscribe((prvMsg) => {
+      console.log(
+        'Unread messages for particular user dm ===>>>',
+        prvMsg.length
+      );
+      prvMsg.map((msg) => {
+        console.log('Unread messages ===>>>', msg);
+        this.newMsgUsersId.push(msg.sender_id);
+        // if (this.messagesId.includes(msg.id)){
+        //   return;
+        // }
 
-          // this.messagesId.push(msg.id);
-          // this.messagesWithPerson.push(msg);
-          // this.change.detectChanges();
-          // this.scrollBottom();
-        });
-      }
-    );
+        // this.messagesId.push(msg.id);
+        // this.messagesWithPerson.push(msg);
+        // this.change.detectChanges();
+        // this.scrollBottom();
+      });
+    });
   }
 }

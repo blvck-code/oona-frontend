@@ -33,7 +33,7 @@ export class TeamMessagingRightPanelComponent implements OnInit {
       this.getSubscribersOfTeam(params.id);
     });
 
-    console.log('Component loaded');
+    console.log('Component loaded right panel');
   }
 
   allUsersRegistered(): void {
