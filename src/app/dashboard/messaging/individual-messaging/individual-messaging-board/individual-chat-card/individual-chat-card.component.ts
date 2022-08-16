@@ -1,14 +1,17 @@
-import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
-import {Store} from '@ngrx/store';
-import {AppState} from '../../../../../state/app.state';
-import {getUserDetails, getZulipProfile} from '../../../../../auth/state/auth.selectors';
-import {Observable} from 'rxjs';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../../../state/app.state';
+import {
+  getUserDetails,
+  getZulipProfile,
+} from '../../../../../auth/state/auth.selectors';
+import { Observable } from 'rxjs';
 import { oonaFrontendUrl } from '../../../../../../environments/environment';
 
 @Component({
   selector: 'app-individual-chat-card',
   templateUrl: './individual-chat-card.component.html',
-  styleUrls: ['./individual-chat-card.component.scss']
+  styleUrls: ['./individual-chat-card.component.scss'],
 })
 export class IndividualChatCardComponent implements OnInit {
   @Input() messageDetail: any;
@@ -17,9 +20,7 @@ export class IndividualChatCardComponent implements OnInit {
   baseURL = oonaFrontendUrl;
   imageURL = '';
 
-  constructor(
-    private store: Store<AppState>,
-  ) {
+  constructor(private store: Store<AppState>) {
     this.getUserInfo();
   }
 
@@ -36,10 +37,10 @@ export class IndividualChatCardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-    this.messageTime = new Date(this.messageDetail.timestamp * 1000).toLocaleTimeString();
+    this.messageTime = new Date(
+      this.messageDetail.timestamp * 1000
+    ).toLocaleTimeString();
     this.imageURL = `${this.baseURL}${this.messageDetail?.avatar_url}&s=50`;
-
 
     this.handleDate();
   }
@@ -47,5 +48,4 @@ export class IndividualChatCardComponent implements OnInit {
   handleReply(message: any): void {
     console.log('Message content ===>>>', message);
   }
-
 }
