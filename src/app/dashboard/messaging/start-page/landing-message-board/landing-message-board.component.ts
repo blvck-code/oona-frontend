@@ -192,6 +192,7 @@ export class LandingMessageBoardComponent implements OnInit {
   }
 
   tested(): void {
+    console.log('123 123 432')
     const allStreamMessages$: Observable<SingleMessageModel[]> =
       this.store.select(getAllStreamData);
     const allPrivateMessages$: Observable<SingleMessageModel[]> =
