@@ -102,6 +102,9 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     // this.streamTopics();
     this.getPrivateUnreadMsgs();
 
+    // handle All Unread Messages
+    this.handleUnreadMessage();
+
     // Fetch streams
     this.streams = this.store.select(getAllStreams);
 
@@ -315,5 +318,13 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   getStreamName(stream?: any, topic?: any): void {
     // stream
     this.streamName = stream.name;
+  }
+
+  handleUnreadMessage(): void {
+    this.messagingService.allUnreadMshObserver.subscribe(
+      unreadCount => console.log('Unread count total ====>>>>', unreadCount)
+    )
+
+    // console.log('Total unread messages ====>>', this.messagingService.allUnreadMsg)
   }
 }

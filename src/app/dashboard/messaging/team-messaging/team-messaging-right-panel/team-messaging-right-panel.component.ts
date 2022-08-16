@@ -28,14 +28,15 @@ export class TeamMessagingRightPanelComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.onInitHandler();
+  }
+
+  onInitHandler(): void {
     this.allUsersRegistered();
     this.route.queryParams.subscribe((params) => {
       this.getSubscribersOfTeam(params.id);
     });
-
-    console.log('Component loaded right panel');
   }
-
   allUsersRegistered(): void {
     this.messagingService
       .getUsersByAvailability()
@@ -134,4 +135,5 @@ export class TeamMessagingRightPanelComponent implements OnInit {
     }
     return 0;
   }
+
 }

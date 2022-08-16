@@ -51,6 +51,11 @@ export class MessagingService {
   subscribers: any;
   public messages!: Subject<any>;
 
+  unreadStreams: any[] = [];
+  unreadStreamSubject = new BehaviorSubject<any[]>(this.unreadStreams);
+  unreadStreamObservable = this.unreadStreamSubject.asObservable();
+
+
   constructor(
     private http: HttpClient,
     private authService: AuthService,
@@ -58,7 +63,11 @@ export class MessagingService {
     private msgSocket: MessagesSocketService,
     private store: Store<AppState>
   ) {
+    // getting all users
     this.getAllUsers();
+
+    // getting all unread users
+    this.getUnreadMessages();
 
     const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
 
@@ -392,6 +401,8 @@ export class MessagingService {
             const count = res[key];
             const data = key.slice(0, 2);
             const service = key.slice(2);
+
+            console.log('Count for unread messages ====>>>', count)
             this.unreadCount.push({
               // @ts-ignore
               count,
@@ -399,21 +410,35 @@ export class MessagingService {
           }
 
           messages?.forEach((msg: SingleMessageModel) => {
+
             if (msg) {
               // this.privateMessages.push(msg);
               // this.sortMessages();
               if (msg.flags.includes('read')) {
-                // console.log('returned');
+                console.log('returned');
               } else {
-                this.allUnreadMsgSubject.next(+1);
+                this.allUnreadMsg += 1;
+                this.filterUnreadStream(msg);
                 msg.flags.push('read');
               }
-
-              // console.log('Streams messages ===>>>>', msg.flags);
             }
           });
+
         });
       });
     });
+  }
+
+  filterUnreadStream(msg: SingleMessageModel): void {
+    const unreadMsgContent = {
+      stream: msg.display_recipient,
+      topic: msg.subject,
+      msgId: msg.id
+    }
+    console.log('Total unread messages ====>>>>>', this.allUnreadMsg);
+    // this.unreadStreams = [...this.unreadStreams, unreadMsgContent]
+    this.unreadStreamSubject.subscribe(
+      message => message.push(unreadMsgContent)
+    )
   }
 }
