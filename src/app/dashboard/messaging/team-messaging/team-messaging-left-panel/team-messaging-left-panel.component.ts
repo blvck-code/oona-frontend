@@ -10,10 +10,12 @@ import {BehaviorSubject, Observable} from 'rxjs';
 // NgRx
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
-import {getAllStreams, getTopics} from '../../state/messaging.selectors';
+import {getAllMessages, getAllStreams, getTopics} from '../../state/messaging.selectors';
 import {AllStreamsModel} from '../../models/streams.model';
 import {take} from 'rxjs/operators';
 import {ChannelSettingsComponent} from '../channel-settings/channel-settings.component';
+import {SingleMessageModel} from "../../models/messages.model";
+import {getAllUsers} from "../../../../auth/state/auth.selectors";
 
 @Component({
   selector: 'app-team-messaging-left-panel',
@@ -44,9 +46,21 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   streamIds!: any[];
   allTopics: any = [];
 
-  unreads = 0;
-  unreadsSubject$ = new BehaviorSubject<number>(this.unreads);
-  unreadsObservable = this.unreadsSubject$.asObservable();
+  totalUnreadMsg: number = 0;
+  totalUnreadMsgSubject$ = new BehaviorSubject<number>(this.totalUnreadMsg);
+  totalUnreadMsgObservable = this.totalUnreadMsgSubject$.asObservable();
+
+  unreadCount = [];
+  unreadMessagesSubject = new BehaviorSubject(this.unreadCount);
+  unreadMessagesObservable = this.unreadMessagesSubject.asObservable();
+
+  streamsUnreadMsgCounter: number = 0;
+  streamsUnreadMsgCounterSubject = new BehaviorSubject(this.streamsUnreadMsgCounter);
+  streamsUnreadMsgCounterObservable = this.streamsUnreadMsgCounterSubject.asObservable();
+
+  privateUnreadMsgCounter: number = 0;
+  privateUnreadMsgCounterSubject = new BehaviorSubject(this.privateUnreadMsgCounter);
+  privateUnreadMsgCounterObservable = this.privateUnreadMsgCounterSubject.asObservable();
 
 
   constructor(
@@ -62,6 +76,9 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   ngOnInit(): void {
     // Get All Streams
     this.initPage();
+
+    // handle all unread messages
+    this.handleTotalUnreadMessages();
 
     this.userSocketService.allMsgCounterSubject.subscribe(
       msgNumber => console.log('All messages number ==>>', msgNumber)
@@ -87,15 +104,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.messagingService.currentUserProfile().subscribe((profile: any) => {
       this.loggedInUserProfile = profile;
     });
-  }
-
-  getPrivateUnreadMsgs(): void {
-    this.userSocketService.messageCountSocket.subscribe(
-      newMessage => {
-        this.unreads = newMessage;
-        console.log('New messages ===>>>', newMessage);
-      }
-    );
   }
 
   initPage(): void {
@@ -315,16 +323,173 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     }
   }
 
+  getPrivateUnreadMsgs(): void {
+    this.userSocketService.messageCountSocket.subscribe(
+      newMessage => {
+        // this.unreads = newMessage;
+        console.log('New messages ===>>>', newMessage);
+      }
+    );
+  }
+
   getStreamName(stream?: any, topic?: any): void {
     // stream
     this.streamName = stream.name;
   }
 
-  handleUnreadMessage(): void {
-    this.messagingService.allUnreadMshObserver.subscribe(
-      unreadCount => console.log('Unread count total ====>>>>', unreadCount)
+  handleUnreadMessage(): any {
+    // get streams unread messages
+    this.store.select(getAllStreams).subscribe(streams => {
+      // console.log('Stream details ===>>>>', streams);
+
+      streams?.map((user: any) => {
+
+        const streamDetail = {
+          anchor: 'newest',
+          num_before: 100,
+          num_after: 0,
+          type: [
+            {
+              operator: 'stream',
+              operand: user?.name
+            }
+          ]
+        };
+
+        this.messagingService.getMessagesOfStream(streamDetail).subscribe(
+          (response: any) => {
+            // console.log('Getting messages from all users ===>>>', response);
+            const messages = response?.zulip?.messages;
+            // console.log('stream messages ', messages?.length);
+
+            const res = messages.reduce((x: any, cur: any) => {
+              const item = cur.flags.includes('read');
+              if (!x[item]) {
+                x[item] = 0;
+              }
+              x[item] = x[item] + 1;
+              return x;
+            }, {});
+
+            // tslint:disable-next-line:forin
+            for (const key in res) {
+              const count = res[key];
+              const data = key.slice(0, 2);
+              const service = key.slice(2);
+              this.unreadCount.push({
+                // @ts-ignore
+                count
+              });
+            }
+            // console.log('The unread count ===>', this.unreadCount[1]);
+            messages?.forEach((msg: SingleMessageModel) => {
+              if (msg) {
+                // this.privateMessages.push(msg);
+                // this.sortMessages();
+                if (msg.flags.includes('read')) {
+                  console.log('returned');
+                } else {
+                  const newCount = this.streamsUnreadMsgCounter += 1;
+                  this.streamsUnreadMsgCounterSubject.next(newCount)
+                }
+              }
+
+            });
+
+          }
+        );
+      });
+    });
+
+    // get private unread messages
+    this.store.select(getAllUsers).subscribe(users => {
+      users?.map((user: any) => {
+
+        const streamDetail = {
+          anchor: 'newest',
+          num_before: 100,
+          num_after: 0,
+          type: [
+            {
+              operator: 'pm-with',
+              operand: user?.email
+            }
+          ]
+        };
+
+        this.messagingService.getMessagesOfStream(streamDetail).subscribe(
+          (response: any) => {
+            // console.log('Getting messages from all users ===>>>', response);
+            const messages = response?.zulip?.messages;
+            // console.log('stream messages ', messages?.length);
+
+            const res = messages.reduce((x: any, cur: any) => {
+              const item = cur.flags.includes('read');
+              if (!x[item]) {
+                x[item] = 0;
+              }
+              x[item] = x[item] + 1;
+              return x;
+            }, {});
+
+            // tslint:disable-next-line:forin
+            for (const key in res) {
+              const count = res[key];
+              const data = key.slice(0, 2);
+              const service = key.slice(2);
+              this.unreadCount.push({
+                // @ts-ignore
+                count
+              });
+            }
+            // console.log('The unread count ===>', this.unreadCount[1]);
+            messages?.forEach((msg: SingleMessageModel) => {
+              if (msg) {
+                // this.privateMessages.push(msg);
+                // this.sortMessages();
+                if (msg.flags.includes('read')) {
+                  console.log('returned');
+                } else {
+                  const newCount = this.privateUnreadMsgCounter += 1;
+                  this.privateUnreadMsgCounterSubject.next(newCount);
+
+                  console.log('')
+                }
+              }
+
+            });
+
+          }
+        );
+      })
+      }
     )
 
-    // console.log('Total unread messages ====>>', this.messagingService.allUnreadMsg)
+    // get private unread messages
+    // this.store.select(getAllMessages).subscribe((messages: SingleMessageModel[]) => {
+    //       messages?.forEach((msg: SingleMessageModel) => {
+    //       if (msg) {
+    //         if (msg.flags.includes('read') && !msg.is_me_message) {
+    //           // console.log('returned');
+    //         } else {
+    //           const newCount = this.privateUnreadMsgCounter += 1;
+    //           this.privateUnreadMsgCounterSubject.next(newCount);
+    //
+    //           console.log('All private unread messages ====>>>>', msg);
+    //         }
+    //       }
+    //
+    //     });
+    //   });
+
   }
+
+  handleTotalUnreadMessages(): any {
+    setTimeout(() => {
+      const unreads = this.privateUnreadMsgCounter + this.streamsUnreadMsgCounter;
+
+      return this.totalUnreadMsgSubject$.next(unreads);
+    }, 1000)
+  }
+
 }

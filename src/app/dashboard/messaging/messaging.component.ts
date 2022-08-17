@@ -44,7 +44,6 @@ export class MessagingComponent implements OnInit {
     private messageSocket: MessagesSocketService,
     private store: Store<AppState>,
     public messagingService: MessagingService,
-    private titleService: Title
   ) {
     // this.messageSocket.messageConnect();
     this.messagingService.messages.subscribe((msg) => {
