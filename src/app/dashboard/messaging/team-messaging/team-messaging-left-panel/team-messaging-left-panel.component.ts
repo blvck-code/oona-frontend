@@ -140,8 +140,10 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   initPage(): void {
     // this.streamTopics();
     this.getPrivateUnreadMsgs();
-    // init sockets
-    this.handleSocketsMessages();
+
+    // handle All Unread Messages
+    this.handleUnreadMessage();
+
     // Fetch streams
     this.streams = this.store.select(getAllStreams);
 
@@ -349,4 +351,20 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     // stream
     this.streamName = stream.name;
   }
+
+  handleUnreadMessage(): void {
+
+    this.messagingService.allUnreadMshObserver.subscribe(
+      unreadMessageCounter => {
+        this.unreads =+ unreadMessageCounter;
+        console.log('Unread messages counter  ===>>>', unreadMessageCounter);
+      }
+    );
+
+    this.messagingService.unreadStreamObservable.subscribe(
+      messagesArray => console.log('Unread messages array ===>>>>', messagesArray)
+    );
+
+  }
+
 }
