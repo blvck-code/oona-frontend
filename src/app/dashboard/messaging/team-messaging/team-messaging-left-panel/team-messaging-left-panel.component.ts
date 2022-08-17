@@ -74,34 +74,14 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Get All Streams
-    this.initPage();
+    // fire on page load handler
+    this.initPageHandler();
 
-    this.userSocketService.privateMsgCounterSubject.subscribe(
-      msgNumber => console.log('Private messages number ==>>', msgNumber)
-    );
-
-    this.userSocketService.messageCount.subscribe(messages => {
-      this.newMessagesCount = messages;
-    });
-
-    this.listAllTeams();
-    this.userSocketService.streamMessageSocket.subscribe(messages => {
-      this.streamMessages = messages;
-      this.updateTeamsWithMessageCount(messages);
-    });
-    this.messagingService.currentPmNames.subscribe((pmNames) => {
-      this.pmNames = this.removeDuplicates(this.createArrayOfPms(pmNames)); // always get the current value
-    });
-
-    this.messagingService.currentUserProfile().subscribe((profile: any) => {
-      this.loggedInUserProfile = profile;
-    });
   }
 
-  initPage(): void {
+  initPageHandler(): void {
     // this.streamTopics();
-    this.getPrivateUnreadMsgs();
+    this.getPrivateUnreadMsg();
 
     // handle All Unread Messages
     this.handleUnreadMessage();
@@ -136,6 +116,19 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
     // Get Topics from store
     this.topics = this.store.select(getTopics);
+
+    this.listAllTeams();
+    this.userSocketService.streamMessageSocket.subscribe(messages => {
+      this.streamMessages = messages;
+      this.updateTeamsWithMessageCount(messages);
+    });
+    this.messagingService.currentPmNames.subscribe((pmNames) => {
+      this.pmNames = this.removeDuplicates(this.createArrayOfPms(pmNames)); // always get the current value
+    });
+
+    this.messagingService.currentUserProfile().subscribe((profile: any) => {
+      this.loggedInUserProfile = profile;
+    });
   }
 
   listAllTeams(): any {
@@ -234,8 +227,8 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     }
   }
 
-  getPrivateUnreadMsgs(): void {
-    this.userSocketService.newMsgCounterObersvable.subscribe(
+  getPrivateUnreadMsg(): void {
+    this.userSocketService.allMsgCounterObservable.subscribe(
       newMessage => {
         console.log('newMsgCounterSubject ====>>>', newMessage)
       }
@@ -377,7 +370,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
       })
       })
   }
-
 
   // Todo filter unread messages here to update on ui
   filterUnreadStream(msg: SingleMessageModel): void {

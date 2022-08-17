@@ -13,6 +13,7 @@ import * as authActions from '../../../auth/state/auth.actions';
 import {take} from 'rxjs/operators';
 import {getSelectedUser} from '../../../auth/state/auth.selectors';
 import {ActivatedRoute, Event, Params, Router} from '@angular/router';
+import {SingleMessageModel} from "../models/messages.model";
 
 const msgSocket = webSocket(messageChannel);
 
@@ -23,7 +24,7 @@ export class OonaSocketService {
 
   allMessagesCounter = 0;
   allMsgCounterSubject = new BehaviorSubject<number>(this.allMessagesCounter);
-  allMsgCounter = this.allMsgCounterSubject.asObservable();
+  allMsgCounterObservable = this.allMsgCounterSubject.asObservable();
 
   privateMessagesCounter = 0;
   privateMsgCounterSubject = new BehaviorSubject<number>(this.privateMessagesCounter);
@@ -99,6 +100,17 @@ export class OonaSocketService {
     this.typingStatusSocket.next(status);
   }
 
+  newMessageCounter(msg: SingleMessageModel): void {
+    const msgIds: any[] = [];
+
+    if(msgIds.includes(msg.id)){
+      return
+    }
+
+    this.allMsgCounterSubject.next(this.allMessagesCounter + 1);
+    msgIds.push(msg.id)
+  }
+
   connect(): void {
     /**
      * Creates a websocket connection to the user channel
@@ -146,7 +158,6 @@ export class OonaSocketService {
       this.recognizedUsers.push(socketData);
     } else if (socketData.message.type === 'message'){
       // console.log('message', socketData);
-      this.allMsgCounterSubject.next(this.allMessagesCounter + 1);
       this.setMessageType(socketData);
       // this.newMessages.push(socketData);
       // create a new set unique by message id
@@ -154,8 +165,7 @@ export class OonaSocketService {
       this.newMessageCount = this.newMessages.length;
       this.changeNewMessageCount(this.newMessageCount);
 
-      console.log('Update message counter flag fired')
-      this.newMsgCounterSubject.next(this.newMsgCounter += 1);
+      this.newMessageCounter(socketData.message.message);
 
     } else if (socketData.message.type === 'update_message_flags'){
       // how many messages have been read
