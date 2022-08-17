@@ -163,7 +163,6 @@ export class LandingMessageBoardComponent implements OnInit {
                   msg.flags.push('read');
                 }
 
-                console.log('Streams messages ===>>>>', msg.flags);
               }
 
             });
@@ -177,7 +176,7 @@ export class LandingMessageBoardComponent implements OnInit {
 
   allMemberTeams(): void {
     this.messagingService.getAllTeams().subscribe((teams: any) => {
-      this.allTeams = teams.streams.map((team: { name: any; }) => team.name);
+      this.allTeams = teams?.streams.map((team: { name: any; }) => team.name);
     });
   }
 

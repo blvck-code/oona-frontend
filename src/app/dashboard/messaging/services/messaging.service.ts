@@ -5,7 +5,7 @@ import {AuthService} from '../../../auth/services/auth.service';
 import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
 import {Router} from '@angular/router';
 import {AllStreamsModel} from '../models/streams.model';
-import {map} from 'rxjs/operators';
+import {map, take} from 'rxjs/operators';
 import {MessagesSocketService} from './messages-socket.service';
 import {AllStreamsResponseModel} from '../models/allStreamsResponse.model';
 import {Topics, TopicsModel} from '../models/topics.model';
@@ -45,7 +45,6 @@ export class MessagingService {
   streamSubscribe = env.streamSubscribe;
 
   allPlatformMembers = [];
-  unreadCount = [];
   subscribers: any;
   public messages!: Subject<any>;
 
@@ -113,6 +112,14 @@ export class MessagingService {
   public streamMemberNames = Array();
   private names = new BehaviorSubject(this.streamMemberNames);
   currentStreamMemberNames = this.names.asObservable();
+
+  unreadCount = [];
+  unreadMessagesSubject = new BehaviorSubject(this.unreadCount);
+  unreadMessagesObservable = this.unreadMessagesSubject.asObservable();
+
+  allUnreadMsg: number = 0;
+  allUnreadMsgSubject = new BehaviorSubject<number>(this.allUnreadMsg);
+  allUnreadMshObserver = this.allUnreadMsgSubject.asObservable();
 
   changeMemberDetail(details: any): void {
     this.memberDetail.next(details);
@@ -359,18 +366,19 @@ export class MessagingService {
                 count
               });
             }
-            console.log('The unread count ===>', this.unreadCount[1]);
+
             messages?.forEach((msg: SingleMessageModel) => {
               if (msg) {
                 // this.privateMessages.push(msg);
                 // this.sortMessages();
                 if (msg.flags.includes('read')) {
-                  console.log('returned');
+                  // console.log('returned');
                 } else {
+                  this.allUnreadMsgSubject.next(+1);
                   msg.flags.push('read');
                 }
 
-                console.log('Streams messages ===>>>>', msg.flags);
+                // console.log('Streams messages ===>>>>', msg.flags);
               }
 
             });

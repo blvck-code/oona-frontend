@@ -63,7 +63,6 @@ export class OonaSocketService {
   private websocket: WebSocket | undefined;
   private loggedInUserProfile: any;
 
-
   constructor(
     private authService: AuthService,
     private messagingService: MessagingService,
@@ -80,6 +79,7 @@ export class OonaSocketService {
     // console.log('Message counter ===>>', newCount);
     this.messageCountSocket.next(newCount);
   }
+
   changeNewStreamMessageCount(newStreamMessages: any): void {
     // console.log('newStreamMessages ===>>>', newStreamMessages);
     this.streamMessageCountSocket.next(newStreamMessages);
