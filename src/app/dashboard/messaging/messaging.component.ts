@@ -120,6 +120,9 @@ export class MessagingComponent implements OnInit {
     this.store.dispatch(new messagingActions.LoadSubStreams());
     this.store.dispatch(new authActions.LoadZulipUsers());
     this.store.dispatch(new authActions.LoadAllUsers());
+
+    // gets unread messages
+    this.messagingService.getUnreadMessages();
   }
 
   logoutUser(): void {

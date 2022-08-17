@@ -12,8 +12,9 @@ import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
 import {getAllStreams, getTopics} from '../../state/messaging.selectors';
 import {AllStreamsModel} from '../../models/streams.model';
-import {take} from 'rxjs/operators';
+import {map, take} from 'rxjs/operators';
 import {ChannelSettingsComponent} from '../channel-settings/channel-settings.component';
+import {SingleMessageModel} from '../../models/messages.model';
 
 @Component({
   selector: 'app-team-messaging-left-panel',
@@ -63,6 +64,9 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     // Get All Streams
     this.initPage();
 
+    // get unread message
+    this.handleUnreadMessage();
+
     this.userSocketService.allMsgCounterSubject.subscribe(
       msgNumber => console.log('All messages number ==>>', msgNumber)
     );
@@ -89,13 +93,48 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     });
   }
 
+  handleUnreadMessage(): void {
+    this.messagingService.unreadMessagesSubject.subscribe(
+      message => {
+        this.unreadsSubject$.next(+message);
+        this.unreads = +message;
+      }
+    );
+
+    this.unreadsSubject$.subscribe(
+      unread => console.log('Total unread messages from left ====>>>', unread)
+    );
+
+    // handle All Unread Msg
+    this.messagingService.allUnreadMsgSubject.subscribe(
+      num => console.log('All unread message numbers ===>>>', num)
+    );
+  }
+
+  handleSocketsMessages(): void {
+    this.userSocketService.streamMessageCountSocket.subscribe(
+      (messages: SingleMessageModel[]) =>
+       messages.map(singleMessage => {
+         const streamName = singleMessage.display_recipient;
+         const streamTopic = singleMessage.subject;
+         this.unreads += 1;
+
+         console.log('Message content ===>>>', singleMessage);
+       })
+    );
+  }
+
   getPrivateUnreadMsgs(): void {
     this.userSocketService.messageCountSocket.subscribe(
       newMessage => {
-        this.unreads = newMessage;
+        this.unreads += +newMessage;
         console.log('New messages ===>>>', newMessage);
       }
     );
+  }
+
+  handleUpdateStreamUnreadCount(): void {
+
   }
 
   initPage(): void {
@@ -220,14 +259,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.publicTeams = allAvailableTeams.filter((team: { invite_only: any; }) => !team.invite_only);
   }
 
-  // displayMessagesOfTopic(topic: any): void {
-  //   if (topic.name){
-  //     this.messagingService.changeTeamTopicMessages(topic.name);
-  //   }else{
-  //     this.messagingService.changeTeamTopicMessages('');
-  //   }
-  // }
-
   handleNavigateTopic(stream?: any, topic?: any): void {
     // stream
 
@@ -257,7 +288,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
   allUsersRegistered(): void {
     this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
-      const usersPresent = users.members.filter(user => user.presence);
+      const usersPresent = users?.members.filter(user => user.presence);
       this.allUsers = this.messagingService.newListOfUsers(usersPresent);
     });
   }
@@ -307,6 +338,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     if (messages.length > 0) {
       this.allTeams.forEach((team: { messageCount: number; stream_id: any; }) => {
         team.messageCount = messages.filter(message => message.stream_id === team.stream_id).length;
+        console.log('Message Count left panel ===>>>>', team.messageCount);
       });
 
       this.publicTeams.forEach((team: { messageCount: number; stream_id: any; }) => {
