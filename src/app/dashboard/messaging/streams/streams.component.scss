@@ -1,4 +1,4 @@
-.main-mentions-container {
+.main-start-page-container {
   display: flex;
   justify-content: space-between;
 }
@@ -10,11 +10,15 @@
 }
 
 .message-board {
-  width: calc(100vw - 980px);
-  overflow-y: scroll;
+  //width: calc(100vw - 1180px);
+  width: calc(100vw - 780px);
+  padding-top: 15px;
+  overflow: hidden;
+  justify-self: center;
+  margin-left: 0;
 }
 
-.all-users-right-panel {
+.right-all-users-panel {
   width: 350px;
 }
 
@@ -40,7 +44,11 @@
     width: calc(100vw - 710px);
     padding-top: 15px;
   }
-  .all-users-right-panel {
+  .right-all-users-panel {
     width: 270px;
   }
+}
+
+.message-wrap {
+  display: flex;
 }

@@ -1,5 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, NavigationEnd, NavigationStart, ParamMap, Params, Router} from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  NavigationStart,
+  ParamMap,
+  Params,
+  Router,
+} from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../state/app.state';
 import { getAllUsers } from '../../../auth/state/auth.selectors';
@@ -8,7 +15,7 @@ import { getAllUsers } from '../../../auth/state/auth.selectors';
 import * as authActions from '../../../auth/state/auth.actions';
 import { getPrivateMessages } from '../state/messaging.selectors';
 import { SingleMessageModel } from '../models/messages.model';
-import {BehaviorSubject, Observable} from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { retagTsFile } from '@angular/compiler-cli/src/ngtsc/shims';
 import * as events from 'events';
 import * as messageActions from '../state/messaging.actions';
@@ -43,6 +50,7 @@ export class IndividualMessagingComponent implements OnInit {
     const userId = +currentUser.split('-')[0];
     const userName = currentUser.split('-')[1].replace('.', ' ');
 
+    console.log('Sender user id ===>>>', +userId);
 
     const urlUser = {
       userId,
@@ -52,17 +60,15 @@ export class IndividualMessagingComponent implements OnInit {
     this.currentUserIdSubject.next(urlUser);
 
     setTimeout(() => {
-      this.store.select(getAllUsers).subscribe(
-        data => {
-          // tslint:disable-next-line:no-shadowed-variable
-          data?.map((user: any) => {
-            if (+user.user_id === +userId){
-              this.pmUser = user;
-              this.store.dispatch(new authActions.SetSelectedUser(user));
-            }
-          });
-        }
-      );
+      this.store.select(getAllUsers).subscribe((data) => {
+        // tslint:disable-next-line:no-shadowed-variable
+        data?.map((user: any) => {
+          if (+user.user_id === +userId) {
+            this.pmUser = user;
+            this.store.dispatch(new authActions.SetSelectedUser(user));
+          }
+        });
+      });
     }, 500);
   }
 
@@ -79,17 +85,6 @@ export class IndividualMessagingComponent implements OnInit {
           this.getUserMessages();
         }, 1000);
       }
-
-    });
-  }
-
-  fetchUserMessages(): void {
-    this.store.select(getPrivateMessages).subscribe((data) => {
-      data?.map((msg) => {
-        if (msg.recipient_id === 21) {
-          this.pmMessages = [...this.pmMessages, msg];
-        }
-      });
     });
   }
 
@@ -102,24 +97,36 @@ export class IndividualMessagingComponent implements OnInit {
         {
           operator: 'pm-with',
           operand: this.pmUser?.email,
-        }
-      ]
+        },
+      ],
     };
 
     // fetch messages from server
     this.store.dispatch(new messageActions.LoadPrivateMessages(streamDetail));
 
     // @ts-ignore
-    document.getElementById('box').scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+    document
+      .getElementById('box')
+      .scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
   }
 
   ngOnInit(): void {
     this.onInitHandler();
-    this.fetchUserMessages();
+    // this.fetchUserMessages();
     this.changeContentOnRouteChange();
 
     this.activatedRoute.params.subscribe(
       (params: Params) => (this.myParam = params.member)
     );
   }
+
+  // fetchUserMessages(): void {
+  //   this.store.select(getPrivateMessages).subscribe((data) => {
+  //     data?.map((msg) => {
+  //       if (msg.recipient_id === 10) {
+  //         this.pmMessages = [...this.pmMessages, msg];
+  //       }
+  //     });
+  //   });
+  // }
 }

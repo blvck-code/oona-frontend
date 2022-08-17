@@ -1,21 +1,34 @@
-import {ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
-import {MessagingService} from '../../services/messaging.service';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostListener,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { MessagingService } from '../../services/messaging.service';
 
 // NgRx
-import {Store} from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import * as messageActions from '../../state/messaging.actions';
-import {AppState} from '../../../../state/app.state';
-import {getLoadingAllMsg, getAllMessages, getAllStreams} from '../../state/messaging.selectors';
-import {Observable} from 'rxjs';
-import {SingleChat, SingleMessageModel} from '../../models/messages.model';
-import {getAllUsers} from "../../../../auth/state/auth.selectors";
+import { AppState } from '../../../../state/app.state';
+import {
+  getLoadingAllMsg,
+  getAllMessages,
+  getAllStreamData,
+} from '../../state/messaging.selectors';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { SingleChat, SingleMessageModel } from '../../models/messages.model';
+import { map, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-landing-message-board',
   templateUrl: './landing-message-board.component.html',
-  styleUrls: ['./landing-message-board.component.scss']
+  styleUrls: ['./landing-message-board.component.scss'],
 })
 export class LandingMessageBoardComponent implements OnInit {
+  @ViewChild('endChat') endChat: ElementRef | undefined;
+
   allTeams = Array();
   messagesOfStream = Array();
   initialMessageCount = 30;
@@ -24,7 +37,14 @@ export class LandingMessageBoardComponent implements OnInit {
   messageExist: any;
   editorActive = true;
   editorChat: any;
-  unreadCount = [];
+
+  allMessages: SingleMessageModel[] = [];
+  dateSortedPrivateMessages: SingleMessageModel[] = [];
+
+  allMsgId: number[] = [];
+  allStreamId: number[] = [];
+
+  allMessages$!: Observable<any>;
 
   constructor(
     private messagingService: MessagingService,
@@ -39,15 +59,14 @@ export class LandingMessageBoardComponent implements OnInit {
       this.getMessagesOfTeams();
     }, 1000);
     this.initPage();
-    // / get all private message
-    this.getAllPrivateMessages();
 
-    // stream messages
-    this.getStreamMessage();
+    this.tested();
   }
 
   // Init Page
   initPage(): void {
+    this.getStreamMessage();
+    // this.getPrivateMessages();
 
     // get Loading Message
     this.loadingMessages = this.store.select(getLoadingAllMsg);
@@ -57,126 +76,21 @@ export class LandingMessageBoardComponent implements OnInit {
 
     this.messagesLength();
     // @ts-ignore
-    document?.getElementById('box')?.scrollIntoView({behavior: 'smooth', block: 'end', inline: 'nearest'});
+    document
+      ?.getElementById('box')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
   }
 
   messagesLength(): void {
-    this.store.select(getAllMessages).subscribe(
-      messages => {
-        // @ts-ignore
-        this.messageExist = messages?.length > 0;
-      }
-    );
-  }
-
-  getAllPrivateMessages(): void {
-    this.store.select(getAllUsers).subscribe(users => {
-      // console.log('All users fetched ===>>>>', users);
-
-      users?.map((user: any) => {
-
-        const streamDetail = {
-          anchor: 'newest',
-          num_before: 100,
-          num_after: 0,
-          type: [
-            {
-              operator: 'pm-with',
-              operand: user?.email
-            }
-          ]
-        };
-
-        this.messagingService.getMessagesOfStream(streamDetail).subscribe(
-          (response: any) => {
-            // console.log('Getting messages from all users ===>>>', response);
-            const messages = response?.zulip?.messages;
-
-            messages?.forEach((msg: SingleMessageModel) => {
-              if (msg) {
-                // this.privateMessages.push(msg);
-                // this.sortMessages();
-
-                // console.log('Private messages ===>>>>', msg);
-              }
-            });
-
-          }
-        );
-      });
-    });
-  }
-
-  getStreamMessage(): void {
-    this.store.select(getAllStreams).subscribe(streams => {
-      // console.log('Stream details ===>>>>', streams);
-
-      streams?.map((user: any) => {
-
-        const streamDetail = {
-          anchor: 'newest',
-          num_before: 100,
-          num_after: 0,
-          type: [
-            {
-              operator: 'stream',
-              operand: user?.name
-            }
-          ]
-        };
-
-        // console.log('streamDetail', streamDetail);
-
-        this.messagingService.getMessagesOfStream(streamDetail).subscribe(
-          (response: any) => {
-            // console.log('Getting messages from all users ===>>>', response);
-            const messages = response?.zulip?.messages;
-            // console.log('stream messages ', messages?.length);
-
-            const res = messages.reduce((x: any, cur: any) => {
-              const item = cur.flags.includes('read');
-              if (!x[item]) {
-                x[item] = 0;
-              }
-              x[item] = x[item] + 1;
-              return x;
-            }, {});
-
-            // tslint:disable-next-line:forin
-            for (const key in res) {
-              const count = res[key];
-              const data = key.slice(0, 2);
-              const service = key.slice(2);
-              this.unreadCount.push({
-                // @ts-ignore
-                count
-              });
-            }
-            console.log('The unread count ===>', this.unreadCount[1]);
-            messages?.forEach((msg: SingleMessageModel) => {
-              if (msg) {
-                // this.privateMessages.push(msg);
-                // this.sortMessages();
-                if (msg.flags.includes('read')) {
-                  console.log('returned');
-                } else {
-                  msg.flags.push('read');
-                }
-
-              }
-
-            });
-
-
-          }
-        );
-      });
+    this.store.select(getAllMessages).subscribe((messages) => {
+      // @ts-ignore
+      this.messageExist = messages?.length > 0;
     });
   }
 
   allMemberTeams(): void {
     this.messagingService.getAllTeams().subscribe((teams: any) => {
-      this.allTeams = teams?.streams.map((team: { name: any; }) => team.name);
+      this.allTeams = teams.streams.map((team: { name: any }) => team.name);
     });
   }
 
@@ -184,20 +98,19 @@ export class LandingMessageBoardComponent implements OnInit {
     // get messages of each team
 
     this.allTeams?.map((teamName: any) => {
-
       const streamDetail = {
         use_first_unread_anchor: true,
         num_before: this.initialMessageCount,
         type: [
           {
             operator: 'stream',
-            operand: teamName
-          }
-        ]
+            operand: teamName,
+          },
+        ],
       };
 
-
-      this.messagingService.getMessagesOfStream(streamDetail).subscribe((response: any) => {
+      this.messagingService.getMessagesOfStream(streamDetail).subscribe(
+        (response: any) => {
           this.change.detectChanges();
           this.messagesOfStream.push(...response.zulip.messages);
           // sort by time. latest last
@@ -205,13 +118,17 @@ export class LandingMessageBoardComponent implements OnInit {
           this.change.detectChanges();
 
           // @ts-ignore
-          document.getElementById('box').scrollIntoView({behavior: 'smooth', block: 'end', inline: 'nearest'});
+          document.getElementById('box').scrollIntoView({
+            behavior: 'smooth',
+            block: 'end',
+            inline: 'nearest',
+          });
         },
         (error: any) => {
           console.log('error', error);
-        });
+        }
+      );
     });
-
   }
 
   getMorePrivateMessages(): void {
@@ -224,30 +141,98 @@ export class LandingMessageBoardComponent implements OnInit {
         type: [
           {
             operator: 'stream',
-            operand: teamName
-          }
-        ]
+            operand: teamName,
+          },
+        ],
       };
-      this.messagingService.getMessagesOfStream(streamDetail).subscribe((response: any) => {
+      this.messagingService.getMessagesOfStream(streamDetail).subscribe(
+        (response: any) => {
           this.change.detectChanges();
           // get first 10 items from this new array array.slice(0, 10);
           // add the 10 items to the top of the stack
-          this.messagesOfStream.unshift(...response.zulip.messages.slice(0, 10));
+          this.messagesOfStream.unshift(
+            ...response.zulip.messages.slice(0, 10)
+          );
           // sort by time. latest last
           // this.messagesOfStream.sort((a, b) =>  a.timestamp - b.timestamp );
           this.change.detectChanges();
         },
         (error: any) => {
           console.log('error', error);
-        });
+        }
+      );
     });
   }
 
+  getStreamMessage(): void {
+    // get stream messages from store
+    this.store.select(getAllStreamData).subscribe((streamData) => {
+      streamData?.map((msg: SingleMessageModel) => {
+        if (this.allStreamId.includes(msg.id)) {
+          return;
+        }
+
+        this.allMessages.push(msg);
+        this.allStreamId.push(msg.id);
+      });
+    });
+
+    // get private messages from store
+    this.store.select(getAllMessages).subscribe((allMessages) => {
+      allMessages?.map((msg: SingleMessageModel) => {
+        if (this.allMsgId.includes(msg.id)) {
+          return;
+        }
+
+        this.allMessages.push(msg);
+        this.allMsgId.push(msg.id);
+      });
+    });
+    this.sortMessages();
+  }
+
+  tested(): void {
+    const allStreamMessages$: Observable<SingleMessageModel[]> =
+      this.store.select(getAllStreamData);
+    const allPrivateMessages$: Observable<SingleMessageModel[]> =
+      this.store.select(getAllMessages);
+
+    const allMessages: any = combineLatest(
+      allStreamMessages$,
+      allPrivateMessages$
+    ).pipe(
+      map(([streamMessage, privateMessage]) => {
+        return [...streamMessage, ...privateMessage]
+      }
+      )
+    )
+
+    console.log('all messages ===>>>', allMessages)
+  }
+
+  sortMessages(): void {
+    // this.loadingMessages = false;
+    this.dateSortedPrivateMessages = this.allMessages.sort(
+      (a, b) => a.timestamp - b.timestamp
+    );
+    this.scrollBottom();
+  }
   selectedChat(chat: SingleChat): any {
     this.editorActive = true;
     this.store.dispatch(new messageActions.HandleSendMessage(chat));
     this.editorChat = chat;
-    console.log('Emit chat ===>>>', chat);
   }
 
+  scrollBottom(): any {
+    if (this.endChat) {
+      setTimeout(() => {
+        // @ts-ignore
+        this.endChat.nativeElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'nearest',
+        });
+      }, 500);
+    }
+  }
 }

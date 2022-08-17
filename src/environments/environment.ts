@@ -2,19 +2,27 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-export const apiURL = 'https://192.168.0.';
-export const basePort = '100';
-export const backendPort = '2443';
-export const frontendPort = '3443';
-
-export const oonaBaseUrl = `${apiURL}${basePort}:${backendPort}`;
+// export const messageChannel = 'wss://192.168.0.42:2443/ws/on/message/';
+// export const userChannel = 'wss://192.168.0.42:2443/ws/on/event/';
 // export const oonaBaseUrl = 'https://65.20.69.213:2443';
-export const oonaFrontendUrl = `${apiURL}${basePort}:${frontendPort}`;
-export const channelBaseUrl = '192.168.0.100:2443';
-export const userChannel = 'wss://192.168.0.100:2443/ws/on/event/';
-export const messageChannel = 'wss://192.168.0.100:2443/ws/on/message/';
+// export const oonaBaseUrl = `${apiURL}${basePort}:${backendPort}`;
+// export const domain = '192.168.0.42:8443';
+// export const channelBaseUrl = '192.168.0.42:2443';
+
+export const apiURL = 'https://192.168.0.';
+// export const port = '42';
+export const backendPort = ':2443';
+export const frontendPort = ':3443';
+
+export const backendProtocol = 'https://';
+export const domain = '65.20.69.213';
+
+export const oonaBaseUrl = `${backendProtocol}${domain}${backendPort}`;
+
+export const oonaFrontendUrl = `${domain}${frontendPort}`;
+export const userChannel = `${domain}${backendPort}/ws/on/event/`;
+export const messageChannel = `${domain}${backendPort}/ws/on/message/`;
 export const firmName = '8teq';
-export const domain = '192.168.0.42:8443';
 const whiteBoard = 'http://192.168.0.37:8030';
 const etherPad = 'http://192.168.0.37:9001/';
 
@@ -60,11 +68,11 @@ export const environment = {
 
   sendStreamMessageWithFileURL: oonaBaseUrl + '/api/v1/message/stream/file',
 
-  domain: apiURL + basePort + ':8443',
+  domain: domain,
   whiteBoard: 'http://192.168.0.37:8030',
   etherPad: 'http://192.168.0.37:9001/',
-  userChannel: channelBaseUrl + '/ws/on/event/',
-  messageChannel: channelBaseUrl + '/ws/on/message/',
+  userChannel: userChannel,
+  messageChannel: messageChannel,
 
   // Chat
   // sendStreamMessageWithFileURL: oonaBaseUrl + '/api/v1/message/stream/file',

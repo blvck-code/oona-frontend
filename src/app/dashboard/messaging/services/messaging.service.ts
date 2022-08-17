@@ -1,18 +1,22 @@
-import {Injectable} from '@angular/core';
-import {environment as env, messageChannel, oonaBaseUrl} from '../../../../environments/environment';
-import {HttpClient} from '@angular/common/http';
-import {AuthService} from '../../../auth/services/auth.service';
-import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
-import {Router} from '@angular/router';
-import {AllStreamsModel} from '../models/streams.model';
-import {map, take} from 'rxjs/operators';
-import {MessagesSocketService} from './messages-socket.service';
-import {AllStreamsResponseModel} from '../models/allStreamsResponse.model';
-import {Topics, TopicsModel} from '../models/topics.model';
-import {getAllStreams} from "../state/messaging.selectors";
-import {SingleMessageModel} from "../models/messages.model";
-import {Store} from "@ngrx/store";
-import {AppState} from "../../../state/app.state";
+import { Injectable } from '@angular/core';
+import {
+  environment as env,
+  messageChannel,
+  oonaBaseUrl,
+} from '../../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../../../auth/services/auth.service';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { Router } from '@angular/router';
+import { AllStreamsModel } from '../models/streams.model';
+import { map, take } from 'rxjs/operators';
+import { MessagesSocketService } from './messages-socket.service';
+import { AllStreamsResponseModel } from '../models/allStreamsResponse.model';
+import { Topics, TopicsModel } from '../models/topics.model';
+import { getAllStreams } from '../state/messaging.selectors';
+import { SingleMessageModel } from '../models/messages.model';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../state/app.state';
 
 export interface Message {
   author: string;
@@ -22,7 +26,6 @@ export interface Message {
 @Injectable({
   providedIn: 'root',
 })
-
 export class MessagingService {
   users = env.users;
   teams = env.teams;
@@ -48,7 +51,6 @@ export class MessagingService {
   subscribers: any;
   public messages!: Subject<any>;
 
-
   constructor(
     private http: HttpClient,
     private authService: AuthService,
@@ -65,18 +67,17 @@ export class MessagingService {
 
     console.log('messageChannelURL ===>>>', messageChannelURL);
 
-    this.messages = (msgSocket.connect(messageChannelURL).map(
-      (response: MessageEvent): any => {
+    this.messages = msgSocket
+      .connect(messageChannelURL)
+      .map((response: MessageEvent): any => {
         const data = JSON.parse(response.data);
         console.log('Received message ===>>>', data);
 
         return {
           author: data.author,
-          message: data.message
+          message: data.message,
         };
-
-      }
-    ) as Subject<Message>);
+      }) as Subject<Message>;
   }
 
   public memberObject = {
@@ -183,7 +184,9 @@ export class MessagingService {
   }
 
   goToMemberChat(member: any): void {
-    this.router.navigate(['dashboard/messaging/narrow'], {queryParams: {member: member.full_name.replace(/\s/g, '')}});
+    this.router.navigate(['dashboard/messaging/narrow'], {
+      queryParams: { member: member.full_name.replace(/\s/g, '') },
+    });
   }
 
   getDetailsOfStream(streamId: string): any {
@@ -191,7 +194,6 @@ export class MessagingService {
   }
 
   newListOfUsers(usersPresent: any): any[] {
-
     const allOnline = usersPresent?.filter(
       (user: { presence: { aggregated: { status: string } } }) =>
         user.presence.aggregated.status === 'active'
@@ -274,15 +276,26 @@ export class MessagingService {
   }
 
   createTeam(teamData: any): any {
-    return this.http.post(this.newTeam, teamData, this.authService.getHeaders());
+    return this.http.post(
+      this.newTeam,
+      teamData,
+      this.authService.getHeaders()
+    );
   }
 
   createChannel(channelData: any): any {
-    return this.http.post(this.newChannel, channelData, this.authService.getHeaders());
+    return this.http.post(
+      this.newChannel,
+      channelData,
+      this.authService.getHeaders()
+    );
   }
 
   getOonaMemberDetail(email: any): any {
-    return this.http.get(this.oonaMemberProfileDetail + email, this.authService.getHeaders());
+    return this.http.get(
+      this.oonaMemberProfileDetail + email,
+      this.authService.getHeaders()
+    );
   }
 
   oonaProfile(): any {
@@ -290,20 +303,42 @@ export class MessagingService {
   }
 
   createMeeting(meetingDetail: any): any {
-    return this.http.post(this.newMeeting, meetingDetail, this.authService.getHeaders());
+    return this.http.post(
+      this.newMeeting,
+      meetingDetail,
+      this.authService.getHeaders()
+    );
   }
 
   unsubscribeFromStream(streamDetail: any): any {
-    return this.http.post(this.streamUnsubscribe, streamDetail, this.authService.getHeaders());
+    return this.http.post(
+      this.streamUnsubscribe,
+      streamDetail,
+      this.authService.getHeaders()
+    );
   }
 
   subscribeMember(streamDetail: any): any {
-    return this.http.post(this.streamSubscribe, streamDetail, this.authService.getHeaders());
+    return this.http.post(
+      this.streamSubscribe,
+      streamDetail,
+      this.authService.getHeaders()
+    );
   }
 
   formatDate(dateObject: any): any {
-    const cDate = dateObject.getFullYear() + '-' + (dateObject.getMonth() + 1) + '-' + dateObject.getDate();
-    const cTime = dateObject.getHours() + ':' + dateObject.getMinutes() + ':' + dateObject.getSeconds();
+    const cDate =
+      dateObject.getFullYear() +
+      '-' +
+      (dateObject.getMonth() + 1) +
+      '-' +
+      dateObject.getDate();
+    const cTime =
+      dateObject.getHours() +
+      ':' +
+      dateObject.getMinutes() +
+      ':' +
+      dateObject.getSeconds();
     return cDate + ' ' + cTime;
   }
 
@@ -316,17 +351,14 @@ export class MessagingService {
   }
 
   getStreamTopics(streamId: any): any {
-    return this.http.get(
-      this.streamTopic + streamId,
-    );
+    return this.http.get(this.streamTopic + streamId);
   }
 
   getUnreadMessages(): any {
-    this.store.select(getAllStreams).subscribe(streams => {
+    this.store.select(getAllStreams).subscribe((streams) => {
       // console.log('Stream details ===>>>>', streams);
 
       streams?.map((user: any) => {
-
         const streamDetail = {
           anchor: 'newest',
           num_before: 100,
@@ -334,60 +366,54 @@ export class MessagingService {
           type: [
             {
               operator: 'stream',
-              operand: user?.name
-            }
-          ]
+              operand: user?.name,
+            },
+          ],
         };
 
         // console.log('streamDetail', streamDetail);
 
-        this.getMessagesOfStream(streamDetail).subscribe(
-          (response: any) => {
-            // console.log('Getting messages from all users ===>>>', response);
-            const messages = response?.zulip?.messages;
-            // console.log('stream messages ', messages?.length);
+        this.getMessagesOfStream(streamDetail).subscribe((response: any) => {
+          // console.log('Getting messages from all users ===>>>', response);
+          const messages = response?.zulip?.messages;
+          // console.log('stream messages ', messages?.length);
 
-            const res = messages.reduce((x: any, cur: any) => {
-              const item = cur.flags.includes('read');
-              if (!x[item]) {
-                x[item] = 0;
-              }
-              x[item] = x[item] + 1;
-              return x;
-            }, {});
-
-            // tslint:disable-next-line:forin
-            for (const key in res) {
-              const count = res[key];
-              const data = key.slice(0, 2);
-              const service = key.slice(2);
-              this.unreadCount.push({
-                // @ts-ignore
-                count
-              });
+          const res = messages.reduce((x: any, cur: any) => {
+            const item = cur.flags.includes('read');
+            if (!x[item]) {
+              x[item] = 0;
             }
+            x[item] = x[item] + 1;
+            return x;
+          }, {});
 
-            messages?.forEach((msg: SingleMessageModel) => {
-              if (msg) {
-                // this.privateMessages.push(msg);
-                // this.sortMessages();
-                if (msg.flags.includes('read')) {
-                  // console.log('returned');
-                } else {
-                  this.allUnreadMsgSubject.next(+1);
-                  msg.flags.push('read');
-                }
+          // tslint:disable-next-line:forin
+          for (const key in res) {
+            const count = res[key];
+            const data = key.slice(0, 2);
+            const service = key.slice(2);
+            this.unreadCount.push({
+              // @ts-ignore
+              count,
+            });
+          }
 
-                // console.log('Streams messages ===>>>>', msg.flags);
+          messages?.forEach((msg: SingleMessageModel) => {
+            if (msg) {
+              // this.privateMessages.push(msg);
+              // this.sortMessages();
+              if (msg.flags.includes('read')) {
+                // console.log('returned');
+              } else {
+                this.allUnreadMsgSubject.next(+1);
+                msg.flags.push('read');
               }
 
-            });
-
-
-          }
-        );
+              // console.log('Streams messages ===>>>>', msg.flags);
+            }
+          });
+        });
       });
     });
   }
-
 }
