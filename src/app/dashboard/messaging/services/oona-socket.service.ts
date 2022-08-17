@@ -55,6 +55,10 @@ export class OonaSocketService {
   myStreamMessagesSocketSubject = new BehaviorSubject(this.myStreamMessages);
   myStreamMessagesSocket = this.myStreamMessagesSocketSubject.asObservable();
 
+  newMsgCounter: number = 0;
+  newMsgCounterSubject = new BehaviorSubject<number>(this.newMsgCounter);
+  newMsgCounterObersvable = this.newMsgCounterSubject.asObservable();
+
   peopleType = Array();
   public typingStatus = Array();
   private typingStatusSocket = new BehaviorSubject(this.recognizedUsers);
@@ -135,7 +139,7 @@ export class OonaSocketService {
     // }
     // }
 
-    console.log('Socket data first time ===>>>', socketData);
+    // console.log('Socket data first time ===>>>', socketData);
 
     if (socketData.message.type === 'presence'){
       // console.log('pushing user presence data');
@@ -149,6 +153,9 @@ export class OonaSocketService {
       // this.newMessagesUnique = new Set(this.newMessages.map(item => item.message.message.id));
       this.newMessageCount = this.newMessages.length;
       this.changeNewMessageCount(this.newMessageCount);
+
+      console.log('Update message counter flag fired')
+      this.newMsgCounterSubject.next(this.newMsgCounter += 1);
 
     } else if (socketData.message.type === 'update_message_flags'){
       // how many messages have been read
