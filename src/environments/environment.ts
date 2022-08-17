@@ -13,9 +13,11 @@ export const apiURL = 'https://192.168.0.';
 // export const port = '42';
 export const backendPort = ':2443';
 export const frontendPort = ':3443';
+// https://192.168.0.42:3443/
 
 export const backendProtocol = 'https://';
-export const domain = '65.20.69.213';
+// export const domain = '65.20.69.213';
+export const domain = '192.168.0.42';
 
 export const oonaBaseUrl = `${backendProtocol}${domain}${backendPort}`;
 

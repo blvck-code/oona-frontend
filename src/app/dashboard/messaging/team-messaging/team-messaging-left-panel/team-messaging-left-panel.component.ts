@@ -324,14 +324,14 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
     this.messagingService.allUnreadMshObserver.subscribe(
       unreadMessageCounter => {
-        this.unreads =+ unreadMessageCounter
-        console.log('Unread messages counter  ===>>>', unreadMessageCounter)
+        this.unreads =+ unreadMessageCounter;
+        console.log('Unread messages counter  ===>>>', unreadMessageCounter);
       }
-    )
+    );
 
     this.messagingService.unreadStreamObservable.subscribe(
       messagesArray => console.log('Unread messages array ===>>>>', messagesArray)
-    )
+    );
 
   }
 
