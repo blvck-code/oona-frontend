@@ -419,7 +419,7 @@ export class MessagingService {
               } else {
                 this.allUnreadMsg += 1;
                 this.filterUnreadStream(msg);
-                msg.flags.push('read');
+                // msg.flags.push('read');
               }
             }
           });

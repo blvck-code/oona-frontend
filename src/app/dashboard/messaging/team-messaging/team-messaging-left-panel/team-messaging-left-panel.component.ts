@@ -321,10 +321,18 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   }
 
   handleUnreadMessage(): void {
+
     this.messagingService.allUnreadMshObserver.subscribe(
-      unreadCount => console.log('Unread count total ====>>>>', unreadCount)
+      unreadMessageCounter => {
+        this.unreads =+ unreadMessageCounter
+        console.log('Unread messages counter  ===>>>', unreadMessageCounter)
+      }
     )
 
-    // console.log('Total unread messages ====>>', this.messagingService.allUnreadMsg)
+    this.messagingService.unreadStreamObservable.subscribe(
+      messagesArray => console.log('Unread messages array ===>>>>', messagesArray)
+    )
+
   }
+
 }
