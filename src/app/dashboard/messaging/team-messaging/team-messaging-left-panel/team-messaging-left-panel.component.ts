@@ -46,10 +46,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   streamIds!: any[];
   allTopics: any = [];
 
-  totalUnreadMsg: number = 0;
-  totalUnreadMsgSubject$ = new BehaviorSubject<number>(this.totalUnreadMsg);
-  totalUnreadMsgObservable = this.totalUnreadMsgSubject$.asObservable();
-
   unreadCount = [];
   unreadMessagesSubject = new BehaviorSubject(this.unreadCount);
   unreadMessagesObservable = this.unreadMessagesSubject.asObservable();
@@ -62,6 +58,9 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   privateUnreadMsgCounterSubject = new BehaviorSubject(this.privateUnreadMsgCounter);
   privateUnreadMsgCounterObservable = this.privateUnreadMsgCounterSubject.asObservable();
 
+  totalUnreadMsg: number = 0;
+  totalUnreadMsgSubject$ = new BehaviorSubject<number>(this.totalUnreadMsg);
+  totalUnreadMsgObservable = this.totalUnreadMsgSubject$.asObservable();
 
   constructor(
     public messagingService: MessagingService,
@@ -80,11 +79,11 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   }
 
   initPageHandler(): void {
-    // this.streamTopics();
-    this.getPrivateUnreadMsg();
-
     // handle All Unread Messages
     this.handleUnreadMessage();
+
+    // this.streamTopics();
+    this.handleSocketsNewMessage();
 
     // Fetch streams
     this.streams = this.store.select(getAllStreams);
@@ -227,10 +226,20 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     }
   }
 
-  getPrivateUnreadMsg(): void {
+  handleSocketsNewMessage(): void {
     this.userSocketService.allMsgCounterObservable.subscribe(
       newMessage => {
-        console.log('newMsgCounterSubject ====>>>', newMessage)
+        if(newMessage === 0) {
+          return
+        } else {
+          // update all messages counter
+          const newTotal = this.totalUnreadMsg += 1;
+          this.totalUnreadMsgSubject$.next(newTotal);
+
+          // update private messages counter
+          const newTotalPrivateMsg = this.privateUnreadMsgCounter += 1;
+          this.privateUnreadMsgCounterSubject.next(newTotalPrivateMsg);
+        }
       }
     );
   }

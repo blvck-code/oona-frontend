@@ -207,7 +207,6 @@ export class LandingMessageBoardComponent implements OnInit {
       })
     );
 
-    console.log('all messages ===>>>', allMessages);
   }
 
   sortMessages(): void {

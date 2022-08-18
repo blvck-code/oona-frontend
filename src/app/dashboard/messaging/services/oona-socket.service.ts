@@ -60,6 +60,8 @@ export class OonaSocketService {
   newMsgCounterSubject = new BehaviorSubject<number>(this.newMsgCounter);
   newMsgCounterObersvable = this.newMsgCounterSubject.asObservable();
 
+  newMessagesId: any[] = [];
+
   peopleType = Array();
   public typingStatus = Array();
   private typingStatusSocket = new BehaviorSubject(this.recognizedUsers);
@@ -101,14 +103,13 @@ export class OonaSocketService {
   }
 
   newMessageCounter(msg: SingleMessageModel): void {
-    const msgIds: any[] = [];
 
-    if(msgIds.includes(msg.id)){
+    if(this.newMessagesId.includes(msg.id)){
       return
     }
 
     this.allMsgCounterSubject.next(this.allMessagesCounter + 1);
-    msgIds.push(msg.id)
+    this.newMessagesId.push(msg.id)
   }
 
   connect(): void {
@@ -227,6 +228,8 @@ export class OonaSocketService {
 
   // Filter message types from the socket
   private setMessageType(socketData: any): void {
+    console.log('Unread message content from socket ===>>>', socketData);
+
     const currentUserId =  this.loggedInUserProfile?.user_id;
     const msgSenderId = socketData.message?.message?.sender_id;
 

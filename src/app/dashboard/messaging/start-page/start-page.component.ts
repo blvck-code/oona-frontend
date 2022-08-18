@@ -16,7 +16,6 @@ export class StartPageComponent implements OnInit {
   constructor(private store: Store<AppState>) {}
 
   onIniHandler(): void {
-    document.title = `All messages - ${firmName} - Oona`;
   }
 
   ngOnInit(): void {
