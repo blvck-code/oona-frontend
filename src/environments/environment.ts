@@ -66,6 +66,7 @@ export const environment = {
   oonaMemberProfileDetail: oonaBaseUrl + '/api/v1/accounts/user/?email=',
   filteredMeetings: oonaBaseUrl + '/api/v1/meet/meeting/dm/?host=',
   filteredAttendeeMeetings: oonaBaseUrl + '/api/v1/meet/meeting/dm/?attendees=',
+  updateMessageFlag: oonaBaseUrl + '/api/v1/message/flag',
 
   sendStreamMessageWithFileURL: oonaBaseUrl + '/api/v1/message/stream/file',
 

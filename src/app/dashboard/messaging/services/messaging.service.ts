@@ -19,6 +19,14 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../../../state/app.state';
 import {getAllUsers} from "../../../auth/state/auth.selectors";
 
+// export interface UnreadMessageModel {
+//   stream: string
+//   topic: string
+//   msgId: number[],
+//   counter: number[]
+// }
+
+
 export interface Message {
   author: string;
   message: string;
@@ -27,6 +35,7 @@ export interface Message {
 @Injectable({
   providedIn: 'root',
 })
+
 export class MessagingService {
   users = env.users;
   teams = env.teams;
@@ -133,9 +142,9 @@ export class MessagingService {
   private names = new BehaviorSubject(this.streamMemberNames);
   currentStreamMemberNames = this.names.asObservable();
 
-  allUnreadMsg: any[] = [];
-  allUnreadMsgSubject = new BehaviorSubject<any[]>(this.allUnreadMsg);
-  allUnreadMshObserver = this.allUnreadMsgSubject.asObservable();
+  allUnreadMsg: any = [];
+  allUnreadMsgSubject = new BehaviorSubject(this.allUnreadMsg);
+  allUnreadMsgObserver = this.allUnreadMsgSubject.asObservable();
 
   unreadCount = [];
   unreadMessagesSubject = new BehaviorSubject(this.unreadCount);
@@ -373,20 +382,27 @@ export class MessagingService {
     return this.http.get(this.streamTopic + streamId);
   }
 
+
+
   filterAllUnreadMsg(msg: SingleMessageModel): void {
-    const unreadMsgContent = {
+
+
+
+    const newUnreadMsg: { stream: any; topic: string; msgId: number } = {
       stream: msg.display_recipient,
       topic: msg.subject,
-      msgId: msg.id
+      msgId: msg.id,
     }
 
-    this.allUnreadMsg.push(unreadMsgContent)
+    this.allUnreadMsg.push(newUnreadMsg);
 
-    console.log('Array of unread messages ====>>>', this.allUnreadMsg);
+
   }
 
   handleUnreadMessage(): any {
     let totalUnreadMessages: number = 0;
+    let newArray: any = [];
+
     // get streams unread messages
     this.store.select(getAllStreams).subscribe(streams => {
       // console.log('Stream details ===>>>>', streams);
@@ -445,7 +461,8 @@ export class MessagingService {
                   totalUnreadMessages += 1;
                   this.totalUnreadMsgSubject$.next(totalUnreadMessages);
 
-                  this.filterAllUnreadMsg(msg);
+                  this.allUnreadMsg.push(msg);
+
                 }
               }
 
@@ -512,7 +529,8 @@ export class MessagingService {
                   totalUnreadMessages += 1;
                   this.totalUnreadMsgSubject$.next(totalUnreadMessages);
 
-                  this.filterAllUnreadMsg(msg);
+                  newArray.push(msg);
+                  this.allUnreadMsgSubject.next(newArray);
 
                 }
               }
@@ -521,7 +539,14 @@ export class MessagingService {
         );
       })
     })
+  }
 
+  updateReadMsgFlag(): void {
+    console.log('Updating flags')
+    this.http.post(env.updateMessageFlag,{
+      messages: [470, 471],
+      flags: 'read'
+    })
   }
 
   // handleUnreadMessage(): any {
