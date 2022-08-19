@@ -53,6 +53,18 @@ export class AllPrivateMessagingComponent implements OnInit {
 
   ngOnInit(): void {
     this.changeMessageCount();
+    this.handlePrivateUnread();
+  }
+
+  // Todo update this messages flad to read on component load
+  handlePrivateUnread(): void {
+    setTimeout(() => {
+      this.messagesService.privateUnreadMsgArrayObservable.subscribe(
+        messages => {
+          console.log('All private unread messages ==>>>', messages);
+        }
+      )
+    }, 500)
   }
 
   private changeMessageCount(): void {

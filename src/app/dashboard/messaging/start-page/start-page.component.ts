@@ -27,17 +27,21 @@ export class StartPageComponent implements OnInit {
   updateReadMessages(): void {
     let unreadMsgId: any[] = [];
 
-    this.messagingSrv.allUnreadMsgObserver
-      .subscribe((unreadMessages: SingleMessageModel[]) => {
+    console.log('we got  bug')
 
-        unreadMessages.map((msg: SingleMessageModel) => {
-          unreadMsgId.push(msg.id);
-          console.log('Unread messages ids ==>>>', msg)
-        })
-      });
+    setTimeout(() => {
+      this.messagingSrv.totalUnreadMsgObservable
+        .subscribe((unreadMessages: SingleMessageModel[]) => {
 
+          unreadMessages.map((msg: SingleMessageModel) => {
+            unreadMsgId.push(msg.id);
+            // console.log('All unread messages ===>>>', msg)
+          })
 
-    this.messagingSrv.updateReadMsgFlag();
+        });
+    }, 500)
+
+    // this.messagingSrv.updateReadMsgFlag();
 
   }
 

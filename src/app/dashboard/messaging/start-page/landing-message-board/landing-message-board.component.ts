@@ -20,6 +20,7 @@ import {
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { SingleChat, SingleMessageModel } from '../../models/messages.model';
 import { map, switchMap } from 'rxjs/operators';
+import {OonaSocketService} from "../../services/oona-socket.service";
 
 @Component({
   selector: 'app-landing-message-board',
@@ -43,12 +44,18 @@ export class LandingMessageBoardComponent implements OnInit {
 
   allMsgId: number[] = [];
   allStreamId: number[] = [];
+  socketsMsgIds: number[] = [];
+
+  privateMessages = Array();
+  privateMessagesSubject = new BehaviorSubject(this.privateMessages);
+  privateMessageObservable = this.privateMessagesSubject.asObservable();
 
   allMessages$!: Observable<any>;
 
   constructor(
     private messagingService: MessagingService,
     private change: ChangeDetectorRef,
+    private userSocketService: OonaSocketService,
     private store: Store<AppState>
   ) {
     this.allMemberTeams();
@@ -59,14 +66,16 @@ export class LandingMessageBoardComponent implements OnInit {
       this.getMessagesOfTeams();
     }, 1000);
     this.initPage();
-
-    this.tested();
   }
 
   // Init Page
   initPage(): void {
     this.getStreamMessage();
     // this.getPrivateMessages();
+
+    // updating UI with the latest messages
+    this.inComingMessage();
+    this.outGoingMsg();
 
     // get Loading Message
     this.loadingMessages = this.store.select(getLoadingAllMsg);
@@ -191,22 +200,41 @@ export class LandingMessageBoardComponent implements OnInit {
     this.sortMessages();
   }
 
-  tested(): void {
-    console.log('123 123 432')
-    const allStreamMessages$: Observable<SingleMessageModel[]> =
-      this.store.select(getAllStreamData);
-    const allPrivateMessages$: Observable<SingleMessageModel[]> =
-      this.store.select(getAllMessages);
+  inComingMessage(): void {
+    this.userSocketService.privateMessageCountSocket.subscribe((prvMsg) => {
+      prvMsg.map((msg) => {
+        if (this.socketsMsgIds.includes(msg.id)) {
+          return;
+        }
 
-    const allMessages: any = combineLatest(
-      allStreamMessages$,
-      allPrivateMessages$
-    ).pipe(
-      map(([streamMessage, privateMessage]) => {
-        return [...streamMessage, ...privateMessage];
-      })
-    );
+        this.socketsMsgIds.push(msg.id);
+        console.log('Incoming message from another person ===>>>', msg);
+        this.dateSortedPrivateMessages.push(msg);
+        // this.change.detectChanges();
+        // this.scrollBottom();
+      });
+    });
+  }
 
+  outGoingMsg(): void {
+    this.userSocketService.myMessagesSocketSubject.subscribe((msg: any) => {
+      console.log('My sent outgoing message content ===>>>', msg);
+
+      this.privateMessagesSubject.subscribe((messages) => {
+        console.log('Private messages content ===>>>', messages);
+
+        if (this.socketsMsgIds.includes(msg.id)) {
+          return;
+        }
+
+        if (!msg.id) {
+          return;
+        }
+
+        this.socketsMsgIds.push(msg.id);
+        this.dateSortedPrivateMessages.push(msg);
+      });
+    });
   }
 
   sortMessages(): void {

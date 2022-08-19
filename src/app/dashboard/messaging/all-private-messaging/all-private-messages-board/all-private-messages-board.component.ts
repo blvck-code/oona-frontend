@@ -235,10 +235,6 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
 
   inComingMessage(): void {
     this.userSocketService.privateMessageCountSocket.subscribe((prvMsg) => {
-      console.log(
-        'Unread messages for particular user dm ===>>>',
-        prvMsg.length
-      );
       prvMsg.map((msg) => {
         if (this.messagesId.includes(msg.id)) {
           return;
