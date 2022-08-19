@@ -403,6 +403,7 @@ export class MessagingService {
     let newArray: any = [];
 
     const privateMsgArray: SingleMessageModel[] = [];
+    const streamMsgArray: SingleMessageModel[] = [];
 
     // get streams unread messages
     this.store.select(getAllStreams).subscribe(streams => {
@@ -460,7 +461,9 @@ export class MessagingService {
                   const newTotal = this.totalUnreadMsgCounter += 1;
                   this.totalUnreadMsgCounterSubject$.next(newTotal);
 
+                  streamMsgArray.push(msg);
                   this.totalUnreadMsgArray.push(msg);
+                  this.streamsUnreadMsgArraySubject.next(streamMsgArray)
 
                 }
               }
@@ -549,13 +552,18 @@ export class MessagingService {
     this.privateUnreadMsgArraySubject.next(newArray)
   }
 
-  updateReadMsgFlag(): void {
-    this.http.post(env.updateMessageFlag,{
-      messages: [497],
-      op: 'add',
-      flags: 'read'
-    })
+
+  updateReadMessagesFlags(unreadMsgIds: number[]): Observable<any> {
+      return this.http.post(
+        env.updateMessageFlag,
+  {
+          messages: unreadMsgIds,
+          op: 'add',
+          flag: 'read'
+        }
+      )
   }
+
 
   // filterAllUnreadMsg(msg: SingleMessageModel): void {
   //

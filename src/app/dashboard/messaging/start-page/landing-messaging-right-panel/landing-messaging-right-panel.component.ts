@@ -38,7 +38,7 @@ export class LandingMessagingRightPanelComponent implements OnInit {
 
   listedUsersArray: any[] = [];
 
-  newMsgUsersId: number[] = [];
+  // newMsgUsersId: number[] = [];
   endPointUnreadId: number[] = [];
 
   constructor(
@@ -121,7 +121,7 @@ export class LandingMessagingRightPanelComponent implements OnInit {
 
     this.store.dispatch(new authActions.SetSelectedUser(member));
 
-    this.newMsgUsersId.filter((id) => id === member.user_id);
+    this.endPointUnreadId.filter((id) => id === member.user_id);
 
   }
 
@@ -235,7 +235,7 @@ export class LandingMessagingRightPanelComponent implements OnInit {
       );
       prvMsg.map((msg) => {
         console.log('Unread messages ===>>>', msg);
-        this.newMsgUsersId.push(msg.sender_id);
+        this.endPointUnreadId.push(msg.sender_id);
         // if (this.messagesId.includes(msg.id)){
         //   return;
         // }

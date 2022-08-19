@@ -20,7 +20,7 @@ import {
 import { SingleMessageModel } from '../models/messages.model';
 import * as messagingActions from '../state/messaging.actions';
 import { firmName } from '../../../../environments/environment';
-import { map } from 'rxjs/operators';
+import {map, take} from 'rxjs/operators';
 import { MessagingService } from '../services/messaging.service';
 import {HandleStreamData} from '../state/messaging.actions';
 import {OonaSocketService} from '../services/oona-socket.service';
@@ -37,6 +37,8 @@ export class StreamsComponent implements OnInit, AfterViewInit {
   public streamSelected = this.streamSubject.asObservable();
   streamInfo: any;
 
+  selectedStreamId: any;
+
   public titleSubject = new BehaviorSubject<string>('');
   public titleSelected = this.titleSubject.asObservable();
   initialMessageCount = 10;
@@ -45,10 +47,15 @@ export class StreamsComponent implements OnInit, AfterViewInit {
   streamName = '';
   privateMessages = Array();
 
+  unreadStreamMsgIds: number[] = [];
+  unreadStreamMsgSubject = new BehaviorSubject<number[]>(this.unreadStreamMsgIds);
+  unreadStreamMsgObservable = this.unreadStreamMsgSubject.asObservable();
+
   constructor(
     private router: Router,
     private store: Store<AppState>,
     private activateRoute: ActivatedRoute,
+    private messageSrv: MessagingService,
   ) {
     // @ts-ignore
     this.router.events.subscribe((event: Event) => {
@@ -98,6 +105,16 @@ export class StreamsComponent implements OnInit, AfterViewInit {
     });
   }
 
+  getRouteDetails(): any {
+    this.activateRoute.params.subscribe((params: any) => {
+      const streamDetail = params['stream'];
+
+      this.selectedStreamId = streamDetail?.split('-')[0];
+      const streamName = streamDetail?.split('-')[1];
+
+    })
+  }
+
   changeOnRouter(): void {
     this.router.events.subscribe((event: any) => {
       if (event instanceof NavigationEnd) {
@@ -106,6 +123,10 @@ export class StreamsComponent implements OnInit, AfterViewInit {
 
         const streamId = route.get('stream')?.split('-')[0];
         const currentStream = route.get('stream')?.split('-')[1];
+
+        console.log('Selected stream id', streamId)
+
+        this.selectedStreamId = streamId;
 
         const topic = route.get('topic');
 
@@ -117,7 +138,6 @@ export class StreamsComponent implements OnInit, AfterViewInit {
 
         this.streamInfo = streamData;
 
-        console.log('streamInfo ===>>>', streamData);
       }
     });
   }
@@ -129,12 +149,47 @@ export class StreamsComponent implements OnInit, AfterViewInit {
 
     this.changeOnRouter();
     this.getStreamsMessages();
+    // get Unread messages
+    this.getUnreadStreamMessage();
+    // get activated route details
+    this.getRouteDetails();
+  }
+
+  getUnreadStreamMessage(): void {
+    const newArray: number[] = []
+    take(1)
+    this.messageSrv.streamsUnreadMsgArrayObservable
+      .subscribe(
+        (messages: SingleMessageModel[]) => messages?.map(
+          (message: SingleMessageModel) => {
+
+            if(+message.stream_id === +this.selectedStreamId){
+
+              if(this.unreadStreamMsgIds.includes(message.id)){
+                return
+              }
+                newArray.push(message.id);
+                this.unreadStreamMsgIds.push(message.id);
+                this.unreadStreamMsgSubject.next(newArray);
+            }
+          }
+        )
+      );
+
+    // this.messageSrv.updateReadMessagesFlags(this.unreadStreamMsgObservable)
+    setTimeout(() => {
+      this.messageSrv.updateReadMessagesFlags(this.unreadStreamMsgIds)
+    }, 500)
+
+
+  }
+
+  removeUnreadMessages(): any{
+
   }
 
   getStreamsMessages(): void {
     const route = this.activateRoute.snapshot.paramMap;
-
-    console.log('New route ===>>>', route);
 
     const streamId = route.get('stream')?.split('-')[0];
     const currentStream = route.get('stream')?.split('-')[1];
@@ -149,8 +204,6 @@ export class StreamsComponent implements OnInit, AfterViewInit {
         },
       ],
     };
-
-    console.log('streamDetail ===>>>', streamDetail);
 
     this.store.dispatch(new messagingActions.LoadPrivateMessages(streamDetail));
   }
