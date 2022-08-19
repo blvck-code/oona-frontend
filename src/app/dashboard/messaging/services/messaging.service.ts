@@ -554,6 +554,13 @@ export class MessagingService {
 
 
   updateReadMessagesFlags(unreadMsgIds: number[]): Observable<any> {
+
+    const messageAfter = unreadMsgIds.map(message => {
+      this.streamsUnreadMsgArray.filter(streamMessage => streamMessage.id = message)
+    })
+
+    this.streamsUnreadMsgArraySubject.next(messageAfter);
+
       return this.http.post(
         env.updateMessageFlag,
   {
@@ -564,20 +571,5 @@ export class MessagingService {
       )
   }
 
-
-  // filterAllUnreadMsg(msg: SingleMessageModel): void {
-  //
-  //
-  //
-  //   const newUnreadMsg: { stream: any; topic: string; msgId: number } = {
-  //     stream: msg.display_recipient,
-  //     topic: msg.subject,
-  //     msgId: msg.id,
-  //   }
-  //
-  //   this.allUnreadMsg.push(newUnreadMsg);
-  //
-  //
-  // }
 
 }

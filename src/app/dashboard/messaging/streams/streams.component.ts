@@ -181,11 +181,6 @@ export class StreamsComponent implements OnInit, AfterViewInit {
       this.messageSrv.updateReadMessagesFlags(this.unreadStreamMsgIds)
     }, 500)
 
-
-  }
-
-  removeUnreadMessages(): any{
-
   }
 
   getStreamsMessages(): void {
