@@ -554,6 +554,7 @@ export class MessagingService {
 
 
   updateReadMessagesFlags(unreadMsgIds: number[]): Observable<any> {
+    console.log('Messages to be update ====>>>', unreadMsgIds);
 
     const messageAfter = unreadMsgIds.map(message => {
       this.streamsUnreadMsgArray.filter(streamMessage => streamMessage.id = message)

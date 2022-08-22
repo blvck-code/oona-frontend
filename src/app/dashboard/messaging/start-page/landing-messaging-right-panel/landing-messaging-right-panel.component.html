@@ -95,7 +95,7 @@
               <div class="member-name">
                 <span>{{ member?.full_name }}</span>
                 <span *ngIf="endPointUnreadId.includes(member.user_id) && !member.typing" class="new-message">New message</span>
-                <span *ngIf="member.typing" class="typing">Typing...</span>
+                <span *ngIf="member.typing" class="typing">typing...</span>
               </div>
               <span
                 *ngIf="member.role === 100 || member.role === 200"

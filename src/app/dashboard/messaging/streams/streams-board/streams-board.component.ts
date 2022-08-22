@@ -68,7 +68,7 @@ export class StreamsBoardComponent implements OnInit {
 
   ngOnInit(): void {
     this.onInitHandler();
-    this.getStreamData();
+    this.getRouteDetails();
     this.handleRouterChange();
   }
 
@@ -76,7 +76,7 @@ export class StreamsBoardComponent implements OnInit {
     // @ts-ignore
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd) {
-        this.getStreamData();
+        this.getRouteDetails();
       }
     });
   }
@@ -111,6 +111,37 @@ export class StreamsBoardComponent implements OnInit {
     );
   }
 
+  getRouteDetails(): any {
+    this.activateRoute.params.subscribe((params: any) => {
+      const streamDetail = params['stream'];
+
+
+      this.selectedStreamId = streamDetail?.split('-')[0];
+      const streamName = streamDetail?.split('-')[1];
+      const topicInfo = params['topic']?.replace('-', ' ');
+
+
+      if (topicInfo) {
+        this.store.select(getAllStreamData).subscribe(
+          (data: SingleMessageModel[]) => {
+            const topicData = data?.filter((message: SingleMessageModel) => message?.subject.toLowerCase() === topicInfo.toLowerCase());
+            this.streamMsg.push(...topicData);
+          }
+        )
+      } else {
+        this.store.select(getAllStreamData).subscribe(
+          (data: SingleMessageModel[]) => {
+            const streamData = data?.filter((message: SingleMessageModel) => message?.display_recipient.toLowerCase() === streamName.toLowerCase());
+            this.streamMsg.push(...streamData);
+          }
+        )
+      }
+
+      this.sortMessages();
+    })
+  }
+
+
   inComingMessage(): void {
     this.oonaSocket.streamMessageCountSocket.subscribe(
       streamData => {
@@ -121,8 +152,6 @@ export class StreamsBoardComponent implements OnInit {
             if (this.messagesId.includes(+newMessage.id)){
               return;
             }
-
-            console.log('New message content ===>>>', newMessage);
             this.streamMsg = [...this.dateSortedPrivateMessages, newMessage];
             this.messagesId.push(newMessage.id);
             this.sortMessages();
