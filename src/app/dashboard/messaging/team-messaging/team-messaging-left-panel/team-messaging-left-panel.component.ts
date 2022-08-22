@@ -14,9 +14,9 @@ import { getAllStreams, getTopics} from '../../state/messaging.selectors';
 import {AllStreamsModel} from '../../models/streams.model';
 import {take} from 'rxjs/operators';
 import {ChannelSettingsComponent} from '../channel-settings/channel-settings.component';
-import {SingleMessageModel} from "../../models/messages.model";
-import {getAllUsers} from "../../../../auth/state/auth.selectors";
-import {Title} from "@angular/platform-browser";
+import {SingleMessageModel} from '../../models/messages.model';
+import {getAllUsers} from '../../../../auth/state/auth.selectors';
+import {Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-team-messaging-left-panel',
@@ -47,19 +47,21 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   streamIds!: any[];
   allTopics: any = [];
 
+  urlUnreadMsgIds: any = [];
+
   unreadCount = [];
   unreadMessagesSubject = new BehaviorSubject(this.unreadCount);
   unreadMessagesObservable = this.unreadMessagesSubject.asObservable();
 
-  streamsUnreadMsgCounter: number = 0;
+  streamsUnreadMsgCounter = 0;
   streamsUnreadMsgCounterSubject = new BehaviorSubject(this.streamsUnreadMsgCounter);
   streamsUnreadMsgCounterObservable = this.streamsUnreadMsgCounterSubject.asObservable();
 
-  privateUnreadMsgCounter: number = 0;
+  privateUnreadMsgCounter = 0;
   privateUnreadMsgCounterSubject = new BehaviorSubject(this.privateUnreadMsgCounter);
   privateUnreadMsgCounterObservable = this.privateUnreadMsgCounterSubject.asObservable();
 
-  totalUnreadMsg: number = 0;
+  totalUnreadMsg = 0;
   totalUnreadMsgSubject$ = new BehaviorSubject<number>(this.totalUnreadMsg);
   totalUnreadMsgObservable = this.totalUnreadMsgSubject$.asObservable();
 
@@ -77,7 +79,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   ngOnInit(): void {
     // fire on page load handler
     this.initPageHandler();
-
   }
 
   initPageHandler(): void {
@@ -234,8 +235,8 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   handleSocketsNewMessage(): void {
     this.userSocketService.allMsgCounterObservable.subscribe(
       newMessage => {
-        if(newMessage === 0) {
-          return
+        if (newMessage === 0) {
+          return;
         } else {
           // update all messages counter
           const newTotal = this.totalUnreadMsg += 1;
@@ -381,20 +382,48 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
             });
           }
         );
+      });
+    });
+
+  }
+
+  handleUnreadMsgCounter(): void {
+
+    this.messagingService.streamsUnreadMsgArrayObservable.subscribe(
+      unread => unread?.map((message: SingleMessageModel) => {
+
+
+        this.allTopics.map((data: any) => {
+
+          console.log('Current content ===>>', data);
+          // if (message.stream_id !== data.stream_id) {
+          //   data.counter += 1;
+          //   newArray.push(data);
+          //   console.log('Single message ==>>', data);
+          // } else {
+          //   data.counter = 1;
+          //   newArray.push(data);
+          // }
+
+        });
+
       })
-    })
+    );
+
+
+
   }
 
   showNotificationCounter(): void {
     this.totalUnreadMsgObservable.subscribe(
       total => {
-        if(total > 0) {
+        if (total > 0) {
           this.titleService.setTitle(`(${total}) - AVL - Oona`);
         } else {
           this.titleService.setTitle(`AVL - Oona`);
         }
       }
-    )
+    );
   }
 
   // Todo filter unread messages here to update on ui
@@ -403,7 +432,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
       stream: msg.display_recipient,
       topic: msg.subject,
       msgId: msg.id
-    }
+    };
     console.log('Total unread messages ====>>>>>');
   }
 

@@ -165,17 +165,18 @@ export class StreamsComponent implements OnInit, AfterViewInit {
     console.log('All stream unread messages ===>>>', this.unreadStreamMsgIds);
 
     // this.messageSrv.updateReadMessagesFlags(this.unreadStreamMsgObservable)
-    setTimeout(() => {
-      this.messageSrv
-        .updateReadMessagesFlags(this.unreadStreamMsgIds)
-        .subscribe((response) => {
-          if (response.result === 'success') {
-            this.messageSrv.handleUnreadMessage().subscribe(
-              (response: any) => console.log('Updated flags successfully ===>>>', response)
-            );
-          }
-        });
-    }, 500);
+    // Todo uncomment this later on
+    // setTimeout(() => {
+    //   this.messageSrv
+    //     .updateReadMessagesFlags(this.unreadStreamMsgIds)
+    //     .subscribe((response) => {
+    //       if (response.result === 'success') {
+    //         this.messageSrv.handleUnreadMessage().subscribe(
+    //           (response: any) => console.log('Updated flags successfully ===>>>', response)
+    //         );
+    //       }
+    //     });
+    // }, 500);
   }
 
   getStreamsMessages(): void {
