@@ -554,23 +554,18 @@ export class MessagingService {
 
 
   updateReadMessagesFlags(unreadMsgIds: number[]): Observable<any> {
-    console.log('Messages to be update ====>>>', unreadMsgIds);
 
-    const messageAfter = unreadMsgIds.map(message => {
-      this.streamsUnreadMsgArray.filter(streamMessage => streamMessage.id = message)
-    })
+    const request = {
+      messages: unreadMsgIds,
+      op: 'add',
+      flag: 'read'
+    }
 
-    this.streamsUnreadMsgArraySubject.next(messageAfter);
+    console.log('Request content ===>>', request)
 
-      return this.http.post(
-        env.updateMessageFlag,
-  {
-          messages: unreadMsgIds,
-          op: 'add',
-          flag: 'read'
-        }
-      )
+    return this.http.post(env.updateMessageFlag, request, this.authService.getToken())
   }
+
 
 
 }

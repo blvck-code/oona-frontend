@@ -102,6 +102,7 @@ export class StreamsComponent implements OnInit, AfterViewInit {
         // Hide progress spinner or progress bar
       }
     });
+    this.changeOnRouter();
   }
 
   changeOnRouter(): void {
@@ -144,20 +145,18 @@ export class StreamsComponent implements OnInit, AfterViewInit {
   }
 
   getUnreadStreamMessage(): void {
+
     const newArray: number[] = []
-    take(1)
     this.messageSrv.streamsUnreadMsgArrayObservable
       .subscribe(
         (messages: SingleMessageModel[]) => messages?.map(
           (message: SingleMessageModel) => {
-
             if(+message.stream_id === +this.selectedStreamId){
 
               if(this.unreadStreamMsgIds.includes(message.id)){
                 return
               }
                 newArray.push(message.id);
-              console.log('Messages ids ===>>>', message.id);
                 this.unreadStreamMsgIds.push(message.id);
                 this.unreadStreamMsgSubject.next(newArray);
             }
@@ -169,7 +168,13 @@ export class StreamsComponent implements OnInit, AfterViewInit {
 
     // this.messageSrv.updateReadMessagesFlags(this.unreadStreamMsgObservable)
     setTimeout(() => {
-      this.messageSrv.updateReadMessagesFlags(this.unreadStreamMsgIds)
+      this.messageSrv.updateReadMessagesFlags(this.unreadStreamMsgIds).subscribe(
+        response => {
+          if(response.result === 'success'){
+            this.messageSrv.handleUnreadMessage();
+          }
+        }
+      )
     }, 500)
 
   }
