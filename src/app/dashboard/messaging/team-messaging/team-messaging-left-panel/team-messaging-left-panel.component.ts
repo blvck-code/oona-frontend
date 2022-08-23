@@ -47,7 +47,8 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   streamIds!: any[];
   allTopics: any = [];
 
-  urlUnreadMsgIds: any = [];
+  listedStreamArray: any = [];
+  streamUnreadCounter: any[] = [];
 
   unreadCount = [];
   unreadMessagesSubject = new BehaviorSubject(this.unreadCount);
@@ -112,11 +113,25 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
                     topics: topicData,
                   };
                   this.allTopics = [...this.allTopics, stream];
+
+                  const streamDetail = {
+                    stream_id: stream.stream_id,
+                    name: stream.name,
+                    topics: [{
+                      topic_name: stream?.topics.zulip.topics
+                    }]
+                  }
+
+
+                  console.log(streamDetail)
+                  console.log(stream)
+                  this.listedStreamArray.push(stream);
                   this.change.detectChanges();
                 }
               }
             );
         });
+      this.handleUnreadMsgCounter();
     });
 
     // Get Topics from store
@@ -134,6 +149,8 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.messagingService.currentUserProfile().subscribe((profile: any) => {
       this.loggedInUserProfile = profile;
     });
+
+    // handle unread stream message counter
   }
 
   listAllTeams(): any {
@@ -392,20 +409,19 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.messagingService.streamsUnreadMsgArrayObservable.subscribe(
       unread => unread?.map((message: SingleMessageModel) => {
 
+        setTimeout(() => {
+          this.allTopics.map((item: any) => {
 
-        this.allTopics.map((data: any) => {
+            if (item.stream_id === message.stream_id) {
 
-          console.log('Current content ===>>', data);
-          // if (message.stream_id !== data.stream_id) {
-          //   data.counter += 1;
-          //   newArray.push(data);
-          //   console.log('Single message ==>>', data);
-          // } else {
-          //   data.counter = 1;
-          //   newArray.push(data);
-          // }
 
-        });
+              // console.log('Message of this category found ===>>>', message)
+            }
+
+
+
+          })
+        }, 1000)
 
       })
     );
