@@ -63,11 +63,12 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   streamMessages = Array();
   streams!: Observable<AllStreamsModel[]>;
   topics!: Observable<any>;
-  streamIds!: any[];
   allTopics: any = [];
 
   listedStreamArray: any = [];
+
   streamArray:streamArray[] = [];
+  streamIds: number[] = [];
 
   streamUnreadCounter: any[] = [];
   finalStream: any[] = [];
@@ -136,34 +137,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
               (topicData: any) => {
                 this.newTopicsArray = [];
                 const topicId = topicData?.oz?.stream_id;
-                const topicsArray = topicData.zulip.topics;
-
-                let topicArray = [];
-
-                // console.log('stream before ==>', this.streamArray);
-
-                // if(topicId === streamId){
-                //   topicsArray.forEach((topic: any) => {
-                //
-                //     const topicDetail: topicDetails = {
-                //       topic_name: topic.name,
-                //       max_id: topic.max_id,
-                //       count: 0
-                //     }
-                //
-                //     this.newTopicsArray.push(topicDetail);
-                //
-                //   })
-                //   // console.log('stream after ==>', this.newTopicsArray);
-                //
-                //   const streamDetail: streamArray = {
-                //     stream_id: stream.stream_id,
-                //     stream_name: stream.name,
-                //     count: 0,
-                //     topics: this.newTopicsArray
-                //   }
-                //
-                // }
 
                 if (topicId === streamId) {
                   stream = {
@@ -171,7 +144,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
                     topics: topicData,
                   };
                   this.allTopics = [...this.allTopics, stream];
-
 
                   const streamContent = {
                     stream_id: stream.stream_id,
@@ -182,10 +154,15 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
                     counter: 0
                   }
 
-
                   this.streamUnreadCounter.push(streamContent);
 
-                  this.listedStreamArray.push(stream);
+                  if(this.streamIds.includes(stream.stream_id)) {
+                    return
+                  } else {
+                    this.listedStreamArray.push(stream);
+                    this.streamIds.push(stream.stream_id)
+                  }
+
                   this.change.detectChanges();
                 }
               }
@@ -517,13 +494,8 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
                     topic.unread = 0;
                   }
                 })
-
-
               })
-
             }
-
-            // console.log('Unread message ====>>>', unreadStream)
           }
         })
 
