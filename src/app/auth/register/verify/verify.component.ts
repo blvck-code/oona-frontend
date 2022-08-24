@@ -44,7 +44,7 @@ export class VerifyComponent implements OnInit {
         },
         (verifyErr: any) => {
           this.verificationError = true;
-          console.log('verifyErr: ', verifyErr);
+          // console.log('verifyErr: ', verifyErr);
           if (verifyErr.message === 'Invalid or expired verification token.') {
             this.verificationServerError = 'The verification code is Invalid or Expired.';
           } else if (verifyErr.message === 'User not found.') {

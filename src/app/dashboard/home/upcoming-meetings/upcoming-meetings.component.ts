@@ -182,7 +182,7 @@ export class UpcomingMeetingsComponent implements OnInit, AfterViewInit {
         },
         (meetingsError: any) => {
           this.areMeetingsLoading = false;
-          console.log('Meetings Error', meetingsError);
+          // console.log('Meetings Error', meetingsError);
         }
       );
   }
@@ -506,7 +506,7 @@ export class UpcomingMeetingsComponent implements OnInit, AfterViewInit {
           this.ngOnInit();
         },
         (editMeetingErr: any) => {
-          console.log('edit Meeting Error', editMeetingErr);
+          // console.log('edit Meeting Error', editMeetingErr);
         }
       );
   }

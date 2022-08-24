@@ -24,6 +24,7 @@ import {map, take} from 'rxjs/operators';
 import { NotificationService } from '../../../../shared/services/notification.service';
 import { numbers } from '@material/dialog/constants';
 import { getAllMessages } from '../../state/messaging.selectors';
+import {log} from "util";
 
 const turndownService = new TurndownService();
 
@@ -61,6 +62,14 @@ export class IndividualMessagingBoardComponent implements OnInit {
   );
   messagesObserver = this.messagesSubject$.asObservable();
 
+  unreadMessages: SingleMessageModel[] = [];
+  unreadMessagesSubject = new BehaviorSubject<SingleMessageModel[]>(this.unreadMessages);
+  unreadMessagesObservable = this.unreadMessagesSubject.asObservable();
+
+  unreadMessagesId: number[] = [];
+  unreadMessagesIdSubject = new BehaviorSubject<number[]>(this.unreadMessagesId);
+  unreadMessagesIdObservable = this.unreadMessagesIdSubject.asObservable()
+
   messagesId: number[] = [];
 
   @ViewChild('endPrivateChat') endPrivateChat: ElementRef | undefined;
@@ -70,7 +79,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.changeContentOnRouteChange();
     this.inComingMessage();
     this.resetDmUnreads();
-    this.getPrivateMessageFromStore();
+    // this.getPrivateMessageFromStore();
 
     this.messagingService.currentMemberChatDetail.subscribe((member) => {
       this.memberDetail = member;
@@ -82,7 +91,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
     // always get the current value
     this.userSocketService.messageCount.subscribe((messages) => {
-      console.log('Sockets finally works ===>>>', messages);
       if (this.newMessagesCount !== messages) {
         this.newMessagesCount = messages;
       }
@@ -152,12 +160,12 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
       this.messagingService.getMessagesOfStream(streamDetail).subscribe(
         (response: any) => {
-          this.messagesWithPerson = response?.zulip?.messages;
-          console.log('Message content ===>>>', response.zulip.messages);
+          const messages = response.zulip.messages;
+          this.messagesWithPerson = messages;
+          this.messagesSubject$.next(messages);
           this.updateMessageId();
-          this.messagesSubject$.next(response?.zulip.messages);
-
           this.change.detectChanges();
+          this.handleUnreadMessages();
         },
         (error: any) => {
           console.log('Get Messages Error ===>>', error);
@@ -170,6 +178,43 @@ export class IndividualMessagingBoardComponent implements OnInit {
     }
 
     this.scrollBottom();
+  }
+
+  handleUnreadMessages(): void {
+    const unreadMsgArray: any[] = [];
+    const unreadMsgId: any[] = [];
+    const userId = this.operand.user_id;
+
+    this.messagesSubject$.subscribe((messages: SingleMessageModel[]) => {
+      messages.map((message: SingleMessageModel) => {
+
+
+        if(+message.sender_id === +userId){
+
+          if(message.flags.includes('read')){
+            return
+          } else {
+            unreadMsgArray.push(message);
+            unreadMsgId.push(message.id)
+          }
+          this.unreadMessagesSubject.next(unreadMsgArray);
+          this.unreadMessagesIdSubject.next(unreadMsgId);
+          this.updateReadMessages();
+        }
+      })
+    })
+  }
+
+
+  updateReadMessages(): void {
+    // update private messages to read
+    this.unreadMessagesIdObservable.subscribe((id: number[]) => {
+      if(id.length) {
+        this.messagingService.updateReadMessagesFlags('private', id).subscribe((response: any) => {
+          console.log('Updates successfully', response)
+        })
+      }
+    })
   }
 
   privateMessages(): void {
@@ -189,8 +234,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
     this.messagingService.getMessagesOfStream(streamDetail).subscribe(
       (response: any) => {
-        console.log('Individual messages ===>>>', response);
-        // this.messagesSubject$.next(response?.zulip?.messages);
+        // console.log('Individual messages ===>>>', response);
         this.loading = false;
 
         this.scrollBottom();
@@ -209,6 +253,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
       this.messagesId.push(message.id)
     );
   }
+
 
   inComingMessage(): void {
     this.userSocketService.privateMessageCountSocket.subscribe((prvMsg) => {
@@ -407,9 +452,10 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.store
       .select(getAllMessages)
       .subscribe((messages: SingleMessageModel[]) => {
-        const msgs = messages?.filter(
+        const msgs = messages?.find(
           (message) => +message.sender_id === +this.selectedUserId
         );
+
       });
   }
 

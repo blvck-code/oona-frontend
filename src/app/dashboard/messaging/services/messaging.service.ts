@@ -169,7 +169,7 @@ export class MessagingService {
       .connect(messageChannelURL)
       .map((response: MessageEvent): any => {
         const data = JSON.parse(response.data);
-        console.log('Received message ===>>>', data);
+        // console.log('Received message ===>>>', data);
 
         return {
           author: data.author,
@@ -554,14 +554,35 @@ export class MessagingService {
     this.privateUnreadMsgArraySubject.next(newArray);
   }
 
-  updateReadMessagesFlags(unreadMsgIds: number[]): Observable<any> {
+  updateReadMessagesFlags(messageType: string, unreadMsgIds: number[]): Observable<any> {
+
+    this.privateUnreadMsgArrayObservable.subscribe((messages: SingleMessageModel[]) => {
+
+      unreadMsgIds.map((id: number) => {
+
+        const newMessages = messages.filter((message: SingleMessageModel) => message.id !== id);
+
+        console.log(newMessages)
+
+      })
+
+      // messages.map((message: SingleMessageModel) => {
+      //
+      //
+      //
+      //
+      // })
+      //
+      // console.log('Private messages ===>>>', messages)
+    })
+
+
     const request = {
       messages: unreadMsgIds,
       op: 'add',
       flag: 'read',
     };
 
-    console.log('Request content ===>>', request);
 
     return this.http.post(
       env.updateMessageFlag,
@@ -569,3 +590,4 @@ export class MessagingService {
     );
   }
 }
+

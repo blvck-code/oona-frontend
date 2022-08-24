@@ -45,17 +45,17 @@ export class MessagesSocketService {
     const url: string = env.messageChannel;
     const messageChannelURL = protocol + url;
 
-    console.log('userChannel URL ===>>>', messageChannelURL);
+    // console.log('userChannel URL ===>>>', messageChannelURL);
 
     this.websocket = new WebSocket(messageChannelURL, this.authService.getToken());
-    console.log('Messages sockets successfully connected: ', messageChannelURL);
+    // console.log('Messages sockets successfully connected: ', messageChannelURL);
 
   }
 
   public connect(url: string): Rx.Subject<MessageEvent> {
     if (!this.subject) {
       this.subject = this.create(url);
-      console.log('Messages sockets successfully connected: ', url);
+      // console.log('Messages sockets successfully connected: ', url);
     }
     return this.subject;
   }
@@ -73,7 +73,7 @@ export class MessagesSocketService {
     const observer = {
       next: (data: object) => {
         if (ws.readyState === WebSocket.OPEN) {
-          console.log('Sending data ===>>>', JSON.stringify(data));
+          // console.log('Sending data ===>>>', JSON.stringify(data));
           ws.send(JSON.stringify(data));
         }
       }
@@ -90,7 +90,7 @@ export class MessagesSocketService {
     // console.log('message connected');
     if (!this.subject){
       this.subject = this.create(msgUrl);
-      console.log('Successfully connected ===>>' + msgUrl);
+      // console.log('Successfully connected ===>>' + msgUrl);
     }
     return this.subject;
   }

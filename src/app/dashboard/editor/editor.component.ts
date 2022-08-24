@@ -53,9 +53,9 @@ export class EditorComponent implements OnInit, OnDestroy {
     private msgSocket: MessagesSocketService,
   ) {
     this.messagingService.messages.subscribe(msg => {
-      console.log('Response from websocket from server ===>>>', msg);
+      // console.log('Response from websocket from server ===>>>', msg);
     });
-    console.log('activeChat: ', this.activeChat);
+    // console.log('activeChat: ', this.activeChat);
   }
 
   // @ts-ignore
@@ -83,7 +83,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     this.store.select(getReceiverInfo).subscribe(
       (data: SingleChat) => {
         this.receiverInfo = data;
-        console.log('Receiver data: ', data);
+        // console.log('Receiver data: ', data);
 
         if (data?.subject) {
           this.defaultStream = `${data?.display_recipient} > ${data?.subject}`;

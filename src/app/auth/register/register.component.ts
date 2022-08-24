@@ -50,7 +50,7 @@ export class RegisterComponent implements OnInit {
           this.loading = false;
         },
         (signupError: any) => {
-          console.log('Register error: ', signupError);
+          // console.log('Register error: ', signupError);
           this.loading = false;
           this.signupError = true;
           if (signupError.message === 'User with this email already exists.') {

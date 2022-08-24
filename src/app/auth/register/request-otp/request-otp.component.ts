@@ -43,7 +43,7 @@ export class RequestOtpComponent implements OnInit {
         },
         (requestOTPErr: any) => {
           this.requestOTPError = true;
-          console.log('Request OTP Error', requestOTPErr);
+          // console.log('Request OTP Error', requestOTPErr);
           if (requestOTPErr.error.error === 'Invalid or expired verification token.') {
             this.requestOTPEServerError = 'The verification code is Invalid or Expired.';
           } else if (requestOTPErr.error.error === 'User not found.') {

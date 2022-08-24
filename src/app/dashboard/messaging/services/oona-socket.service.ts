@@ -108,7 +108,7 @@ export class OonaSocketService {
       return
     }
 
-    console.log('New message item ===>>>', msg)
+    // console.log('New message item ===>>>', msg)
 
     this.allMsgCounterSubject.next(this.allMessagesCounter + 1);
     this.newMessagesId.push(msg.id)

@@ -52,7 +52,7 @@ export class IndividualChatCardComponent implements OnInit, DoCheck {
     // this.isVisible = this.element.nativeElement.offsetParent !== null;
   }
 
-  handleReply(message: any): void {
-    console.log('Message content ===>>>', message);
-  }
+  // handleReply(message: any): void {
+  //   console.log('Message content ===>>>', message);
+  // }
 }

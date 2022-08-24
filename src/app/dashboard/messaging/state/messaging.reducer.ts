@@ -96,7 +96,7 @@ const sortMsg = (payload: any) => {
   const messages = payload.zulip.messages;
   // const sortedMsg = messages?.sort((a: any, b: any) => a.timestamp - b.timestamp);
 
-  console.log('Payload content ===>>', messages);
+  // console.log('Payload content ===>>', messages);
 };
 
 export function messagingReducer(

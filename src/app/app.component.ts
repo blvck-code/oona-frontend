@@ -37,7 +37,7 @@ export class AppComponent implements OnInit {
 
     this.store.select(getIsLoggedIn).subscribe(
       status => {
-        console.log('Is logged in? ', status);
+        // console.log('Is logged in? ', status);
         if (status) {
           this.store.dispatch(new authActions.LoadAllUsers());
           this.store.dispatch(new authActions.LoadZulipUsers());
@@ -53,8 +53,8 @@ export class AppComponent implements OnInit {
       newMessage => {
         const messages = this.sockets.messagesInPrivate;
 
-        console.log('Latest message content ====>>', messages);
-        console.log('Messages counter ===>>> ', newMessage);
+        // console.log('Latest message content ====>>', messages);
+        // console.log('Messages counter ===>>> ', newMessage);
       }
     );
   }

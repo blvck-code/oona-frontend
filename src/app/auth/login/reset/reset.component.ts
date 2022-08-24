@@ -51,7 +51,7 @@ export class ResetComponent implements OnInit {
           this.router.navigate(['/login']);
         },
         (resetErr: any) => {
-          console.log('Error message from component ===>>>>', resetErr);
+          // console.log('Error message from component ===>>>>', resetErr);
           this.resetPassServerError = resetErr.message;
 
           this.resetPassError = true;
@@ -65,7 +65,7 @@ export class ResetComponent implements OnInit {
         }
       );
 
-    console.log('Message ===>>>', this.resetPassServerError);
+    // console.log('Message ===>>>', this.resetPassServerError);
   }
 
   get resetPassFormControls(): any {

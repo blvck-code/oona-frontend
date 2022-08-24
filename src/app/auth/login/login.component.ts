@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit {
     this.isLoggedIn$.subscribe(
       data => {
         if (data) {
-          console.log('Login status: ', data);
+          // console.log('Login status: ', data);
           this.route.navigate(['/dashboard']);
         }
       }
@@ -80,7 +80,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(loginInfo)
       .subscribe(
         (loginRes: any) => {
-          console.log('Login response ===>>>', loginRes);
+          // console.log('Login response ===>>>', loginRes);
 
           if (loginRes.message === 'Verify your account to retrieve token.') {
             this.loginServerError = 'Your account is not verified.';
@@ -102,7 +102,7 @@ export class LoginComponent implements OnInit {
         (loginErr: any) => {
           this.loginError = true;
           this.loading = false;
-          console.log('loginErr ===>>>>', loginErr);
+          // console.log('loginErr ===>>>>', loginErr);
         }
       );
   }

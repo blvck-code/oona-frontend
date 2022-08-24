@@ -59,7 +59,7 @@ export class StreamsTextEditorComponent implements OnInit, OnDestroy {
     private msgSocket: MessagesSocketService,
   ) {
     this.messagingService.messages.subscribe(msg => {
-      console.log('Response from websocket from server ===>>>', msg);
+      // console.log('Response from websocket from server ===>>>', msg);
     });
 
     this.changeOnRouter();
@@ -89,7 +89,7 @@ export class StreamsTextEditorComponent implements OnInit, OnDestroy {
     this.store.select(getReceiverInfo).subscribe(
       (data: SingleChat) => {
         this.receiverInfo = data;
-        console.log('Receiver data: ', data);
+        // console.log('Receiver data: ', data);
 
         if (data?.subject) {
           this.defaultStream = `${data?.display_recipient} > ${data?.subject}`;
@@ -131,7 +131,7 @@ export class StreamsTextEditorComponent implements OnInit, OnDestroy {
     const streamId = route.get('stream')?.split('-')[0];
     const currentStream = route.get('stream')?.split('-').slice(1, ).toString().replace(/,/g, ' ');
 
-    console.log('currentStream ====>>>>>', currentStream)
+    // console.log('currentStream ====>>>>>', currentStream)
 
 
     // @ts-ignore
@@ -252,8 +252,8 @@ export class StreamsTextEditorComponent implements OnInit, OnDestroy {
       content: markdown
     };
 
-    console.log('Stream details: ', this.streamInfo);
-    console.log('Message details ===>>>> ', messageDetail);
+    // console.log('Stream details: ', this.streamInfo);
+    // console.log('Message details ===>>>> ', messageDetail);
 
 
     this.messagingService.sendStreamMessage(messageDetail).subscribe((response: any) => {
@@ -323,9 +323,9 @@ export class StreamsTextEditorComponent implements OnInit, OnDestroy {
 
 
   handleGeneralToTopic(): void {
-    console.log('Current stream ====>>>>', this.defaultStream);
+    // console.log('Current stream ====>>>>', this.defaultStream);
     this.addSelectedStream(this.defaultStream);
-    console.log('Current stream 2 ====>>>>', this.searchStreamTerm);
+    // console.log('Current stream 2 ====>>>>', this.searchStreamTerm);
   }
 
   resetEditor(): void {

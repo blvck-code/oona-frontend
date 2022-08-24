@@ -26,7 +26,7 @@ export class DashboardComponent implements OnInit {
 
     this.store.select(getIsLoggedIn).subscribe(
       status => {
-        console.log('Is logged in? ', status);
+        // console.log('Is logged in? ', status);
         if (status) {
           this.store.dispatch(new authActions.LoadAllUsers());
           this.store.dispatch(new authActions.LoadZulipUsers());
