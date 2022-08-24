@@ -13,6 +13,7 @@ import * as authActions from '../../../auth/state/auth.actions';
 import {take} from 'rxjs/operators';
 import {getSelectedUser} from '../../../auth/state/auth.selectors';
 import {ActivatedRoute, Event, Params, Router} from '@angular/router';
+import {SingleMessageModel} from "../models/messages.model";
 
 const msgSocket = webSocket(messageChannel);
 
@@ -23,7 +24,7 @@ export class OonaSocketService {
 
   allMessagesCounter = 0;
   allMsgCounterSubject = new BehaviorSubject<number>(this.allMessagesCounter);
-  allMsgCounter = this.allMsgCounterSubject.asObservable();
+  allMsgCounterObservable = this.allMsgCounterSubject.asObservable();
 
   privateMessagesCounter = 0;
   privateMsgCounterSubject = new BehaviorSubject<number>(this.privateMessagesCounter);
@@ -54,6 +55,12 @@ export class OonaSocketService {
   myStreamMessages = Array();
   myStreamMessagesSocketSubject = new BehaviorSubject(this.myStreamMessages);
   myStreamMessagesSocket = this.myStreamMessagesSocketSubject.asObservable();
+
+  newMsgCounter: number = 0;
+  newMsgCounterSubject = new BehaviorSubject<number>(this.newMsgCounter);
+  newMsgCounterObersvable = this.newMsgCounterSubject.asObservable();
+
+  newMessagesId: any[] = [];
 
   peopleType = Array();
   public typingStatus = Array();
@@ -93,6 +100,16 @@ export class OonaSocketService {
   changeTypingStatus(status: any): void {
     // console.log('Typing status ==>>', status);
     this.typingStatusSocket.next(status);
+  }
+
+  newMessageCounter(msg: SingleMessageModel): void {
+
+    if(this.newMessagesId.includes(msg.id)){
+      return
+    }
+
+    this.allMsgCounterSubject.next(this.allMessagesCounter + 1);
+    this.newMessagesId.push(msg.id)
   }
 
   connect(): void {
@@ -142,13 +159,14 @@ export class OonaSocketService {
       this.recognizedUsers.push(socketData);
     } else if (socketData.message.type === 'message'){
       // console.log('message', socketData);
-      this.allMsgCounterSubject.next(this.allMessagesCounter + 1);
       this.setMessageType(socketData);
       // this.newMessages.push(socketData);
       // create a new set unique by message id
       // this.newMessagesUnique = new Set(this.newMessages.map(item => item.message.message.id));
       this.newMessageCount = this.newMessages.length;
       this.changeNewMessageCount(this.newMessageCount);
+
+      this.newMessageCounter(socketData.message.message);
 
     } else if (socketData.message.type === 'update_message_flags'){
       // how many messages have been read
@@ -210,6 +228,8 @@ export class OonaSocketService {
 
   // Filter message types from the socket
   private setMessageType(socketData: any): void {
+    console.log('Unread message content from socket ===>>>', socketData);
+
     const currentUserId =  this.loggedInUserProfile?.user_id;
     const msgSenderId = socketData.message?.message?.sender_id;
 

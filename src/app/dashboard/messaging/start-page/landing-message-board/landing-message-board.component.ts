@@ -203,12 +203,10 @@ export class LandingMessageBoardComponent implements OnInit {
       allPrivateMessages$
     ).pipe(
       map(([streamMessage, privateMessage]) => {
-        return [...streamMessage, ...privateMessage]
-      }
-      )
-    )
+        return [...streamMessage, ...privateMessage];
+      })
+    );
 
-    console.log('all messages ===>>>', allMessages)
   }
 
   sortMessages(): void {

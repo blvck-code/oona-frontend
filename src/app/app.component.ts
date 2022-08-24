@@ -11,7 +11,8 @@ import {OonaSocketService} from './dashboard/messaging/services/oona-socket.serv
 import {ActivatedRoute} from '@angular/router';
 import {Notification} from 'rxjs';
 
-// import { OneSignal} from 'onesignal-ngx';
+import { OneSignal} from 'onesignal-ngx';
+import {MessagingService} from "./dashboard/messaging/services/messaging.service";
 
 @Component({
   selector: 'app-root',
@@ -25,9 +26,10 @@ export class AppComponent implements OnInit {
   constructor(
     private store: Store<AppState>,
     private sockets: OonaSocketService,
+    private messageSrv: MessagingService,
     private route: ActivatedRoute,
     private titleService: Title,
-    // private oneSignal: OneSignal
+    private oneSignal: OneSignal
   ) {
   }
 
@@ -66,21 +68,23 @@ export class AppComponent implements OnInit {
   }
 
   updateTabNotification(): void {
-    this.sockets.messageCountSocket.subscribe(
+
+    this.messageSrv.totalUnreadMsgObservable.subscribe(
       msg => {
         if (msg > 0) {
           this.titleService.setTitle(`(${msg}) - AVL - Oona`);
+          // document.title = `(${msg}) - AVL - Oona`;
         } else {
           this.titleService.setTitle(`AVL - Oona`);
         }
       }
-    );
+    )
   }
 
-  // handleWebPush(): void {
-  //   this.oneSignal.init({
-  //     appId: '41d455ec-e448-416c-a089-c8ac0ebb5f4d'
-  //   });
-  // }
+  handleWebPush(): void {
+    this.oneSignal.init({
+      appId: '41d455ec-e448-416c-a089-c8ac0ebb5f4d'
+    });
+  }
 
 }

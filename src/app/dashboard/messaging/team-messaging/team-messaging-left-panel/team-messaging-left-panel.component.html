@@ -67,21 +67,37 @@
         routerLinkActive="active"
         class="panel-box-item"
       >
-        All Messages
+        <p>
+          All Messages
+          <span
+            *ngIf="( totalUnreadMsgObservable | async )"
+            class="badge mat-badge-before">
+            {{ totalUnreadMsgObservable | async }}
+          </span>
+        </p>
       </a>
       <a
         routerLink="/dashboard/messaging/private"
         routerLinkActive="active"
         class="panel-box-item"
       >
-        <p>Private Messages <span *ngIf="unreads > 0" class="badge mat-badge-before">{{ unreads }}</span></p>
+        <p>Private Messages
+          <span
+            *ngIf="( privateUnreadMsgCounterObservable | async )"
+            class="badge mat-badge-before">
+            {{ privateUnreadMsgCounterObservable | async }}
+          </span>
+        </p>
       </a>
     </div>
   </div>
   <div class="panel-box-accordion teams-panel">
     <div class="accordion-box-title">
-      <p>TEAMS</p>
-      <!--      Config Icon -->
+      <p>TEAMS <span
+        *ngIf="( streamsUnreadMsgCounterObservable | async )"
+        class="badge badge-dark">
+            {{ streamsUnreadMsgCounterObservable | async }}
+          </span></p>
       <svg
         (click)="teamSettings()"
         width="24"

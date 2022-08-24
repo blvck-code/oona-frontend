@@ -44,7 +44,6 @@ export class MessagingComponent implements OnInit {
     private messageSocket: MessagesSocketService,
     private store: Store<AppState>,
     public messagingService: MessagingService,
-    private titleService: Title
   ) {
     // this.messageSocket.messageConnect();
     this.messagingService.messages.subscribe((msg) => {
@@ -122,7 +121,7 @@ export class MessagingComponent implements OnInit {
     this.store.dispatch(new authActions.LoadAllUsers());
 
     // gets unread messages
-    this.messagingService.getUnreadMessages();
+    // this.messagingService.getUnreadMessages();
   }
 
   logoutUser(): void {
