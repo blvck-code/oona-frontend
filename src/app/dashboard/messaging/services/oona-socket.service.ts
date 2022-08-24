@@ -70,7 +70,6 @@ export class OonaSocketService {
   private websocket: WebSocket | undefined;
   private loggedInUserProfile: any;
 
-
   constructor(
     private authService: AuthService,
     private messagingService: MessagingService,
@@ -84,21 +83,22 @@ export class OonaSocketService {
   }
 
   changeNewMessageCount(newCount: any): void {
-    console.log('Message counter ===>>', newCount);
+    // console.log('Message counter ===>>', newCount);
     this.messageCountSocket.next(newCount);
   }
+
   changeNewStreamMessageCount(newStreamMessages: any): void {
-    console.log('newStreamMessages ===>>>', newStreamMessages);
+    // console.log('newStreamMessages ===>>>', newStreamMessages);
     this.streamMessageCountSocket.next(newStreamMessages);
   }
 
   changeNewPrivateMessageCount(newPrivateMessages: any): void {
-    console.log('changeNewPrivateMessageCount ==>>', newPrivateMessages);
+    // console.log('changeNewPrivateMessageCount ==>>', newPrivateMessages);
     this.privateMessageCountSocket.next(newPrivateMessages);
   }
 
   changeTypingStatus(status: any): void {
-    console.log('Typing status ==>>', status);
+    // console.log('Typing status ==>>', status);
     this.typingStatusSocket.next(status);
   }
 
@@ -121,10 +121,10 @@ export class OonaSocketService {
     const url: string = env.userChannel;
     const userChannel = protocol + url;
 
-    console.log('userChannel URL ===>>>', userChannel);
+    // console.log('userChannel URL ===>>>', userChannel);
 
     this.websocket = new WebSocket(userChannel, this.authService.getToken());
-    console.log('Events sockets successfully connected: ', userChannel);
+    // console.log('Events sockets successfully connected: ', userChannel);
   }
 
   filterSocketData(userData: any): void {
@@ -211,7 +211,7 @@ export class OonaSocketService {
 
     // @ts-ignore
     this.websocket.onclose = (evt) => {
-      console.log('Web socket closed');
+      // console.log('Web socket closed');
       setTimeout(() => {
         this.connect();
       }, 1000);
@@ -238,7 +238,7 @@ export class OonaSocketService {
       // If i send message to the stream listener
       if (msgSenderId === currentUserId){
         // My outgoing message from the socket
-        console.log('My stream outgoing message content ===>>>', socketData);
+        // console.log('My stream outgoing message content ===>>>', socketData);
         this.myStreamMessagesSocketSubject.next(socketData.message.message);
       }
 
@@ -248,6 +248,7 @@ export class OonaSocketService {
       // hence a tendency to have it with duplicate items for each time it is called
       // tslint:disable-next-line:max-line-length
       this.messagesToStreams = this.messagesToStreams.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i); // have unique messages by id
+      // console.log('Messages to streams ===>>>>', this.messagesToStreams);
       this.changeNewStreamMessageCount(this.removeLoggedInUserMessages(this.messagesToStreams));
     }else if (socketData.message.message.type === 'private'){
 
@@ -257,7 +258,7 @@ export class OonaSocketService {
       // Check if am the sender or not me
       if (msgSenderId === currentUserId){
         // My outgoing message from the socket
-        console.log('Incoming message from other user ===>>>', socketData.message.message);
+        // console.log('Incoming message from other user ===>>>', socketData.message.message);
         this.myMessagesSocketSubject.next(socketData.message.message);
       } else {
         // Incoming message from other user in socket
@@ -265,13 +266,13 @@ export class OonaSocketService {
         this.messagesInPrivate = [...this.messagesInPrivate, socketData.message.message];
         this.messagesInPrivate = this.messagesInPrivate.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
 
-        console.log('Others private messages in my dm ====>>>>', this.messagesInPrivate);
+        // console.log('Others private messages in my dm ====>>>>', this.messagesInPrivate);
         this.changeNewPrivateMessageCount(this.removeLoggedInUserMessages(this.messagesInPrivate));
 
       }
     } else if (socketData.message.message.type === 'subscription') {
 
-      console.log('Subscription socket fired ===>>>>', socketData);
+      // console.log('Subscription socket fired ===>>>>', socketData);
 
     }
 
