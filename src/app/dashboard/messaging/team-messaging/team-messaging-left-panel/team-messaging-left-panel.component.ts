@@ -93,24 +93,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     });
   }
 
-  handleUnreadMessage(): void {
-    this.messagingService.unreadMessagesSubject.subscribe(
-      message => {
-        this.unreadsSubject$.next(+message);
-        this.unreads = +message;
-      }
-    );
-
-    this.unreadsSubject$.subscribe(
-      unread => console.log('Total unread messages from left ====>>>', unread)
-    );
-
-    // handle All Unread Msg
-    this.messagingService.allUnreadMsgSubject.subscribe(
-      num => console.log('All unread message numbers ===>>>', num)
-    );
-  }
-
   handleSocketsMessages(): void {
     this.userSocketService.streamMessageCountSocket.subscribe(
       (messages: SingleMessageModel[]) =>
@@ -353,6 +335,21 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   }
 
   handleUnreadMessage(): void {
+    this.messagingService.unreadMessagesSubject.subscribe(
+      message => {
+        this.unreadsSubject$.next(+message);
+        this.unreads = +message;
+      }
+    );
+
+    this.unreadsSubject$.subscribe(
+      unread => console.log('Total unread messages from left ====>>>', unread)
+    );
+
+    // handle All Unread Msg
+    this.messagingService.allUnreadMsgSubject.subscribe(
+      num => console.log('All unread message numbers ===>>>', num)
+    );
 
     this.messagingService.allUnreadMshObserver.subscribe(
       unreadMessageCounter => {
@@ -364,7 +361,5 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.messagingService.unreadStreamObservable.subscribe(
       messagesArray => console.log('Unread messages array ===>>>>', messagesArray)
     );
-
   }
-
 }
