@@ -15,6 +15,8 @@ import {sharedSelectors} from './state/shared.selectors';
 import {EffectsModule} from '@ngrx/effects';
 import {SharedEffects} from './state/shared.effects';
 import { SearchPipe } from './pipe/search.pipe';
+import {RouterModule} from "@angular/router";
+// import {DashboardRoutingModule} from '../dashboard/dashboard-routing.module';
 
 @NgModule({
   // tslint:disable-next-line:max-line-length
@@ -41,7 +43,9 @@ import { SearchPipe } from './pipe/search.pipe';
   imports: [
     CommonModule,
     StoreModule.forFeature(sharedSelectors, sharedReducer),
-    EffectsModule.forFeature([SharedEffects])
+    EffectsModule.forFeature([SharedEffects]),
+    RouterModule,
+    // DashboardRoutingModule
   ]
 })
 export class SharedModule { }
