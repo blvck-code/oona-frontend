@@ -135,12 +135,12 @@
       <!--        </div>-->
       <!--      </div>-->
 
-      <div *ngIf="!allTopics.length">
+      <div *ngIf="!(finalStreamObservable | async)?.length">
         <app-load-indicator></app-load-indicator>
       </div>
 
       <div
-        *ngFor="let team of allTopics.sort(); index as i"
+        *ngFor="let team of (finalStreamObservable | async); index as i"
         class="accordion-item" (click)="getStreamName(team)"
       >
         <h2 class="accordion-header" id="flush-headingOne">
@@ -152,7 +152,14 @@
             aria-expanded="false"
             [attr.aria-controls]="'flush-collapse' + i"
           >
-            {{ team.name | titlecase }}
+            <p>
+              {{ team?.name | titlecase }}
+              <span
+                *ngIf="team.unreadCount > 0"
+                class="badge badge-dark ms-2">
+                {{ team.unreadCount }}
+              </span>
+            </p>
           </button>
         </h2>
         <div
@@ -170,17 +177,20 @@
                  data-toggle="modal" data-target="#exampleModal">+</p>
             </div>
             <div
-              *ngFor="let topic of team?.topics?.zulip?.topics"
+              *ngFor="let topic of team?.topics?.topics"
               class="accordion-body-item"
             >
               <p (click)="handleNavigateTopic(team, topic)">
                 {{ topic?.name | titlecase }}
+                <span
+                  *ngIf="topic.unread > 0"
+                  class="badge badge-dark ms-2">
+                {{ topic.unread }}
+              </span>
               </p>
 
             </div>
-            <!--            <div *ngFor="let topic of team.topics" (click)="displayMessagesOfTopic(topic)" class="accordion-body-item">-->
-            <!--              <p>{{topic.name}}</p>-->
-            <!--            </div>-->
+
           </div>
         </div>
       </div>

@@ -99,10 +99,10 @@ export class LandingMessagingRightPanelComponent implements OnInit {
             user_id: user.user_id,
             role: user.role,
             counter: 0
-          }
+          };
 
-          this.listedUsersArray.push(userDetail)
-        })
+          this.listedUsersArray.push(userDetail);
+        });
       });
     }
 
@@ -126,7 +126,6 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   }
 
   getPrivateUnreadMsg(): void {
-    let newArray: { sender_id: number, counter: number }[] = [];
 
     this.messagingService.privateUnreadMsgArrayObservable.subscribe(unread => {
 
@@ -135,7 +134,7 @@ export class LandingMessagingRightPanelComponent implements OnInit {
 
         // todo fixed to show number of unread messages
         this.listedUsersArray.map((user: any) => {
-          if(user.user_id === message.sender_id) {
+          if (user.user_id === message.sender_id) {
 
             // if(this.endPointUnreadId.includes(user.user_id)){
             //   return
@@ -145,10 +144,10 @@ export class LandingMessagingRightPanelComponent implements OnInit {
 
           }
           }
-        )
+        );
 
-      })
-    })
+      });
+    });
 
   }
 

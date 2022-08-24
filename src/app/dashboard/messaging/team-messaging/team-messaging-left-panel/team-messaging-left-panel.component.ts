@@ -14,9 +14,26 @@ import { getAllStreams, getTopics} from '../../state/messaging.selectors';
 import {AllStreamsModel} from '../../models/streams.model';
 import {take} from 'rxjs/operators';
 import {ChannelSettingsComponent} from '../channel-settings/channel-settings.component';
-import {SingleMessageModel} from "../../models/messages.model";
-import {getAllUsers} from "../../../../auth/state/auth.selectors";
-import {Title} from "@angular/platform-browser";
+import {SingleMessageModel} from '../../models/messages.model';
+import {getAllUsers} from '../../../../auth/state/auth.selectors';
+import {Title} from '@angular/platform-browser';
+import {numbers} from "@material/dialog/constants";
+import {log} from "util";
+
+interface streamArray {
+  stream_id: number,
+  stream_name: string,
+  count: number,
+  topics: topicDetails[]
+  // topics: []
+}
+
+interface topicDetails {
+  topic_name: string,
+  max_id: number,
+  count: number
+}
+
 
 @Component({
   selector: 'app-team-messaging-left-panel',
@@ -24,7 +41,9 @@ import {Title} from "@angular/platform-browser";
   styleUrls: ['./team-messaging-left-panel.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class TeamMessagingLeftPanelComponent implements OnInit {
+  newTopicsArray: topicDetails[] = [];
 
   allTeams: any;
   streamName: any;
@@ -47,19 +66,27 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   streamIds!: any[];
   allTopics: any = [];
 
+  listedStreamArray: any = [];
+  streamArray:streamArray[] = [];
+
+  streamUnreadCounter: any[] = [];
+  finalStream: any[] = [];
+  finalStreamSubject = new BehaviorSubject(this.finalStream);
+  finalStreamObservable = this.finalStreamSubject.asObservable();
+
   unreadCount = [];
   unreadMessagesSubject = new BehaviorSubject(this.unreadCount);
   unreadMessagesObservable = this.unreadMessagesSubject.asObservable();
 
-  streamsUnreadMsgCounter: number = 0;
+  streamsUnreadMsgCounter = 0;
   streamsUnreadMsgCounterSubject = new BehaviorSubject(this.streamsUnreadMsgCounter);
   streamsUnreadMsgCounterObservable = this.streamsUnreadMsgCounterSubject.asObservable();
 
-  privateUnreadMsgCounter: number = 0;
+  privateUnreadMsgCounter = 0;
   privateUnreadMsgCounterSubject = new BehaviorSubject(this.privateUnreadMsgCounter);
   privateUnreadMsgCounterObservable = this.privateUnreadMsgCounterSubject.asObservable();
 
-  totalUnreadMsg: number = 0;
+  totalUnreadMsg = 0;
   totalUnreadMsgSubject$ = new BehaviorSubject<number>(this.totalUnreadMsg);
   totalUnreadMsgObservable = this.totalUnreadMsgSubject$.asObservable();
 
@@ -77,7 +104,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   ngOnInit(): void {
     // fire on page load handler
     this.initPageHandler();
-
   }
 
   initPageHandler(): void {
@@ -96,14 +122,48 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     // Fetch Topics
     this.streams.subscribe(streams => {
 
+
       take(streams.length),
-        streams.map((stream: any) => {
+        streams.map((stream: AllStreamsModel) => {
+          // let streamDetail: streamArray = <streamArray>{};
           const streamId = stream?.stream_id;
+
+          // streamDetail.stream_name = stream.name;
+          // streamDetail.stream_id = stream.stream_id;
 
           take(1),
             this.messagingService.getTopicsOnStreams(stream.stream_id).subscribe(
               (topicData: any) => {
+                this.newTopicsArray = [];
                 const topicId = topicData?.oz?.stream_id;
+                const topicsArray = topicData.zulip.topics;
+
+                let topicArray = [];
+
+                // console.log('stream before ==>', this.streamArray);
+
+                // if(topicId === streamId){
+                //   topicsArray.forEach((topic: any) => {
+                //
+                //     const topicDetail: topicDetails = {
+                //       topic_name: topic.name,
+                //       max_id: topic.max_id,
+                //       count: 0
+                //     }
+                //
+                //     this.newTopicsArray.push(topicDetail);
+                //
+                //   })
+                //   // console.log('stream after ==>', this.newTopicsArray);
+                //
+                //   const streamDetail: streamArray = {
+                //     stream_id: stream.stream_id,
+                //     stream_name: stream.name,
+                //     count: 0,
+                //     topics: this.newTopicsArray
+                //   }
+                //
+                // }
 
                 if (topicId === streamId) {
                   stream = {
@@ -111,11 +171,31 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
                     topics: topicData,
                   };
                   this.allTopics = [...this.allTopics, stream];
+
+
+                  const streamContent = {
+                    stream_id: stream.stream_id,
+                    name: stream.name,
+                    topics: {
+                      topics: stream.topics?.zulip.topics,
+                    },
+                    counter: 0
+                  }
+
+
+                  this.streamUnreadCounter.push(streamContent);
+
+                  this.listedStreamArray.push(stream);
                   this.change.detectChanges();
                 }
               }
             );
+
+          // this.streamArray.push(streamDetail);
         });
+      setTimeout(() => {
+        this.handleUnreadMsgCounter();
+      }, 1000)
     });
 
     // Get Topics from store
@@ -133,6 +213,8 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.messagingService.currentUserProfile().subscribe((profile: any) => {
       this.loggedInUserProfile = profile;
     });
+
+    // handle unread stream message counter
   }
 
   listAllTeams(): any {
@@ -234,8 +316,8 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   handleSocketsNewMessage(): void {
     this.userSocketService.allMsgCounterObservable.subscribe(
       newMessage => {
-        if(newMessage === 0) {
-          return
+        if (newMessage === 0) {
+          return;
         } else {
           // update all messages counter
           const newTotal = this.totalUnreadMsg += 1;
@@ -247,6 +329,11 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
         }
       }
     );
+
+
+    this.userSocketService.newMsgCounterObservable.subscribe(
+      message => console.log('New socket message ===>>>', message)
+    )
   }
 
   getStreamName(stream?: any, topic?: any): void {
@@ -381,20 +468,127 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
             });
           }
         );
+      });
+    });
+
+  }
+
+  handleUnreadMsgCounter(): void {
+
+    const streamArray: any[] = [];
+    const topicSubjects: string[] = [];
+
+    this.streamUnreadCounter.map((counter: { stream_id: number, counter: number, name: string, topics: { topics: any[] }}) => {
+
+
+      let unreadContent = {
+        name: counter.name,
+        stream_id: counter.stream_id,
+        unreadCount: 0,
+        topics: counter.topics
+      };
+
+
+      this.messagingService.streamsUnreadMsgArrayObservable.subscribe((unreadStreams: SingleMessageModel[]) => {
+        unreadStreams.map((unreadStream: SingleMessageModel) => {
+
+
+          take(1)
+          if(+unreadStream.stream_id === +counter.stream_id) {
+            // adding counter for all unread messages of the stream
+            unreadContent.unreadCount += 1;
+
+            if(topicSubjects.includes(unreadStream.subject.toLowerCase())){
+              return
+            } else {
+              topicSubjects.push(unreadStream.subject.toLowerCase());
+
+              counter.topics.topics.map((topic: any) => {
+                topic.unread = 0;
+
+                topicSubjects.map((topicName: string) => {
+                  console.log('Topic ===>>>', topicSubjects)
+
+                  if(topic.name.toLowerCase() === topicName.toLowerCase()){
+                    // adding counter for single topic unread
+                    topic.unread += 1;
+
+                  } else {
+                    topic.unread = 0;
+                  }
+                })
+
+
+              })
+
+            }
+
+            // console.log('Unread message ====>>>', unreadStream)
+          }
+        })
+
       })
-    })
+
+      streamArray.push(unreadContent)
+
+    });
+
+    this.finalStreamSubject.next(streamArray)
+
+    this.finalStreamObservable.subscribe(
+      content => console.log('Content ==>', content)
+    )
+
+    // this.messagingService.streamsUnreadMsgArrayObservable.subscribe(
+    //   unreads => unreads?.map((message: SingleMessageModel) => {
+    //
+    //     this.streamUnreadCounter.map(
+    //       unread => {
+    //         // if(unread.stream_id === message.stream_id) {
+    //         //   unread.counter += 1;
+    //         // } else {
+    //         //   unread.counter = 1
+    //         // }
+    //
+    //         console.log(unread)
+    //       }
+    //     )
+    //
+    //   })
+    // );
+    setTimeout(() => {
+      this.unreadMessageFilter();
+    }, 1000)
+  }
+
+  unreadMessageFilter(): any {
+
+    this.streamUnreadCounter.map(
+      (message: any) => {
+        // console.log(message)
+
+        this.allTopics.map((streamContent: AllStreamsModel) => {
+
+          if (streamContent.stream_id === message.stream_id){
+            // console.log(message)
+          }
+
+        })
+
+      }
+    )
   }
 
   showNotificationCounter(): void {
     this.totalUnreadMsgObservable.subscribe(
       total => {
-        if(total > 0) {
+        if (total > 0) {
           this.titleService.setTitle(`(${total}) - AVL - Oona`);
         } else {
           this.titleService.setTitle(`AVL - Oona`);
         }
       }
-    )
+    );
   }
 
   // Todo filter unread messages here to update on ui
@@ -403,7 +597,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
       stream: msg.display_recipient,
       topic: msg.subject,
       msgId: msg.id
-    }
+    };
     console.log('Total unread messages ====>>>>>');
   }
 

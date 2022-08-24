@@ -58,7 +58,7 @@ export class OonaSocketService {
 
   newMsgCounter: number = 0;
   newMsgCounterSubject = new BehaviorSubject<number>(this.newMsgCounter);
-  newMsgCounterObersvable = this.newMsgCounterSubject.asObservable();
+  newMsgCounterObservable = this.newMsgCounterSubject.asObservable();
 
   newMessagesId: any[] = [];
 
@@ -107,6 +107,8 @@ export class OonaSocketService {
     if(this.newMessagesId.includes(msg.id)){
       return
     }
+
+    console.log('New message item ===>>>', msg)
 
     this.allMsgCounterSubject.next(this.allMessagesCounter + 1);
     this.newMessagesId.push(msg.id)

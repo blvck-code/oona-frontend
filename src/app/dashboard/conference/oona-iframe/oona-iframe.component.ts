@@ -17,7 +17,8 @@ declare var JitsiMeetExternalAPI: any;
 })
 export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
   // @ToDo white domain URL not similar
-  domain = env.jitsiURL;
+  // domain = env.jitsiURL;
+  domain = '192.168.0.100:8443';
   room: any;
   options: any;
   api: any;
@@ -142,6 +143,7 @@ export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    console.log('After init')
     this.options = {
       roomName: this.room,
       width: '100%',
@@ -159,6 +161,10 @@ export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
       },
     };
     this.api = new JitsiMeetExternalAPI(this.domain, this.options);
+    console.log('Api ==>>', this.api);
+
+
+
 
     // Event handlers
     this.api.addEventListeners({

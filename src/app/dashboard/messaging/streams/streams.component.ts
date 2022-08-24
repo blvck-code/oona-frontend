@@ -13,17 +13,18 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../state/app.state';
 import {
-  getAllMessages, getAllStreamData,
+  getAllMessages,
+  getAllStreamData,
   getAllStreams,
   getLoadingAllMsg,
 } from '../state/messaging.selectors';
 import { SingleMessageModel } from '../models/messages.model';
 import * as messagingActions from '../state/messaging.actions';
 import { firmName } from '../../../../environments/environment';
-import {map, take} from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { MessagingService } from '../services/messaging.service';
-import {HandleStreamData} from '../state/messaging.actions';
-import {OonaSocketService} from '../services/oona-socket.service';
+import { HandleStreamData } from '../state/messaging.actions';
+import { OonaSocketService } from '../services/oona-socket.service';
 
 @Component({
   selector: 'app-streams',
@@ -48,14 +49,16 @@ export class StreamsComponent implements OnInit, AfterViewInit {
   privateMessages = Array();
 
   unreadStreamMsgIds: number[] = [];
-  unreadStreamMsgSubject = new BehaviorSubject<number[]>(this.unreadStreamMsgIds);
+  unreadStreamMsgSubject = new BehaviorSubject<number[]>(
+    this.unreadStreamMsgIds
+  );
   unreadStreamMsgObservable = this.unreadStreamMsgSubject.asObservable();
 
   constructor(
     private router: Router,
     private store: Store<AppState>,
     private activateRoute: ActivatedRoute,
-    private messageSrv: MessagingService,
+    private messageSrv: MessagingService
   ) {
     // @ts-ignore
     this.router.events.subscribe((event: Event) => {
@@ -114,7 +117,7 @@ export class StreamsComponent implements OnInit, AfterViewInit {
         const streamId = route.get('stream')?.split('-')[0];
         const currentStream = route.get('stream')?.split('-')[1];
 
-        console.log('Selected stream id', streamId)
+        console.log('Selected stream id', streamId);
 
         this.selectedStreamId = streamId;
 
@@ -127,7 +130,6 @@ export class StreamsComponent implements OnInit, AfterViewInit {
         };
 
         this.streamInfo = streamData;
-
       }
     });
   }
@@ -145,38 +147,36 @@ export class StreamsComponent implements OnInit, AfterViewInit {
   }
 
   getUnreadStreamMessage(): void {
-
-    const newArray: number[] = []
-    this.messageSrv.streamsUnreadMsgArrayObservable
-      .subscribe(
-        (messages: SingleMessageModel[]) => messages?.map(
-          (message: SingleMessageModel) => {
-            if(+message.stream_id === +this.selectedStreamId){
-
-              if(this.unreadStreamMsgIds.includes(message.id)){
-                return
-              }
-                newArray.push(message.id);
-                this.unreadStreamMsgIds.push(message.id);
-                this.unreadStreamMsgSubject.next(newArray);
+    const newArray: number[] = [];
+    this.messageSrv.streamsUnreadMsgArrayObservable.subscribe(
+      (messages: SingleMessageModel[]) =>
+        messages?.map((message: SingleMessageModel) => {
+          if (+message.stream_id === +this.selectedStreamId) {
+            if (this.unreadStreamMsgIds.includes(message.id)) {
+              return;
             }
+            newArray.push(message.id);
+            this.unreadStreamMsgIds.push(message.id);
+            this.unreadStreamMsgSubject.next(newArray);
           }
-        )
-      );
+        })
+    );
 
-    console.log('All stream unread messages ===>>>', this.unreadStreamMsgIds)
+    console.log('All stream unread messages ===>>>', this.unreadStreamMsgIds);
 
     // this.messageSrv.updateReadMessagesFlags(this.unreadStreamMsgObservable)
-    setTimeout(() => {
-      this.messageSrv.updateReadMessagesFlags(this.unreadStreamMsgIds).subscribe(
-        response => {
-          if(response.result === 'success'){
-            this.messageSrv.handleUnreadMessage();
-          }
-        }
-      )
-    }, 500)
-
+    // Todo uncomment this later on
+    // setTimeout(() => {
+    //   this.messageSrv
+    //     .updateReadMessagesFlags(this.unreadStreamMsgIds)
+    //     .subscribe((response) => {
+    //       if (response.result === 'success') {
+    //         this.messageSrv.handleUnreadMessage().subscribe(
+    //           (response: any) => console.log('Updated flags successfully ===>>>', response)
+    //         );
+    //       }
+    //     });
+    // }, 500);
   }
 
   getStreamsMessages(): void {
@@ -225,7 +225,6 @@ export class StreamsComponent implements OnInit, AfterViewInit {
     // this.activateRoute.params.subscribe(data => console.log('Params ===>>', data));
   }
 
-
   ngOnInit(): void {
     this.onInitHandler();
   }
@@ -234,12 +233,9 @@ export class StreamsComponent implements OnInit, AfterViewInit {
     this.handleMsgFilter();
   }
 
-
-
-  sortMessages(): void{
-    this.privateMessages.sort((a, b ) => a.timestamp - b.timestamp).map(
-      streamMsg => console.log('Stream message ===>>>', streamMsg)
-    );
+  sortMessages(): void {
+    this.privateMessages
+      .sort((a, b) => a.timestamp - b.timestamp)
+      .map((streamMsg) => console.log('Stream message ===>>>', streamMsg));
   }
-
 }

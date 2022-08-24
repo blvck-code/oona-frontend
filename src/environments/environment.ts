@@ -13,14 +13,14 @@ export const apiURL = 'https://192.168.0.';
 // export const port = '42';
 export const backendPort = ':2443';
 export const frontendPort = ':3443';
-export const jitsiPort = ':3443';
+export const jitsiPort = ':8443';
 
 export const backendProtocol = 'https://';
 // export const domain = '65.20.69.213';
 export const domain = '192.168.0.42';
 
 export const oonaBaseUrl = `${backendProtocol}${domain}${backendPort}`;
-export const jitsiUrl = `${backendProtocol}${domain}${jitsiPort}`;
+export const jitsiURL = `${domain}${jitsiPort}`;
 
 export const oonaFrontendUrl = `${domain}${frontendPort}`;
 export const userChannel = `${domain}${backendPort}/ws/on/event/`;
@@ -72,12 +72,12 @@ export const environment = {
 
   sendStreamMessageWithFileURL: oonaBaseUrl + '/api/v1/message/stream/file',
 
-  domain: domain,
-  jitsiURL: jitsiUrl,
+  domain,
+  jitsiURL,
   whiteBoard: 'http://192.168.0.37:8030',
   etherPad: 'http://192.168.0.37:9001/',
-  userChannel: userChannel,
-  messageChannel: messageChannel,
+  userChannel,
+  messageChannel,
 
   // Chat
   // sendStreamMessageWithFileURL: oonaBaseUrl + '/api/v1/message/stream/file',
