@@ -16,6 +16,7 @@ import {take} from 'rxjs/operators';
 import {ChannelSettingsComponent} from '../channel-settings/channel-settings.component';
 import {SingleMessageModel} from "../../models/messages.model";
 import {getAllUsers} from "../../../../auth/state/auth.selectors";
+import {Title} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-team-messaging-left-panel',
@@ -69,6 +70,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     private change: ChangeDetectorRef,
     private userSocketService: OonaSocketService,
     private store: Store<AppState>,
+    private titleService: Title,
   ) {
   }
 
@@ -84,6 +86,9 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
     // this.streamTopics();
     this.handleSocketsNewMessage();
+
+    // show tab message
+    this.showNotificationCounter();
 
     // Fetch streams
     this.streams = this.store.select(getAllStreams);
@@ -377,7 +382,19 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
           }
         );
       })
-      })
+    })
+  }
+
+  showNotificationCounter(): void {
+    this.totalUnreadMsgObservable.subscribe(
+      total => {
+        if(total > 0) {
+          this.titleService.setTitle(`(${total}) - AVL - Oona`);
+        } else {
+          this.titleService.setTitle(`AVL - Oona`);
+        }
+      }
+    )
   }
 
   // Todo filter unread messages here to update on ui

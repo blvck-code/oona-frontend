@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, DoCheck, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../../state/app.state';
 import {
@@ -13,12 +13,15 @@ import { oonaFrontendUrl } from '../../../../../../environments/environment';
   templateUrl: './individual-chat-card.component.html',
   styleUrls: ['./individual-chat-card.component.scss'],
 })
-export class IndividualChatCardComponent implements OnInit {
+export class IndividualChatCardComponent implements OnInit, DoCheck {
   @Input() messageDetail: any;
+  @ViewChild('currentChat') endChat: ElementRef | undefined;
+
   messageTime = '';
   zulipProfile!: Observable<any>;
   baseURL = oonaFrontendUrl;
   imageURL = '';
+  isVisible: boolean = false
 
   constructor(private store: Store<AppState>) {
     this.getUserInfo();
@@ -43,6 +46,10 @@ export class IndividualChatCardComponent implements OnInit {
     this.imageURL = `${this.baseURL}${this.messageDetail?.avatar_url}&s=50`;
 
     this.handleDate();
+  }
+
+  ngDoCheck() {
+    // this.isVisible = this.element.nativeElement.offsetParent !== null;
   }
 
   handleReply(message: any): void {

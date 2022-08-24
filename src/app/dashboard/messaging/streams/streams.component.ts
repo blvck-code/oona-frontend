@@ -13,14 +13,14 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../state/app.state';
 import {
-  getAllMessages,
+  getAllMessages, getAllStreamData,
   getAllStreams,
   getLoadingAllMsg,
 } from '../state/messaging.selectors';
 import { SingleMessageModel } from '../models/messages.model';
 import * as messagingActions from '../state/messaging.actions';
 import { firmName } from '../../../../environments/environment';
-import { map } from 'rxjs/operators';
+import {map, take} from 'rxjs/operators';
 import { MessagingService } from '../services/messaging.service';
 import {HandleStreamData} from '../state/messaging.actions';
 import {OonaSocketService} from '../services/oona-socket.service';
@@ -37,6 +37,8 @@ export class StreamsComponent implements OnInit, AfterViewInit {
   public streamSelected = this.streamSubject.asObservable();
   streamInfo: any;
 
+  selectedStreamId: any;
+
   public titleSubject = new BehaviorSubject<string>('');
   public titleSelected = this.titleSubject.asObservable();
   initialMessageCount = 10;
@@ -45,10 +47,15 @@ export class StreamsComponent implements OnInit, AfterViewInit {
   streamName = '';
   privateMessages = Array();
 
+  unreadStreamMsgIds: number[] = [];
+  unreadStreamMsgSubject = new BehaviorSubject<number[]>(this.unreadStreamMsgIds);
+  unreadStreamMsgObservable = this.unreadStreamMsgSubject.asObservable();
+
   constructor(
     private router: Router,
     private store: Store<AppState>,
     private activateRoute: ActivatedRoute,
+    private messageSrv: MessagingService,
   ) {
     // @ts-ignore
     this.router.events.subscribe((event: Event) => {
@@ -71,7 +78,6 @@ export class StreamsComponent implements OnInit, AfterViewInit {
       if (event instanceof NavigationEnd) {
         // Hide progress spinner or progress bar
         // this.currentRoute = event.url;
-        console.log('topicInfo ===>>>', topicInfo);
 
         const filteredInfo = {
           streamId,
@@ -96,6 +102,7 @@ export class StreamsComponent implements OnInit, AfterViewInit {
         // Hide progress spinner or progress bar
       }
     });
+    this.changeOnRouter();
   }
 
   changeOnRouter(): void {
@@ -107,6 +114,10 @@ export class StreamsComponent implements OnInit, AfterViewInit {
         const streamId = route.get('stream')?.split('-')[0];
         const currentStream = route.get('stream')?.split('-')[1];
 
+        console.log('Selected stream id', streamId)
+
+        this.selectedStreamId = streamId;
+
         const topic = route.get('topic');
 
         const streamData = {
@@ -117,7 +128,6 @@ export class StreamsComponent implements OnInit, AfterViewInit {
 
         this.streamInfo = streamData;
 
-        console.log('streamInfo ===>>>', streamData);
       }
     });
   }
@@ -129,12 +139,48 @@ export class StreamsComponent implements OnInit, AfterViewInit {
 
     this.changeOnRouter();
     this.getStreamsMessages();
+    // get Unread messages
+    this.getUnreadStreamMessage();
+    // get activated route details
+  }
+
+  getUnreadStreamMessage(): void {
+
+    const newArray: number[] = []
+    this.messageSrv.streamsUnreadMsgArrayObservable
+      .subscribe(
+        (messages: SingleMessageModel[]) => messages?.map(
+          (message: SingleMessageModel) => {
+            if(+message.stream_id === +this.selectedStreamId){
+
+              if(this.unreadStreamMsgIds.includes(message.id)){
+                return
+              }
+                newArray.push(message.id);
+                this.unreadStreamMsgIds.push(message.id);
+                this.unreadStreamMsgSubject.next(newArray);
+            }
+          }
+        )
+      );
+
+    console.log('All stream unread messages ===>>>', this.unreadStreamMsgIds)
+
+    // this.messageSrv.updateReadMessagesFlags(this.unreadStreamMsgObservable)
+    setTimeout(() => {
+      this.messageSrv.updateReadMessagesFlags(this.unreadStreamMsgIds).subscribe(
+        response => {
+          if(response.result === 'success'){
+            this.messageSrv.handleUnreadMessage();
+          }
+        }
+      )
+    }, 500)
+
   }
 
   getStreamsMessages(): void {
     const route = this.activateRoute.snapshot.paramMap;
-
-    console.log('New route ===>>>', route);
 
     const streamId = route.get('stream')?.split('-')[0];
     const currentStream = route.get('stream')?.split('-')[1];
@@ -149,8 +195,6 @@ export class StreamsComponent implements OnInit, AfterViewInit {
         },
       ],
     };
-
-    console.log('streamDetail ===>>>', streamDetail);
 
     this.store.dispatch(new messagingActions.LoadPrivateMessages(streamDetail));
   }

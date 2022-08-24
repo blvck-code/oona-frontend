@@ -13,13 +13,14 @@ export const apiURL = 'https://192.168.0.';
 // export const port = '42';
 export const backendPort = ':2443';
 export const frontendPort = ':3443';
-// https://192.168.0.42:3443/
+export const jitsiPort = ':3443';
 
 export const backendProtocol = 'https://';
 // export const domain = '65.20.69.213';
 export const domain = '192.168.0.42';
 
 export const oonaBaseUrl = `${backendProtocol}${domain}${backendPort}`;
+export const jitsiUrl = `${backendProtocol}${domain}${jitsiPort}`;
 
 export const oonaFrontendUrl = `${domain}${frontendPort}`;
 export const userChannel = `${domain}${backendPort}/ws/on/event/`;
@@ -67,10 +68,12 @@ export const environment = {
   oonaMemberProfileDetail: oonaBaseUrl + '/api/v1/accounts/user/?email=',
   filteredMeetings: oonaBaseUrl + '/api/v1/meet/meeting/dm/?host=',
   filteredAttendeeMeetings: oonaBaseUrl + '/api/v1/meet/meeting/dm/?attendees=',
+  updateMessageFlag: oonaBaseUrl + '/api/v1/message/flag',
 
   sendStreamMessageWithFileURL: oonaBaseUrl + '/api/v1/message/stream/file',
 
   domain: domain,
+  jitsiURL: jitsiUrl,
   whiteBoard: 'http://192.168.0.37:8030',
   etherPad: 'http://192.168.0.37:9001/',
   userChannel: userChannel,

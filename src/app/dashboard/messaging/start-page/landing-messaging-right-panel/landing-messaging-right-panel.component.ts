@@ -14,7 +14,10 @@ import {
   getAllUsers,
   getZulipUsers,
 } from '../../../../auth/state/auth.selectors';
-import { Observable } from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
+import {SingleMessageModel} from "../../models/messages.model";
+import {map} from "rxjs/operators";
+import {SinglePresentUser} from "../../../../auth/models/user.model";
 
 @Component({
   selector: 'app-landing-messaging-right-panel',
@@ -33,7 +36,10 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   selectedUser: any;
   loadedUsers: boolean = false;
 
-  newMsgUsersId: number[] = [];
+  listedUsersArray: any[] = [];
+
+  // newMsgUsersId: number[] = [];
+  endPointUnreadId: number[] = [];
 
   constructor(
     private messagingService: MessagingService,
@@ -57,7 +63,6 @@ export class LandingMessagingRightPanelComponent implements OnInit {
     });
 
     // Todo change to present users
-
     this.messagingService.getZulipUsers().subscribe(
       (users: any) => {
         // @Todo Delete console log
@@ -84,13 +89,25 @@ export class LandingMessagingRightPanelComponent implements OnInit {
     } else {
       this.store.select(getAllUsers).subscribe((users) => {
         // Todo change this back to active users and present users
-        const usersPresent = users?.filter((user: any) => user.presence);
+        // const usersPresent = users?.filter((user: any) => user.presence);
         // this.allUsers = this.newListOfUsers(usersPresent);
-        this.allUsers = users;
+        const newArray: any[] = [];
+
+        users?.map((user: SinglePresentUser) => {
+          const userDetail = {
+            name: user.full_name,
+            user_id: user.user_id,
+            role: user.role,
+            counter: 0
+          }
+
+          this.listedUsersArray.push(userDetail)
+        })
       });
     }
 
     this.loadedUsers = true;
+    this.getPrivateUnreadMsg();
   }
 
   goToMemberChat(member: any): void {
@@ -104,9 +121,35 @@ export class LandingMessagingRightPanelComponent implements OnInit {
 
     this.store.dispatch(new authActions.SetSelectedUser(member));
 
-    this.newMsgUsersId.filter((id) => id === member.user_id);
+    this.endPointUnreadId.filter((id) => id === member.user_id);
 
-    console.log('New messages list ===>>>', this.newMsgUsersId);
+  }
+
+  getPrivateUnreadMsg(): void {
+    let newArray: { sender_id: number, counter: number }[] = [];
+
+    this.messagingService.privateUnreadMsgArrayObservable.subscribe(unread => {
+
+
+      unread?.map(message => {
+
+        // todo fixed to show number of unread messages
+        this.listedUsersArray.map((user: any) => {
+          if(user.user_id === message.sender_id) {
+
+            // if(this.endPointUnreadId.includes(user.user_id)){
+            //   return
+            // }
+            user.counter++;
+            this.endPointUnreadId.push(user.user_id);
+
+          }
+          }
+        )
+
+      })
+    })
+
   }
 
   newListOfUsers(usersPresent: any): any[] {
@@ -192,7 +235,7 @@ export class LandingMessagingRightPanelComponent implements OnInit {
       );
       prvMsg.map((msg) => {
         console.log('Unread messages ===>>>', msg);
-        this.newMsgUsersId.push(msg.sender_id);
+        this.endPointUnreadId.push(msg.sender_id);
         // if (this.messagesId.includes(msg.id)){
         //   return;
         // }

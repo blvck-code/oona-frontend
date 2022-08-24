@@ -63,13 +63,12 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateState();
-    this.tabNotification();
-    this.updateTabNotification();
+    // this.tabNotification();
+    // this.updateTabNotification();
   }
 
   updateTabNotification(): void {
-
-    this.messageSrv.totalUnreadMsgObservable.subscribe(
+    this.messageSrv.totalUnreadMsgCounterObservable.subscribe(
       msg => {
         if (msg > 0) {
           this.titleService.setTitle(`(${msg}) - AVL - Oona`);
@@ -80,6 +79,24 @@ export class AppComponent implements OnInit {
       }
     )
   }
+
+  // handleSocketsNewMessage(): void {
+  //   this.userSocketService.allMsgCounterObservable.subscribe(
+  //     newMessage => {
+  //       if(newMessage === 0) {
+  //         return
+  //       } else {
+  //         // update all messages counter
+  //         const newTotal = this.totalUnreadMsg += 1;
+  //         this.totalUnreadMsgSubject$.next(newTotal);
+  //
+  //         // update private messages counter
+  //         const newTotalPrivateMsg = this.privateUnreadMsgCounter += 1;
+  //         this.privateUnreadMsgCounterSubject.next(newTotalPrivateMsg);
+  //       }
+  //     }
+  //   );
+  // }
 
   handleWebPush(): void {
     this.oneSignal.init({

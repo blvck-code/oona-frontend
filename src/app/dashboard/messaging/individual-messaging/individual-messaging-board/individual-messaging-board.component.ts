@@ -7,7 +7,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import {ActivatedRoute, NavigationStart, Params, Router} from '@angular/router';
 import { MessagingService } from '../../services/messaging.service';
 
 import TurndownService from 'turndown';
@@ -20,7 +20,7 @@ import { getSelectedUser } from '../../../../auth/state/auth.selectors';
 import { BehaviorSubject, Observable } from 'rxjs';
 // @Todo change this to fetch only individual messages
 import { SingleMessageModel } from '../../models/messages.model';
-import { take } from 'rxjs/operators';
+import {map, take} from 'rxjs/operators';
 import { NotificationService } from '../../../../shared/services/notification.service';
 import { numbers } from '@material/dialog/constants';
 import { getAllMessages } from '../../state/messaging.selectors';
@@ -107,7 +107,9 @@ export class IndividualMessagingBoardComponent implements OnInit {
         this.getSelectedUser();
       }
     });
+
   }
+
 
   changeContentOnRouteChange(): void {
     this.router.events.subscribe((event: any) => {

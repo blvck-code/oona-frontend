@@ -17,7 +17,7 @@ declare var JitsiMeetExternalAPI: any;
 })
 export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
   // @ToDo white domain URL not similar
-  domain = env.domain;
+  domain = env.jitsiURL;
   room: any;
   options: any;
   api: any;

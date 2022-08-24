@@ -1,4 +1,4 @@
-<div class="individual-message-item" [class.my-message]="messageDetail?.sender_id === ( zulipProfile | async ).zulip.user_id">
+<div #currentChat class="individual-message-item" [class.my-message]="messageDetail?.sender_id === ( zulipProfile | async ).zulip.user_id">
   <div class="message-sender-icon">
     <img src="assets/img/placeholder.jpg" class="rounded-circle me-2" alt="...">
 <!--    <img *ngIf="messageDetail?.avatar_url; else noAvatar" [src]="imageURL" class="rounded-circle me-2" alt="...">-->
