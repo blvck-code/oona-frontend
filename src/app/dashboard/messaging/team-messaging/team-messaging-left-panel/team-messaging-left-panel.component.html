@@ -177,11 +177,16 @@
                  data-toggle="modal" data-target="#exampleModal">+</p>
             </div>
             <div
-              *ngFor="let topic of team?.topics"
+              *ngFor="let topic of team?.topics?.topics"
               class="accordion-body-item"
             >
               <p (click)="handleNavigateTopic(team, topic)">
                 {{ topic?.name | titlecase }}
+                <span
+                  *ngIf="topic.unread > 0"
+                  class="badge badge-dark ms-2">
+                {{ topic.unread }}
+              </span>
               </p>
 
             </div>

@@ -173,11 +173,12 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
                   this.allTopics = [...this.allTopics, stream];
 
 
-
                   const streamContent = {
                     stream_id: stream.stream_id,
                     name: stream.name,
-                    topics: stream.topics?.zulip.topics,
+                    topics: {
+                      topics: stream.topics?.zulip.topics,
+                    },
                     counter: 0
                   }
 
@@ -475,27 +476,54 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   handleUnreadMsgCounter(): void {
 
     const streamArray: any[] = [];
+    const topicSubjects: string[] = [];
 
-    this.streamUnreadCounter.map((counter: { stream_id: number, counter: number, name: string, topics: any[]}) => {
+    this.streamUnreadCounter.map((counter: { stream_id: number, counter: number, name: string, topics: { topics: any[] }}) => {
 
 
       let unreadContent = {
         name: counter.name,
         stream_id: counter.stream_id,
-        topics: counter.topics,
-        unreadCount: 0
+        unreadCount: 0,
+        topics: counter.topics
       };
 
-      this.messagingService.streamsUnreadMsgArrayObservable.subscribe((unreadStreams: SingleMessageModel[]) => {
 
+      this.messagingService.streamsUnreadMsgArrayObservable.subscribe((unreadStreams: SingleMessageModel[]) => {
         unreadStreams.map((unreadStream: SingleMessageModel) => {
 
 
           take(1)
           if(+unreadStream.stream_id === +counter.stream_id) {
+            // adding counter for all unread messages of the stream
             unreadContent.unreadCount += 1;
-          } else {
-            counter.counter = 0;
+
+            if(topicSubjects.includes(unreadStream.subject.toLowerCase())){
+              return
+            } else {
+              topicSubjects.push(unreadStream.subject.toLowerCase());
+
+              counter.topics.topics.map((topic: any) => {
+                topic.unread = 0;
+
+                topicSubjects.map((topicName: string) => {
+                  console.log('Topic ===>>>', topicSubjects)
+
+                  if(topic.name.toLowerCase() === topicName.toLowerCase()){
+                    // adding counter for single topic unread
+                    topic.unread += 1;
+
+                  } else {
+                    topic.unread = 0;
+                  }
+                })
+
+
+              })
+
+            }
+
+            // console.log('Unread message ====>>>', unreadStream)
           }
         })
 
