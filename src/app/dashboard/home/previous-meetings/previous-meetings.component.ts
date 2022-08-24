@@ -103,7 +103,7 @@ export class PreviousMeetingsComponent implements OnInit {
   }
 
   handleChange(e: any): any {
-    console.log('Event ==>>', e);
+    // console.log('Event ==>>', e);
   }
 
   updateHeader(): any {
@@ -126,7 +126,7 @@ export class PreviousMeetingsComponent implements OnInit {
         },
         (meetingsError: any) => {
           this.areMeetingsLoading = false;
-          console.log('Get Meetings, Server Error', meetingsError);
+          // console.log('Get Meetings, Server Error', meetingsError);
         }
       );
   }
@@ -244,7 +244,7 @@ export class PreviousMeetingsComponent implements OnInit {
           }
         },
         (meetingError: any) => {
-          console.log('Schedule Meeting Error:', meetingError);
+          // console.log('Schedule Meeting Error:', meetingError);
           this.signupError = true;
           if (meetingError.error.non_field_errors.length > 0 && meetingError.error.non_field_errors[0] !== 'Host can\'t be an attendee') {
             this.timeError = true;

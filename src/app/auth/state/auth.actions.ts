@@ -57,7 +57,7 @@ export class LoginUserSuccess implements Action {
 export class LoginUserFail implements Action {
   readonly type = AuthActionsTypes.LOGIN_USER_FAIL;
   constructor( public payload: any) {
-    console.log('Login error payload ===>>>', payload);
+    // console.log('Login error payload ===>>>', payload);
   }
 }
 
@@ -75,7 +75,7 @@ export class LogoutUserSuccess implements Action {
 export class LogoutUserFail implements Action {
   readonly type = AuthActionsTypes.LOGOUT_USER_FAIL;
   constructor(public payload: string) {
-    console.log(payload);
+    // console.log(payload);
   }
 }
 
@@ -88,13 +88,13 @@ export class CurrentUserProfile implements Action {
 export class LoadProfileSuccess implements Action {
   readonly type = AuthActionsTypes.FETCH_PROFILE_SUCCESS;
   constructor(public payload: any) {
-    console.log('Current user profile loaded successfully ====>>>>', payload);
+    // console.log('Current user profile loaded successfully ====>>>>', payload);
   }
 }
 export class LoadProfileError implements Action {
   readonly type = AuthActionsTypes.FETCH_PROFILE_FAIL;
   constructor(public payload: any) {
-    console.log('Load current user profile error ===>>', payload);
+    // console.log('Load current user profile error ===>>', payload);
   }
 }
 export class UpdateState implements Action {
@@ -106,7 +106,7 @@ export class UpdateState implements Action {
 export class LoadAllUsers implements Action {
   readonly type = AuthActionsTypes.LOAD_ALL_USERS;
   constructor() {
-    console.log('Loading all users');
+    // console.log('Loading all users');
   }
 }
 export class LoadAllUsersSuccess implements Action {
@@ -118,7 +118,7 @@ export class LoadAllUsersSuccess implements Action {
 export class LoadAllUsersFail implements Action {
   readonly type = AuthActionsTypes.LOAD_ALL_USERS_FAIL;
   constructor(public payload: any) {
-    console.log('load all users fail ===>>', payload);
+    // console.log('load all users fail ===>>', payload);
   }
 }
 
@@ -126,7 +126,7 @@ export class LoadAllUsersFail implements Action {
 export class LoadZulipUsers implements Action {
   readonly type = AuthActionsTypes.LOAD_ZULIP_USERS;
   constructor() {
-    console.log('Loading zulip users');
+    // console.log('Loading zulip users');
   }
 }
 export class LoadZulipUsersSuccess implements Action {
@@ -137,7 +137,7 @@ export class LoadZulipUsersSuccess implements Action {
 export class LoadZulipUsersFail implements Action {
   readonly type = AuthActionsTypes.LOAD_ZULIP_USERS_FAIL;
   constructor(public payload: any) {
-    console.log('Load zulip users fail ====>>', payload);
+    // console.log('Load zulip users fail ====>>', payload);
   }
 }
 

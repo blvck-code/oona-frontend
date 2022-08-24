@@ -48,7 +48,7 @@ function handleSelectedUser(state: AuthState, action: any): void{
 
   // const currentUser = users?.filter((user: any) => user.user_id === id);
 
-  console.log('State ===>>', users);
+  // console.log('State ===>>', users);
 }
 
 export function authReducer(state = initialState, action: any): AuthState {
@@ -95,7 +95,7 @@ export function authReducer(state = initialState, action: any): AuthState {
       };
     // Logout
     case authActions.AuthActionsTypes.LOGOUT_USER_SUCCESS:
-      console.log('Logout payload ===>>>', action.payload);
+      // console.log('Logout payload ===>>>', action.payload);
       return {
         ...state,
         loginStatus: {
@@ -166,7 +166,7 @@ export function authReducer(state = initialState, action: any): AuthState {
 }
 // Save on local storage
 const saveUserData = (userInfo: UserModel) => {
-  console.log('User info ===>>', userInfo);
+  // console.log('User info ===>>', userInfo);
   const userData = userInfo.user;
   const tokenData = userInfo.token;
 

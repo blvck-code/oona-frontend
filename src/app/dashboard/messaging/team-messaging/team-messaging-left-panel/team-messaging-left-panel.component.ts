@@ -507,7 +507,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
                 topic.unread = 0;
 
                 topicSubjects.map((topicName: string) => {
-                  console.log('Topic ===>>>', topicSubjects)
+                  // console.log('Topic ===>>>', topicSubjects)
 
                   if(topic.name.toLowerCase() === topicName.toLowerCase()){
                     // adding counter for single topic unread
@@ -535,9 +535,9 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
     this.finalStreamSubject.next(streamArray)
 
-    this.finalStreamObservable.subscribe(
-      content => console.log('Content ==>', content)
-    )
+    // this.finalStreamObservable.subscribe(
+    //   content => console.log('Content ==>', content)
+    // )
 
     // this.messagingService.streamsUnreadMsgArrayObservable.subscribe(
     //   unreads => unreads?.map((message: SingleMessageModel) => {

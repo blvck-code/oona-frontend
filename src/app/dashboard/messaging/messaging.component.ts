@@ -47,7 +47,7 @@ export class MessagingComponent implements OnInit {
   ) {
     // this.messageSocket.messageConnect();
     this.messagingService.messages.subscribe((msg) => {
-      console.log('Response from websocket ===>>>', msg);
+      // console.log('Response from websocket ===>>>', msg);
     });
   }
 
@@ -245,7 +245,7 @@ export class MessagingComponent implements OnInit {
   }
 
   getUsersFromStore(): void {
-    console.log('Getting users from store');
+    // console.log('Getting users from store');
 
     take(1),
       this.store.select('userCenter').subscribe((userState: any) => {

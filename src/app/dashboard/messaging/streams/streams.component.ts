@@ -117,7 +117,7 @@ export class StreamsComponent implements OnInit, AfterViewInit {
         const streamId = route.get('stream')?.split('-')[0];
         const currentStream = route.get('stream')?.split('-')[1];
 
-        console.log('Selected stream id', streamId);
+        // console.log('Selected stream id', streamId);
 
         this.selectedStreamId = streamId;
 
@@ -166,17 +166,22 @@ export class StreamsComponent implements OnInit, AfterViewInit {
 
     // this.messageSrv.updateReadMessagesFlags(this.unreadStreamMsgObservable)
     // Todo uncomment this later on
-    // setTimeout(() => {
-    //   this.messageSrv
-    //     .updateReadMessagesFlags(this.unreadStreamMsgIds)
-    //     .subscribe((response) => {
-    //       if (response.result === 'success') {
-    //         this.messageSrv.handleUnreadMessage().subscribe(
-    //           (response: any) => console.log('Updated flags successfully ===>>>', response)
-    //         );
-    //       }
-    //     });
-    // }, 500);
+
+    // update stream messages to read
+    if(this.unreadStreamMsgIds.length) {
+      setTimeout(() => {
+        this.messageSrv
+          .updateReadMessagesFlags('stream', this.unreadStreamMsgIds)
+          .subscribe((response) => {
+            if (response.result === 'success') {
+              this.messageSrv.handleUnreadMessage().subscribe(
+                (response: any) => console.log('Updated flags successfully ===>>>', response)
+              );
+            }
+          });
+      }, 500);
+    }
+
   }
 
   getStreamsMessages(): void {

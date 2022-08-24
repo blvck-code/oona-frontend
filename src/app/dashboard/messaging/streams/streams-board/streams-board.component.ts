@@ -167,11 +167,11 @@ export class StreamsBoardComponent implements OnInit {
     this.oonaSocket.myStreamMessagesSocketSubject.subscribe(
       (msg: any) => {
 
-        console.log('My sent outgoing message content ===>>>', msg);
+        // console.log('My sent outgoing message content ===>>>', msg);
 
         this.oonaSocket.myStreamMessagesSocketSubject.subscribe( messages => {
 
-            console.log('Private messages content ===>>>', messages);
+            // console.log('Private messages content ===>>>', messages);
 
             if (this.messagesId.includes(msg.id)){
               return;

@@ -62,7 +62,7 @@ export enum MessagingActionsTypes {
 export class LoadMessaging implements Action {
   readonly type = MessagingActionsTypes.LOAD_MESSAGES;
   constructor(public payload: any) {
-    console.log('Load messages ===>>>', payload);
+    // console.log('Load messages ===>>>', payload);
   }
 }
 export class LoadMessagingSuccess implements Action {
@@ -82,7 +82,7 @@ export class FilterMessages implements Action {
 export class LoadMoreMessaging implements Action {
   readonly type = MessagingActionsTypes.LOAD_MORE_MESSAGE;
   constructor(public payload: any) {
-    console.log('Loaded more messages ==>>>', payload);
+    // console.log('Loaded more messages ==>>>', payload);
   }
 }
 export class LoadMoreMessagingSuccess implements Action {
@@ -106,7 +106,7 @@ export class LoadAllMessagesSuccess implements Action {
 export class LoadAllMessagesFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES_FAIL;
   constructor(public payload: any) {
-    console.log('Loading all messages fail ===>>>', payload);
+    // console.log('Loading all messages fail ===>>>', payload);
   }
 }
 
@@ -122,7 +122,7 @@ export class LoadPrivateMessagesSuccess implements Action {
 export class LoadPrivateMessagesFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_PRIVATE_MESSAGES_FAIL;
   constructor(public payload: any) {
-    console.log('Loading private messages fail ===>>>', payload);
+    // console.log('Loading private messages fail ===>>>', payload);
   }
 }
 
@@ -130,19 +130,19 @@ export class LoadPrivateMessagesFail implements Action {
 export class LoadStreamData implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_DATA;
   constructor(public payload: any) {
-    console.log('Stream data details ===>>>', payload);
+    // console.log('Stream data details ===>>>', payload);
   }
 }
 export class LoadStreamDataSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_DATA_SUCCESS;
   constructor(public payload: any) {
-    console.log('Payload stream data success ====>>>', payload);
+    // console.log('Payload stream data success ====>>>', payload);
   }
 }
 export class LoadStreamDataFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_DATA_FAIL;
   constructor(public payload: StreamDataModel) {
-    console.log('Loading stream data fail ===>>>', payload);
+    // console.log('Loading stream data fail ===>>>', payload);
   }
 }
 
@@ -205,7 +205,7 @@ export class LoadCurrentPrivateUserSuccess implements Action {
 export class LoadCurrentPrivateUserFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_CURRENT_USER_FAIL;
   constructor(public payload: any) {
-    console.log('Load private user failed ==>>>', payload);
+    // console.log('Load private user failed ==>>>', payload);
   }
 }
 

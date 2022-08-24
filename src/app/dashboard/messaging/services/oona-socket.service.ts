@@ -84,21 +84,21 @@ export class OonaSocketService {
   }
 
   changeNewMessageCount(newCount: any): void {
-    console.log('Message counter ===>>', newCount);
+    // console.log('Message counter ===>>', newCount);
     this.messageCountSocket.next(newCount);
   }
   changeNewStreamMessageCount(newStreamMessages: any): void {
-    console.log('newStreamMessages ===>>>', newStreamMessages);
+    // console.log('newStreamMessages ===>>>', newStreamMessages);
     this.streamMessageCountSocket.next(newStreamMessages);
   }
 
   changeNewPrivateMessageCount(newPrivateMessages: any): void {
-    console.log('changeNewPrivateMessageCount ==>>', newPrivateMessages);
+    // console.log('changeNewPrivateMessageCount ==>>', newPrivateMessages);
     this.privateMessageCountSocket.next(newPrivateMessages);
   }
 
   changeTypingStatus(status: any): void {
-    console.log('Typing status ==>>', status);
+    // console.log('Typing status ==>>', status);
     this.typingStatusSocket.next(status);
   }
 
@@ -108,7 +108,7 @@ export class OonaSocketService {
       return
     }
 
-    console.log('New message item ===>>>', msg)
+    // console.log('New message item ===>>>', msg)
 
     this.allMsgCounterSubject.next(this.allMessagesCounter + 1);
     this.newMessagesId.push(msg.id)
@@ -123,10 +123,10 @@ export class OonaSocketService {
     const url: string = env.userChannel;
     const userChannel = protocol + url;
 
-    console.log('userChannel URL ===>>>', userChannel);
+    // console.log('userChannel URL ===>>>', userChannel);
 
     this.websocket = new WebSocket(userChannel, this.authService.getToken());
-    console.log('Events sockets successfully connected: ', userChannel);
+    // console.log('Events sockets successfully connected: ', userChannel);
   }
 
   filterSocketData(userData: any): void {
