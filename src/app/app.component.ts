@@ -11,7 +11,6 @@ import {OonaSocketService} from './dashboard/messaging/services/oona-socket.serv
 import {ActivatedRoute} from '@angular/router';
 import {Notification} from 'rxjs';
 
-import { OneSignal} from 'onesignal-ngx';
 import {MessagingService} from "./dashboard/messaging/services/messaging.service";
 
 @Component({
@@ -29,7 +28,6 @@ export class AppComponent implements OnInit {
     private messageSrv: MessagingService,
     private route: ActivatedRoute,
     private titleService: Title,
-    private oneSignal: OneSignal
   ) {
   }
 
@@ -98,10 +96,6 @@ export class AppComponent implements OnInit {
   //   );
   // }
 
-  handleWebPush(): void {
-    this.oneSignal.init({
-      appId: '41d455ec-e448-416c-a089-c8ac0ebb5f4d'
-    });
-  }
+
 
 }
