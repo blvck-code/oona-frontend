@@ -43,6 +43,7 @@
               "node_modules/bootstrap-icons/font/bootstrap-icons.css"
             ],
             "scripts": [
+              "src/assets/js/vendor/external_api.js",
               "node_modules/bootstrap/dist/js/bootstrap.bundle.js"
             ],
             "vendorChunk": true,
