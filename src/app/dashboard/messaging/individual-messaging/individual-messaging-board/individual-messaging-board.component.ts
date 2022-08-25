@@ -254,7 +254,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
     );
   }
 
-
   inComingMessage(): void {
     this.userSocketService.privateMessageCountSocket.subscribe((prvMsg) => {
       console.log(
