@@ -22,6 +22,8 @@ import { appReducer } from './state/app.state';
 import {EffectsModule} from '@ngrx/effects';
 import {TokenInterceptorService} from './interceptors/token-interceptor.service';
 import {ErrorInterceptorService} from './interceptors/error-interceptor.service';
+import {AuthEffects} from './auth/state/auth.effects';
+import {MessagingEffects} from './dashboard/messaging/state/messaging.effects';
 
 @NgModule({
     declarations: [
@@ -46,7 +48,7 @@ import {ErrorInterceptorService} from './interceptors/error-interceptor.service'
             maxAge: 25,
             logOnly: env.production
         }),
-        EffectsModule.forRoot([]),
+        EffectsModule.forRoot([AuthEffects, MessagingEffects]),
     ],
     providers: [
         {

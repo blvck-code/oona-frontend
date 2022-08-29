@@ -12,6 +12,7 @@ import {ActivatedRoute} from '@angular/router';
 import {Notification} from 'rxjs';
 
 import {MessagingService} from "./dashboard/messaging/services/messaging.service";
+import * as messagingActions from './dashboard/messaging/state/messaging.actions';
 
 @Component({
   selector: 'app-root',
@@ -61,41 +62,13 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateState();
-    // this.tabNotification();
-    // this.updateTabNotification();
+    this.initializeState();
   }
 
-  updateTabNotification(): void {
-    this.messageSrv.totalUnreadMsgCounterObservable.subscribe(
-      msg => {
-        if (msg > 0) {
-          this.titleService.setTitle(`(${msg}) - AVL - Oona`);
-          // document.title = `(${msg}) - AVL - Oona`;
-        } else {
-          this.titleService.setTitle(`AVL - Oona`);
-        }
-      }
-    )
+  initializeState(): void {
+    this.store.dispatch(new messagingActions.LoadAllStreams());
+    this.store.dispatch(new messagingActions.LoadSubStreams());
+    this.store.dispatch(new authActions.LoadZulipUsers());
+    this.store.dispatch(new authActions.LoadAllUsers());
   }
-
-  // handleSocketsNewMessage(): void {
-  //   this.userSocketService.allMsgCounterObservable.subscribe(
-  //     newMessage => {
-  //       if(newMessage === 0) {
-  //         return
-  //       } else {
-  //         // update all messages counter
-  //         const newTotal = this.totalUnreadMsg += 1;
-  //         this.totalUnreadMsgSubject$.next(newTotal);
-  //
-  //         // update private messages counter
-  //         const newTotalPrivateMsg = this.privateUnreadMsgCounter += 1;
-  //         this.privateUnreadMsgCounterSubject.next(newTotalPrivateMsg);
-  //       }
-  //     }
-  //   );
-  // }
-
-
-
 }
