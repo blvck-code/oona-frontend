@@ -28,8 +28,8 @@ import {MessagingModule} from '../dashboard/messaging/messaging.module';
         ReactiveFormsModule,
         FormsModule,
         AuthRoutingModule,
-        StoreModule.forFeature('userCenter', authReducer),
-        EffectsModule.forFeature([AuthEffects]),
+        // StoreModule.forFeature('userCenter', authReducer),
+        // EffectsModule.forFeature([AuthEffects]),
         MessagingModule
     ]
 })

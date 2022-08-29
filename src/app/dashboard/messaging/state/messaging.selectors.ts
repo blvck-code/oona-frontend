@@ -1,5 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { MessagingState } from './messaging.reducer';
+import {SingleMessageModel} from "../models/messages.model";
 
 export const messagingSelector = 'messaging';
 

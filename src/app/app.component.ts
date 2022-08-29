@@ -65,7 +65,12 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.updateState();
     this.initializeState();
-
+    this.messageSrv.getStreamUnreadMessages();
+    this.messageSrv.totalUnreadMsgCounterObservable.subscribe(
+      numb => {
+        document.title = `(${numb}) - AVL - Oona`;
+      }
+    )
   }
 
   initializeState(): void {
