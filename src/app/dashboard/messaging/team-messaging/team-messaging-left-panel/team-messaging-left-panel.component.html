@@ -177,7 +177,7 @@
                  data-toggle="modal" data-target="#exampleModal">+</p>
             </div>
             <div
-              *ngFor="let topic of team?.topics?.topics"
+              *ngFor="let topic of team?.topics?.zulip.topics"
               class="accordion-body-item"
             >
               <p (click)="handleNavigateTopic(team, topic)">

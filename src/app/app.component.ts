@@ -99,7 +99,7 @@ export class AppComponent implements OnInit {
     setTimeout(() => {
       this.messageSrv.handleUnreadPrivateMessages();
       this.messageSrv.handleUnreadStreamMessages();
-    }, 1500)
+    }, 3000)
 
   }
 

@@ -154,6 +154,8 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
                   };
                   this.allTopics = [...this.allTopics, stream];
 
+
+
                   // const streamContent = {
                   //   stream_id: stream.stream_id,
                   //   name: stream.name,
@@ -183,6 +185,13 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
         this.handleUnreadMsgCounter();
       }, 1000)
     });
+
+    setTimeout(() => {
+
+      this.messagingService.totalUnreadMsgObservable.subscribe(
+        messages => console.log('Unreads =.', messages)
+      )
+    }, 3000)
 
     // Get Topics from store
     this.topics = this.store.select(getTopics);
@@ -561,15 +570,15 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   }
 
   showNotificationCounter(): void {
-    this.totalUnreadMsgObservable.subscribe(
-      total => {
-        if (total > 0) {
-          this.titleService.setTitle(`(${total}) - AVL - Oona`);
-        } else {
-          this.titleService.setTitle(`AVL - Oona`);
-        }
-      }
-    );
+    // this.totalUnreadMsgObservable.subscribe(
+    //   total => {
+    //     if (total > 0) {
+    //       this.titleService.setTitle(`(${total}) - AVL - Oona`);
+    //     } else {
+    //       this.titleService.setTitle(`AVL - Oona`);
+    //     }
+    //   }
+    // );
   }
 
   // Todo filter unread messages here to update on ui
