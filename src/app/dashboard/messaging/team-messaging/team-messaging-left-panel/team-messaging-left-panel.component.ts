@@ -145,23 +145,23 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
                   };
                   this.allTopics = [...this.allTopics, stream];
 
-                  const streamContent = {
-                    stream_id: stream.stream_id,
-                    name: stream.name,
-                    topics: {
-                      topics: stream.topics?.zulip.topics,
-                    },
-                    counter: 0
-                  }
-
-                  this.streamUnreadCounter.push(streamContent);
-
-                  if (this.streamIds.includes(stream.stream_id)) {
-                    return;
-                  } else {
-                    this.listedStreamArray.push(stream);
-                    this.streamIds.push(stream.stream_id);
-                  }
+                  // const streamContent = {
+                  //   stream_id: stream.stream_id,
+                  //   name: stream.name,
+                  //   topics: {
+                  //     topics: stream.topics?.zulip.topics,
+                  //   },
+                  //   counter: 0
+                  // }
+                  //
+                  // this.streamUnreadCounter.push(streamContent);
+                  //
+                  // if (this.streamIds.includes(stream.stream_id)) {
+                  //   return;
+                  // } else {
+                  //   this.listedStreamArray.push(stream);
+                  //   this.streamIds.push(stream.stream_id);
+                  // }
 
                   this.change.detectChanges();
                 }

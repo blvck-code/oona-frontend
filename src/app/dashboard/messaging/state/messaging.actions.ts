@@ -19,6 +19,11 @@ export enum MessagingActionsTypes {
   LOAD_PRIVATE_MESSAGE_SUCCESS = 'messaging/loadPrivateMessagesSuccess',
   LOAD_PRIVATE_MESSAGES_FAIL = 'messaging/loadPrivateMessagesFail',
 
+  // PRIVATE MESSAGES
+  LOAD_STREAM_MESSAGES = 'messaging/loadStreamMessages',
+  LOAD_STREAM_MESSAGE_SUCCESS = 'messaging/loadStreamMessagesSuccess',
+  LOAD_STREAM_MESSAGES_FAIL = 'messaging/loadStreamMessagesFail',
+
   // GET MORE MESSAGES
   LOAD_MORE_MESSAGE = 'messaging/loadMore',
   LOAD_MORE_MESSAGE_SUCCESS = 'messaging/loadMoreSuccess',
@@ -98,11 +103,13 @@ export class LoadMoreMessagingFail implements Action {
 // ALL MESSAGES
 export class LoadAllMessages implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES;
-  constructor(public payload: any) {}
+  constructor(public payload: any) {
+  }
 }
 export class LoadAllMessagesSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES_SUCCESS;
-  constructor(public payload: any) {}
+  constructor(public payload: any) {
+  }
 }
 export class LoadAllMessagesFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_MESSAGES_FAIL;
@@ -111,14 +118,26 @@ export class LoadAllMessagesFail implements Action {
   }
 }
 
+export class LoadStreamMessage implements Action {
+  readonly type = MessagingActionsTypes.LOAD_STREAM_MESSAGES;
+  constructor(public payload: any) {}
+}
+
+export class LoadStreamMessageSuccess implements Action {
+  readonly type = MessagingActionsTypes.LOAD_STREAM_MESSAGE_SUCCESS;
+  constructor(public payload: any) {}
+}
+
 // PRIVATE MESSAGES
 export class LoadPrivateMessages implements Action {
   readonly type = MessagingActionsTypes.LOAD_PRIVATE_MESSAGES;
-  constructor(public payload: any) {}
+  constructor(public payload: any) {
+  }
 }
 export class LoadPrivateMessagesSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_PRIVATE_MESSAGE_SUCCESS;
-  constructor(public payload: MessagesModel) {}
+  constructor(public payload: MessagesModel) {
+  }
 }
 export class LoadPrivateMessagesFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_PRIVATE_MESSAGES_FAIL;
@@ -218,7 +237,9 @@ export class HandleUnreadMessage implements Action {
 
 export class HandleSendMessage implements Action {
   readonly type = MessagingActionsTypes.HANDLE_SEND_MESSAGE;
-  constructor(public payload: any) {}
+  constructor(public payload: any) {
+
+  }
 }
 
 export type MessagingActions =
@@ -262,4 +283,7 @@ export type MessagingActions =
   | LoadStreamDataSuccess
   | LoadStreamDataFail
   | HandleStreamData
-  | HandleUnreadMessage;
+  | HandleUnreadMessage
+
+  | LoadStreamMessage
+  | LoadStreamMessageSuccess;

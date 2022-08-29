@@ -7,9 +7,10 @@ import {Router} from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../state/app.state';
 import * as authActions from '../state/auth.actions';
-import {getErrorMessage, getIsLoggedIn} from '../state/auth.selectors';
+import {getAllUsers, getErrorMessage, getIsLoggedIn} from '../state/auth.selectors';
 import {Observable} from 'rxjs';
 import {UserModel} from '../models/user.model';
+import * as messagingActions from '../../dashboard/messaging/state/messaging.actions';
 
 @Component({
   selector: 'app-login',
@@ -63,8 +64,20 @@ export class LoginComponent implements OnInit {
 
   redirectOnLogin(): void {
     this.store.select(getIsLoggedIn).subscribe(
-      data => data ? this.route.navigate(['/dashboard']) : null
+      (status: boolean) => {
+
+        if (status) {
+          this.route.navigate(['/dashboard']);
+          this.store.dispatch(new authActions.LoadZulipUsers);
+          this.store.dispatch(new messagingActions.LoadAllStreams);
+
+          console.log('Logged in successfully');
+        }
+
+        return;
+      }
     );
+    this.store.dispatch(new authActions.LoadAllUsers);
   }
 
   onLogin(): any {

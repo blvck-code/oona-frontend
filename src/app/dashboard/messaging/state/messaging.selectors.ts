@@ -81,10 +81,16 @@ export const getLoadingPrivateMsgs = createSelector(
 
 export const getPrivateMessages = createSelector(
   getMessagingState,
-  (state) => state.messaging.privateMsgs?.messages?.zulip?.messages
+  (state) => state.messaging.privateMsgs.messages
 );
 
-export const getFilteredPrvMsgs = createSelector(
+// ge stream messages
+export const getStreamMessages = createSelector(
   getMessagingState,
-  (state) => state.messaging.privateMsgs.filteredMsg
+  (state) => state.messaging.streamMsg.messages
 );
+
+export const getStreamMsgStatus = createSelector(
+  getMessagingState,
+  state => state.messaging.streamMsg.loaded
+)

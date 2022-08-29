@@ -56,8 +56,6 @@ export class AppComponent implements OnInit {
       newMessage => {
         const messages = this.sockets.messagesInPrivate;
 
-        // console.log('Latest message content ====>>', messages);
-        // console.log('Messages counter ===>>> ', newMessage);
       }
     );
   }
@@ -65,12 +63,6 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.updateState();
     this.initializeState();
-    this.messageSrv.getStreamUnreadMessages();
-    this.messageSrv.totalUnreadMsgCounterObservable.subscribe(
-      numb => {
-        document.title = `(${numb}) - AVL - Oona`;
-      }
-    )
   }
 
   initializeState(): void {
@@ -78,7 +70,40 @@ export class AppComponent implements OnInit {
     this.store.dispatch(new messagingActions.LoadSubStreams());
     this.store.dispatch(new authActions.LoadZulipUsers());
     this.store.dispatch(new authActions.LoadAllUsers());
+
+    setTimeout(() => {
+      this.getMessages();
+      this.getTotalCounter();
+    }, 1000);
   }
+
+  getTotalCounter(): void {
+    this.messageSrv.totalUnreadMsgCounterObservable.subscribe(
+      numb => {
+
+        if (+numb > 0) {
+          console.log(numb)
+          this.titleService.setTitle(`( ${numb} ) - AVL - Oona`);
+        } else {
+          this.titleService.setTitle('AVL - Oona')
+        }
+
+      }
+    )
+  }
+
+  getMessages(): void {
+
+    this.messageSrv.handleGetStreamMessages();
+    this.messageSrv.handleGetPrivateMessages();
+
+    setTimeout(() => {
+      this.messageSrv.handleUnreadPrivateMessages();
+      this.messageSrv.handleUnreadStreamMessages();
+    }, 1500)
+
+  }
+
 
 
 }

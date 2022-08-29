@@ -135,12 +135,12 @@
       <!--        </div>-->
       <!--      </div>-->
 
-      <div *ngIf="!(finalStreamObservable | async)?.length">
+      <div *ngIf="!allTopics?.length">
         <app-load-indicator></app-load-indicator>
       </div>
 
       <div
-        *ngFor="let team of (finalStreamObservable | async); index as i"
+        *ngFor="let team of this.allTopics; index as i"
         class="accordion-item" (click)="getStreamName(team)"
       >
         <h2 class="accordion-header" id="flush-headingOne">
