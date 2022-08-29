@@ -31,6 +31,7 @@ export interface MessagingState {
       loading: boolean;
       messages: SingleMessageModel[] | undefined | null;
     };
+    unreadMsg: SingleMessageModel[]
   };
 }
 
@@ -59,6 +60,7 @@ export const initialState: MessagingState = {
       loading: false,
       messages: null,
     },
+    unreadMsg: []
   },
 };
 
@@ -222,7 +224,14 @@ export function messagingReducer(
           },
         },
       };
-
+    case messagingActions.MessagingActionsTypes.HANDLE_UNREAD_MESSAGE:
+      return {
+        ...state,
+        messaging: {
+          ...state.messaging,
+          unreadMsg: [...state.messaging.unreadMsg, action.payload]
+        },
+      };
     case messagingActions.MessagingActionsTypes.LOAD_MORE_MESSAGE:
       return {
         ...state,

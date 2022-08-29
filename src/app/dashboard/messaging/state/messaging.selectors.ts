@@ -47,6 +47,11 @@ export const getAllStreamData = createSelector(
   (state) => state.streams.streamData
 );
 
+export const getUnreadMessages = createSelector(
+  getMessagingState,
+  state => state.messaging.unreadMsg
+);
+
 // export const filteredState = createSelector(
 //   getMessagingState,
 //   state => state.messaging.filtered

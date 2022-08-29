@@ -53,7 +53,6 @@ export class MessagingComponent implements OnInit {
 
   ngOnInit(): void {
     this.initPage();
-    this.getStreamsTopics();
 
     this.authService.getCurrentUser().subscribe((userData: any) => {
       this.firstName = userData.results[0].first_name;
@@ -108,7 +107,6 @@ export class MessagingComponent implements OnInit {
     // this.initializeState();
     this.getAllMessages();
     this.getPrivateMessages();
-    this.getAllStreamData();
     this.getUsersFromStore();
     this.getAllPrivateMessages();
     // this.getStreamData();

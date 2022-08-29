@@ -56,6 +56,7 @@ export enum MessagingActionsTypes {
 
   // FILTER MESSAGES
   FILTER_MESSAGES = 'messaging/filterMessages',
+  HANDLE_UNREAD_MESSAGE = 'messaging/handleUnreadMessage'
 }
 
 // LOAD MESSAGES ACTIONS
@@ -209,6 +210,12 @@ export class LoadCurrentPrivateUserFail implements Action {
   }
 }
 
+export class HandleUnreadMessage implements Action {
+  readonly type = MessagingActionsTypes.HANDLE_UNREAD_MESSAGE;
+  constructor(public payload: any) {
+  }
+}
+
 export class HandleSendMessage implements Action {
   readonly type = MessagingActionsTypes.HANDLE_SEND_MESSAGE;
   constructor(public payload: any) {}
@@ -254,4 +261,5 @@ export type MessagingActions =
   | LoadStreamData
   | LoadStreamDataSuccess
   | LoadStreamDataFail
-  | HandleStreamData;
+  | HandleStreamData
+  | HandleUnreadMessage;

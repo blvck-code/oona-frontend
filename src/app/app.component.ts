@@ -13,6 +13,8 @@ import {Notification} from 'rxjs';
 
 import {MessagingService} from "./dashboard/messaging/services/messaging.service";
 import * as messagingActions from './dashboard/messaging/state/messaging.actions';
+import {log} from 'util';
+import {getUnreadMessages} from './dashboard/messaging/state/messaging.selectors';
 
 @Component({
   selector: 'app-root',
@@ -63,6 +65,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.updateState();
     this.initializeState();
+
   }
 
   initializeState(): void {
@@ -71,4 +74,6 @@ export class AppComponent implements OnInit {
     this.store.dispatch(new authActions.LoadZulipUsers());
     this.store.dispatch(new authActions.LoadAllUsers());
   }
+
+
 }

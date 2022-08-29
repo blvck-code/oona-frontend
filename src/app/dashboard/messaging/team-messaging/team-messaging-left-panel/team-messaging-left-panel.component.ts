@@ -156,11 +156,11 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
                   this.streamUnreadCounter.push(streamContent);
 
-                  if(this.streamIds.includes(stream.stream_id)) {
-                    return
+                  if (this.streamIds.includes(stream.stream_id)) {
+                    return;
                   } else {
                     this.listedStreamArray.push(stream);
-                    this.streamIds.push(stream.stream_id)
+                    this.streamIds.push(stream.stream_id);
                   }
 
                   this.change.detectChanges();
@@ -493,19 +493,19 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
                   } else {
                     topic.unread = 0;
                   }
-                })
-              })
+                });
+              });
             }
           }
-        })
+        });
 
-      })
+      });
 
-      streamArray.push(unreadContent)
+      streamArray.push(unreadContent);
 
     });
 
-    this.finalStreamSubject.next(streamArray)
+    this.finalStreamSubject.next(streamArray);
 
     // this.finalStreamObservable.subscribe(
     //   content => console.log('Content ==>', content)
