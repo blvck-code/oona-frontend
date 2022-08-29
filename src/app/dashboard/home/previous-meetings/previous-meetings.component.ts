@@ -10,6 +10,9 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../state/app.state';
+import {getZulipProfile} from '../../../auth/state/auth.selectors';
 
 @Component({
   selector: 'app-previous-meetings',
@@ -23,9 +26,12 @@ export class PreviousMeetingsComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private homeService: HomeService,
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
+    private store: Store<AppState>
+
   ) { }
 
+  loggedInUserId = '';
   previousMeetings: OonaMeeting[] = [];
   searchText = '';
 
@@ -80,7 +86,14 @@ export class PreviousMeetingsComponent implements OnInit {
     meetingPriority: [this.meetingPriority[1]]
   });
 
+  getUserInfo(): void {
+    this.store.select(getZulipProfile).subscribe(
+      ((user: any) => this.loggedInUserId = user?.oz.id)
+    );
+  }
   ngOnInit(): void {
+    this.getUserInfo();
+
     if (this.authService.isTokenExpiring()) {
       this.authService.refreshToken();
     }
@@ -151,7 +164,14 @@ export class PreviousMeetingsComponent implements OnInit {
     });
     this.homeService.getAllUsers().subscribe(
       (users: any) => {
-        this.oonaUsers = users.results;
+        const results = users.results;
+        // Remove logged in user
+        for (let i = 0; i < results.length; i++) {
+          if ( results[i].id === this.loggedInUserId ){
+            results.splice(i, 1);
+          }
+        }
+        this.oonaUsers = results;
       }
     );
   }

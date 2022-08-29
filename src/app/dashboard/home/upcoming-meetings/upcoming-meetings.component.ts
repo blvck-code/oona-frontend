@@ -10,11 +10,9 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import flatpickr from 'flatpickr';
 import dayjs from 'dayjs';
-import {Store} from "@ngrx/store";
-import {AppState} from "../../../state/app.state";
-import {getZulipProfile} from "../../../auth/state/auth.selectors";
-import {log} from "util";
-import {ProfileModel} from "../../../auth/models/zulip.model";
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../state/app.state';
+import {getZulipProfile} from '../../../auth/state/auth.selectors';
 
 @Component({
   selector: 'app-upcoming-meetings',
