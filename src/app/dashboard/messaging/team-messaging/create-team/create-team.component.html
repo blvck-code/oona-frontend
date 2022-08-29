@@ -1,4 +1,4 @@
-<div class="create-dialog">
+<div class="create-dialog p-2">
   <div class="d-flex justify-content-end mb-2" >
     <i style="cursor: pointer" mat-dialog-close (click)="cancelTeamCreate()" class="bi bi-x fa-2x close-btn"></i>
   </div>
@@ -6,7 +6,8 @@
   <form [formGroup]="teamForm" (ngSubmit)="submitForm()">
     <div class="modal-meeting-names mb-2">
       <!--                <label for="meetingName" class="form-label">Meeting Name</label>-->
-      <input class="form-control shadow-none" id="meetingName" placeholder="Type the name of your team" formControlName="teamName"
+      <input class="form-control shadow-none  w-25" id="meetingName"
+             placeholder="Type the name of your team" formControlName="teamName"
              [class.invalid]="teamFormControls.teamName.touched && teamFormControls.teamName.errors?.required">
       <span class="text-danger p-0 m-0" *ngIf="teamFormControls.teamName.touched && teamFormControls.teamName.errors?.required">
         <small>
@@ -15,9 +16,9 @@
       </span>
     </div>
 
-    <div class="modal-meeting-names">
+    <div class="modal-meeting-names mb-5">
       <!--                <label for="meetingName" class="form-label">Meeting Name</label>-->
-      <input class="form-control shadow-none" id="teamDesc" placeholder="Description of your team" formControlName="teamDescription"
+      <input class="form-control shadow-none w-25" id="teamDesc" placeholder="Description of your team" formControlName="teamDescription"
              [class.invalid]="teamFormControls.teamDescription.touched && teamFormControls.teamDescription.errors?.required">
       <span class="text-danger" *ngIf="teamFormControls.teamDescription.touched && teamFormControls.teamDescription.errors?.required">
         <small>
@@ -26,11 +27,75 @@
       </span>
     </div>
 
+    <h6 class="modal-meeting-names mb-2"><strong> Who can access the stream? </strong></h6>
+    <div class="modal-meeting-names mb-2">
+      <div class="form-check">
+        <input formControlName="public"  value="true" [(ngModel)]="publicF" class="form-check-input" type="radio" name="public" id="public"  >
+        <label class="form-check-label" for="public">
+          <b>Public</b>: Organization members can join (guests must be invited by a subscriber); organization members can view complete message history without joining
+        </label>
+      </div>
+      <div class="form-check">
+        <input formControlName="public" [(ngModel)]="privateTeamInviteShare" value="trues" class="form-check-input" type="radio" name="public" id="teamInvite" >
+        <label class="form-check-label" for="teamInvite">
+          <b>Private, shared history</b>: Must be invited by a subscriber; new subscribers can view complete message history; hidden from non-administrator users
+        </label>
+      </div>
+
+      <div class="form-check">
+        <input formControlName="public" [(ngModel)]="privateTeamInviteNo" value="truess" class="form-check-input"  type="radio" name="public" id="teamHistory" >
+        <label class="form-check-label" for="teamHistory">
+          <b>Private, protected history</b>: Must be invited by a subscriber; new subscribers can only see messages sent after they join; hidden from non-administrator users
+        </label>
+      </div>
+    </div>
+
+<!--    <div class="modal-meeting-names mb-5">-->
+<!--      <div class="form-check">-->
+<!--        <input formControlName="announce" [(ngModel)]="announceF"  class="form-check-input" type="checkbox" value="true" name="announce" id="announce">-->
+<!--        <label class="form-check-label" for="announce">-->
+<!--          Announce stream?-->
+<!--        </label>-->
+<!--      </div>-->
+<!--    </div>-->
+
+    <h6 class="modal-meeting-names mb-2"><strong> Choose subscribers</strong></h6>
+    <div class="modal-meeting-names mb-2">
+      <div class="modal-meeting-attendee">
+        <div class="meeting-attendee-label-section">
+          <label for="meetingAttendees" class="form-label">Choose Members</label>
+          <img *ngIf="!attendeeListOpen" src="assets/img/add-user_blue.svg" alt="" aria-label="Add Meeting Attendees" title="Add meeting attendees" (click)="openAttendeesList()">
+          <img *ngIf="attendeeListOpen" src="assets/img/close_icon_blue.svg" alt="" aria-label="Add Meeting Attendees" title="Close Section" (click)="openAttendeesList()">
+        </div>
+        <div class="add-attendees-section dropdown">
+          <input *ngIf="attendeeListOpen" [(ngModel)]="searchText" [ngModelOptions]="{standalone: true}" name="searchText" type="text" class="search-meeting-attendees"
+                 placeholder="Type here to search for user" id="dropdownMenuButton3" data-bs-toggle="dropdown"
+                 aria-expanded="false"
+          >
+          <ul *ngIf="attendeeListOpen" class=""  #selectList >
+            <li *ngFor="let user of oonaUsers | searchFilter : searchText" >
+              <a class="dropdown-item" (click)="selectedUser(user)">
+                {{user.full_name}}
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="form-control attendee-list" id="meetingAttendees" [class.add-attendee] = attendeeListOpen [class.invalid]="emptyForm && this.displayInvitedUsers.length == 0">
+          <div *ngFor="let user of displayInvitedUsers" class="attendee-chip">
+            <p >{{user.full_name}} </p>
+            <img src="assets/img/close_icon_black.svg" alt="The close" (click)="onRemoveUser(user)">
+          </div>
+        </div>
+        <span *ngIf="emptyForm && this.displayInvitedUsers.length == 0">Please add attendees for your meeting.</span>
+        <span *ngIf="hostError">A Host can't be an attendee in their meeting.</span>
+      </div>
+    </div>
 
   </form>
 
-  <div class="mt-1 d-flex p-2 justify-content-evenly">
-    <button class="btn btn-primary schedule-meeting-btn shadow-none" (click)="cancelTeamCreate()">Cancel</button>
+  <div class="mt-1 d-flex  p-2  w-50">
+    <button class="btn btn-primary schedule-meeting-btn shadow-none me-3" (click)="cancelTeamCreate()">Cancel</button>
     <button
       class="btn btn-primary schedule-meeting-btn shadow-none"
       type="submit"
