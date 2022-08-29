@@ -23,8 +23,9 @@ import { SingleMessageModel } from '../../models/messages.model';
 import {map, take} from 'rxjs/operators';
 import { NotificationService } from '../../../../shared/services/notification.service';
 import { numbers } from '@material/dialog/constants';
-import { getAllMessages } from '../../state/messaging.selectors';
-import {log} from "util";
+import {getAllMessages, getUnreadMessages} from '../../state/messaging.selectors';
+import {log} from 'util';
+import {SinglePresentUser} from '../../../../auth/models/user.model';
 
 const turndownService = new TurndownService();
 
@@ -68,9 +69,10 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
   unreadMessagesId: number[] = [];
   unreadMessagesIdSubject = new BehaviorSubject<number[]>(this.unreadMessagesId);
-  unreadMessagesIdObservable = this.unreadMessagesIdSubject.asObservable()
+  unreadMessagesIdObservable = this.unreadMessagesIdSubject.asObservable();
 
   messagesId: number[] = [];
+  unreadMsgId: number[] = [];
 
   @ViewChild('endPrivateChat') endPrivateChat: ElementRef | undefined;
 
@@ -83,6 +85,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
     this.messagingService.currentMemberChatDetail.subscribe((member) => {
       this.memberDetail = member;
+      this.selectedUserId = member.user_id;
       // this.store.dispatch(new authActions.SetSelectedUser(member));
       setTimeout(() => {
         this.privateMessages();
@@ -132,6 +135,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
   getIndividualUser(): void {
     this.store.select(getSelectedUser).subscribe((user) => {
       this.memberDetail = user;
+      this.selectedUserId = user.user_id;
       this.privateMessages();
       this.change.detectChanges();
     });
@@ -187,35 +191,83 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
     this.messagesSubject$.subscribe((messages: SingleMessageModel[]) => {
       messages.map((message: SingleMessageModel) => {
-
-
-        if(+message.sender_id === +userId){
-
-          if(message.flags.includes('read')){
-            return
+        if (+message.sender_id === +userId){
+          if (message.flags.includes('read')){
+            return;
           } else {
-            unreadMsgArray.push(message);
-            unreadMsgId.push(message.id)
+            // unreadMsgArray.push(message);
+            // console.log('Unread message for this user ==>>', message);
+            // console.log('User dm ==>>>', this.memberDetail  );
+            unreadMsgId.push(message.id);
+            // this.unreadMessagesSubject.next(unreadMsgArray);
+            this.unreadMessagesIdSubject.next(unreadMsgId);
           }
-          this.unreadMessagesSubject.next(unreadMsgArray);
-          this.unreadMessagesIdSubject.next(unreadMsgId);
-          this.updateReadMessages();
+          console.log(message);
+          this.updateReadMessages(message.id);
         }
-      })
-    })
+      });
+    });
   }
 
+  updateReadMessages(msgId: number): void {
 
-  updateReadMessages(): void {
+
+
+   // this.store.select(getUnreadMessages).subscribe(
+   //   (messages: SingleMessageModel[]) => {
+   //     messages.map((message: SingleMessageModel) => {
+   //
+   //       if (message.type !== 'private'){
+   //         return;
+   //       } else {
+   //
+   //         // if (this.unreadMsgId.includes(message.id)) {
+   //         //   return;
+   //         // }
+   //
+   //         console.log('Unread message ===>>>', message);
+   //         this.unreadMsgId.push(message.id);
+   //       }
+   //
+   //
+   //       // @ts-ignore
+   //       if (message.sender_id === +this.memberDetail.user_id) {
+   //         console.log('Unread message for this dm =>', message);
+   //       }
+   //
+   //     });
+   //   }
+   // )
+
     // update private messages to read
-    this.unreadMessagesIdObservable.subscribe((id: number[]) => {
-      if(id.length) {
-        this.messagingService.updateReadMessagesFlags('private', id).subscribe((response: any) => {
-          console.log('Updates successfully', response)
-        })
-      }
-    })
+    // this.unreadMessagesIdObservable.subscribe((id: number[]) => {
+
+      // console.log('Id to be updated ==>>', id);
+
+      // if (id.length) {
+      //   this.messagingService.updateReadMessagesFlags('private', id)
+      //     .subscribe((response: any) => {
+      //
+      //       id.map((msgId: number) => {
+      //
+      //         this.store.select(getUnreadMessages)
+      //           .subscribe((messages: SingleMessageModel[]) => {
+      //             messages.map((message: SingleMessageModel) => {
+      //
+      //               if (message.id === msgId){
+      //                 console.log('Message to update read ===>>>', message);
+      //               }
+      //
+      //             });
+      //           });
+      //
+      //       });
+      //
+      //   });
+      // }
+    // });
   }
+
 
   privateMessages(): void {
     this.loading = true;

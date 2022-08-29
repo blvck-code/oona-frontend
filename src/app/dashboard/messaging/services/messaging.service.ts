@@ -606,10 +606,6 @@ export class MessagingService {
           });
       });
     });
-
-    setTimeout(() => {
-      this.unreadMessagesCounter();
-    }, 5000);
   }
 
   handleGetStreamMessages(): void {
@@ -669,12 +665,6 @@ export class MessagingService {
     );
   }
 
-  unreadMessagesCounter(): void {
-    console.log('Getting unread message ssss');
-    this.store.select(getUnreadMessages).subscribe(
-      unread => console.log('State unread messages ===>>>', unread)
-    );
-  }
 
   updateReadMessagesFlags(messageType: string, unreadMsgIds: number[]): Observable<any> {
 
@@ -703,5 +693,22 @@ export class MessagingService {
       request
     );
   }
+
+  updateMessageFlag(msgId: number): Observable<any> {
+    const request = {
+      messages: [msgId],
+      op: 'add',
+      flag: 'read',
+    };
+
+
+    return this.http.post(
+      env.updateMessageFlag,
+      request
+    );
+  }
+
 }
+
+
 
