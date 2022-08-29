@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../state/app.state';
 // @Todo change this to fetch only private messages
-import { getAllMessages } from '../../state/messaging.selectors';
+import {getAllMessages, getPrivateMessages} from '../../state/messaging.selectors';
 import * as messageActions from '../../state/messaging.actions';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import {
@@ -170,7 +170,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
 
   getStateAllPrivateMessages(): void {
     this.subscription = this.store
-      .select(getAllMessages)
+      .select(getPrivateMessages)
       .subscribe((messages: SingleMessageModel[]) => {
         messages?.forEach((msg: SingleMessageModel) => {
           if (msg) {

@@ -105,10 +105,10 @@ export class MessagingComponent implements OnInit {
 
   initPage(): void {
     // this.initializeState();
-    this.getAllMessages();
-    this.getPrivateMessages();
+    // this.getAllMessages();
+    // this.getPrivateMessages();
     this.getUsersFromStore();
-    this.getAllPrivateMessages();
+    // this.getAllPrivateMessages();
     // this.getStreamData();
   }
 

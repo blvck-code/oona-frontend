@@ -107,13 +107,11 @@ export class UpdateState implements Action {
 export class LoadAllUsers implements Action {
   readonly type = AuthActionsTypes.LOAD_ALL_USERS;
   constructor() {
-    console.log('Loading all users');
   }
 }
 export class LoadAllUsersSuccess implements Action {
   readonly type = AuthActionsTypes.LOAD_ALL_USERS_SUCCESS;
   constructor(public payload: any) {
-    console.log('load all users success ===>>>', payload);
   }
 }
 export class LoadAllUsersFail implements Action {

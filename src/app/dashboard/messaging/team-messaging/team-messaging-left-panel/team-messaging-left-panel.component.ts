@@ -107,9 +107,18 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.initPageHandler();
   }
 
+  getUnreadMessageCounter(): void {
+      this.messagingService.totalUnreadMsgCounterObservable.subscribe(
+        numb => {
+          console.log('Really?? ',numb);
+          this.totalUnreadMsgSubject$.next(numb);
+        }
+      )
+  }
+
   initPageHandler(): void {
     // handle All Unread Messages
-    this.handleUnreadMessage();
+    this.getUnreadMessageCounter();
 
     // this.streamTopics();
     this.handleSocketsNewMessage();
