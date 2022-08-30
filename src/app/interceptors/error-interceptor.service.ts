@@ -26,6 +26,8 @@ export class ErrorInterceptorService implements HttpInterceptor{
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
         const errorStatus = error.status;
+        console.log('Error status code ==>', errorStatus);
+        console.log('Error  ==>', error);
         let errorMsg;
 
         // Un Authorised User Access

@@ -101,8 +101,8 @@ export class TeamSettingsComponent implements OnInit {
 
   createTeam(): void {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.height = '37vh';
-    dialogConfig.width = '20vw';
+    dialogConfig.height = '60vh';
+    dialogConfig.width = '50vw';
     this.displayCreateTeamComponentRef = this.dialog.open(CreateTeamComponent, dialogConfig);
     this.displayCreateTeamComponentRef.afterClosed().subscribe(
       data => {

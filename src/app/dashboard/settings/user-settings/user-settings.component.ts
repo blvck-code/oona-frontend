@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../../../auth/services/auth.service';
 import {FormBuilder, Validators} from '@angular/forms';
+import {NotificationService} from "../../../shared/services/notification.service";
 
 @Component({
   selector: 'app-user-settings',
@@ -24,8 +25,10 @@ export class UserSettingsComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private authService: AuthService
-  ) { }
+    private authService: AuthService,
+    private notify: NotificationService
+  ) {
+  }
 
   ngOnInit(): void {
     this.authService.getCurrentUser().subscribe(
@@ -55,12 +58,18 @@ export class UserSettingsComponent implements OnInit {
         (resetPassRes: any) => {
           this.resetPasswordForm.reset();
           this.changeSuccessful = true;
+          console.log('retested');
+          this.notify.showSuccess('Password updated successfully', 'Edit Password');
           setTimeout(() => {
             this.changeSuccessful = false;
+            this.notify.showInfo('Password updated Timed out', 'Edit Password');
+
           }, 2500);
           console.log(resetPassRes);
         },
         (resetPassErr: any) => {
+          this.notify.showError('Password updated Failed', 'Edit Password');
+
           console.log(resetPassErr);
         }
       );
