@@ -82,7 +82,7 @@ export class AppComponent implements OnInit {
       numb => {
 
         if (+numb > 0) {
-          this.titleService.setTitle(`( ${numb} ) - AVL - Oona`);
+          this.titleService.setTitle(`(${numb}) - AVL - Oona`);
         } else {
           this.titleService.setTitle('AVL - Oona')
         }
