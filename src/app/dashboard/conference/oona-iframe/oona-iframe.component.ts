@@ -6,7 +6,6 @@ import { ConferenceService } from '../shared/conference.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { MeetingParticipant } from '../shared/meetingParticipant';
 import { environment as env } from '../../../../environments/environment';
-import { environment } from '../../../../environments/environment';
 
 declare var JitsiMeetExternalAPI: any;
 
@@ -17,8 +16,7 @@ declare var JitsiMeetExternalAPI: any;
 })
 export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
   // @ToDo white domain URL not similar
-  // domain = env.jitsiURL;
-  domain = '192.168.0.100:8443';
+  domain = env.jitsiURL;
   room: any;
   options: any;
   api: any;
