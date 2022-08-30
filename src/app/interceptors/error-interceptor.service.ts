@@ -43,7 +43,6 @@ export class ErrorInterceptorService implements HttpInterceptor{
         if (error instanceof ErrorEvent){
           // client-side error
           // errorMsg = `Error ${error.message}`
-          console.log('Client side error ===>>> ', error);
 
         } else {
           // server-side error
@@ -106,7 +105,6 @@ export class ErrorInterceptorService implements HttpInterceptor{
 
         }
 
-        console.log('Error Msg: ', errorMsg);
         return throwError(errorMsg);
       })
     );

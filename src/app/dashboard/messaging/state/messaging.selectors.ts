@@ -1,5 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { MessagingState } from './messaging.reducer';
+import {SingleMessageModel} from "../models/messages.model";
 
 export const messagingSelector = 'messaging';
 
@@ -47,6 +48,11 @@ export const getAllStreamData = createSelector(
   (state) => state.streams.streamData
 );
 
+export const getUnreadMessages = createSelector(
+  getMessagingState,
+  state => state.messaging.unreadMsg
+);
+
 // export const filteredState = createSelector(
 //   getMessagingState,
 //   state => state.messaging.filtered
@@ -75,10 +81,16 @@ export const getLoadingPrivateMsgs = createSelector(
 
 export const getPrivateMessages = createSelector(
   getMessagingState,
-  (state) => state.messaging.privateMsgs?.messages?.zulip?.messages
+  (state) => state.messaging.privateMsgs.messages
 );
 
-export const getFilteredPrvMsgs = createSelector(
+// ge stream messages
+export const getStreamMessages = createSelector(
   getMessagingState,
-  (state) => state.messaging.privateMsgs.filteredMsg
+  (state) => state.messaging.streamMsg.messages
 );
+
+export const getStreamMsgStatus = createSelector(
+  getMessagingState,
+  state => state.messaging.streamMsg.loaded
+)

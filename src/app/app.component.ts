@@ -12,6 +12,9 @@ import {ActivatedRoute} from '@angular/router';
 import {Notification} from 'rxjs';
 
 import {MessagingService} from "./dashboard/messaging/services/messaging.service";
+import * as messagingActions from './dashboard/messaging/state/messaging.actions';
+import {log} from 'util';
+import {getUnreadMessages} from './dashboard/messaging/state/messaging.selectors';
 
 @Component({
   selector: 'app-root',
@@ -53,48 +56,52 @@ export class AppComponent implements OnInit {
       newMessage => {
         const messages = this.sockets.messagesInPrivate;
 
-        // console.log('Latest message content ====>>', messages);
-        // console.log('Messages counter ===>>> ', newMessage);
       }
     );
   }
 
   ngOnInit(): void {
     this.updateState();
-    // this.tabNotification();
-    // this.updateTabNotification();
+    this.initializeState();
   }
 
-  updateTabNotification(): void {
+  initializeState(): void {
+    this.store.dispatch(new messagingActions.LoadAllStreams());
+    this.store.dispatch(new messagingActions.LoadSubStreams());
+    this.store.dispatch(new authActions.LoadZulipUsers());
+    this.store.dispatch(new authActions.LoadAllUsers());
+
+    setTimeout(() => {
+      this.getMessages();
+      this.getTotalCounter();
+    }, 1000);
+  }
+
+  getTotalCounter(): void {
     this.messageSrv.totalUnreadMsgCounterObservable.subscribe(
-      msg => {
-        if (msg > 0) {
-          this.titleService.setTitle(`(${msg}) - AVL - Oona`);
-          // document.title = `(${msg}) - AVL - Oona`;
+      numb => {
+
+        if (+numb > 0) {
+          this.titleService.setTitle(`(${numb}) - AVL - Oona`);
         } else {
-          this.titleService.setTitle(`AVL - Oona`);
+          this.titleService.setTitle('AVL - Oona')
         }
+
       }
     )
   }
 
-  // handleSocketsNewMessage(): void {
-  //   this.userSocketService.allMsgCounterObservable.subscribe(
-  //     newMessage => {
-  //       if(newMessage === 0) {
-  //         return
-  //       } else {
-  //         // update all messages counter
-  //         const newTotal = this.totalUnreadMsg += 1;
-  //         this.totalUnreadMsgSubject$.next(newTotal);
-  //
-  //         // update private messages counter
-  //         const newTotalPrivateMsg = this.privateUnreadMsgCounter += 1;
-  //         this.privateUnreadMsgCounterSubject.next(newTotalPrivateMsg);
-  //       }
-  //     }
-  //   );
-  // }
+  getMessages(): void {
+
+    this.messageSrv.handleGetStreamMessages();
+    this.messageSrv.handleGetPrivateMessages();
+
+    setTimeout(() => {
+      this.messageSrv.handleUnreadPrivateMessages();
+      this.messageSrv.handleUnreadStreamMessages();
+    }, 3000)
+
+  }
 
 
 

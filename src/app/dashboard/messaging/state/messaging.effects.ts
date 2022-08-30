@@ -65,6 +65,40 @@ export class MessagingEffects {
     )
   );
 
+  @Effect()
+  loadStreamMessage$: Observable<any> = this.actions$.pipe(
+    ofType<messagingActions.LoadStreamMessage>(
+      messagingActions.MessagingActionsTypes.LOAD_STREAM_MESSAGES
+    ),
+    map((action: messagingActions.LoadStreamMessage) => action.payload),
+    mergeMap((streamData: any) =>
+      this.messagingSrv.getMessagesOfStream(streamData).pipe(
+        map((message: any) =>
+          new messagingActions.LoadStreamMessageSuccess(message)
+        )
+      )
+    )
+  )
+
+  @Effect()
+  loadPrivateMessages$: Observable<any> = this.actions$.pipe(
+    ofType<messagingActions.LoadPrivateMessages>(
+      messagingActions.MessagingActionsTypes.LOAD_PRIVATE_MESSAGES
+    ),
+    map((action: messagingActions.LoadPrivateMessages) => action.payload),
+    mergeMap((streamDetail: any) =>
+      this.messagingSrv.getMessagesOfStream(streamDetail).pipe(
+        map(
+          (messages: MessagesModel) =>
+            new messagingActions.LoadPrivateMessagesSuccess(messages)
+        ),
+        catchError((err) =>
+          of(new messagingActions.LoadPrivateMessagesSuccess(err))
+        )
+      )
+    )
+  );
+
   // @Effect()
   // loadAllMessages$: Observable<any> = this.actions$.pipe(
   //   ofType<messagingActions.LoadAllMessages>(
@@ -81,25 +115,6 @@ export class MessagingEffects {
   //   )
   // );
 
-  @Effect()
-  loadPrivateMessages$: Observable<any> = this.actions$.pipe(
-    ofType<messagingActions.LoadPrivateMessages>(
-      messagingActions.MessagingActionsTypes.LOAD_PRIVATE_MESSAGES
-    ),
-    map((action: messagingActions.LoadPrivateMessages) => action.payload),
-    take(1),
-    mergeMap((streamDetail: any) =>
-      this.messagingSrv.getMessagesOfStream(streamDetail).pipe(
-        map(
-          (messages: MessagesModel) =>
-            new messagingActions.LoadPrivateMessagesSuccess(messages)
-        ),
-        catchError((err) =>
-          of(new messagingActions.LoadPrivateMessagesSuccess(err))
-        )
-      )
-    )
-  );
 
   @Effect()
   loadMessages$: Observable<any> = this.actions$.pipe(

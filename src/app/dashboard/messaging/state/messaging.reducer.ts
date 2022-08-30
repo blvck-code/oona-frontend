@@ -25,12 +25,17 @@ export interface MessagingState {
     privateMsgs: {
       loading: boolean;
       filteredMsg: MessagesModel | null;
-      messages: MessagesModel | null;
+      messages: SingleMessageModel[];
     };
+    streamMsg: {
+      loaded: boolean,
+      messages: SingleMessageModel[],
+    }
     selectedStreamMsg: {
       loading: boolean;
       messages: SingleMessageModel[] | undefined | null;
     };
+    unreadMsg: SingleMessageModel[]
   };
 }
 
@@ -53,12 +58,17 @@ export const initialState: MessagingState = {
     privateMsgs: {
       loading: false,
       filteredMsg: null,
-      messages: null,
+      messages: [],
+    },
+    streamMsg: {
+      loaded: false,
+      messages: []
     },
     selectedStreamMsg: {
       loading: false,
       messages: null,
     },
+    unreadMsg: []
   },
 };
 
@@ -126,6 +136,30 @@ export function messagingReducer(
           allStreams: action?.payload?.streams,
         },
       };
+    case messagingActions.MessagingActionsTypes.LOAD_STREAM_MESSAGES:
+      return {
+        ...state,
+        messaging: {
+          ...state.messaging,
+          streamMsg: {
+            ...state.messaging.streamMsg,
+            loaded: false
+          }
+        }
+      }
+
+    case messagingActions.MessagingActionsTypes.LOAD_STREAM_MESSAGE_SUCCESS:
+      const messagesContent = action.payload.zulip.messages;
+      return {
+        ...state,
+        messaging: {
+          ...state.messaging,
+          streamMsg: {
+            loaded: true,
+            messages: [...state.messaging.streamMsg.messages, ...messagesContent]
+          }
+        }
+      }
     case messagingActions.MessagingActionsTypes.LOAD_SUB_STREAMS_SUCCESS:
       return {
         ...state,
@@ -188,6 +222,7 @@ export function messagingReducer(
         },
       };
     case messagingActions.MessagingActionsTypes.LOAD_PRIVATE_MESSAGE_SUCCESS:
+      const messageContent = action.payload.zulip.messages
       return {
         ...state,
         messaging: {
@@ -195,7 +230,7 @@ export function messagingReducer(
           privateMsgs: {
             ...state.messaging.privateMsgs,
             loading: false,
-            messages: action.payload,
+            messages: [...state.messaging.privateMsgs.messages, ...messageContent]
           },
         },
       };
@@ -222,7 +257,14 @@ export function messagingReducer(
           },
         },
       };
-
+    case messagingActions.MessagingActionsTypes.HANDLE_UNREAD_MESSAGE:
+      return {
+        ...state,
+        messaging: {
+          ...state.messaging,
+          unreadMsg: [...state.messaging.unreadMsg, action.payload]
+        },
+      };
     case messagingActions.MessagingActionsTypes.LOAD_MORE_MESSAGE:
       return {
         ...state,

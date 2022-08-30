@@ -46,8 +46,7 @@ export enum AuthActionsTypes {
 // LOGIN USER ACTIONS
 export class LoginUser implements Action {
   readonly type = AuthActionsTypes.LOGIN_USER;
-  constructor( public payload: any) {
-  }
+  constructor( public payload: any) {}
 }
 export class LoginUserSuccess implements Action {
   readonly type = AuthActionsTypes.LOGIN_USER_SUCCESS;
@@ -99,20 +98,20 @@ export class LoadProfileError implements Action {
 }
 export class UpdateState implements Action {
   readonly type = AuthActionsTypes.UPDATE_USER_INFO;
-  constructor() {}
+  constructor() {
+    console.log('Auto login')
+  }
 }
 
 // ALL USERS
 export class LoadAllUsers implements Action {
   readonly type = AuthActionsTypes.LOAD_ALL_USERS;
   constructor() {
-    // console.log('Loading all users');
   }
 }
 export class LoadAllUsersSuccess implements Action {
   readonly type = AuthActionsTypes.LOAD_ALL_USERS_SUCCESS;
   constructor(public payload: any) {
-    console.log('load all users success ===>>>', payload);
   }
 }
 export class LoadAllUsersFail implements Action {

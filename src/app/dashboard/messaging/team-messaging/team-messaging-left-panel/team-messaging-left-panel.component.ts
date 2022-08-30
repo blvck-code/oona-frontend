@@ -107,9 +107,18 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.initPageHandler();
   }
 
+  getUnreadMessageCounter(): void {
+      this.messagingService.totalUnreadMsgCounterObservable.subscribe(
+        numb => {
+          console.log('Really?? ',numb);
+          this.totalUnreadMsgSubject$.next(numb);
+        }
+      )
+  }
+
   initPageHandler(): void {
     // handle All Unread Messages
-    this.handleUnreadMessage();
+    this.getUnreadMessageCounter();
 
     // this.streamTopics();
     this.handleSocketsNewMessage();
@@ -145,23 +154,25 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
                   };
                   this.allTopics = [...this.allTopics, stream];
 
-                  const streamContent = {
-                    stream_id: stream.stream_id,
-                    name: stream.name,
-                    topics: {
-                      topics: stream.topics?.zulip.topics,
-                    },
-                    counter: 0
-                  }
 
-                  this.streamUnreadCounter.push(streamContent);
 
-                  if(this.streamIds.includes(stream.stream_id)) {
-                    return
-                  } else {
-                    this.listedStreamArray.push(stream);
-                    this.streamIds.push(stream.stream_id)
-                  }
+                  // const streamContent = {
+                  //   stream_id: stream.stream_id,
+                  //   name: stream.name,
+                  //   topics: {
+                  //     topics: stream.topics?.zulip.topics,
+                  //   },
+                  //   counter: 0
+                  // }
+                  //
+                  // this.streamUnreadCounter.push(streamContent);
+                  //
+                  // if (this.streamIds.includes(stream.stream_id)) {
+                  //   return;
+                  // } else {
+                  //   this.listedStreamArray.push(stream);
+                  //   this.streamIds.push(stream.stream_id);
+                  // }
 
                   this.change.detectChanges();
                 }
@@ -174,6 +185,13 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
         this.handleUnreadMsgCounter();
       }, 1000)
     });
+
+    setTimeout(() => {
+
+      this.messagingService.totalUnreadMsgObservable.subscribe(
+        messages => console.log('Unreads =.', messages)
+      )
+    }, 3000)
 
     // Get Topics from store
     this.topics = this.store.select(getTopics);
@@ -493,19 +511,19 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
                   } else {
                     topic.unread = 0;
                   }
-                })
-              })
+                });
+              });
             }
           }
-        })
+        });
 
-      })
+      });
 
-      streamArray.push(unreadContent)
+      streamArray.push(unreadContent);
 
     });
 
-    this.finalStreamSubject.next(streamArray)
+    this.finalStreamSubject.next(streamArray);
 
     // this.finalStreamObservable.subscribe(
     //   content => console.log('Content ==>', content)
@@ -552,15 +570,15 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   }
 
   showNotificationCounter(): void {
-    this.totalUnreadMsgObservable.subscribe(
-      total => {
-        if (total > 0) {
-          this.titleService.setTitle(`(${total}) - AVL - Oona`);
-        } else {
-          this.titleService.setTitle(`AVL - Oona`);
-        }
-      }
-    );
+    // this.totalUnreadMsgObservable.subscribe(
+    //   total => {
+    //     if (total > 0) {
+    //       this.titleService.setTitle(`(${total}) - AVL - Oona`);
+    //     } else {
+    //       this.titleService.setTitle(`AVL - Oona`);
+    //     }
+    //   }
+    // );
   }
 
   // Todo filter unread messages here to update on ui

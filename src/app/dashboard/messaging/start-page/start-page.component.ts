@@ -27,8 +27,6 @@ export class StartPageComponent implements OnInit {
   updateReadMessages(): void {
     let unreadMsgId: any[] = [];
 
-    console.log('we got  bug')
-
     setTimeout(() => {
       this.messagingSrv.totalUnreadMsgObservable
         .subscribe((unreadMessages: SingleMessageModel[]) => {

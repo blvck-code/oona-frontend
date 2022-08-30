@@ -22,6 +22,10 @@ import { appReducer } from './state/app.state';
 import {EffectsModule} from '@ngrx/effects';
 import {TokenInterceptorService} from './interceptors/token-interceptor.service';
 import {ErrorInterceptorService} from './interceptors/error-interceptor.service';
+import {AuthEffects} from './auth/state/auth.effects';
+import {MessagingEffects} from './dashboard/messaging/state/messaging.effects';
+import {messagingReducer} from "./dashboard/messaging/state/messaging.reducer";
+import {authReducer} from "./auth/state/auth.reducer";
 
 @NgModule({
     declarations: [
@@ -40,13 +44,13 @@ import {ErrorInterceptorService} from './interceptors/error-interceptor.service'
         RichTextEditorAllModule,
         BrowserAnimationsModule, // required animations module
         HttpClientModule,
-        StoreModule.forRoot(appReducer),
+        StoreModule.forRoot({ 'userCenter': authReducer, 'messaging': messagingReducer }),
         StoreDevtoolsModule.instrument({
             name: 'Oona',
             maxAge: 25,
             logOnly: env.production
         }),
-        EffectsModule.forRoot([]),
+        EffectsModule.forRoot([AuthEffects, MessagingEffects]),
     ],
     providers: [
         {

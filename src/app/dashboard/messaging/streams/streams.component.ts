@@ -174,9 +174,9 @@ export class StreamsComponent implements OnInit, AfterViewInit {
           .updateReadMessagesFlags('stream', this.unreadStreamMsgIds)
           .subscribe((response) => {
             if (response.result === 'success') {
-              this.messageSrv.handleUnreadMessage().subscribe(
-                (response: any) => console.log('Updated flags successfully ===>>>', response)
-              );
+              // this.messageSrv.handleUnreadMessage().subscribe(
+              //   (response: any) => console.log('Updated flags successfully ===>>>', response)
+              // );
             }
           });
       }, 500);
