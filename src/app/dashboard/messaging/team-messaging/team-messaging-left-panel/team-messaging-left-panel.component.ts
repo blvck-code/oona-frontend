@@ -10,7 +10,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 // NgRx
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
-import { getAllStreams, getTopics} from '../../state/messaging.selectors';
+import {getAllStreams, getTopics} from '../../state/messaging.selectors';
 import {AllStreamsModel} from '../../models/streams.model';
 import {take} from 'rxjs/operators';
 import {ChannelSettingsComponent} from '../channel-settings/channel-settings.component';
@@ -47,7 +47,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
   allTeams: any;
   streamName: any;
-  publicTeams: any;
+  publicTeams: any = [];
   private allAvailableTeams: any;
   @Output() topicToDisplay = new EventEmitter<any>();
   displayCreateTeamComponentRef: MatDialogRef<CreateTeamComponent> | undefined;
@@ -64,10 +64,12 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   streams!: Observable<AllStreamsModel[]>;
   topics!: Observable<any>;
   allTopics: any = [];
+  privateTopics: any = [];
+  publicTopics: any = [];
 
   listedStreamArray: any = [];
 
-  streamArray:streamArray[] = [];
+  streamArray: streamArray[] = [];
   streamIds: number[] = [];
 
   streamUnreadCounter: any[] = [];
@@ -108,12 +110,12 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   }
 
   getUnreadMessageCounter(): void {
-      this.messagingService.totalUnreadMsgCounterObservable.subscribe(
-        numb => {
-          console.log('Really?? ',numb);
-          this.totalUnreadMsgSubject$.next(numb);
-        }
-      )
+    this.messagingService.totalUnreadMsgCounterObservable.subscribe(
+      numb => {
+        console.log('Really?? ', numb);
+        this.totalUnreadMsgSubject$.next(numb);
+      }
+    )
   }
 
   initPageHandler(): void {
@@ -128,6 +130,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
     // Fetch streams
     this.streams = this.store.select(getAllStreams);
+
 
     // Fetch Topics
     this.streams.subscribe(streams => {
@@ -154,25 +157,24 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
                   };
                   this.allTopics = [...this.allTopics, stream];
 
-
-
-                  // const streamContent = {
-                  //   stream_id: stream.stream_id,
-                  //   name: stream.name,
-                  //   topics: {
-                  //     topics: stream.topics?.zulip.topics,
-                  //   },
-                  //   counter: 0
-                  // }
-                  //
-                  // this.streamUnreadCounter.push(streamContent);
-                  //
-                  // if (this.streamIds.includes(stream.stream_id)) {
-                  //   return;
-                  // } else {
-                  //   this.listedStreamArray.push(stream);
-                  //   this.streamIds.push(stream.stream_id);
-                  // }
+                  // tslint:disable-next-line:prefer-for-of
+                  for (let i = 0; i < this.allTopics.length; i++) {
+                    if (this.allTopics[i].invite_only === true) {
+                      this.privateTopics.push(this.allTopics[i]);
+                      this.privateTopics = this.privateTopics.filter((v: any, ind: any, s: string | any[]) => {
+                        return s.indexOf(v) === ind;
+                      });
+                    }
+                  }
+                  // tslint:disable-next-line:prefer-for-of
+                  for (let i = 0; i < this.allTopics.length; i++) {
+                    if (this.allTopics[i].invite_only === false) {
+                      this.publicTopics.push(this.allTopics[i]);
+                      this.publicTopics = this.publicTopics.filter((v: any, ind: any, s: string | any[]) => {
+                        return s.indexOf(v) === ind;
+                      });
+                    }
+                  }
 
                   this.change.detectChanges();
                 }
@@ -252,25 +254,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     });
   }
 
-  handleNavigateTopic(stream?: any, topic?: any): void {
-    // stream
-
-
-    let streamName = stream?.name;
-    streamName = streamName.replace(/\s+/g, '-').toLowerCase();
-
-    // // @Todo change to topic incase user clicks topic instead of stream
-    if (topic) {
-      // topic
-      let topicName = topic?.name;
-      topicName = topicName.replace(/\s+/g, '-').toLowerCase();
-
-      this.router.navigate([`/dashboard/messaging/streams/${stream.stream_id}-${streamName}/topic/${topicName}`]);
-    } else {
-      this.router.navigate([`/dashboard/messaging/streams/${stream.stream_id}-${streamName}`]);
-    }
-  }
-
   teamSettings(): void {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.height = '80vh';
@@ -334,6 +317,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   getStreamName(stream?: any, topic?: any): void {
     // stream
     this.streamName = stream.name;
+
   }
 
   handleUnreadMessage(): any {
@@ -473,7 +457,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     const streamArray: any[] = [];
     const topicSubjects: string[] = [];
 
-    this.streamUnreadCounter.map((counter: { stream_id: number, counter: number, name: string, topics: { topics: any[] }}) => {
+    this.streamUnreadCounter.map((counter: { stream_id: number, counter: number, name: string, topics: { topics: any[] } }) => {
 
 
       let unreadContent = {
@@ -489,11 +473,11 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
 
           take(1)
-          if(+unreadStream.stream_id === +counter.stream_id) {
+          if (+unreadStream.stream_id === +counter.stream_id) {
             // adding counter for all unread messages of the stream
             unreadContent.unreadCount += 1;
 
-            if(topicSubjects.includes(unreadStream.subject.toLowerCase())){
+            if (topicSubjects.includes(unreadStream.subject.toLowerCase())) {
               return
             } else {
               topicSubjects.push(unreadStream.subject.toLowerCase());
@@ -504,7 +488,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
                 topicSubjects.map((topicName: string) => {
                   // console.log('Topic ===>>>', topicSubjects)
 
-                  if(topic.name.toLowerCase() === topicName.toLowerCase()){
+                  if (topic.name.toLowerCase() === topicName.toLowerCase()) {
                     // adding counter for single topic unread
                     topic.unread += 1;
 
@@ -559,7 +543,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
         this.allTopics.map((streamContent: AllStreamsModel) => {
 
-          if (streamContent.stream_id === message.stream_id){
+          if (streamContent.stream_id === message.stream_id) {
             // console.log(message)
           }
 
@@ -668,4 +652,32 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   //     }
   //   });
   // }
+
+  // The public messages topic fetcher
+  handlePublicNavigateTopic(stream?: any, topic?: any): void {
+    this.checkTopicNavigate(stream, topic);
+  }
+
+  // The private messages topic fetcher
+  handlePrivateNavigateTopic(stream?: any, topic?: any): void {
+    //
+    this.checkTopicNavigate(stream, topic);
+  }
+
+  // Get messages when user clicks a topic name
+  checkTopicNavigate(stream?: any, topic?: any): any {
+    let streamName = stream?.name;
+    streamName = streamName.replace(/\s+/g, '-').toLowerCase();
+
+    const index = this.allTeams.indexOf(stream);
+
+    this.allTeams[index] = stream;
+    this.change.detectChanges();
+    this.router.navigate(['dashboard/messaging/team'], {
+      queryParams: {
+        team: stream.name.replace(/\s/g, ''),
+        id: stream.stream_id
+      }
+    });
+  }
 }
