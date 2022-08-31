@@ -93,7 +93,7 @@
   </div>
   <div class="panel-box-accordion teams-panel">
     <div class="accordion-box-title">
-      <p>TEAMS <span
+      <p>Private<span
         *ngIf="( streamsUnreadMsgCounterObservable | async )"
         class="badge badge-dark">
             {{ streamsUnreadMsgCounterObservable | async }}
@@ -117,30 +117,11 @@
       </svg>
     </div>
     <div class="accordion accordion-flush" id="teamsAccordion">
-      <!--      <div *ngFor="let team of allTeams; index as i" (click)="getStreamDetails(team)" class="accordion-item">-->
-      <!--        <h2 class="accordion-header" id="flush-headingOne">-->
-      <!--          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"  [attr.data-bs-target]="'#flush-collapse'+i" aria-expanded="false" [attr.aria-controls]="'flush-collapse'+i">-->
-      <!--            {{team.name}}-->
-      <!--          </button>-->
-      <!--        </h2>-->
-      <!--        <div id="flush-collapse{{i}}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#teamsAccordion">-->
-      <!--          <div class="accordion-body">-->
-      <!--            <div (click)="displayMessagesOfTopic('')" class="accordion-body-item">-->
-      <!--              <p>All Topics</p>-->
-      <!--            </div>-->
-      <!--            <div *ngFor="let topic of team.topics" (click)="displayMessagesOfTopic(topic)" class="accordion-body-item">-->
-      <!--              <p>{{topic.name}}</p>-->
-      <!--            </div>-->
-      <!--          </div>-->
-      <!--        </div>-->
-      <!--      </div>-->
-
       <div *ngIf="!allTopics?.length">
         <app-load-indicator></app-load-indicator>
       </div>
-
       <div
-        *ngFor="let team of this.allTopics; index as i"
+        *ngFor="let team of this.privateTopics; index as i"
         class="accordion-item" (click)="getStreamName(team)"
       >
         <h2 class="accordion-header" id="flush-headingOne">
@@ -170,7 +151,7 @@
         >
           <div class="accordion-body">
             <div class="accordion-body-item"   >
-              <p class="accordion-body-item__text" (click)="handleNavigateTopic(team)">All Channels</p>
+              <p class="accordion-body-item__text" (click)="handlePrivateNavigateTopic(team)">All Channels</p>
 
               <p class="create-teams__icon"
                  (click)="channelSettings()"
@@ -180,7 +161,7 @@
               *ngFor="let topic of team?.topics?.zulip.topics"
               class="accordion-body-item"
             >
-              <p (click)="handleNavigateTopic(team, topic)">
+              <p (click)="handlePrivateNavigateTopic(team, topic)">
                 {{ topic?.name | titlecase }}
                 <span
                   *ngIf="topic.unread > 0"
@@ -203,8 +184,8 @@
     </div>
     <div class="accordion accordion-flush" id="generalAccordion">
       <div
-        *ngFor="let team of publicTeams; index as i"
-        (click)="getPublicStreamDetails(team)"
+        *ngFor="let team of publicTopics; index as i"
+        (click)="getStreamName(team)"
         class="accordion-item"
       >
         <h2 class="accordion-header" id="flush-headingTwo">
@@ -227,18 +208,26 @@
         >
           <div class="accordion-body">
             <div
-              (click)="handleNavigateTopic('', '')"
               class="accordion-body-item"
             >
-              <p>All Topics</p>
+              <p class="accordion-body-item__text" (click)="handlePublicNavigateTopic(team)">All Channels</p>
             </div>
+
             <div
-              *ngFor="let topic of team.topics"
-              (click)="handleNavigateTopic(team, topic)"
+              *ngFor="let topic of team?.topics?.zulip.topics"
               class="accordion-body-item"
             >
-              <p>{{ topic.name }}</p>
+              <p (click)="handlePublicNavigateTopic(team, topic)">
+                {{ topic?.name | titlecase }} this
+                <span
+                  *ngIf="topic.unread > 0"
+                  class="badge badge-dark ms-2">
+                {{ topic.unread }}
+              </span>
+              </p>
+
             </div>
+
           </div>
         </div>
       </div>
