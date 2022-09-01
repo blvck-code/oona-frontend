@@ -9,12 +9,12 @@ import * as sharedActions from './shared/state/shared.actions';
 import {getIsLoggedIn} from './auth/state/auth.selectors';
 import {OonaSocketService} from './dashboard/messaging/services/oona-socket.service';
 import {ActivatedRoute} from '@angular/router';
-import {Notification} from 'rxjs';
+import {BehaviorSubject, Notification} from 'rxjs';
 
 import {MessagingService} from "./dashboard/messaging/services/messaging.service";
 import * as messagingActions from './dashboard/messaging/state/messaging.actions';
 import {log} from 'util';
-import {getUnreadMessages} from './dashboard/messaging/state/messaging.selectors';
+import {getPrivateUnreadMessages, getStreamUnreadMessages, getUnreadMessages} from './dashboard/messaging/state/messaging.selectors';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +24,10 @@ import {getUnreadMessages} from './dashboard/messaging/state/messaging.selectors
 export class AppComponent implements OnInit {
   title = 'oona';
   navTitle = '';
+
+  totalUnreadMsg = 0;
+  totalUnreadMsgSubject$ = new BehaviorSubject<number>(this.totalUnreadMsg);
+  totalUnreadMsgObservable = this.totalUnreadMsgSubject$.asObservable();
 
   constructor(
     private store: Store<AppState>,
@@ -71,6 +75,9 @@ export class AppComponent implements OnInit {
     this.store.dispatch(new authActions.LoadZulipUsers());
     this.store.dispatch(new authActions.LoadAllUsers());
 
+    this.handleGetPrivateUnread();
+    this.handleGetStreamUnread();
+
     setTimeout(() => {
       this.getMessages();
       this.getTotalCounter();
@@ -78,17 +85,15 @@ export class AppComponent implements OnInit {
   }
 
   getTotalCounter(): void {
-    this.messageSrv.totalUnreadMsgCounterObservable.subscribe(
-      numb => {
+    setTimeout(() => {
 
-        if (+numb > 0) {
-          this.titleService.setTitle(`(${numb}) - AVL - Oona`);
-        } else {
-          this.titleService.setTitle('AVL - Oona')
-        }
-
+      if(this.totalUnreadMsg > 0) {
+        this.titleService.setTitle(`(${this.totalUnreadMsg}) - AVL - Oona`);
       }
-    )
+
+    }, 1000);
+    this.titleService.setTitle(`AVL - Oona`);
+    this.handleSocketsNewMessage();
   }
 
   getMessages(): void {
@@ -99,10 +104,42 @@ export class AppComponent implements OnInit {
     setTimeout(() => {
       this.messageSrv.handleUnreadPrivateMessages();
       this.messageSrv.handleUnreadStreamMessages();
-    }, 3000)
+    }, 3000);
 
   }
 
+  handleGetPrivateUnread(): void {
+    this.store.select(getPrivateUnreadMessages).subscribe(
+      messages => {
+        const total = this.totalUnreadMsg += messages;
+        this.totalUnreadMsgSubject$.next(total);
+      }
+    );
+  }
+
+  handleGetStreamUnread(): void {
+    this.store.select(getStreamUnreadMessages).subscribe(
+      messages => {
+        const total = this.totalUnreadMsg += messages;
+        this.totalUnreadMsgSubject$.next(total);
+      }
+    );
+  }
+
+  handleSocketsNewMessage(): void {
+    this.sockets.allMsgCounterObservable.subscribe(
+      newMessage => {
+        if (newMessage === 0) {
+          return;
+        } else {
+          const newTotal = this.totalUnreadMsg += newMessage;
+          this.titleService.setTitle(`(${newTotal}) - AVL - Oona`);
+          // this.totalUnreadMsgSubject$.next(total);
+        }
+      }
+    );
+
+  }
 
 
 }

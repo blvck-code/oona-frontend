@@ -75,10 +75,27 @@ export class MessagingEffects {
       this.messagingSrv.getMessagesOfStream(streamData).pipe(
         map((message: any) =>
           new messagingActions.LoadStreamMessageSuccess(message)
-        )
+        ),
+        catchError((err) => of(new messagingActions.LoadStreamMessageFail(err)))
       )
     )
-  )
+  );
+
+  @Effect()
+  updateMessageFlag$: Observable<any> = this.actions$.pipe(
+    ofType<messagingActions.UpdateReadMessage>(
+      messagingActions.MessagingActionsTypes.UPDATE_READ_MESSAGE
+    ),
+    map((action: messagingActions.UpdateReadMessage) => action.payload),
+    mergeMap((msgId: number) =>
+      this.messagingSrv.updateMessageFlag(msgId).pipe(
+        map((response: any) =>
+          new messagingActions.UpdateReadMessageSuccess(msgId)
+        ),
+        catchError((err) => of(new messagingActions.UpdateReadMessageFail(err)))
+      )
+    )
+  );
 
   @Effect()
   loadPrivateMessages$: Observable<any> = this.actions$.pipe(
@@ -98,23 +115,6 @@ export class MessagingEffects {
       )
     )
   );
-
-  // @Effect()
-  // loadAllMessages$: Observable<any> = this.actions$.pipe(
-  //   ofType<messagingActions.LoadAllMessages>(
-  //     messagingActions.MessagingActionsTypes.LOAD_ALL_MESSAGES
-  //   ),
-  //   map((action: messagingActions.LoadAllMessages) => action.payload),
-  //   mergeMap((streamDetail: any) =>
-  //     this.messagingSrv.getMessagesOfStream(streamDetail).pipe(
-  //       map((messages: MessagesModel) =>
-  //         new messagingActions.LoadAllMessagesSuccess(messages)
-  //       ),
-  //       catchError(err => of(new messagingActions.LoadAllMessagesFail(err)))
-  //     )
-  //   )
-  // );
-
 
   @Effect()
   loadMessages$: Observable<any> = this.actions$.pipe(

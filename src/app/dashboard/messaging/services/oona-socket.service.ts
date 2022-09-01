@@ -13,7 +13,7 @@ import * as authActions from '../../../auth/state/auth.actions';
 import {take} from 'rxjs/operators';
 import {getSelectedUser} from '../../../auth/state/auth.selectors';
 import {ActivatedRoute, Event, Params, Router} from '@angular/router';
-import {SingleMessageModel} from "../models/messages.model";
+import {SingleMessageModel} from '../models/messages.model';
 
 const msgSocket = webSocket(messageChannel);
 
@@ -56,7 +56,7 @@ export class OonaSocketService {
   myStreamMessagesSocketSubject = new BehaviorSubject(this.myStreamMessages);
   myStreamMessagesSocket = this.myStreamMessagesSocketSubject.asObservable();
 
-  newMsgCounter: number = 0;
+  newMsgCounter = 0;
   newMsgCounterSubject = new BehaviorSubject<number>(this.newMsgCounter);
   newMsgCounterObservable = this.newMsgCounterSubject.asObservable();
 
@@ -82,6 +82,32 @@ export class OonaSocketService {
     this.userManagement();
   }
 
+  notifyMe(message: SingleMessageModel): void {
+    if (!('Notification' in window)) {
+      // Check if the browser supports notifications
+      alert('This browser does not support desktop notification');
+    } else if (Notification.permission === 'granted') {
+
+      if (!message.is_me_message){
+        const notification = new Notification(message.sender_full_name, {
+          body: message.content,
+          icon: message.avatar_url
+        });
+      }
+    } else if (Notification.permission !== 'denied') {
+      // We need to ask the user for permission
+      Notification.requestPermission().then((permission) => {
+        // If the user accepts, let's create a notification
+        if (permission === 'granted') {
+          console.log('Messages access granted');
+        }
+      });
+    }
+
+    // At last, if the user has denied notifications, and you
+    // want to be respectful there is no need to bother them anymore.
+  }
+
   changeNewMessageCount(newCount: any): void {
     // console.log('Message counter ===>>', newCount);
     this.messageCountSocket.next(newCount);
@@ -104,14 +130,14 @@ export class OonaSocketService {
 
   newMessageCounter(msg: SingleMessageModel): void {
 
-    if(this.newMessagesId.includes(msg.id)){
-      return
+    if (this.newMessagesId.includes(msg.id)){
+      return;
     }
 
     // console.log('New message item ===>>>', msg)
 
     this.allMsgCounterSubject.next(this.allMessagesCounter + 1);
-    this.newMessagesId.push(msg.id)
+    this.newMessagesId.push(msg.id);
   }
 
   connect(): void {
@@ -167,7 +193,7 @@ export class OonaSocketService {
       // this.newMessagesUnique = new Set(this.newMessages.map(item => item.message.message.id));
       this.newMessageCount = this.newMessages.length;
       this.changeNewMessageCount(this.newMessageCount);
-
+      this.notifyMe(socketData.message.message);
       this.newMessageCounter(socketData.message.message);
 
     } else if (socketData.message.type === 'update_message_flags'){

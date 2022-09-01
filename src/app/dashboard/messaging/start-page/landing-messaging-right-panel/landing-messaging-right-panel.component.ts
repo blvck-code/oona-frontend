@@ -18,6 +18,7 @@ import {combineLatest, Observable} from 'rxjs';
 import {SingleMessageModel} from "../../models/messages.model";
 import {map} from "rxjs/operators";
 import {SinglePresentUser} from "../../../../auth/models/user.model";
+import {getPrivateMessages} from "../../state/messaging.selectors";
 
 @Component({
   selector: 'app-landing-messaging-right-panel',
@@ -127,29 +128,51 @@ export class LandingMessagingRightPanelComponent implements OnInit {
 
   getPrivateUnreadMsg(): void {
 
-    this.messagingService.privateUnreadMsgArrayObservable.subscribe(unread => {
+    const messagesId: number[] = [];
 
+    this.store.select(getPrivateMessages).subscribe(
+      (messages: SingleMessageModel[]) => {
+        messages.map((message: SingleMessageModel) => {
 
-      unread?.map(message => {
-
-        // todo fixed to show number of unread messages
-        this.listedUsersArray.map((user: any) => {
-          if (user.user_id === message.sender_id) {
-
-            // if(this.endPointUnreadId.includes(user.user_id)){
-            //   return
-            // }
-            user.counter++;
-            this.endPointUnreadId.push(user.user_id);
-
+          if (message.flags.includes('read')){
+            return;
           }
-          }
-        );
 
-      });
-    });
+          if (messagesId.includes(message.id)){
+            return;
+          }
+
+          this.endPointUnreadId.push(message.sender_id);
+          messagesId.push(message.id)
+
+        })
+      }
+    )
+
+    // this.messagingService.privateUnreadMsgArrayObservable.subscribe(unread => {
+    //
+    //
+    //   unread?.map(message => {
+    //
+    //     // todo fixed to show number of unread messages
+    //     this.listedUsersArray.map((user: any) => {
+    //       if (user.user_id === message.sender_id) {
+    //
+    //         // if(this.endPointUnreadId.includes(user.user_id)){
+    //         //   return
+    //         // }
+    //         user.counter++;
+    //         this.endPointUnreadId.push(user.user_id);
+    //
+    //       }
+    //       }
+    //     );
+    //
+    //   });
+    // });
 
   }
+
 
   newListOfUsers(usersPresent: any): any[] {
     const allOnline = usersPresent?.filter(

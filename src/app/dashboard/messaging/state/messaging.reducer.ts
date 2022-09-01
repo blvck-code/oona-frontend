@@ -1,10 +1,7 @@
 import * as messagingActions from './messaging.actions';
 import { AllStreamsModel, SubscribedStreams } from '../models/streams.model';
-import { All } from '@ngrx/store-devtools/src/actions';
 import { MessagesModel, SingleMessageModel } from '../models/messages.model';
-import { TopicsModel } from '../models/topics.model';
 import { CurrentUserModel } from '../models/currentUser.model';
-import { act } from '@ngrx/effects';
 
 export interface MessagingState {
   loading: boolean;
@@ -18,6 +15,11 @@ export interface MessagingState {
   msgReceiver: any;
   messaging: {
     loading: boolean;
+    unreadCounter: {
+      allCounter: number,
+      privateCounter: number,
+      streamCounter: number
+    },
     allMessages: {
       loading: boolean;
       messages: SingleMessageModel[];
@@ -51,6 +53,11 @@ export const initialState: MessagingState = {
   msgReceiver: null,
   messaging: {
     loading: false,
+    unreadCounter: {
+      allCounter: 0,
+      privateCounter: 0,
+      streamCounter: 0
+    },
     allMessages: {
       loading: true,
       messages: [],
@@ -70,43 +77,6 @@ export const initialState: MessagingState = {
     },
     unreadMsg: []
   },
-};
-
-const addTopicToStream = (payload: any) => {
-  const stream_id = payload?.oz?.stream_id;
-  const content = [...payload?.zulip?.topics];
-
-  const topics = {
-    stream_id: {
-      content,
-    },
-  };
-
-  return topics;
-};
-
-// const filterMessages = (payload: any, state: MessagingState) => {
-//   const messages = state.messaging.allMessages.messages?.zulip.messages;
-//   const streamId = payload.streamId;
-//   const topic = payload.topicName;
-//   let filteredMsg: SingleMessageModel[] | undefined = [];
-
-//   if (topic) {
-//     const unfilteredMsg = messages?.filter(
-//       (msg) => msg.stream_id === +streamId
-//     );
-//     filteredMsg = unfilteredMsg?.filter((msg) => msg.subject === topic);
-//   } else {
-//     filteredMsg = messages?.filter((msg) => msg.stream_id === +streamId);
-//   }
-//   return filteredMsg;
-// };
-
-const sortMsg = (payload: any) => {
-  const messages = payload.zulip.messages;
-  // const sortedMsg = messages?.sort((a: any, b: any) => a.timestamp - b.timestamp);
-
-  // console.log('Payload content ===>>', messages);
 };
 
 export function messagingReducer(
@@ -146,7 +116,7 @@ export function messagingReducer(
             loaded: false
           }
         }
-      }
+      };
 
     case messagingActions.MessagingActionsTypes.LOAD_STREAM_MESSAGE_SUCCESS:
       const messagesContent = action.payload.zulip.messages;
@@ -159,7 +129,7 @@ export function messagingReducer(
             messages: [...state.messaging.streamMsg.messages, ...messagesContent]
           }
         }
-      }
+      };
     case messagingActions.MessagingActionsTypes.LOAD_SUB_STREAMS_SUCCESS:
       return {
         ...state,
@@ -222,7 +192,7 @@ export function messagingReducer(
         },
       };
     case messagingActions.MessagingActionsTypes.LOAD_PRIVATE_MESSAGE_SUCCESS:
-      const messageContent = action.payload.zulip.messages
+      const messageContent = action.payload.zulip.messages;
       return {
         ...state,
         messaging: {
@@ -272,34 +242,29 @@ export function messagingReducer(
           ...state.messaging,
         },
       };
-    case messagingActions.MessagingActionsTypes.LOAD_MESSAGES_FAIL:
+    // Updating read flag
+    case messagingActions.MessagingActionsTypes.UPDATE_READ_MESSAGE_SUCCESS:
+      const index = state.messaging.privateMsgs.messages.findIndex(message => message.id === action.payload);
+      const updatedMessages = state.messaging.privateMsgs.messages.map(
+        message => message.id === action.payload ? message : message
+      );
+
       return {
         ...state,
+        messaging: {
+          ...state.messaging,
+          privateMsgs: {
+            ...state.messaging.privateMsgs,
+            messages: updatedMessages
+          }
+        }
       };
+
     case messagingActions.MessagingActionsTypes.HANDLE_SEND_MESSAGE:
       return {
         ...state,
         msgReceiver: action.payload,
       };
-
-    // case messagingActions.MessagingActionsTypes.LOAD_STREAM_TOPIC_SUCCESS:
-    //
-    //   const topicStreamId = action.payload.oz.stream_id;
-    //   const updatedStream: any[] = state?.streams?.allStreams.map((stream: AllStreamsModel) => {
-    //     // tslint:disable-next-line:no-unused-expression
-    //     stream.stream_id === topicStreamId ? stream.topics = action.payload : null;
-    //   });
-    //
-    //   console.log('Target ==>>', updatedStream);
-    //   return {
-    //     ...state,
-    //     streams: {
-    //       ...state.streams,
-    //       // allStreams: [...state.streams.allStreams, updatedStream]
-    //       allStreams: updatedStream
-    //       // topics: [...state.streams.topics, addTopicToStream(action.payload)]
-    //     }
-    //   };
 
     default:
       return state;

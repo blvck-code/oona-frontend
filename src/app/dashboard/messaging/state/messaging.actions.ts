@@ -61,7 +61,13 @@ export enum MessagingActionsTypes {
 
   // FILTER MESSAGES
   FILTER_MESSAGES = 'messaging/filterMessages',
-  HANDLE_UNREAD_MESSAGE = 'messaging/handleUnreadMessage'
+  HANDLE_UNREAD_MESSAGE = 'messaging/handleUnreadMessage',
+
+  UPDATE_READ_MESSAGE = 'messaging/updateReadMessage',
+  UPDATE_READ_MESSAGE_SUCCESS = 'messaging/updateReadMessageSuccess',
+  UPDATE_READ_MESSAGE_FAIL = 'messaging/updateReadMessageFail',
+
+  UPDATE_MESSAGE_COUNTER = 'messaging/updateMessageCounter'
 }
 
 // LOAD MESSAGES ACTIONS
@@ -126,6 +132,13 @@ export class LoadStreamMessage implements Action {
 export class LoadStreamMessageSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_MESSAGE_SUCCESS;
   constructor(public payload: any) {}
+}
+
+export class LoadStreamMessageFail implements Action {
+  readonly type = MessagingActionsTypes.LOAD_STREAM_MESSAGES_FAIL;
+  constructor(public payload: any) {
+    console.log('Load stream messages fail =>', payload);
+  }
 }
 
 // PRIVATE MESSAGES
@@ -238,7 +251,31 @@ export class HandleUnreadMessage implements Action {
 export class HandleSendMessage implements Action {
   readonly type = MessagingActionsTypes.HANDLE_SEND_MESSAGE;
   constructor(public payload: any) {
+  }
+}
 
+export class UpdateReadMessage implements Action {
+  readonly type = MessagingActionsTypes.UPDATE_READ_MESSAGE;
+  constructor(public payload: any) {
+    console.log('Updating msg read =>', payload);
+  }
+}
+
+export class UpdateReadMessageSuccess implements Action {
+  readonly type = MessagingActionsTypes.UPDATE_READ_MESSAGE_SUCCESS;
+  constructor(public payload: any) {
+    console.log('Updated success =>', payload);
+  }
+}
+
+export class UpdateReadMessageFail implements Action {
+  readonly type = MessagingActionsTypes.UPDATE_READ_MESSAGE_FAIL;
+  constructor(public payload: any) {}
+}
+
+export class UpdateMessageCounter implements Action {
+  readonly type = MessagingActionsTypes.UPDATE_MESSAGE_COUNTER;
+  constructor(public payload: { messageType: string, type: string}) {
   }
 }
 
@@ -286,4 +323,8 @@ export type MessagingActions =
   | HandleUnreadMessage
 
   | LoadStreamMessage
-  | LoadStreamMessageSuccess;
+  | LoadStreamMessageSuccess
+  // Update message flag
+  | UpdateReadMessage
+  | UpdateReadMessageSuccess
+  | UpdateReadMessageFail;
