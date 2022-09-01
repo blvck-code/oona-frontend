@@ -327,4 +327,4 @@ export type MessagingActions =
   // Update message flag
   | UpdateReadMessage
   | UpdateReadMessageSuccess
-  | UpdateReadMessageFail;
+  | UpdateReadMessageFail ;

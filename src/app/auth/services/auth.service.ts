@@ -59,11 +59,19 @@ export class AuthService {
   }
 
   logout(): any {
-    this.http.get(this.logoutUrl);
+    this.http.get(this.logoutUrl, this.getToken());
     this.storage.removeItem('ot');
     this.storage.removeItem('or');
     this.storage.removeItem('u?');
     localStorage.clear();
+  }
+
+  logoutUser(): Observable<any> {
+    this.storage.removeItem('ot');
+    this.storage.removeItem('or');
+    this.storage.removeItem('u?');
+    localStorage.clear();
+    return this.http.get(this.logoutUrl, this.getToken());
   }
 
   getToken(): any {

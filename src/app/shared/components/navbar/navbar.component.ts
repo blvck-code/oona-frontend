@@ -8,6 +8,7 @@ import {AppState} from '../../../state/app.state';
 import * as authActions from '../../../auth/state/auth.actions'
 import {getUserDetails} from '../../../auth/state/auth.selectors';
 import {Observable} from 'rxjs';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-navbar',
@@ -21,7 +22,8 @@ export class NavbarComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -33,10 +35,11 @@ export class NavbarComponent implements OnInit {
   }
 
   logoutUser(): void {
-    this.store.dispatch(new authActions.LogoutUser());
+    // this.store.dispatch(new authActions.LogoutUser());
     // console.log('logout')
     this.authService.logout();
     this.router.navigate(['/']);
+    this.toastr.success('Logout successful.', 'Notification');
   }
 
 }

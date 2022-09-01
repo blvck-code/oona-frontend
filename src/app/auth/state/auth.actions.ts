@@ -46,7 +46,8 @@ export enum AuthActionsTypes {
 // LOGIN USER ACTIONS
 export class LoginUser implements Action {
   readonly type = AuthActionsTypes.LOGIN_USER;
-  constructor( public payload: any) {}
+  constructor( public payload: any) {
+  }
 }
 export class LoginUserSuccess implements Action {
   readonly type = AuthActionsTypes.LOGIN_USER_SUCCESS;
@@ -56,7 +57,6 @@ export class LoginUserSuccess implements Action {
 export class LoginUserFail implements Action {
   readonly type = AuthActionsTypes.LOGIN_USER_FAIL;
   constructor( public payload: any) {
-    // console.log('Login error payload ===>>>', payload);
   }
 }
 
@@ -74,7 +74,6 @@ export class LogoutUserSuccess implements Action {
 export class LogoutUserFail implements Action {
   readonly type = AuthActionsTypes.LOGOUT_USER_FAIL;
   constructor(public payload: string) {
-    // console.log(payload);
   }
 }
 

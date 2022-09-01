@@ -72,8 +72,8 @@
           <span
             *ngIf="( totalUnreadMsgObservable | async )"
             class="badge mat-badge-before">
-              {{ totalUnreadMsgObservable | async }}
-            </span>
+            {{ totalUnreadMsgObservable | async }}
+          </span>
         </p>
       </a>
       <a
@@ -85,8 +85,8 @@
           <span
             *ngIf="( privateUnreadMsgCounterObservable | async )"
             class="badge mat-badge-before">
-              {{ privateUnreadMsgCounterObservable | async }}
-            </span>
+            {{ privateUnreadMsgCounterObservable | async }}
+          </span>
         </p>
       </a>
     </div>
@@ -96,8 +96,8 @@
       <p>Private<span
         *ngIf="( streamsUnreadMsgCounterObservable | async )"
         class="badge badge-dark">
-              {{ streamsUnreadMsgCounterObservable | async }}
-            </span></p>
+            {{ streamsUnreadMsgCounterObservable | async }}
+          </span></p>
       <svg
         (click)="teamSettings()"
         width="24"
@@ -138,8 +138,8 @@
               <span
                 *ngIf="team.unreadCount > 0"
                 class="badge badge-dark ms-2">
-                  {{ team.unreadCount }}
-                </span>
+                {{ team.unreadCount }}
+              </span>
             </p>
           </button>
         </h2>
@@ -166,8 +166,8 @@
                 <span
                   *ngIf="topic.unread > 0"
                   class="badge badge-dark ms-2">
-                  {{ topic.unread }}
-                </span>
+                {{ topic.unread }}
+              </span>
               </p>
 
             </div>
@@ -222,8 +222,8 @@
                 <span
                   *ngIf="topic.unread > 0"
                   class="badge badge-dark ms-2">
-                  {{ topic.unread }}
-                </span>
+                {{ topic.unread }}
+              </span>
               </p>
 
             </div>

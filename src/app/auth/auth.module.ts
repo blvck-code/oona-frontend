@@ -8,10 +8,6 @@ import {ResetComponent} from './login/reset/reset.component';
 import {RequestOtpComponent} from './register/request-otp/request-otp.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AuthRoutingModule} from './auth-routing.module';
-import {StoreModule} from '@ngrx/store';
-import {authReducer} from './state/auth.reducer';
-import {EffectsModule} from '@ngrx/effects';
-import {AuthEffects} from './state/auth.effects';
 import {MessagingModule} from '../dashboard/messaging/messaging.module';
 
 @NgModule({
@@ -30,7 +26,7 @@ import {MessagingModule} from '../dashboard/messaging/messaging.module';
         AuthRoutingModule,
         // StoreModule.forFeature('userCenter', authReducer),
         // EffectsModule.forFeature([AuthEffects]),
-        MessagingModule
+        MessagingModule,
     ]
 })
 

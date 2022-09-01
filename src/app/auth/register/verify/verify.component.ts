@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {AuthService} from '../../services/auth.service';
 import {Router} from '@angular/router';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-verify',
@@ -22,7 +23,8 @@ export class VerifyComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -41,6 +43,7 @@ export class VerifyComponent implements OnInit {
       .subscribe(
         (verifyRes: any) => {
           this.router.navigate(['/login']);
+          this.toastr.info('Account verified.', 'Notification')
         },
         (verifyErr: any) => {
           this.verificationError = true;
