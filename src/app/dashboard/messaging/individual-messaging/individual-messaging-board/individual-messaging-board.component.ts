@@ -20,12 +20,9 @@ import { getSelectedUser } from '../../../../auth/state/auth.selectors';
 import { BehaviorSubject, Observable } from 'rxjs';
 // @Todo change this to fetch only individual messages
 import { SingleMessageModel } from '../../models/messages.model';
-import {map, take} from 'rxjs/operators';
 import { NotificationService } from '../../../../shared/services/notification.service';
-import { numbers } from '@material/dialog/constants';
-import {getAllMessages, getUnreadMessages} from '../../state/messaging.selectors';
-import {log} from 'util';
-import {SinglePresentUser} from '../../../../auth/models/user.model';
+import {getAllMessages, getPrivateMessages, getUnreadMessages} from '../../state/messaging.selectors';
+import * as messagingActions from '../../state/messaging.actions';
 
 const turndownService = new TurndownService();
 
@@ -81,7 +78,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.changeContentOnRouteChange();
     this.inComingMessage();
     this.resetDmUnreads();
-    // this.getPrivateMessageFromStore();
+    this.handleUnreadMessages();
 
     this.messagingService.currentMemberChatDetail.subscribe((member) => {
       this.memberDetail = member;
@@ -169,7 +166,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
           this.messagesSubject$.next(messages);
           this.updateMessageId();
           this.change.detectChanges();
-          this.handleUnreadMessages();
         },
         (error: any) => {
           console.log('Get Messages Error ===>>', error);
@@ -185,6 +181,40 @@ export class IndividualMessagingBoardComponent implements OnInit {
   }
 
   handleUnreadMessages(): void {
+    const messageIds: number[] = [];
+
+    this.store.select(getPrivateMessages).subscribe(
+      (messages: SingleMessageModel[]) => {
+        messages.map((message: SingleMessageModel) => {
+
+          if (message.flags.includes('read')){
+            return;
+          }
+
+          if (messageIds.includes(message.id)){
+            return;
+          }
+
+          // const updateFlagPayload = {
+          //   type: message.type,
+          //   id: message.id
+          // };
+
+          // Todo update only if private message and sender_id is for this dm
+          // const updateCounter = {
+          //   messageType: 'private',
+          //   type: 'decrease'
+          // };
+          //
+          // this.store.dispatch(new messagingActions.UpdateMessageCounter(updateCounter));
+
+          this.store.dispatch(new messagingActions.UpdateReadMessage(message.id));
+          messageIds.push(message.id);
+
+        });
+      }
+    );
+
     const unreadMsgArray: any[] = [];
     const unreadMsgId: any[] = [];
     const userId = this.operand.user_id;
@@ -202,8 +232,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
             // this.unreadMessagesSubject.next(unreadMsgArray);
             this.unreadMessagesIdSubject.next(unreadMsgId);
           }
-          console.log(message);
-          this.updateReadMessages(message.id);
         }
       });
     });
@@ -211,61 +239,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
   updateReadMessages(msgId: number): void {
 
-
-
-   // this.store.select(getUnreadMessages).subscribe(
-   //   (messages: SingleMessageModel[]) => {
-   //     messages.map((message: SingleMessageModel) => {
-   //
-   //       if (message.type !== 'private'){
-   //         return;
-   //       } else {
-   //
-   //         // if (this.unreadMsgId.includes(message.id)) {
-   //         //   return;
-   //         // }
-   //
-   //         console.log('Unread message ===>>>', message);
-   //         this.unreadMsgId.push(message.id);
-   //       }
-   //
-   //
-   //       // @ts-ignore
-   //       if (message.sender_id === +this.memberDetail.user_id) {
-   //         console.log('Unread message for this dm =>', message);
-   //       }
-   //
-   //     });
-   //   }
-   // )
-
-    // update private messages to read
-    // this.unreadMessagesIdObservable.subscribe((id: number[]) => {
-
-      // console.log('Id to be updated ==>>', id);
-
-      // if (id.length) {
-      //   this.messagingService.updateReadMessagesFlags('private', id)
-      //     .subscribe((response: any) => {
-      //
-      //       id.map((msgId: number) => {
-      //
-      //         this.store.select(getUnreadMessages)
-      //           .subscribe((messages: SingleMessageModel[]) => {
-      //             messages.map((message: SingleMessageModel) => {
-      //
-      //               if (message.id === msgId){
-      //                 console.log('Message to update read ===>>>', message);
-      //               }
-      //
-      //             });
-      //           });
-      //
-      //       });
-      //
-      //   });
-      // }
-    // });
   }
 
 

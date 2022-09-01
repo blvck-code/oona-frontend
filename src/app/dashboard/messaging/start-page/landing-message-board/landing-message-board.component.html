@@ -37,7 +37,7 @@
           </button>
         </div>
         <div
-          *ngIf="loadingMessages | async"
+          *ngIf="!dateSortedPrivateMessages.length"
           class="d-flex justify-content-center"
         >
           <div>

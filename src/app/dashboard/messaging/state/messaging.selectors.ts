@@ -53,16 +53,6 @@ export const getUnreadMessages = createSelector(
   state => state.messaging.unreadMsg
 );
 
-// export const filteredState = createSelector(
-//   getMessagingState,
-//   state => state.messaging.filtered
-// );
-
-// export const getFilteredMsg = createSelector(
-//   getMessagingState,
-//   state => state.messaging.filteredMsg
-// );
-
 export const getMessageType = createSelector(
   getMessagingState,
   (state) => state.messaging.allMessages
@@ -93,4 +83,16 @@ export const getStreamMessages = createSelector(
 export const getStreamMsgStatus = createSelector(
   getMessagingState,
   state => state.messaging.streamMsg.loaded
-)
+);
+
+export const getStreamUnreadMessages = createSelector(
+  getStreamMessages,
+  (messages: SingleMessageModel[]) =>
+    messages.filter((message: SingleMessageModel) => !message.flags.includes('read')).length
+);
+
+export const getPrivateUnreadMessages = createSelector(
+  getPrivateMessages,
+  (messages: SingleMessageModel[]) =>
+    messages.filter((message: SingleMessageModel) => !message.flags.includes('read')).length
+);

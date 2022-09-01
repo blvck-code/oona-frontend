@@ -134,8 +134,7 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
           const userId = params.member.split('-')[0];
           const userName = params.member.split('-')[1].replace('.', ' ');
           this.getCurrentUser(+userId);
-          // this.onInitHandler(+userId);
-          // this.allOtherMembers(userName);
+          console.log('Url info ===>>>', params);
           this.getCommonTeams();
         }
       );
