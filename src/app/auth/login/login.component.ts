@@ -11,6 +11,9 @@ import {getAllUsers, getErrorMessage, getIsLoggedIn} from '../state/auth.selecto
 import {Observable} from 'rxjs';
 import {UserModel} from '../models/user.model';
 import * as messagingActions from '../../dashboard/messaging/state/messaging.actions';
+import {log} from 'util';
+import {ToastrService} from 'ngx-toastr';
+import {take} from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -35,27 +38,14 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private route: Router,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private toastr: ToastrService
   ) {
-    this.handleRedirect();
   }
 
   ngOnInit(): void {
     this.handleShowErrorMsg();
-    this.redirectOnLogin();
-  }
-
-  handleRedirect(): any {
-    this.isLoggedIn$ = this.store.select(getIsLoggedIn);
-
-    this.isLoggedIn$.subscribe(
-      data => {
-        if (data) {
-          // console.log('Login status: ', data);
-          this.route.navigate(['/dashboard']);
-        }
-      }
-    );
+    // this.redirectOnLogin();
   }
 
   handleShowErrorMsg(): any {
@@ -70,8 +60,6 @@ export class LoginComponent implements OnInit {
           this.route.navigate(['/dashboard']);
           this.store.dispatch(new authActions.LoadZulipUsers);
           this.store.dispatch(new messagingActions.LoadAllStreams);
-
-          console.log('Logged in successfully');
         }
 
         return;
@@ -81,24 +69,33 @@ export class LoginComponent implements OnInit {
   }
 
   onLogin(): any {
+    let count = 0;
     if (!this.loginForm.valid) {
       return;
     }
     this.loading = true;
-    this.store.dispatch(new authActions.LoginUser(this.loginForm.value));
+    // this.store.dispatch(new authActions.LoginUser(this.loginForm.value));
     const loginInfo = new FormData();
     loginInfo.append('email', this.loginForm.value.email);
     loginInfo.append('password', this.loginForm.value.password);
+
 
     this.authService.login(loginInfo)
       .subscribe(
         (loginRes: any) => {
           // console.log('Login response ===>>>', loginRes);
+          // take(1)
+          count += 1;
 
           if (loginRes.message === 'Verify your account to retrieve token.') {
             this.loginServerError = 'Your account is not verified.';
             this.loginError = true;
             this.loading = false;
+          }
+
+          if (count === 1) {
+            this.toastr.success('Login successful.', 'Notification');
+            this.store.dispatch(new authActions.LoginUserSuccess(loginRes));
           }
 
           this.loading = false;
@@ -113,9 +110,10 @@ export class LoginComponent implements OnInit {
           this.route.navigate(['/dashboard']);
         },
         (loginErr: any) => {
+          this.loginServerError = loginErr.message;
           this.loginError = true;
           this.loading = false;
-          // console.log('loginErr ===>>>>', loginErr);
+          console.log('Log in error ==>>', loginErr);
         }
       );
   }

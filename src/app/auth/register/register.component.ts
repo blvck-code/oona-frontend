@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {AuthService} from '../services/auth.service';
 import {Router} from '@angular/router';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-register',
@@ -26,7 +27,8 @@ export class RegisterComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -48,9 +50,10 @@ export class RegisterComponent implements OnInit {
         (res: any) => {
           this.router.navigate(['/verify-account']);
           this.loading = false;
+          this.toastr.success('Account created successful.', 'Notification');
         },
         (signupError: any) => {
-          // console.log('Register error: ', signupError);
+          console.log('Register error: ', signupError);
           this.loading = false;
           this.signupError = true;
           if (signupError.message === 'User with this email already exists.') {

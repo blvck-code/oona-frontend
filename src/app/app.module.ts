@@ -24,8 +24,8 @@ import {TokenInterceptorService} from './interceptors/token-interceptor.service'
 import {ErrorInterceptorService} from './interceptors/error-interceptor.service';
 import {AuthEffects} from './auth/state/auth.effects';
 import {MessagingEffects} from './dashboard/messaging/state/messaging.effects';
-import {messagingReducer} from "./dashboard/messaging/state/messaging.reducer";
-import {authReducer} from "./auth/state/auth.reducer";
+import {messagingReducer} from './dashboard/messaging/state/messaging.reducer';
+import {authReducer} from './auth/state/auth.reducer';
 
 @NgModule({
     declarations: [
@@ -44,7 +44,7 @@ import {authReducer} from "./auth/state/auth.reducer";
         RichTextEditorAllModule,
         BrowserAnimationsModule, // required animations module
         HttpClientModule,
-        StoreModule.forRoot({ 'userCenter': authReducer, 'messaging': messagingReducer }),
+        StoreModule.forRoot({ userCenter: authReducer, messaging: messagingReducer }),
         StoreDevtoolsModule.instrument({
             name: 'Oona',
             maxAge: 25,

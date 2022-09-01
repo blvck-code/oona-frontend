@@ -84,6 +84,7 @@ export function authReducer(state = initialState, action: any): AuthState {
       };
     // Login Error
     case authActions.AuthActionsTypes.LOGIN_USER_FAIL:
+    case authActions.AuthActionsTypes.LOGOUT_USER_SUCCESS:
       return {
         ...state,
         loginStatus: {
@@ -94,17 +95,16 @@ export function authReducer(state = initialState, action: any): AuthState {
         message: action.payload.message,
       };
     // Logout
-    case authActions.AuthActionsTypes.LOGOUT_USER_SUCCESS:
-      // console.log('Logout payload ===>>>', action.payload);
-      return {
-        ...state,
-        loginStatus: {
-          isLoggedIn: false,
-          isLoading: false,
-        },
-        userInfo: null,
-        message: action.payload,
-      };
+
+      // return {
+      //   ...state,
+      //   loginStatus: {
+      //     isLoggedIn: false,
+      //     isLoading: false,
+      //   },
+      //   userInfo: null,
+      //   message: action.payload,
+      // };
     case authActions.AuthActionsTypes.LOGOUT_USER_FAIL:
       return {
         ...state,

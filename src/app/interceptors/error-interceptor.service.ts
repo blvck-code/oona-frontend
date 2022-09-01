@@ -30,7 +30,8 @@ export class ErrorInterceptorService implements HttpInterceptor{
         console.log('Error  ==>', error);
         let errorMsg;
 
-        // Un Authorised User Access
+
+          // Un Authorised User Access
         // Todo change this back to normal
         // if (errorStatus === 401 || errorStatus === 403) {
         //   this.store.dispatch(new authActions.LogoutUser());
@@ -38,6 +39,7 @@ export class ErrorInterceptorService implements HttpInterceptor{
         //   this.route.navigate(['/login']);
         //
         // }
+
 
         // Other errors
         if (error instanceof ErrorEvent){
@@ -73,6 +75,14 @@ export class ErrorInterceptorService implements HttpInterceptor{
             const err = {
               status: error.status,
               message: error?.error[0]?.non_field_errors[0]
+            };
+            errorMsg = err;
+          }
+
+          if (error.statusText === 'Unknown Error'){
+            const err = {
+              status: 400,
+              message: 'Please accept the appropriate certificates.'
             };
             errorMsg = err;
           }

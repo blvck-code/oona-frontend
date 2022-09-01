@@ -38,7 +38,7 @@
 
         <div class="input-details">
           <label for="pass">Password*</label>
-          <input type="password" id="pass" formControlName="password1" placeholder="Password">
+          <input type="password" name="password1" id="pass" autocomplete="off" formControlName="password1" placeholder="Password">
           <span *ngIf="registrationFormControls.password1.touched && registrationFormControls.password1.errors?.required">Please enter your password.</span>
           <span *ngIf="!registrationFormControls.password1.touched && emptyForm">Please enter your password.</span>
         </div>
