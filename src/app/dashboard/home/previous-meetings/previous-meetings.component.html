@@ -180,14 +180,14 @@
 
             <div class="modal-meeting-name-time">
               <div class="modal-meeting-name">
-                <label class="form-label">Meeting Date</label>
+                <label class="form-label">Meeting Date *</label>
                 <div id="oonaMeetingDate" class="meeting-date-section">
                   <input  type="text" data-input class="form-control" formControlName="meetingDate">
                   <img src="assets/img/calendar_blue.svg" alt="" title="toggle" data-toggle>
                 </div>
               </div>
               <div class="modal-meeting-time">
-                <label class="form-label">Time</label>
+                <label class="form-label">Time *</label>
                 <div class="modal-meeting-time-inputs">
                   <input type="text" id="oonaMeetingTime" class="flatpickr" formControlName="meetingTime">
                   <select class="form-select" aria-label="Default select example" formControlName="meetingDuration">
@@ -205,7 +205,7 @@
             <div class="modal-meeting-agenda-attendee">
               <div class="modal-agenda-priority">
                 <div class="modal-meeting-names">
-                  <label for="meetingName" class="form-label">Meeting Name</label>
+                  <label for="meetingName" class="form-label">Meeting Name *</label>
                   <input class="form-control" id="meetingName" placeholder="Type the name of your meeting" formControlName="meetingName"
                          [class.invalid]="meetingFormControls.meetingName.touched && meetingFormControls.meetingName.errors?.required">
                   <span *ngIf="meetingFormControls.meetingName.touched && meetingFormControls.meetingName.errors?.required">Please enter a name for your meeting.</span>
@@ -229,7 +229,7 @@
               </div>
               <div class="modal-meeting-attendee">
                 <div class="meeting-attendee-label-section">
-                  <label for="meetingAttendees" class="form-label">Attendees</label>
+                  <label for="meetingAttendees" class="form-label">Attendees *</label>
                   <img *ngIf="!attendeeListOpen" src="assets/img/add-user_blue.svg" alt="" aria-label="Add Meeting Attendees" title="Add meeting attendees" (click)="openAttendeesList()">
                   <img *ngIf="attendeeListOpen" src="assets/img/close_icon_blue.svg" alt="" aria-label="Add Meeting Attendees" title="Close Section" (click)="openAttendeesList()">
                 </div>

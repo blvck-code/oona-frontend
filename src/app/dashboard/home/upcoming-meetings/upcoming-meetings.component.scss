@@ -462,6 +462,8 @@ input.search-meeting-attendees {
   border: 1px solid #3E3B7E;
   border-radius: 10px;
   padding: 12px;
+  overflow-x: hidden ;
+  overflow-y: scroll;
 }
 .modal-meeting-attendee .attendee-list.add-attendee {
   height: 217px;
@@ -482,22 +484,23 @@ input.search-meeting-attendees {
 }
 .attendee-chip {
   height: 30px;
-  max-width: 130px;
+  max-width: 135px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-radius: 3px;
-  padding: 8px;
+  padding: 5px;
   background-color: #D4EDF9;
 }
 .attendee-chip p {
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   line-height: 16.41px;
   color: #2D1A14;
 }
 .attendee-chip img {
+  width: 10px;
   cursor: pointer;
 }
 .modal-meeting-agenda-attendee span {

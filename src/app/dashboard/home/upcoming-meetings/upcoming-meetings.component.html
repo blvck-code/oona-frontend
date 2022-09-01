@@ -5,15 +5,17 @@
 <div *ngIf="!isIframeLoading" class="upcoming-meetings-loading-container">
   <div class="home-topnav">
     <div class="home-topnav-links">
-      <div class="upcoming-link" routerLink="/dashboard" routerLinkActive="link-active" [routerLinkActiveOptions]="{exact: true}" >
+      <div class="upcoming-link" routerLink="/dashboard" routerLinkActive="link-active"
+           [routerLinkActiveOptions]="{exact: true}">
         <p>Upcoming Meetings</p>
       </div>
-      <div class="previous-link" routerLink="/dashboard/previous-meetings" routerLinkActive="link-active" >
+      <div class="previous-link" routerLink="/dashboard/previous-meetings" routerLinkActive="link-active">
         <p>Previous Meetings</p>
       </div>
     </div>
     <div class="home-topnav-button">
-      <a class="btn host-meeting-btn" data-bs-toggle="modal" href="#meetingModal" role="button" (click)="getUsers()">Host Meeting</a>
+      <a class="btn host-meeting-btn" data-bs-toggle="modal" href="#meetingModal" role="button" (click)="getUsers()">Host
+        Meeting</a>
     </div>
   </div>
 
@@ -36,25 +38,47 @@
                   <div class="meeting-title">
                     <p>{{meeting.name}}</p>
                     <div class="meeting-icons">
-                      <a data-bs-toggle="modal" href="#deleteMeetingModal" role="button" (click)="getMeetingToDelete(meeting.id)" title="Delete this meeting">
-                        <svg id="Layer_1" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg"><g>
-                          <path d="m424 64h-88v-16c0-26.467-21.533-48-48-48h-64c-26.467 0-48 21.533-48 48v16h-88c-22.056 0-40 17.944-40 40v56c0 8.836 7.164 16 16 16h8.744l13.823 290.283c1.221 25.636 22.281 45.717 47.945 45.717h242.976c25.665 0 46.725-20.081 47.945-45.717l13.823-290.283h8.744c8.836 0 16-7.164 16-16v-56c0-22.056-17.944-40-40-40zm-216-16c0-8.822 7.178-16 16-16h64c8.822 0 16 7.178 16 16v16h-96zm-128 56c0-4.411 3.589-8 8-8h336c4.411 0 8 3.589 8 8v40c-4.931 0-331.567 0-352 0zm313.469 360.761c-.407 8.545-7.427 15.239-15.981 15.239h-242.976c-8.555 0-15.575-6.694-15.981-15.239l-13.751-288.761h302.44z" fill="#051ec4"/>
-                          <path d="m256 448c8.836 0 16-7.164 16-16v-208c0-8.836-7.164-16-16-16s-16 7.164-16 16v208c0 8.836 7.163 16 16 16z" fill="#051ec4"/>
-                          <path d="m336 448c8.836 0 16-7.164 16-16v-208c0-8.836-7.164-16-16-16s-16 7.164-16 16v208c0 8.836 7.163 16 16 16z" fill="#051ec4"/>
-                          <path d="m176 448c8.836 0 16-7.164 16-16v-208c0-8.836-7.164-16-16-16s-16 7.164-16 16v208c0 8.836 7.163 16 16 16z" fill="#051ec4"/></g>
+                      <a data-bs-toggle="modal" href="#deleteMeetingModal" role="button"
+                         (click)="getMeetingToDelete(meeting.id)" title="Delete this meeting">
+                        <svg id="Layer_1" height="512" viewBox="0 0 512 512" width="512"
+                             xmlns="http://www.w3.org/2000/svg">
+                          <g>
+                            <path
+                              d="m424 64h-88v-16c0-26.467-21.533-48-48-48h-64c-26.467 0-48 21.533-48 48v16h-88c-22.056 0-40 17.944-40 40v56c0 8.836 7.164 16 16 16h8.744l13.823 290.283c1.221 25.636 22.281 45.717 47.945 45.717h242.976c25.665 0 46.725-20.081 47.945-45.717l13.823-290.283h8.744c8.836 0 16-7.164 16-16v-56c0-22.056-17.944-40-40-40zm-216-16c0-8.822 7.178-16 16-16h64c8.822 0 16 7.178 16 16v16h-96zm-128 56c0-4.411 3.589-8 8-8h336c4.411 0 8 3.589 8 8v40c-4.931 0-331.567 0-352 0zm313.469 360.761c-.407 8.545-7.427 15.239-15.981 15.239h-242.976c-8.555 0-15.575-6.694-15.981-15.239l-13.751-288.761h302.44z"
+                              fill="#051ec4"/>
+                            <path
+                              d="m256 448c8.836 0 16-7.164 16-16v-208c0-8.836-7.164-16-16-16s-16 7.164-16 16v208c0 8.836 7.163 16 16 16z"
+                              fill="#051ec4"/>
+                            <path
+                              d="m336 448c8.836 0 16-7.164 16-16v-208c0-8.836-7.164-16-16-16s-16 7.164-16 16v208c0 8.836 7.163 16 16 16z"
+                              fill="#051ec4"/>
+                            <path
+                              d="m176 448c8.836 0 16-7.164 16-16v-208c0-8.836-7.164-16-16-16s-16 7.164-16 16v208c0 8.836 7.163 16 16 16z"
+                              fill="#051ec4"/>
+                          </g>
                         </svg>
                       </a>
 
-                      <a data-bs-toggle="modal" href="#editMeetingModal" role="button" (click)="getSelectedMeeting(meeting.id)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" x="0" y="0" viewBox="0 0 477.873 477.873" xml:space="preserve" class=""><g><g xmlns="http://www.w3.org/2000/svg">
+                      <a data-bs-toggle="modal" href="#editMeetingModal" role="button"
+                         (click)="getSelectedMeeting(meeting.id)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" x="0" y="0"
+                             viewBox="0 0 477.873 477.873" xml:space="preserve" class=""><g><g xmlns="http://www.w3.org/2000/svg">
                         <g>
-                          <path d="M392.533,238.937c-9.426,0-17.067,7.641-17.067,17.067V426.67c0,9.426-7.641,17.067-17.067,17.067H51.2    c-9.426,0-17.067-7.641-17.067-17.067V85.337c0-9.426,7.641-17.067,17.067-17.067H256c9.426,0,17.067-7.641,17.067-17.067    S265.426,34.137,256,34.137H51.2C22.923,34.137,0,57.06,0,85.337V426.67c0,28.277,22.923,51.2,51.2,51.2h307.2    c28.277,0,51.2-22.923,51.2-51.2V256.003C409.6,246.578,401.959,238.937,392.533,238.937z" fill="#051ec4" data-original="#000000" style="" class=""/>
+                          <path
+                            d="M392.533,238.937c-9.426,0-17.067,7.641-17.067,17.067V426.67c0,9.426-7.641,17.067-17.067,17.067H51.2    c-9.426,0-17.067-7.641-17.067-17.067V85.337c0-9.426,7.641-17.067,17.067-17.067H256c9.426,0,17.067-7.641,17.067-17.067    S265.426,34.137,256,34.137H51.2C22.923,34.137,0,57.06,0,85.337V426.67c0,28.277,22.923,51.2,51.2,51.2h307.2    c28.277,0,51.2-22.923,51.2-51.2V256.003C409.6,246.578,401.959,238.937,392.533,238.937z"
+                            fill="#051ec4" data-original="#000000" style="" class=""/>
                         </g></g><g xmlns="http://www.w3.org/2000/svg">	<g>
-                        <path d="M458.742,19.142c-12.254-12.256-28.875-19.14-46.206-19.138c-17.341-0.05-33.979,6.846-46.199,19.149L141.534,243.937    c-1.865,1.879-3.272,4.163-4.113,6.673l-34.133,102.4c-2.979,8.943,1.856,18.607,10.799,21.585    c1.735,0.578,3.552,0.873,5.38,0.875c1.832-0.003,3.653-0.297,5.393-0.87l102.4-34.133c2.515-0.84,4.8-2.254,6.673-4.13    l224.802-224.802C484.25,86.023,484.253,44.657,458.742,19.142z M434.603,87.419L212.736,309.286l-66.287,22.135l22.067-66.202    L390.468,43.353c12.202-12.178,31.967-12.158,44.145,0.044c5.817,5.829,9.095,13.72,9.12,21.955    C443.754,73.631,440.467,81.575,434.603,87.419z" fill="#051ec4" data-original="#000000" style="" class=""/>
-                      </g></g><g xmlns="http://www.w3.org/2000/svg"></g><g xmlns="http://www.w3.org/2000/svg"></g><g xmlns="http://www.w3.org/2000/svg"></g><g xmlns="http://www.w3.org/2000/svg"></g>
-                        <g xmlns="http://www.w3.org/2000/svg"></g><g xmlns="http://www.w3.org/2000/svg"></g><g xmlns="http://www.w3.org/2000/svg"></g><g xmlns="http://www.w3.org/2000/svg"></g>
-                        <g xmlns="http://www.w3.org/2000/svg"></g><g xmlns="http://www.w3.org/2000/svg"></g><g xmlns="http://www.w3.org/2000/svg"></g><g xmlns="http://www.w3.org/2000/svg"></g>
-                        <g xmlns="http://www.w3.org/2000/svg"></g><g xmlns="http://www.w3.org/2000/svg"></g><g xmlns="http://www.w3.org/2000/svg"></g></g>
+                        <path
+                          d="M458.742,19.142c-12.254-12.256-28.875-19.14-46.206-19.138c-17.341-0.05-33.979,6.846-46.199,19.149L141.534,243.937    c-1.865,1.879-3.272,4.163-4.113,6.673l-34.133,102.4c-2.979,8.943,1.856,18.607,10.799,21.585    c1.735,0.578,3.552,0.873,5.38,0.875c1.832-0.003,3.653-0.297,5.393-0.87l102.4-34.133c2.515-0.84,4.8-2.254,6.673-4.13    l224.802-224.802C484.25,86.023,484.253,44.657,458.742,19.142z M434.603,87.419L212.736,309.286l-66.287,22.135l22.067-66.202    L390.468,43.353c12.202-12.178,31.967-12.158,44.145,0.044c5.817,5.829,9.095,13.72,9.12,21.955    C443.754,73.631,440.467,81.575,434.603,87.419z"
+                          fill="#051ec4" data-original="#000000" style="" class=""/>
+                      </g></g><g xmlns="http://www.w3.org/2000/svg"></g><g xmlns="http://www.w3.org/2000/svg"></g><g
+                          xmlns="http://www.w3.org/2000/svg"></g><g xmlns="http://www.w3.org/2000/svg"></g>
+                        <g xmlns="http://www.w3.org/2000/svg"></g><g xmlns="http://www.w3.org/2000/svg"></g><g
+                            xmlns="http://www.w3.org/2000/svg"></g><g xmlns="http://www.w3.org/2000/svg"></g>
+                        <g xmlns="http://www.w3.org/2000/svg"></g><g xmlns="http://www.w3.org/2000/svg"></g><g
+                            xmlns="http://www.w3.org/2000/svg"></g><g xmlns="http://www.w3.org/2000/svg"></g>
+                        <g xmlns="http://www.w3.org/2000/svg"></g><g xmlns="http://www.w3.org/2000/svg"></g><g
+                            xmlns="http://www.w3.org/2000/svg"></g></g>
                       </svg>
                       </a>
 
@@ -65,7 +89,8 @@
                     <div class="clock-icon">
                       <img src="assets/img/clock-icon.svg" alt="">
                     </div>
-                    <p>{{meeting.start_time | date:'mediumDate'}} | {{meeting.start_time | date:'HHmm'}} - {{meeting.stop_time | date:'HHmm'}}</p>
+                    <p>{{meeting.start_time | date:'mediumDate'}} | {{meeting.start_time | date:'HHmm'}}
+                      - {{meeting.stop_time | date:'HHmm'}}</p>
                   </div>
                   <div class="meeting-chair">
                     <div class="meeting-chair-icon">
@@ -74,7 +99,8 @@
                     <p>Meeting Chair: {{meeting.host_name.first_name}}&nbsp;{{meeting.host_name.last_name}}</p>
                   </div>
                 </div>
-                <div class="meeting-item-priority" [ngClass]="{high:meeting.priority==3, normal:meeting.priority==4, low:meeting.priority==5}">
+                <div class="meeting-item-priority"
+                     [ngClass]="{high:meeting.priority==3, normal:meeting.priority==4, low:meeting.priority==5}">
                 </div>
               </div>
             </div>
@@ -113,26 +139,27 @@
 
     <!--  Schedule Meeting Modal-->
 
-    <div class="modal fade meeting-modal" id="meetingModal" aria-hidden="true" aria-labelledby="Schedule Meeting Modal" tabindex="-1">
+    <div class="modal fade meeting-modal" id="meetingModal" aria-hidden="true" aria-labelledby="Schedule Meeting Modal"
+         tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="staticBackdropLabel">Schedule a meeting</h5>
-            <img src="assets/img/close_icon.svg" alt=""  #closeButton data-bs-dismiss="modal" aria-label="Close">
+            <img src="assets/img/close_icon.svg" alt="" #closeButton data-bs-dismiss="modal" aria-label="Close">
           </div>
           <div class="modal-body">
             <form [formGroup]="meetingForm" (ngSubmit)="submitForm()">
 
               <div class="modal-meeting-name-time">
                 <div class="modal-meeting-name">
-                  <label class="form-label">Meeting Date</label>
+                  <label class="form-label">Meeting Date *</label>
                   <div id="oonaMeetingDate" class="meeting-date-section">
-                    <input  type="text" data-input class="form-control" formControlName="meetingDate">
+                    <input type="text" data-input class="form-control" formControlName="meetingDate">
                     <img src="assets/img/calendar_blue.svg" alt="" title="toggle" data-toggle>
                   </div>
                 </div>
                 <div class="modal-meeting-time">
-                  <label class="form-label">Time</label>
+                  <label class="form-label">Time *</label>
                   <div class="modal-meeting-time-inputs">
                     <input type="text" id="oonaMeetingTime" class="flatpickr" formControlName="meetingTime">
                     <select class="form-select" aria-label="Default select example" formControlName="meetingDuration">
@@ -150,18 +177,23 @@
               <div class="modal-meeting-agenda-attendee">
                 <div class="modal-agenda-priority">
                   <div class="modal-meeting-names">
-                    <label for="meetingName" class="form-label">Meeting Name</label>
-                    <input class="form-control" id="meetingName" placeholder="Type the name of your meeting" formControlName="meetingName"
+                    <label for="meetingName" class="form-label">Meeting Name *</label>
+                    <input class="form-control" id="meetingName" placeholder="Type the name of your meeting"
+                           formControlName="meetingName"
                            [class.invalid]="meetingFormControls.meetingName.touched && meetingFormControls.meetingName.errors?.required">
-                    <span *ngIf="meetingFormControls.meetingName.touched && meetingFormControls.meetingName.errors?.required">Please enter a name for your meeting.</span>
+                    <span
+                      *ngIf="meetingFormControls.meetingName.touched && meetingFormControls.meetingName.errors?.required">Please enter a name for your meeting.</span>
                     <span *ngIf="!meetingFormControls.meetingName.touched && emptyForm">Please enter a name for your meeting.</span>
                   </div>
                   <div class="modal-meeting-agenda">
-                    <label for="meetingAgenda" class="form-label">Meeting agenda (100 char)</label>
-                    <textarea class="form-control" id="meetingAgenda" placeholder="Type meeting agenda" formControlName="meetingAgenda"
+                    <label for="meetingAgenda" class="form-label">Meeting agenda (100 char) *</label>
+                    <textarea class="form-control" id="meetingAgenda" placeholder="Type meeting agenda"
+                              formControlName="meetingAgenda"
                               [class.invalid]="(meetingFormControls.meetingAgenda.touched && meetingFormControls.meetingAgenda.errors?.required) || (!meetingFormControls.meetingAgenda.touched && emptyForm)"></textarea>
-                    <span *ngIf="meetingFormControls.meetingAgenda.touched && meetingFormControls.meetingAgenda.errors?.required">Please enter a meeting agenda.</span>
-                    <span *ngIf="!meetingFormControls.meetingAgenda.touched && emptyForm">Please enter a meeting agenda.</span>
+                    <span
+                      *ngIf="meetingFormControls.meetingAgenda.touched && meetingFormControls.meetingAgenda.errors?.required">Please enter a meeting agenda.</span>
+                    <span
+                      *ngIf="!meetingFormControls.meetingAgenda.touched && emptyForm">Please enter a meeting agenda.</span>
                   </div>
                   <div class="modal-meeting-priority">
                     <label class="form-label">Meeting priority</label>
@@ -174,9 +206,11 @@
                 </div>
                 <div class="modal-meeting-attendee">
                   <div class="meeting-attendee-label-section">
-                    <label for="meetingAttendees" class="form-label">Attendees</label>
-                    <img *ngIf="!attendeeListOpen" src="assets/img/add-user_blue.svg" alt="" aria-label="Add Meeting Attendees" title="Add meeting attendees" (click)="openAttendeesList()">
-                    <img *ngIf="attendeeListOpen" src="assets/img/close_icon_blue.svg" alt="" aria-label="Add Meeting Attendees" title="Close Section" (click)="openAttendeesList()">
+                    <label for="meetingAttendees" class="form-label">Attendees *</label>
+                    <img *ngIf="!attendeeListOpen" src="assets/img/add-user_blue.svg" alt=""
+                         aria-label="Add Meeting Attendees" title="Add meeting attendees" (click)="openAttendeesList()">
+                    <img *ngIf="attendeeListOpen" src="assets/img/close_icon_blue.svg" alt=""
+                         aria-label="Add Meeting Attendees" title="Close Section" (click)="openAttendeesList()">
                   </div>
                   <div class="add-attendees-section dropdown">
                     <input *ngIf="attendeeListOpen" [(ngModel)]="searchText"
@@ -186,21 +220,23 @@
                            id="dropdownMenuButton1" data-bs-toggle="dropdown"
                            aria-expanded="false"
                     >
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" #selectList >
-                      <li *ngFor="let user of oonaUsers | searchFilter : searchText" >
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" #selectList>
+                      <li *ngFor="let user of oonaUsers | searchFilter : searchText">
                         <a class="dropdown-item" (click)="selectedUser(user)">
                           {{user.first_name}}&nbsp;{{user.last_name}}
                         </a>
                       </li>
                     </ul>
                   </div>
-                  <div class="form-control attendee-list" id="meetingAttendees" [class.add-attendee] = attendeeListOpen [class.invalid]="emptyForm && this.displayInvitedUsers.length == 0">
+                  <div class="form-control attendee-list" id="meetingAttendees" [class.add-attendee]=attendeeListOpen
+                       [class.invalid]="emptyForm && this.displayInvitedUsers.length == 0">
                     <div *ngFor="let user of displayInvitedUsers" class="attendee-chip">
                       <p>{{user.first_name}}&nbsp;{{user.last_name}}</p>
                       <img src="assets/img/close_icon_black.svg" alt="" (click)="onRemoveUser(user)">
                     </div>
                   </div>
-                  <span *ngIf="emptyForm && this.displayInvitedUsers.length == 0">Please add attendees for your meeting.</span>
+                  <span
+                    *ngIf="emptyForm && this.displayInvitedUsers.length == 0">Please add attendees for your meeting.</span>
                   <span *ngIf="hostError">A Host can't be an attendee in their meeting.</span>
                 </div>
               </div>
@@ -208,8 +244,14 @@
 
                 <!-- Toggle to second dialog -->
                 <div class="modal-footer-buttons">
-                  <button class="btn btn-primary schedule-meeting-btn" type="submit" (click)="scheduleMeeting()">Schedule Meeting</button>
-                  <button class="btn btn-primary start-meeting-btn" (click)="startMeeting()" type="submit">Start Meeting</button>
+                  <button
+                    class="btn btn-primary schedule-meeting-btn"
+                    type="submit"
+                    (click)="scheduleMeeting()">Schedule Meetings
+                  </button>
+                  <button class="btn btn-primary start-meeting-btn" (click)="startMeeting()" type="submit">Start
+                    Meeting
+                  </button>
                 </div>
               </div>
             </form>
@@ -225,7 +267,8 @@
 
     <!--  Edit Scheduled Meeting Modal-->
 
-    <div class="modal fade meeting-modal" id="editMeetingModal" aria-hidden="true" aria-labelledby="Schedule Meeting Modal" tabindex="-1">
+    <div class="modal fade meeting-modal" id="editMeetingModal" aria-hidden="true"
+         aria-labelledby="Schedule Meeting Modal" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div *ngIf="areMeetingDetailsLoading" class="meetings-loading-indicator">
@@ -233,27 +276,28 @@
           </div>
           <div class="modal-header">
             <h5 class="modal-title" id="editStaticBackdropLabel">Edit Meeting</h5>
-            <img src="assets/img/close_icon.svg" alt=""  #editCloseButton data-bs-dismiss="modal" aria-label="Close">
+            <img src="assets/img/close_icon.svg" alt="" #editCloseButton data-bs-dismiss="modal" aria-label="Close">
           </div>
           <div *ngIf="!areMeetingDetailsLoading" class="modal-body">
 
             <form [formGroup]="editMeetingForm" (ngSubmit)="updateForm()">
 
-            <!--              Date Section-->
+              <!--              Date Section-->
 
               <div class="modal-meeting-name-time">
                 <div class="modal-meeting-name">
-                  <label class="form-label">Meeting Date</label>
+                  <label class="form-label">Meeting Date *</label>
                   <div id="oonaCalendar" class="meeting-date-section">
-                    <input  type="text" data-input class="form-control" formControlName="editMeetingDate">
+                    <input type="text" data-input class="form-control" formControlName="editMeetingDate">
                     <img src="assets/img/calendar_blue.svg" alt="" title="toggle" data-toggle>
                   </div>
                 </div>
                 <div class="modal-meeting-time">
-                  <label class="form-label">Time</label>
+                  <label class="form-label">Time *</label>
                   <div class="modal-meeting-time-inputs">
                     <input type="text" id="oonaEditTime" class="flatpickr" formControlName="editMeetingTime">
-                    <select class="form-select" aria-label="Default select example" formControlName="editMeetingDuration">
+                    <select class="form-select" aria-label="Default select example"
+                            formControlName="editMeetingDuration">
                       <option *ngFor="let length of meetingLength" [ngValue]="length">
                         {{length}}
                       </option>
@@ -268,22 +312,28 @@
               <div class="modal-meeting-agenda-attendee">
                 <div class="modal-agenda-priority">
                   <div class="modal-meeting-names">
-                    <label for="editMeetingName" class="form-label">Meeting Name</label>
-                    <input class="form-control" id="editMeetingName" placeholder="Type the name of your meeting" formControlName="editMeetingName"
+                    <label for="editMeetingName" class="form-label">Meeting Name *</label>
+                    <input class="form-control" id="editMeetingName" placeholder="Type the name of your meeting"
+                           formControlName="editMeetingName"
                            [class.invalid]="meetingFormControls.meetingName.touched && meetingFormControls.meetingName.errors?.required">
-                    <span *ngIf="meetingFormControls.meetingName.touched && meetingFormControls.meetingName.errors?.required">Please enter a name for your meeting.</span>
+                    <span
+                      *ngIf="meetingFormControls.meetingName.touched && meetingFormControls.meetingName.errors?.required">Please enter a name for your meeting.</span>
                     <span *ngIf="!meetingFormControls.meetingName.touched && emptyForm">Please enter a name for your meeting.</span>
                   </div>
                   <div class="modal-meeting-agenda">
-                    <label for="editMeetingAgenda" class="form-label">Meeting agenda (100 char)</label>
-                    <textarea class="form-control" id="editMeetingAgenda" placeholder="Type meeting agenda" formControlName="editMeetingAgenda"
+                    <label for="editMeetingAgenda" class="form-label">Meeting agenda (100 char) *</label>
+                    <textarea class="form-control" id="editMeetingAgenda" placeholder="Type meeting agenda"
+                              formControlName="editMeetingAgenda"
                               [class.invalid]="(meetingFormControls.meetingAgenda.touched && meetingFormControls.meetingAgenda.errors?.required) || (!meetingFormControls.meetingAgenda.touched && emptyForm)"></textarea>
-                    <span *ngIf="meetingFormControls.meetingAgenda.touched && meetingFormControls.meetingAgenda.errors?.required">Please enter a meeting agenda.</span>
-                    <span *ngIf="!meetingFormControls.meetingAgenda.touched && emptyForm">Please enter a meeting agenda.</span>
+                    <span
+                      *ngIf="meetingFormControls.meetingAgenda.touched && meetingFormControls.meetingAgenda.errors?.required">Please enter a meeting agenda.</span>
+                    <span
+                      *ngIf="!meetingFormControls.meetingAgenda.touched && emptyForm">Please enter a meeting agenda.</span>
                   </div>
                   <div class="modal-meeting-priority">
                     <label class="form-label">Meeting priority</label>
-                    <select class="form-select" aria-label="Default select example" formControlName="editMeetingPriority">
+                    <select class="form-select" aria-label="Default select example"
+                            formControlName="editMeetingPriority">
                       <option *ngFor="let priority of meetingPriority" [ngValue]="priority">
                         {{priority}}
                       </option>
@@ -292,35 +342,44 @@
                 </div>
                 <div class="modal-meeting-attendee">
                   <div class="meeting-attendee-label-section">
-                    <label for="meetingAttendees" class="form-label">Attendees</label>
-                    <img *ngIf="!attendeeListOpen" src="assets/img/add-user_blue.svg" alt="" aria-label="Add Meeting Attendees" title="Add meeting attendees" (click)="openAttendeesList()">
-                    <img *ngIf="attendeeListOpen" src="assets/img/close_icon_blue.svg" alt="" aria-label="Add Meeting Attendees" title="Close Section" (click)="openAttendeesList()">
+                    <label for="meetingAttendees" class="form-label">Attendees*</label>
+                    <img *ngIf="!attendeeListOpen" src="assets/img/add-user_blue.svg" alt=""
+                         aria-label="Add Meeting Attendees" title="Add meeting attendees" (click)="openAttendeesList()">
+                    <img *ngIf="attendeeListOpen" src="assets/img/close_icon_blue.svg" alt=""
+                         aria-label="Add Meeting Attendees" title="Close Section" (click)="openAttendeesList()">
                   </div>
                   <div class="add-attendees-section dropdown">
-                    <input *ngIf="attendeeListOpen" type="text" class="search-meeting-attendees" placeholder="Type here to search for user" id="editMeetingDropdownMenuButton" data-bs-toggle="dropdown"
+                    <input *ngIf="attendeeListOpen" type="text" class="search-meeting-attendees"
+                           placeholder="Type here to search for user" id="editMeetingDropdownMenuButton"
+                           data-bs-toggle="dropdown"
                            aria-expanded="false"
                     >
-                    <ul class="dropdown-menu" aria-labelledby="editMeetingDropdownMenuButton" #selectList >
-                      <li *ngFor="let user of oonaUsers" >
+                    <ul class="dropdown-menu" aria-labelledby="editMeetingDropdownMenuButton" #selectList>
+                      <li *ngFor="let user of oonaUsers">
                         <a class="dropdown-item" (click)="editMeetingSelectedUser(user)">
                           {{user.first_name}}&nbsp;{{user.last_name}}
                         </a>
                       </li>
                     </ul>
                   </div>
-                  <div class="form-control attendee-list" id="editMeetingAttendees" [class.add-attendee] = attendeeListOpen [class.invalid]="emptyForm && this.displayInvitedUsers.length == 0">
+                  <div class="form-control attendee-list" id="editMeetingAttendees"
+                       [class.add-attendee]=attendeeListOpen
+                       [class.invalid]="emptyForm && this.displayInvitedUsers.length == 0">
                     <div *ngFor="let user of editDisplayInvitedUsers" class="attendee-chip">
                       <p>{{user.first_name}}&nbsp;{{user.last_name}}</p>
                       <img src="assets/img/close_icon_black.svg" alt="" (click)="onEditRemoveUser(user)">
                     </div>
                   </div>
-                  <span *ngIf="emptyForm && this.displayInvitedUsers.length == 0">Please add attendees for your meeting.</span>
+                  <span
+                    *ngIf="emptyForm && this.displayInvitedUsers.length == 0">Please add attendees for your meeting.</span>
                   <span *ngIf="hostError">A Host can't be an attendee in their meeting.</span>
                 </div>
               </div>
               <div class="modal-footer">
                 <div class="modal-footer-buttons">
-                  <button #editCloseButton data-bs-dismiss="modal" aria-label="Close" class="btn btn-primary schedule-meeting-btn" type="button">Cancel</button>
+                  <button #editCloseButton data-bs-dismiss="modal" aria-label="Close"
+                          class="btn btn-primary schedule-meeting-btn" type="button">Cancel
+                  </button>
                   <button class="btn btn-primary start-meeting-btn" type="submit">Update</button>
                 </div>
 
@@ -332,7 +391,7 @@
 
     </div>
 
-<!--    Delete Meeting Modal-->
+    <!--    Delete Meeting Modal-->
 
     <div class="modal delete-meeting-modal" tabindex="-1" id="deleteMeetingModal">
       <div class="modal-dialog modal-dialog-centered">
@@ -351,10 +410,6 @@
         </div>
       </div>
     </div>
-
-
-
-
 
 
   </div>

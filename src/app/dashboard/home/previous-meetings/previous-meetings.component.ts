@@ -177,8 +177,11 @@ export class PreviousMeetingsComponent implements OnInit {
   }
 
   selectedUser(user: OonaUser): any {
-    this.displayInvitedUsers.push(user);
-    this.invitedUsers.push(user.id);
+    // Do not push if user already selected
+    if (this.displayInvitedUsers.indexOf(user) === -1){
+      this.displayInvitedUsers.push(user);
+      this.invitedUsers.push(user.id);
+    }
   }
 
   onRemoveUser(user: OonaUser): any {

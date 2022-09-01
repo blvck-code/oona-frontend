@@ -240,8 +240,11 @@ export class UpcomingMeetingsComponent implements OnInit, AfterViewInit {
   }
 
   selectedUser(user: OonaUser): any {
-    this.displayInvitedUsers.push(user);
-    this.invitedUsers.push(user.id);
+    // Do not push if user already selected
+    if (this.displayInvitedUsers.indexOf(user) === -1) {
+      this.displayInvitedUsers.push(user);
+      this.invitedUsers.push(user.id);
+    }
   }
 
   onRemoveUser(user: OonaUser): any {
@@ -449,8 +452,11 @@ export class UpcomingMeetingsComponent implements OnInit, AfterViewInit {
     }
   }
   editMeetingSelectedUser(user: OonaUser): any {
-    this.editDisplayInvitedUsers.push(user);
-    this.editInvitedUsers.push(user.id);
+    // Do not push if user already selected
+    if (this.editDisplayInvitedUsers.indexOf(user) === -1){
+      this.editDisplayInvitedUsers.push(user);
+      this.editInvitedUsers.push(user.id);
+    }
   }
 
   onEditRemoveUser(user: OonaUser): any {
