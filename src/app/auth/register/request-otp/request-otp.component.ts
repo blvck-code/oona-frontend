@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {AuthService} from '../../services/auth.service';
 import {Router} from '@angular/router';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-request-otp',
@@ -22,7 +23,8 @@ export class RequestOtpComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -40,15 +42,16 @@ export class RequestOtpComponent implements OnInit {
       .subscribe(
         (requestOTPRes: any) => {
           this.router.navigate(['/verify-account']);
+          this.toastr.info('OTP has been sent to your email address and it expires in 5 mins.', 'Notification');
         },
         (requestOTPErr: any) => {
           this.requestOTPError = true;
-          // console.log('Request OTP Error', requestOTPErr);
-          if (requestOTPErr.error.error === 'Invalid or expired verification token.') {
+          console.log('Request OTP Error', requestOTPErr);
+          if (requestOTPErr.message === 'Invalid or expired verification token.') {
             this.requestOTPEServerError = 'The verification code is Invalid or Expired.';
-          } else if (requestOTPErr.error.error === 'User not found.') {
+          } else if (requestOTPErr.message === 'User not found.') {
             this.requestOTPEServerError = 'The user email does not exist.';
-          } else if (requestOTPErr.error.non_field_errors[0] === 'Your passwords do not match') {
+          } else if (requestOTPErr.message === 'Your passwords do not match') {
             this.requestOTPEServerError = 'The passwords entered do not match.';
           }
         }

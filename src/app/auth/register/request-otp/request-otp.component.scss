@@ -118,6 +118,13 @@
 .login-error {
   padding-top: 5px;
   text-align: center;
+
+  span {
+    margin-top: 3px;
+    color: #d91500;
+    font-weight: 500;
+    font-size: 16px;
+  }
 }
 .reset-password-form .verify-option {
   text-align: center;

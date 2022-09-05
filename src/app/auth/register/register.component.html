@@ -3,9 +3,9 @@
     <div class="branding-section">
       <img src="assets/img/oona_logo.svg" alt="" class="login-branding">
     </div>
-   <div *ngIf="loading" class="register-loading">
-     <app-loading-animation></app-loading-animation>
-   </div>
+    <div *ngIf="loading" class="register-loading">
+      <app-loading-animation></app-loading-animation>
+    </div>
     <div class="register-content">
       <div class="register-title">
         <p>Register</p>
@@ -13,7 +13,7 @@
       <div class="register-description">
         <p>Create a new Oona Account.</p>
       </div>
-      <form [formGroup]="registrationForm" (ngSubmit)="onRegister()" class="register-form">
+      <form autocomplete="false" [formGroup]="registrationForm" (ngSubmit)="onRegister()" class="register-form">
         <div class="input-details">
           <label for="email">Email*</label>
           <input type="email" id="email" formControlName="email" placeholder="Email Address">
@@ -38,9 +38,15 @@
 
         <div class="input-details">
           <label for="pass">Password*</label>
-          <input type="password" name="password1" id="pass" autocomplete="off" formControlName="password1" placeholder="Password">
+          <input type="password" name="password1" id="pass" autocomplete="false" formControlName="password1" placeholder="Password">
           <span *ngIf="registrationFormControls.password1.touched && registrationFormControls.password1.errors?.required">Please enter your password.</span>
           <span *ngIf="!registrationFormControls.password1.touched && emptyForm">Please enter your password.</span>
+          <ng9-password-strength-bar *ngIf="registrationForm.get('password1')?.value"
+                                     [passwordToCheck]="registrationForm.get('password1')?.value"
+                                     [barLabel]="barLabel"
+                                     [customThresholds]="thresholds"
+                                     [barColors]="myColors">
+          </ng9-password-strength-bar>
         </div>
 
         <div class="input-details">
