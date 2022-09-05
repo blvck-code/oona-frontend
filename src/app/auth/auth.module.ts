@@ -9,6 +9,7 @@ import {RequestOtpComponent} from './register/request-otp/request-otp.component'
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AuthRoutingModule} from './auth-routing.module';
 import {MessagingModule} from '../dashboard/messaging/messaging.module';
+import { Ng9PasswordStrengthBarModule } from 'ng9-password-strength-bar';
 
 @NgModule({
   declarations: [
@@ -19,15 +20,16 @@ import {MessagingModule} from '../dashboard/messaging/messaging.module';
     RequestOtpComponent,
     RequestComponent
   ],
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        AuthRoutingModule,
-        // StoreModule.forFeature('userCenter', authReducer),
-        // EffectsModule.forFeature([AuthEffects]),
-        MessagingModule,
-    ]
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    AuthRoutingModule,
+    Ng9PasswordStrengthBarModule,
+    // StoreModule.forFeature('userCenter', authReducer),
+    // EffectsModule.forFeature([AuthEffects]),
+    MessagingModule,
+  ]
 })
 
 export class AuthModule { }

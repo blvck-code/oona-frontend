@@ -43,7 +43,7 @@ export class VerifyComponent implements OnInit {
       .subscribe(
         (verifyRes: any) => {
           this.router.navigate(['/login']);
-          this.toastr.info('Account verified.', 'Notification')
+          this.toastr.info('Account verified.', 'Notification');
         },
         (verifyErr: any) => {
           this.verificationError = true;

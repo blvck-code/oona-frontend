@@ -20,9 +20,18 @@ export class RegisterComponent implements OnInit {
     email: ['', [Validators.required, Validators.email]],
     firstName: ['', Validators.required],
     secondName: ['', Validators.required],
-    password1: ['', Validators.required],
+    password1: ['',
+      Validators.required,
+    ],
     confirmPass: ['', Validators.required]
   });
+
+  public account = {
+    password: ''
+  };
+  public barLabel = 'Password strength:';
+  public myColors = ['#DD2C00', '#FF6D00', '#FFD600', '#AEEA00', '#00C853'];
+  public thresholds = [90, 75, 45, 25];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -53,7 +62,6 @@ export class RegisterComponent implements OnInit {
           this.toastr.success('Account created successful.', 'Notification');
         },
         (signupError: any) => {
-          console.log('Register error: ', signupError);
           this.loading = false;
           this.signupError = true;
           if (signupError.message === 'User with this email already exists.') {
@@ -63,6 +71,8 @@ export class RegisterComponent implements OnInit {
           } else if (signupError.message === 'This field may not be blank.') {
             this.signupServerError = 'Please fill all the required fields and try again.';
           }
+          this.registrationForm.get('password1')?.reset();
+          this.registrationForm.get('confirmPass')?.reset();
         }
       );
   }
@@ -74,6 +84,8 @@ export class RegisterComponent implements OnInit {
   isSubmitted(): any {
     if (!this.registrationForm.valid) {
       this.emptyForm = true;
+      this.registrationForm.get('password1')?.reset();
+      this.registrationForm.get('password2')?.reset();
     }
   }
 
