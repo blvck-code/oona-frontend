@@ -1,8 +1,8 @@
 <div class="main-login-section">
   <div class="sign-in-container">
-    <div class="branding-section">
+    <a routerLink="/" class="branding-section">
       <img src="assets/img/oona_logo.svg" alt="" class="login-branding">
-    </div>
+    </a>
     <div *ngIf="loading">
       <app-loading-animation></app-loading-animation>
     </div>
@@ -37,6 +37,7 @@
         </div>
         <div class="registration-option">
           <p>Don't have an Account? <span routerLink="/signup">Register Here.</span></p>
+          <p class="pt-2"><span routerLink="/">Back to home.</span></p>
         </div>
       </form>
     </div>

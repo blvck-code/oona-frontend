@@ -62,6 +62,11 @@ export enum MessagingActionsTypes {
   // FILTER MESSAGES
   FILTER_MESSAGES = 'messaging/filterMessages',
   HANDLE_UNREAD_MESSAGE = 'messaging/handleUnreadMessage',
+  SELECTED_STREAM_ID = 'messaging/selectedStreamId',
+
+  LOAD_MORE_STREAM_MESSAGE = 'messaging/loadMore',
+  LOAD_MORE_STREAM_MESSAGE_SUCCESS = 'messaging/loadMoreSuccess',
+  LOAD_MORE_STREAM_MESSAGE_FAIL = 'messaging/loadMoreFail',
 
   UPDATE_READ_MESSAGE = 'messaging/updateReadMessage',
   UPDATE_READ_MESSAGE_SUCCESS = 'messaging/updateReadMessageSuccess',
@@ -279,6 +284,37 @@ export class UpdateMessageCounter implements Action {
   }
 }
 
+export class SelectedStreamId implements Action {
+  readonly type = MessagingActionsTypes.SELECTED_STREAM_ID;
+  constructor(public payload: any) {
+  }
+}
+
+// More stream messages
+export class LoadMoreStreams implements Action {
+  readonly type = MessagingActionsTypes.LOAD_MORE_STREAM_MESSAGE;
+  constructor(public payload: any) {
+    console.log('More stream payload =>', payload);
+  }
+}
+
+export class LoadMoreStreamsSuccess implements Action {
+  readonly type = MessagingActionsTypes.LOAD_MORE_STREAM_MESSAGE_SUCCESS;
+  constructor(public payload: any) {
+    console.log('More streams success =>', payload);
+  }
+}
+
+export class LoadMoreStreamsFail implements Action {
+  readonly type = MessagingActionsTypes.LOAD_MORE_STREAM_MESSAGE_FAIL;
+  constructor(public payload: any) {
+    console.log('More streams fail =>', payload);
+  }
+}
+
+
+
+
 export type MessagingActions =
   // MESSAGING ACTIONS
   | LoadMessaging
@@ -327,4 +363,9 @@ export type MessagingActions =
   // Update message flag
   | UpdateReadMessage
   | UpdateReadMessageSuccess
-  | UpdateReadMessageFail ;
+  | UpdateReadMessageFail
+  | SelectedStreamId
+  // Load more streams
+  | LoadMoreStreams
+  | LoadMoreStreamsSuccess
+  | LoadMoreStreamsFail;

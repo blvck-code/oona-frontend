@@ -27,10 +27,13 @@
             <button class="btn load-more-messages-btn" (click)="getMorePrivateMessages()">Get more</button>
           </div>
           <app-chat-card
-            *ngFor="let message of filteredMessagesOfStream"
+            *ngFor="let message of (selectedStreamMessages$ | async)"
             [messageDetail]="message"
             (messageTopic)="setMessageTopic($event)"
           ></app-chat-card>
+        </div>
+        <div *ngIf="!(selectedStreamMessages$ | async)?.length">
+          <p>No messages</p>
         </div>
 
         <div

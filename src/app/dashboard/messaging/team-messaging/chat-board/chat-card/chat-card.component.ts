@@ -1,5 +1,4 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 import { Document } from '@contentful/rich-text-types';
 import { BLOCKS, MARKS } from '@contentful/rich-text-types';
 import {Router} from '@angular/router';
@@ -35,16 +34,18 @@ export class ChatCardComponent implements OnInit {
   };
 
   constructor(
-    private route: Router
+    private router: Router,
   ) {
   }
 
-  navigateSubject(message: any): void {
-    const stream = `/dashboard/messaging/streams/${+message?.stream_id}-${message?.display_recipient.replace(' ', '-')}`;
-    const topic = `topic/${message?.subject.replace(' ', '-')}`;
-    const url = `${stream}/${topic}`;
-    console.log('Url ===>>>', url);
-    this.route.navigate([url]);
+  navigateSubject(stream: any): void {
+    this.router.navigate(['dashboard/messaging/team'], {
+      queryParams: {
+        team: stream.name.replace(/\s/g, ''),
+        id: stream.stream_id,
+        // topic: topic.name.replace(/\s/g, '-'),
+      }
+    });
     // console.log('Message details ===>>>', message);
   }
 
@@ -89,7 +90,7 @@ export class ChatCardComponent implements OnInit {
   handleCopyMsg(message: any): void {
     const content = message?.content;
     // document.execCommand('copy');
-    navigator.clipboard.writeText(content)
+    navigator.clipboard.writeText(content);
     console.log('Message to copy: ', message?.content);
   }
 }

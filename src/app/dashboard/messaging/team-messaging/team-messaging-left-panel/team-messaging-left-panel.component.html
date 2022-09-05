@@ -218,7 +218,7 @@
               class="accordion-body-item"
             >
               <p (click)="handlePublicNavigateTopic(team, topic)">
-                {{ topic?.name | titlecase }} this
+                {{ topic?.name | titlecase }}
                 <span
                   *ngIf="topic.unread > 0"
                   class="badge badge-dark ms-2">
