@@ -5,9 +5,9 @@ import {Router} from '@angular/router';
 import {OonaUser} from '../shared/oonaUser';
 import {HomeService} from '../shared/home.service';
 import {OonaMeeting} from '../shared/oonaMeeting';
-import { CalendarOptions, Calendar} from '@fullcalendar/angular';
+import {CalendarOptions, Calendar} from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import { FullCalendarComponent } from '@fullcalendar/angular';
+import {FullCalendarComponent} from '@fullcalendar/angular';
 import flatpickr from 'flatpickr';
 import dayjs from 'dayjs';
 import {Store} from '@ngrx/store';
@@ -20,6 +20,7 @@ import {getZulipProfile} from '../../../auth/state/auth.selectors';
   styleUrls: ['./upcoming-meetings.component.scss']
 })
 export class UpcomingMeetingsComponent implements OnInit, AfterViewInit {
+  filteredUsers: OonaUser[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -28,7 +29,9 @@ export class UpcomingMeetingsComponent implements OnInit, AfterViewInit {
     private homeService: HomeService,
     private changeDetector: ChangeDetectorRef,
     private store: Store<AppState>
-  ) { }
+  ) {
+  }
+
   loggedInUserId = '';
   searchText = '';
   allMeetings: OonaMeeting[] = [];
@@ -44,7 +47,7 @@ export class UpcomingMeetingsComponent implements OnInit, AfterViewInit {
   startMeetingNow = false;
   today = new Date();
   yesterday = this.today.setDate(this.today.getDate() - 1);
-  min =  new Date(this.yesterday);
+  min = new Date(this.yesterday);
   meetingLength = [
     '15 Min',
     '30 Min',
@@ -137,8 +140,7 @@ export class UpcomingMeetingsComponent implements OnInit, AfterViewInit {
       plugins: [dayGridPlugin],
       editable: true,
       contentHeight: 300,
-      customButtons: {
-      },
+      customButtons: {},
       headerToolbar: {
         left: 'prev,next',
         right: 'title'
@@ -168,11 +170,11 @@ export class UpcomingMeetingsComponent implements OnInit, AfterViewInit {
       .subscribe(
         (meetingsRes: any) => {
           this.allMeetings = meetingsRes.results;
-          this.upComingMeetings = meetingsRes.results.filter( (meeting: any) => {
+          this.upComingMeetings = meetingsRes.results.filter((meeting: any) => {
             const date = new Date(meeting.start_time);
             return date >= new Date();
           });
-          this.previousMeetings = meetingsRes.results.filter( (meeting: any) => {
+          this.previousMeetings = meetingsRes.results.filter((meeting: any) => {
             const date = new Date(meeting.start_time);
             return date <= new Date();
           });
@@ -200,7 +202,7 @@ export class UpcomingMeetingsComponent implements OnInit, AfterViewInit {
       noCalendar: true,
       dateFormat: 'H:i',
       time_24hr: true,
-      defaultDate:  new Date(),
+      defaultDate: new Date(),
       static: true
     });
     this.meetingForm.patchValue({
@@ -208,15 +210,20 @@ export class UpcomingMeetingsComponent implements OnInit, AfterViewInit {
     });
     this.homeService.getAllUsers().subscribe(
       (users: any) => {
-        console.log(users.results);
         const results = users.results;
         // Remove logged in user
         for (let i = 0; i < results.length; i++) {
-          if ( results[i].id === this.loggedInUserId ){
+          if (results[i].id === this.loggedInUserId) {
             results.splice(i, 1);
           }
         }
         this.oonaUsers = results;
+
+        // Remove user from attendee list once selected
+        const newUsrArr = this.oonaUsers.filter((el) => {
+          return !this.displayInvitedUsers.includes(el);
+        });
+        this.oonaUsers = newUsrArr;
       }
     );
   }
@@ -244,12 +251,18 @@ export class UpcomingMeetingsComponent implements OnInit, AfterViewInit {
     if (this.displayInvitedUsers.indexOf(user) === -1) {
       this.displayInvitedUsers.push(user);
       this.invitedUsers.push(user.id);
+
+      // Remove user from attendee list once selected
+      const newUsrArr = this.oonaUsers.filter((el) => {
+        return !this.displayInvitedUsers.includes(el);
+      });
+      this.oonaUsers = newUsrArr;
     }
   }
 
   onRemoveUser(user: OonaUser): any {
     const userDisplayIndex = this.displayInvitedUsers.indexOf(user);
-    const userAddIndex =  this.invitedUsers.indexOf(user.id);
+    const userAddIndex = this.invitedUsers.indexOf(user.id);
     this.displayInvitedUsers.splice(userDisplayIndex, 1);
     this.invitedUsers.splice(userAddIndex, 1);
   }
@@ -314,57 +327,56 @@ export class UpcomingMeetingsComponent implements OnInit, AfterViewInit {
     };
 
     this.homeService.scheduleMeeting(meetingData)
-        .subscribe(
-          (res: any) => {
-            this.closeButton.nativeElement.click();
-            this.invitedUsers = [];
-            this.displayInvitedUsers = [];
-            this.meetingForm.value.meetingName.reset;
-            this.meetingForm.value.meetingAgenda.reset;
-            this.emptyForm = false;
-            if (this.startMeetingNow) {
-              const meetingId = res.id;
-              this.authService.saveCurrentMeetingId(meetingId);
-              setTimeout(() => {
-                this.router.navigate(['/dashboard/calls/' + meetingId]);
-              }, 2500);
-            }
-            this.getAllMeetings();
-          },
-          (meetingError: any) => {
-            this.signupError = true;
-            if (meetingError.error.non_field_errors.length > 0 && meetingError.error.non_field_errors[0] !== 'Host can\'t be an attendee') {
-              this.timeError = true;
-            } else if (meetingError.error.non_field_errors[0] === 'Host can\'t be an attendee') {
-              this.hostError = true;
-            }
+      .subscribe(
+        (res: any) => {
+          this.closeButton.nativeElement.click();
+          this.invitedUsers = [];
+          this.displayInvitedUsers = [];
+          this.meetingForm.value.meetingName.reset;
+          this.meetingForm.value.meetingAgenda.reset;
+          this.emptyForm = false;
+          if (this.startMeetingNow) {
+            const meetingId = res.id;
+            this.authService.saveCurrentMeetingId(meetingId);
+            setTimeout(() => {
+              this.router.navigate(['/dashboard/calls/' + meetingId]);
+            }, 2500);
           }
-
-        );
-    }
-
-    get meetingFormControls(): any {
-      return this.meetingForm.controls;
-    }
-
-    isSubmitted(): any {
-      if (!this.meetingForm.valid) {
-        this.emptyForm = true;
-      }
-      this.hostError = false;
-    }
-
-    getMeetingToDelete(id: string): any {
-      this.homeService.getMeetingDetails(id)
-        .subscribe(
-          (meetingRes: any) => {
-            this.deleteMeetingId = meetingRes.id;
-            this.deleteMeetingName = meetingRes.name;
+          this.getAllMeetings();
+        },
+        (meetingError: any) => {
+          this.signupError = true;
+          if (meetingError.error.non_field_errors.length > 0 && meetingError.error.non_field_errors[0] !== 'Host can\'t be an attendee') {
+            this.timeError = true;
+          } else if (meetingError.error.non_field_errors[0] === 'Host can\'t be an attendee') {
+            this.hostError = true;
           }
-        );
-    }
+        }
+      );
+  }
 
-    deleteThisMeeting(): any {
+  get meetingFormControls(): any {
+    return this.meetingForm.controls;
+  }
+
+  isSubmitted(): any {
+    if (!this.meetingForm.valid) {
+      this.emptyForm = true;
+    }
+    this.hostError = false;
+  }
+
+  getMeetingToDelete(id: string): any {
+    this.homeService.getMeetingDetails(id)
+      .subscribe(
+        (meetingRes: any) => {
+          this.deleteMeetingId = meetingRes.id;
+          this.deleteMeetingName = meetingRes.name;
+        }
+      );
+  }
+
+  deleteThisMeeting(): any {
     this.homeService.deleteMeeting(this.deleteMeetingId)
       .subscribe(
         (deleteRes: any) => {
@@ -372,13 +384,11 @@ export class UpcomingMeetingsComponent implements OnInit, AfterViewInit {
           this.getAllMeetings();
         }
       );
-    }
+  }
 
-    // Update Meetings Section
+  // Update Meetings Section
 
   getSelectedMeeting(id: string): any {
-
-    this.getUsers();
     this.homeService.getMeetingDetails(id)
       .subscribe(
         (meetingRes: any) => {
@@ -408,10 +418,42 @@ export class UpcomingMeetingsComponent implements OnInit, AfterViewInit {
             defaultDate: this.selectedMeetingTime,
             static: true
           });
+
+          this.homeService.getAllUsers().subscribe(
+            (users: any) => {
+              const results = users.results;
+              // Remove logged in user
+              for (let i = 0; i < results.length; i++) {
+                if (results[i].id === this.loggedInUserId) {
+                  results.splice(i, 1);
+                }
+              }
+
+
+              // @ts-ignore
+              const newUsrArr = results.map(({created_at, last_login, ...rest}) => {
+                return rest;
+              });
+
+              // tslint:disable-next-line:no-shadowed-variable
+              function getDifference(arr1: any, arr2: any): any {
+                return arr1.filter((object1: { id: any; }) => {
+                  return !arr2.some((object2: { id: any; }) => {
+                    return object1.id === object2.id;
+                  });
+                });
+              }
+
+              this.oonaUsers = getDifference(newUsrArr, this.editDisplayInvitedUsers);
+            }
+          );
+
+
           this.updateMeetingDetails();
-    }
+        }
       );
   }
+
   updateMeetingDetails(): any {
     this.editMeetingForm.patchValue({
       editMeetingName: this.selectedMeetingName,
@@ -422,6 +464,7 @@ export class UpcomingMeetingsComponent implements OnInit, AfterViewInit {
       editMeetingPriority: this.meetingPriority[this.selectedMeetingPriority]
     });
   }
+
   getMeetingDuration(startTime: string, endTime: string): any {
     const duration = Date.parse(endTime) - Date.parse(startTime);
     switch (duration) {
@@ -439,6 +482,7 @@ export class UpcomingMeetingsComponent implements OnInit, AfterViewInit {
         return 1;
     }
   }
+
   getEditDisplayPriority(apiPriority: number): any {
     switch (apiPriority) {
       case 3:
@@ -451,17 +495,23 @@ export class UpcomingMeetingsComponent implements OnInit, AfterViewInit {
         return 1;
     }
   }
+
   editMeetingSelectedUser(user: OonaUser): any {
     // Do not push if user already selected
-    if (this.editDisplayInvitedUsers.indexOf(user) === -1){
+    if (this.editDisplayInvitedUsers.indexOf(user) === -1) {
       this.editDisplayInvitedUsers.push(user);
       this.editInvitedUsers.push(user.id);
+
+      // Remove user from attendee list once selected
+      this.oonaUsers = this.oonaUsers.filter((el: any) => {
+        return !this.editDisplayInvitedUsers.includes(el);
+      });
     }
   }
 
   onEditRemoveUser(user: OonaUser): any {
     const userDisplayIndex = this.editDisplayInvitedUsers.indexOf(user);
-    const userAddIndex =  this.editInvitedUsers.indexOf(user.id);
+    const userAddIndex = this.editInvitedUsers.indexOf(user.id);
     this.editDisplayInvitedUsers.splice(userDisplayIndex, 1);
     this.editInvitedUsers.splice(userAddIndex, 1);
   }

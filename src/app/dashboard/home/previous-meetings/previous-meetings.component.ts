@@ -181,6 +181,12 @@ export class PreviousMeetingsComponent implements OnInit {
     if (this.displayInvitedUsers.indexOf(user) === -1){
       this.displayInvitedUsers.push(user);
       this.invitedUsers.push(user.id);
+
+      // Remove user from attendee list once selected
+      const newUsrArr = this.oonaUsers.filter((el) => {
+        return !this.displayInvitedUsers.includes(el);
+      });
+      this.oonaUsers = newUsrArr;
     }
   }
 
