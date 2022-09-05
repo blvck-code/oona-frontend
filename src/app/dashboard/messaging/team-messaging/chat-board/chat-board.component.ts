@@ -7,12 +7,19 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import { MessagingService } from '../../services/messaging.service';
 
 import TurndownService from 'turndown';
 import {HomeService} from '../../../home/shared/home.service';
 import {OonaSocketService} from '../../services/oona-socket.service';
+import * as messagingActions from '../../state/messaging.actions';
+import {getSelectedStreamMessages} from '../../state/messaging.selectors';
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../../state/app.state';
+import {Observable} from 'rxjs';
+import {SingleMessageModel} from '../../models/messages.model';
+import {log} from 'util';
 
 const turndownService = new TurndownService();
 
@@ -32,16 +39,72 @@ export class ChatBoardComponent implements OnInit {
   latItemTopic: any;
   initialMessageCount =  30;
   newMessagesCount: number | undefined;
+  selectedStreamMessages$!: Observable<SingleMessageModel[]>;
+  topicSelected = '';
 
   constructor(
     private route: ActivatedRoute,
     private messagingService: MessagingService,
     private change: ChangeDetectorRef,
     private router: Router,
-    private userSocketService: OonaSocketService
-  ) {}
+    private userSocketService: OonaSocketService,
+    private store: Store<AppState>
+  ) {
+    this.routerDetails();
+  }
+
+  routerDetails(): void {
+    this.route.queryParams.subscribe(params => {
+      const streamId = params.id;
+      const topic = params.topic;
+
+      const payload = {
+        streamId: +streamId,
+        topic: ''
+      };
+
+      if (topic){
+        payload.topic = topic.replaceAll('-', ' ');
+      }
+
+      console.log('Filter payload =>', payload);
+
+      // this.store.dispatch(new messagingActions.SelectedStreamId(+streamId));
+      this.store.dispatch(new messagingActions.SelectedStreamId(payload));
+
+      this.handleStreamContent(topic);
+
+    });
+  }
+
+  storeStreamMessages(): void {
+    this.selectedStreamMessages$ = this.store.select(getSelectedStreamMessages);
+    console.log('Selected topic =>', this.topicSelected);
+    console.log('Selected topic =>', this.messageTopic);
+    this.store.select(getSelectedStreamMessages).subscribe(
+      (messages: SingleMessageModel[]) => {
+        {}
+        // console.log('Stream messages =>', messages)
+      }
+    );
+  }
+
+  handleStreamContent(topic?: string): void {
+
+    this.store.select(getSelectedStreamMessages).subscribe(
+      (messages: SingleMessageModel[]) => {
+
+        if (topic) {
+          messages.filter((message: SingleMessageModel) =>
+            message.subject.toLowerCase() === topic);
+        }
+
+      }
+    );
+  }
 
   ngOnInit(): void {
+    this.storeStreamMessages();
     this.messagingService.currentStreamName.subscribe((streamName) => {
       this.streamName = streamName; // always get the current value
     });
@@ -166,6 +229,8 @@ export class ChatBoardComponent implements OnInit {
         },
       ],
     };
+
+    // this.store.dispatch(new messagingActions.LoadStreamMessage(streamDetail));
 
     this.messagingService.getMessagesOfStream(streamDetail).subscribe(
       (response: any) => {

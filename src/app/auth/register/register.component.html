@@ -1,11 +1,11 @@
 <div class="main-register-section">
   <div class="register-container">
-    <div class="branding-section">
+    <a routerLink="/" class="branding-section">
       <img src="assets/img/oona_logo.svg" alt="" class="login-branding">
-    </div>
-    <div *ngIf="loading" class="register-loading">
-      <app-loading-animation></app-loading-animation>
-    </div>
+    </a>
+   <div *ngIf="loading" class="register-loading">
+     <app-loading-animation></app-loading-animation>
+   </div>
     <div class="register-content">
       <div class="register-title">
         <p>Register</p>

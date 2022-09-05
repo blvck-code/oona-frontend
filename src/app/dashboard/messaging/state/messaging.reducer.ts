@@ -31,6 +31,8 @@ export interface MessagingState {
     };
     streamMsg: {
       loaded: boolean,
+      selectedStreamId: number | null,
+      selectedTopic: string,
       messages: SingleMessageModel[],
     }
     selectedStreamMsg: {
@@ -69,6 +71,8 @@ export const initialState: MessagingState = {
     },
     streamMsg: {
       loaded: false,
+      selectedStreamId: null,
+      selectedTopic: '',
       messages: []
     },
     selectedStreamMsg: {
@@ -125,6 +129,7 @@ export function messagingReducer(
         messaging: {
           ...state.messaging,
           streamMsg: {
+            ...state.messaging.streamMsg,
             loaded: true,
             messages: [...state.messaging.streamMsg.messages, ...messagesContent]
           }
@@ -138,6 +143,18 @@ export function messagingReducer(
           ...state.streams,
           subStreams: action?.payload?.subscriptions,
         },
+      };
+    case messagingActions.MessagingActionsTypes.SELECTED_STREAM_ID:
+      return {
+        ...state,
+        messaging: {
+          ...state.messaging,
+          streamMsg: {
+            ...state.messaging.streamMsg,
+            selectedStreamId: action.payload.streamId,
+            selectedTopic: action.payload.topic
+          }
+        }
       };
     // ALL MESSAGES
     case messagingActions.MessagingActionsTypes.LOAD_ALL_MESSAGES_SUCCESS:

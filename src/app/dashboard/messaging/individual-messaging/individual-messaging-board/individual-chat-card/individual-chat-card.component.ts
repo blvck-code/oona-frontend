@@ -7,6 +7,8 @@ import {
 } from '../../../../../auth/state/auth.selectors';
 import { Observable } from 'rxjs';
 import { oonaFrontendUrl } from '../../../../../../environments/environment';
+import * as messagingActions from '../../../state/messaging.actions';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-individual-chat-card',
@@ -21,10 +23,22 @@ export class IndividualChatCardComponent implements OnInit, DoCheck {
   zulipProfile!: Observable<any>;
   baseURL = oonaFrontendUrl;
   imageURL = '';
-  isVisible: boolean = false
+  isVisible = false;
 
-  constructor(private store: Store<AppState>) {
+  constructor(
+    private store: Store<AppState>,
+    private route: ActivatedRoute,
+  ) {
     this.getUserInfo();
+    this.routerDetails();
+  }
+
+  routerDetails(): void {
+    this.route.queryParams.subscribe(params => {
+      const streamId = params.id;
+      const topic = params.topic;
+      console.log(params);
+    });
   }
 
   getUserInfo(): void {
