@@ -24,11 +24,11 @@
   <div class="tab-content custom-tab pt-3" id="nav-tabContent">
     <div class="tab-pane fade show active border-bottom-0" style="height: 100%" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
       <div class="overflow-chat">
-        <div *ngIf="!(messages$ | async)?.length" class="d-flex justify-content-center">
+        <div *ngIf="loading" class="d-flex justify-content-center">
           <app-loading-animation></app-loading-animation>
         </div>
 
-        <div *ngIf="(messages$ | async)?.length"  id="box">
+        <div id="box">
 <!--          <div class="d-flex justify-content-center">-->
 <!--            <button class="btn btn-primary shadow-none" style="width: 10%" (click)="getMorePrivateMessages()">Get more</button>-->
 <!--          </div>-->

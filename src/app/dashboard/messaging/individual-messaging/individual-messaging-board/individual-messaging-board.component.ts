@@ -107,6 +107,18 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.resetDmUnreads();
     this.getUnreadMessages();
 
+    this.messages$ = this.store.select(getSelectedUserMessages);
+
+    this.store.select(getSelectedUserMessages).subscribe(
+      (messages: SingleMessageModel[]) => {
+        this.loading = false;
+      }
+    );
+
+    this.store.select(getPrivateUser).subscribe(
+      user => console.log('User infooo', user)
+    );
+
 
     this.messagingService.currentMemberChatDetail.subscribe((member) => {
       this.memberDetail = member;
@@ -132,7 +144,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
     this.router.events.subscribe((event: any) => {
       if (event instanceof NavigationEnd) {
-        this.messages$ = this.store.select(getSelectedUserMessages);
         this.store.select(getUserUnreadMessages).subscribe(
           (messages: SingleMessageModel[]) => {
             messages.map((message: SingleMessageModel) => {

@@ -238,6 +238,8 @@ export class ChatBoardComponent implements OnInit {
       ],
     };
 
+    // this.store.dispatch(new messagingActions.LoadStreamMessage(streamDetail));
+
     this.messagingService.getMessagesOfStream(streamDetail).subscribe(
       (response: any) => {
         const allMessages = response.zulip.messages;
