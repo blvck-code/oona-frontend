@@ -25,32 +25,6 @@ export class AllPrivateMessagingComponent implements OnInit {
     private messagesService: MessagingService
   ) { }
 
-  onInitHandler(): void {
-    document.title = `Private messages - ${firmName} - Oona`;
-    this.store.select(getUserDetails).subscribe(
-      data => {
-        this.operand = data?.email;
-      }
-    );
-
-    // Message parameters
-    const streamDetail = {
-      use_first_unread_anchor: true,
-      apply_markdown: false,
-      num_before: this.initialMessageCount,
-      type: [
-        {
-          operator: 'pm-with',
-          // change to user.email
-          operand: this.operand,
-        }
-      ]
-    };
-
-    // fetch from server
-    this.store.dispatch(new messagingActions.LoadPrivateMessages(streamDetail));
-  }
-
   ngOnInit(): void {
     this.changeMessageCount();
     this.handlePrivateUnread();
@@ -63,8 +37,8 @@ export class AllPrivateMessagingComponent implements OnInit {
         messages => {
           console.log('All private unread messages ==>>>', messages);
         }
-      )
-    }, 500)
+      );
+    }, 500);
   }
 
   private changeMessageCount(): void {
@@ -74,4 +48,30 @@ export class AllPrivateMessagingComponent implements OnInit {
     this.userSocketService.newMessageCount = 0;
     this.userSocketService.changeNewMessageCount(this.userSocketService.newMessageCount);
   }
+
+  // onInitHandler(): void {
+  //   document.title = `Private messages - ${firmName} - Oona`;
+  //   this.store.select(getUserDetails).subscribe(
+  //     data => {
+  //       this.operand = data?.email;
+  //     }
+  //   );
+  //
+  //   // Message parameters
+  //   const streamDetail = {
+  //     use_first_unread_anchor: true,
+  //     apply_markdown: false,
+  //     num_before: this.initialMessageCount,
+  //     type: [
+  //       {
+  //         operator: 'pm-with',
+  //         // change to user.email
+  //         operand: this.operand,
+  //       }
+  //     ]
+  //   };
+  //
+  //   // fetch from server
+  //   this.store.dispatch(new messagingActions.LoadPrivateMessages(streamDetail));
+  // }
 }

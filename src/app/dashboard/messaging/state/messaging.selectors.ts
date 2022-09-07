@@ -80,7 +80,9 @@ export const getLoadingPrivateMsgs = createSelector(
 
 export const getPrivateMessages = createSelector(
   getMessagingState,
-  (state) => state.messaging.privateMsgs.messages
+  (state) => [...state.messaging.privateMsgs.messages].sort(
+    (a: SingleMessageModel, b: SingleMessageModel) => a.timestamp - b.timestamp
+  )
 );
 
 // ge stream messages
@@ -157,7 +159,7 @@ export const getSelectedUserId = createSelector(
 export const getPrivateUser = createSelector(
   getAuthState,
   getSelectedUserId,
-  (state, userId) => state.users.zulipUsers.members.find(
+  (state, userId) => state?.users?.zulipUsers?.members?.find(
     (user: any) => user.user_id === userId
   )
 );

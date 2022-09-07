@@ -80,10 +80,10 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
 
   // Init page
   initPage(): void {
-    // this.getAllPrivateMessages();
+    this.messages$ = this.store.select(getPrivateMessages);
     this.getStateAllPrivateMessages();
-    this.inComingMessage();
-    this.outGoingMsg();
+    // this.inComingMessage();
+    // this.outGoingMsg();
   }
 
   allUsersRegistered(): void {
@@ -255,7 +255,6 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
       console.log('My sent outgoing message content ===>>>', msg);
 
       this.privateMessagesSubject.subscribe((messages) => {
-        console.log('Private messages content ===>>>', messages);
 
         if (this.messagesId.includes(msg.id)) {
           return;
