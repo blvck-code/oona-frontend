@@ -70,6 +70,8 @@ export class RegisterComponent implements OnInit {
             this.signupServerError = 'The passwords do not match. Please try again.';
           } else if (signupError.message === 'This field may not be blank.') {
             this.signupServerError = 'Please fill all the required fields and try again.';
+          } else {
+            this.signupServerError = 'Please accept the appropriate certificates.';
           }
           this.registrationForm.get('password1')?.reset();
           this.registrationForm.get('confirmPass')?.reset();

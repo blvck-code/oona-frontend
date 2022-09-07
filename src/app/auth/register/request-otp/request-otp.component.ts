@@ -53,6 +53,8 @@ export class RequestOtpComponent implements OnInit {
             this.requestOTPEServerError = 'The user email does not exist.';
           } else if (requestOTPErr.message === 'Your passwords do not match') {
             this.requestOTPEServerError = 'The passwords entered do not match.';
+          } else {
+            this.requestOTPEServerError = 'Please accept the appropriate certificates.';
           }
         }
       );
