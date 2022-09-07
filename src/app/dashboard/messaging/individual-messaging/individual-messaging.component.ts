@@ -19,6 +19,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { retagTsFile } from '@angular/compiler-cli/src/ngtsc/shims';
 import * as events from 'events';
 import * as messageActions from '../state/messaging.actions';
+import * as messagingActions from "../state/messaging.actions";
 
 @Component({
   selector: 'app-individual-messaging',
@@ -42,6 +43,14 @@ export class IndividualMessagingComponent implements OnInit {
     private route: Router
   ) {
     this.changeContentOnRouteChange();
+    this.routerDetails();
+  }
+
+  routerDetails(): void {
+    this.activatedRoute.queryParams.subscribe(params => {
+      const userId = params.id;
+      this.store.dispatch(new messagingActions.SelectedUserId(+userId));
+    });
   }
 
   onInitHandler(): void {

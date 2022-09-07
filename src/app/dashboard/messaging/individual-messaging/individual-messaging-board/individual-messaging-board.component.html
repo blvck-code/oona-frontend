@@ -28,7 +28,7 @@
           <app-loading-animation></app-loading-animation>
         </div>
 
-        <div *ngIf="(messagesSubject$ | async)?.length"  id="box">
+        <div *ngIf="(messagesObserver | async)?.length"  id="box">
 <!--          <div class="d-flex justify-content-center">-->
 <!--            <button class="btn btn-primary shadow-none" style="width: 10%" (click)="getMorePrivateMessages()">Get more</button>-->
 <!--          </div>-->
@@ -36,7 +36,7 @@
           <div #endPrivateChat></div>
         </div>
 
-        <div *ngIf="!(messagesSubject$ | async)?.length" class="d-flex justify-content-center">
+        <div *ngIf="!(messagesObserver | async)?.length" class="d-flex justify-content-center">
           <p>No messages with {{ (selectedUser$ | async)?.full_name }}</p>
         </div>
 

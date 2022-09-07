@@ -5549,6 +5549,13 @@ ng2-search-filter@^0.5.1:
   resolved "https://registry.npmjs.org/ng2-search-filter/-/ng2-search-filter-0.5.1.tgz"
   integrity sha512-noN8R+Gyxo5ZuboEOvq+u0zKio6pEf1IVYQTCZfAfXm6ONmzWu/M2xK0di9oVUprDbPBQXCGUuvD5i2GD+35HA==
 
+ng9-password-strength-bar@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/ng9-password-strength-bar/-/ng9-password-strength-bar-1.1.0.tgz#85256d8c3075aab28980d646178102d4cd4d2377"
+  integrity sha512-6Q5HKHFt2e938lR8wgKD9+39WjsRLOUmSRvVi7kBJeW//3EMVjLuKujmsyhMc8ckq5W/C0Iqn1CyU3J1PpmHaQ==
+  dependencies:
+    tslib "^1.10.0"
+
 ngx-contentful-rich-text@^0.5.1:
   version "0.5.1"
   resolved "https://registry.npmjs.org/ngx-contentful-rich-text/-/ngx-contentful-rich-text-0.5.1.tgz"

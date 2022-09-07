@@ -44,7 +44,8 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
   operator = '';
   activeMessage: SingleChat | undefined;
   streamDetail!: Observable<StreamDetail>;
-  messageExist: any;
+
+  loading = true;
   subscription!: Subscription;
 
   privateMessages = Array();
@@ -178,6 +179,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
               return;
             } else {
               this.privateMessages.push(msg);
+              this.loading = false;
               this.sortMessages();
             }
             this.storeMessagesId.push(msg.id);

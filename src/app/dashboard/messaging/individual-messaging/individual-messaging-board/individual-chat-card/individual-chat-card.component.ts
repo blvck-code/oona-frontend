@@ -30,25 +30,6 @@ export class IndividualChatCardComponent implements OnInit {
     private route: ActivatedRoute,
   ) {
     this.getUserInfo();
-    this.routerDetails();
-  }
-
-  routerDetails(): void {
-    this.route.queryParams.subscribe(params => {
-      const userId = params.id;
-      console.log('User id ==>>> ', userId);
-      this.store.dispatch(new messagingActions.SelectedUserId(+userId));
-    });
-
-    this.route.queryParams.subscribe(params => {
-      // const userId = params.id;
-      // console.log('Show me payload =>', userId)
-      // this.store.dispatch(new messagingActions.SelectedUserId(+userId));
-    });
-
-
-
-
   }
 
 
@@ -73,7 +54,4 @@ export class IndividualChatCardComponent implements OnInit {
     this.handleDate();
   }
 
-  // handleReply(message: any): void {
-  //   console.log('Message content ===>>>', message);
-  // }
 }

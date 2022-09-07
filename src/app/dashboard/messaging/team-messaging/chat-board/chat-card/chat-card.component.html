@@ -11,9 +11,14 @@
   <div class="chart-container-wrap">
     <div class="chart-item-content-container" (click)="getMessageTopic(messageDetail)">
       <div class="chart-item-content">
-        <div class="chart-item-title" (click)="navigateSubject(messageDetail)">
+        <div *ngIf="messageDetail.type === 'stream' " class="chart-item-title" (click)="navigateSubject(messageDetail)">
           <p class="chat-tag">
             #{{ messageDetail.subject | titlecase }}
+          </p>
+        </div>
+        <div *ngIf="messageDetail.type === 'private' " class="chart-item-title" (click)="navigateSubject(messageDetail)">
+          <p class="chat-tag">
+            Private message
           </p>
         </div>
         <div class="message-card" (click)="handleReplyMsg(messageDetail)" title="Click to reply">
