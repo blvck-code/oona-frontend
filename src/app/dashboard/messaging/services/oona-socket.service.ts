@@ -270,12 +270,13 @@ export class OonaSocketService {
         incomingMessage.flags = ['read'];
         this.store.dispatch(new messagingActions.CreateStreamMessageSuccess(incomingMessage));
       } else {
-        this.store.dispatch(new messagingActions.CreateStreamMessageSuccess(newMessage));
+        incomingMessage.flags = [];
+        this.store.dispatch(new messagingActions.CreateStreamMessageSuccess(incomingMessage));
         this.notifyMe(socketData.message.message);
       }
 
-      this.store.dispatch(new messagingActions.CreateStreamMessageSuccess(socketData.message.message));
-      this.notifyMe(socketData.message.message);
+      // this.store.dispatch(new messagingActions.CreateStreamMessageSuccess(socketData.message.message));
+      // this.notifyMe(socketData.message.message);
 
       this.messagesToStreams = [...this.messagesToStreams, socketData.message.message];
       // let the array have unique messages

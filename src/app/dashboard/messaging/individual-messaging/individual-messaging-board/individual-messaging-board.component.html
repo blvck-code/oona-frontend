@@ -4,7 +4,7 @@
     <app-idle-tag class="ms-n5 circle" *ngIf="(selectedUser$ | async)?.presence?.aggregated?.status === 'idle'"></app-idle-tag>
     <app-active-tag class="ms-n5 circle" *ngIf="(selectedUser$ | async)?.presence?.aggregated?.status === 'active'"></app-active-tag>
     <app-inactive-tag class="ms-n5 circle" *ngIf="(selectedUser$ | async)?.presence?.aggregated?.status === 'offline'"></app-inactive-tag>
-    <p class="member-name p-2">{{ (selectedUser$ | async)?.full_name }}</p>
+    <p class="member-name p-2">{{ (currentUser$ | async)?.full_name }}</p>
   </div>
 
   <nav>
@@ -37,7 +37,7 @@
         </div>
 
         <div *ngIf="!(messages$ | async)?.length" class="d-flex justify-content-center">
-          <p>No messages with {{ (selectedUser$ | async)?.full_name }}</p>
+          <p>No messages with {{ (currentUser$ | async)?.full_name }}</p>
         </div>
 
         </div>

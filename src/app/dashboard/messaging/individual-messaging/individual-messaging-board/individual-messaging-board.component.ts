@@ -23,7 +23,7 @@ import { SingleMessageModel } from '../../models/messages.model';
 import { NotificationService } from '../../../../shared/services/notification.service';
 import {
   getAllMessages,
-  getPrivateMessages, getPrivateUser,
+  getPrivateMessages, getPrivateUser, getSelectedUserId,
   getSelectedUserMessages,
   getUnreadMessages, getUserUnreadMessages
 } from '../../state/messaging.selectors';
@@ -50,7 +50,10 @@ export class IndividualMessagingBoardComponent implements OnInit {
     avatar_url: undefined,
     email: undefined,
   };
+
   selectedUserId: any;
+  currentUserId: any;
+
   selectedUser$!: Observable<any>;
   userActivity: any;
   initialMessageCount = 30;
@@ -61,6 +64,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
   loading = true;
 
+  currentUser$!: Observable<any>;
   messages$!: Observable<SingleMessageModel[]>;
 
   messagesWithPerson = Array();
@@ -92,9 +96,8 @@ export class IndividualMessagingBoardComponent implements OnInit {
   ) {
     this.store.select(getSelectedUser).subscribe((data) => {
       if (data) {
-        this.operand = data;
         this.selectedUserId = data.user_id;
-        this.getSelectedUser();
+        // this.getSelectedUser();
       }
     });
     this.routerDetails();
@@ -106,6 +109,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.inComingMessage();
     this.resetDmUnreads();
     this.getUnreadMessages();
+    this.getUserId();
 
     this.messages$ = this.store.select(getSelectedUserMessages);
 
@@ -115,9 +119,16 @@ export class IndividualMessagingBoardComponent implements OnInit {
       }
     );
 
-    this.store.select(getPrivateUser).subscribe(
-      user => console.log('User infooo', user)
-    );
+    setTimeout(() => {
+      this.currentUser$ = this.store.select(getPrivateUser);
+      this.store.select(getPrivateUser).subscribe(
+        (userInfo: any) => {
+          this.selectedUserId = userInfo.user_id;
+          this.operand = userInfo;
+          console.log('Current user info ===>>', userInfo);
+        }
+      );
+    }, 1000);
 
 
     this.messagingService.currentMemberChatDetail.subscribe((member) => {
@@ -137,6 +148,12 @@ export class IndividualMessagingBoardComponent implements OnInit {
     });
 
     this.updateState();
+  }
+
+  getUserId(): void {
+    this.store.select(getPrivateUser).subscribe(
+      (user: any) => console.log('User details challenge ==>>>', user)
+    );
   }
 
   getUnreadMessages(): void {
@@ -167,6 +184,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
   routerDetails(): void {
     this.activatedRoute.queryParams.subscribe(params => {
       const userId = params.id;
+      this.currentUserId = params.id;
       this.store.dispatch(new messagingActions.SelectedUserId(+userId));
     });
   }
