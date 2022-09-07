@@ -47,7 +47,7 @@
         </div>
         <div #endChat></div>
 
-        <div *ngIf="loadingMessages" class="d-flex justify-content-center">
+        <div *ngIf="loading" class="d-flex justify-content-center">
           <div>
             <app-loading-animation></app-loading-animation>
             <p class="teams-belonging me-5">Fetching messages</p>
@@ -56,7 +56,7 @@
 
         <div
           class="py-4"
-          *ngIf="!loadingMessages && !dateSortedPrivateMessages.length"
+          *ngIf="!loading && !dateSortedPrivateMessages.length"
         >
           <p>No Messages</p>
         </div>

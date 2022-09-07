@@ -15,7 +15,7 @@ import { AppState } from '../../../../state/app.state';
 import {
   getLoadingAllMsg,
   getAllMessages,
-  getAllStreamData, getPrivateMessages, getStreamMessages,
+  getAllStreamData, getPrivateMessages, getStreamMessages, getBothMessages,
 } from '../../state/messaging.selectors';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { SingleChat, SingleMessageModel } from '../../models/messages.model';
@@ -45,6 +45,8 @@ export class LandingMessageBoardComponent implements OnInit {
   allMsgId: number[] = [];
   allStreamId: number[] = [];
   socketsMsgIds: number[] = [];
+
+  loading = true;
 
   privateMessages = Array();
   privateMessagesSubject = new BehaviorSubject(this.privateMessages);
@@ -80,8 +82,14 @@ export class LandingMessageBoardComponent implements OnInit {
     // get Loading Message
     this.loadingMessages = this.store.select(getLoadingAllMsg);
 
+    this.store.select(getBothMessages).subscribe(
+      (messages: SingleMessageModel[]) => {
+        messages ? this.loading = false :  ''
+      }
+    )
+
     // get messages from store
-    this.messages$ = this.store.select(getAllMessages);
+    this.messages$ = this.store.select(getBothMessages);
 
     this.messagesLength();
     // @ts-ignore

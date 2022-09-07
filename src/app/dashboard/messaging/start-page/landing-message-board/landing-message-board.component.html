@@ -6,7 +6,7 @@
     </div>
   </div>
 
-  <div *ngIf="!messageExist" class="py-4">
+  <div *ngIf="!loading && !(messages$ | async)?.length" class="py-4">
     <p>No Messages</p>
   </div>
 
@@ -23,7 +23,7 @@
 
       <app-chat-card
         (emitReplyMsg)="selectedChat(chat)"
-        *ngFor="let chat of (messages$ | async)?.messages"
+        *ngFor="let chat of messages$ | async"
         [messageDetail]="chat"
       ></app-chat-card>
       <div>
@@ -40,14 +40,14 @@
           *ngIf="!dateSortedPrivateMessages.length"
           class="d-flex justify-content-center"
         >
-          <div>
+          <div *ngIf="loading">
             <app-loading-animation></app-loading-animation>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!--  <app-landing-text-editor class="add-editor" [class.active]="editorActive"></app-landing-text-editor>-->
-  <!--  <app-editor class="add-editor" [class.active]="editorActive"></app-editor>-->
-  <!--  <app-editor [activeChat]="editorChat" class="add-editor active"></app-editor>-->
+<!--    <app-landing-text-editor class="add-editor" [class.active]="editorActive"></app-landing-text-editor>-->
+<!--    <app-editor class="add-editor" [class.active]="editorActive"></app-editor>-->
+<!--    <app-editor [activeChat]="editorChat" class="add-editor active"></app-editor>-->
 </div>

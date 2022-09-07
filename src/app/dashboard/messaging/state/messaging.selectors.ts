@@ -120,5 +120,41 @@ export const getSelectedStreamMessages = createSelector(
   (messages: SingleMessageModel[], streamId: number | null, topic: string) => topic ?
     messages.filter(message => message.stream_id === streamId && message.subject.toLowerCase() === topic.toLowerCase())
     : messages.filter(message => message.stream_id === streamId)
+      .sort((a: SingleMessageModel, b: SingleMessageModel) => a.timestamp - b.timestamp)
 );
 
+export const getBothMessages = createSelector(
+  getPrivateMessages,
+  getStreamMessages,
+  (streamMessages, privateMessages) => {
+    return [...streamMessages, ...privateMessages]
+      .sort((a: SingleMessageModel, b: SingleMessageModel) =>
+        a.timestamp - b.timestamp
+    )
+  }
+);
+
+export const getSelectedUserId = createSelector(
+  getMessagingState,
+  state => state.messaging.privateMsgs.selectedUserId
+);
+
+export const getSelectedUserMessages = createSelector(
+  getPrivateMessages,
+  getSelectedUserId,
+  (privateMessages, userId) =>
+      privateMessages.filter(message => (message.display_recipient[0].id === userId) || (message.display_recipient[1].id === userId))
+      .sort((a: SingleMessageModel, b: SingleMessageModel) =>
+        a.timestamp - b.timestamp
+      )
+);
+
+export const getUserUnreadMessages = createSelector(
+  getPrivateMessages,
+  getSelectedUserId,
+  (privateMessages, userId) =>
+    privateMessages.filter(message =>
+      ((message.display_recipient[0].id === userId) || (message.display_recipient[1].id === userId))
+      && !message.flags.includes('read')
+    )
+)

@@ -188,7 +188,6 @@ export class OonaSocketService {
       // this.newMessages.push(socketData);
       // create a new set unique by message id
       // this.newMessagesUnique = new Set(this.newMessages.map(item => item.message.message.id));
-      console.log('Message after filter ==>>', socketData);
       this.newMessageCount = this.newMessages.length;
       this.changeNewMessageCount(this.newMessageCount);
       this.newMessageCounter(socketData.message.message);
@@ -284,7 +283,7 @@ export class OonaSocketService {
       this.changeNewStreamMessageCount(this.removeLoggedInUserMessages(this.messagesToStreams));
     }else if (socketData.message.message.type === 'private'){
       this.notifyMe(socketData.message.message);
-
+      console.log('New private message ==>>', socketData);
       this.privateMsgCounterSubject.next(this.privateMessagesCounter + 1);
       // send new message to store
       this.store.dispatch(new messagingActions.CreatePrivateMessageSuccess(socketData.message.message));
