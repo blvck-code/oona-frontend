@@ -1,8 +1,16 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { MessagingState } from './messaging.reducer';
 import {SingleMessageModel} from '../models/messages.model';
+import {AuthState} from '../../../auth/state/auth.reducer';
+import {getZulipUsers} from "../../../auth/state/auth.selectors";
+import {ZulipSingleUser} from "../../../auth/models/user.model";
+
 
 export const messagingSelector = 'messaging';
+export const authSelector = 'userCenter';
+
+const getAuthState =
+  createFeatureSelector<AuthState>(authSelector);
 
 const getMessagingState =
   createFeatureSelector<MessagingState>(messagingSelector);
@@ -103,6 +111,12 @@ export const getPrivateUnreadMessages = createSelector(
     messages.filter((message: SingleMessageModel) => !message.flags.includes('read')).length
 );
 
+export const getPrivateUnread = createSelector(
+  getPrivateMessages,
+  (messages: SingleMessageModel[]) =>
+    messages.filter((message: SingleMessageModel) => !message.flags.includes('read'))
+);
+
 export const getSelectedStreamId = createSelector(
   getMessagingState,
   state => state.messaging.streamMsg.selectedStreamId
@@ -130,7 +144,7 @@ export const getBothMessages = createSelector(
     return [...streamMessages, ...privateMessages]
       .sort((a: SingleMessageModel, b: SingleMessageModel) =>
         a.timestamp - b.timestamp
-    )
+    );
   }
 );
 
@@ -139,11 +153,21 @@ export const getSelectedUserId = createSelector(
   state => state.messaging.privateMsgs.selectedUserId
 );
 
+export const getPrivateUser = createSelector(
+  getAuthState,
+  getSelectedUserId,
+  (state, userId) => state.users.zulipUsers.members.find(
+    (user: any) => user.user_id == 9
+  )
+);
+
 export const getSelectedUserMessages = createSelector(
   getPrivateMessages,
   getSelectedUserId,
   (privateMessages, userId) =>
-      privateMessages.filter(message => (message.display_recipient[0].id === userId) || (message.display_recipient[1].id === userId))
+      privateMessages.filter(message => ((message.display_recipient[0].id === userId))
+        || message.sender_id === userId
+      )
       .sort((a: SingleMessageModel, b: SingleMessageModel) =>
         a.timestamp - b.timestamp
       )
@@ -154,7 +178,16 @@ export const getUserUnreadMessages = createSelector(
   getSelectedUserId,
   (privateMessages, userId) =>
     privateMessages.filter(message =>
-      ((message.display_recipient[0].id === userId) || (message.display_recipient[1].id === userId))
+      ((message.display_recipient[0].id === userId) || message.sender_id === userId )
       && !message.flags.includes('read')
     )
-)
+);
+
+export const getUnreadStreamMessages = createSelector(
+  getStreamMessages,
+  getSelectedStreamId,
+  getSelectedTopic,
+  // tslint:disable-next-line:max-line-length
+  (messages: SingleMessageModel[], streamId: number | null, topic: string) => topic ? messages.filter((message: SingleMessageModel) => (message.stream_id === streamId && message.subject.toLowerCase() === topic.toLowerCase()) && !message.flags.includes('read'))
+    : messages.filter((message: SingleMessageModel) => message.stream_id === streamId  && !message.flags.includes('read'))
+);

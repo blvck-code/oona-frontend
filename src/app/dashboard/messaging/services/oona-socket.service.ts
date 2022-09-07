@@ -258,16 +258,20 @@ export class OonaSocketService {
 
     const currentUserId =  this.loggedInUserProfile?.user_id;
     const msgSenderId = socketData.message?.message?.sender_id;
-
     newMessage.flags = [];
-
     if (socketData.message.message.type === 'stream'){
 
       // If i send message to the stream listener
+      const incomingMessage: SingleMessageModel = socketData.message.message;
       if (msgSenderId === currentUserId){
         // My outgoing message from the socket
         // console.log('My stream outgoing message content ===>>>', socketData);
         this.myStreamMessagesSocketSubject.next(socketData.message.message);
+        incomingMessage.flags = ['read'];
+        this.store.dispatch(new messagingActions.CreateStreamMessageSuccess(incomingMessage));
+      } else {
+        this.store.dispatch(new messagingActions.CreateStreamMessageSuccess(newMessage));
+        this.notifyMe(socketData.message.message);
       }
 
       this.store.dispatch(new messagingActions.CreateStreamMessageSuccess(socketData.message.message));
@@ -282,26 +286,29 @@ export class OonaSocketService {
       // console.log('Messages to streams ===>>>>', this.messagesToStreams);
       this.changeNewStreamMessageCount(this.removeLoggedInUserMessages(this.messagesToStreams));
     }else if (socketData.message.message.type === 'private'){
-      this.notifyMe(socketData.message.message);
-      console.log('New private message ==>>', socketData);
-      this.privateMsgCounterSubject.next(this.privateMessagesCounter + 1);
+      const privateMessage: SingleMessageModel = socketData.message.message;
+
+
       // send new message to store
-      this.store.dispatch(new messagingActions.CreatePrivateMessageSuccess(socketData.message.message));
 
       // Check if am the sender or not me
       if (msgSenderId === currentUserId){
         // My outgoing message from the socket
         // console.log('Incoming message from other user ===>>>', socketData.message.message);
+        privateMessage.flags = ['read'];
         this.myMessagesSocketSubject.next(socketData.message.message);
+        this.store.dispatch(new messagingActions.CreatePrivateMessageSuccess(privateMessage));
       } else {
         // Incoming message from other user in socket
-
+        privateMessage.flags = [];
+        this.store.dispatch(new messagingActions.CreatePrivateMessageSuccess(privateMessage));
+        this.notifyMe(privateMessage);
         this.messagesInPrivate = [...this.messagesInPrivate, socketData.message.message];
         this.messagesInPrivate = this.messagesInPrivate.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
 
         // console.log('Others private messages in my dm ====>>>>', this.messagesInPrivate);
         this.changeNewPrivateMessageCount(this.removeLoggedInUserMessages(this.messagesInPrivate));
-
+        this.privateMsgCounterSubject.next(this.privateMessagesCounter + 1);
       }
     } else if (socketData.message.message.type === 'subscription') {
 

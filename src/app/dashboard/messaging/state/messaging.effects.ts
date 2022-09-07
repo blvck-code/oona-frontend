@@ -117,7 +117,7 @@ export class MessagingEffects {
     mergeMap((msgId: number) =>
       this.messagingSrv.updateMessageFlag(msgId).pipe(
         map((response: any) =>
-          new messagingActions.UpdateReadMessageSuccess(msgId)
+          new messagingActions.UpdateReadMessageSuccess(response.messages[0])
         ),
         catchError((err) => of(new messagingActions.UpdateReadMessageFail(err)))
       )

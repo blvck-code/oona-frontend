@@ -17,6 +17,9 @@ import {NotificationService} from '../../../../../shared/services/notification.s
 import {Router} from '@angular/router';
 import { ToolbarService, LinkService, ImageService, HtmlEditorService } from '@syncfusion/ej2-angular-richtexteditor';
 import {ChatBoardService} from '../chat-board.service';
+import {Store} from "@ngrx/store";
+import {AppState} from "../../../../../state/app.state";
+import {getSelectedTopic} from "../../../state/messaging.selectors";
 
 @Component({
   selector: 'app-text-editor',
@@ -31,6 +34,7 @@ export class TextEditorComponent implements OnInit, OnDestroy {
 
   @Input() messageTopic: any;
   @Input() streamName: any;
+  currentTopic = '';
   editorTopic = '';
   values = '';
   memberDetail =  {
@@ -51,6 +55,7 @@ export class TextEditorComponent implements OnInit, OnDestroy {
     private chatBoardService: ChatBoardService,
     private  notificationService: NotificationService,
     private router: Router,
+    private store: Store<AppState>
   ) {}
 
   // @ts-ignore
@@ -102,6 +107,16 @@ export class TextEditorComponent implements OnInit, OnDestroy {
     this.newFileGroup = new FormGroup({
       selectedFile: new FormControl(this.selectedFile),
     });
+
+    this.store.select(getSelectedTopic).subscribe(
+      (topicName:string) => {
+        if (topicName) {
+          this.currentTopic = topicName;
+        } else {
+          this.currentTopic = 'new streams'
+        }
+      }
+    )
   }
 
   onFileChanged(event: any): void {

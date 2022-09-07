@@ -14,7 +14,7 @@ import TurndownService from 'turndown';
 import {HomeService} from '../../../home/shared/home.service';
 import {OonaSocketService} from '../../services/oona-socket.service';
 import * as messagingActions from '../../state/messaging.actions';
-import {getSelectedStreamMessages} from '../../state/messaging.selectors';
+import {getSelectedStreamMessages, getSelectedTopic} from '../../state/messaging.selectors';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
 import {Observable} from 'rxjs';
@@ -102,6 +102,16 @@ export class ChatBoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.store.select(getSelectedTopic).subscribe(
+      (topicName:string) => {
+        if (topicName) {
+          this.messageTopic = topicName;
+        } else {
+          this.messageTopic = 'new streams'
+        }
+      }
+    )
+
     this.storeStreamMessages();
     this.messagingService.currentStreamName.subscribe((streamName) => {
       this.streamName = streamName; // always get the current value
@@ -191,7 +201,7 @@ export class ChatBoardComponent implements OnInit {
 
     if (!this.messageTopic) {
       // use the last subject from the chat by default
-      this.messageTopic = this.latItemTopic;
+      this.messageTopic = 'new streams';
     }
     const messageDetail = {
       to: this.streamName,

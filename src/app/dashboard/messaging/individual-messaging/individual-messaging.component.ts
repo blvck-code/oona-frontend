@@ -9,11 +9,11 @@ import {
 } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../state/app.state';
-import { getAllUsers } from '../../../auth/state/auth.selectors';
+import {getAllUsers, getZulipUsers} from '../../../auth/state/auth.selectors';
 
 // NgRx
 import * as authActions from '../../../auth/state/auth.actions';
-import { getPrivateMessages } from '../state/messaging.selectors';
+import {getPrivateMessages, getPrivateUser, getSelectedUserId} from '../state/messaging.selectors';
 import { SingleMessageModel } from '../models/messages.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { retagTsFile } from '@angular/compiler-cli/src/ngtsc/shims';
@@ -32,7 +32,6 @@ export class IndividualMessagingComponent implements OnInit {
   pmUser: any;
   pmMessages: any = [];
   initialMessageCount = 30;
-  recipientInfo!: Observable<any>;
 
   currentUserIdSubject = new BehaviorSubject<object>({});
   currentUserIdObservable = this.currentUserIdSubject.asObservable();
@@ -42,7 +41,6 @@ export class IndividualMessagingComponent implements OnInit {
     private store: Store<AppState>,
     private route: Router
   ) {
-    this.changeContentOnRouteChange();
     this.routerDetails();
   }
 
@@ -54,12 +52,23 @@ export class IndividualMessagingComponent implements OnInit {
   }
 
   onInitHandler(): void {
+    this.store.select(getSelectedUserId).subscribe(
+      (userIds: any) => {
+
+        this.store.select(getAllUsers).subscribe(
+          (allUsers: any[]) => {
+
+          }
+        )
+
+      }
+    )
+
     const currentUser = this.activatedRoute.snapshot.queryParams?.member;
+
 
     const userId = +currentUser.split('-')[0];
     const userName = currentUser.split('-')[1].replace('.', ' ');
-
-    console.log('Sender user id ===>>>', +userId);
 
     const urlUser = {
       userId,
@@ -110,8 +119,6 @@ export class IndividualMessagingComponent implements OnInit {
       ],
     };
 
-    // fetch messages from server
-    this.store.dispatch(new messageActions.LoadPrivateMessages(streamDetail));
 
     // @ts-ignore
     document
@@ -129,13 +136,4 @@ export class IndividualMessagingComponent implements OnInit {
     );
   }
 
-  // fetchUserMessages(): void {
-  //   this.store.select(getPrivateMessages).subscribe((data) => {
-  //     data?.map((msg) => {
-  //       if (msg.recipient_id === 10) {
-  //         this.pmMessages = [...this.pmMessages, msg];
-  //       }
-  //     });
-  //   });
-  // }
 }

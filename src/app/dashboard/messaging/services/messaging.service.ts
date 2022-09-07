@@ -276,6 +276,7 @@ export class MessagingService {
   }
 
   goToMemberChat(member: any): void {
+    console.log('User his')
     this.router.navigate(['dashboard/messaging/narrow'], {
       queryParams: { member: member.full_name.replace(/\s/g, '') },
     });
@@ -464,6 +465,7 @@ export class MessagingService {
           }
 
           this.totalUnreadMsgSubject.subscribe(
+            // tslint:disable-next-line:no-shadowed-variable
             messages => messages.push(message)
           );
 
@@ -497,13 +499,13 @@ export class MessagingService {
           }
 
           this.totalUnreadMsgSubject.subscribe(
+            // tslint:disable-next-line:no-shadowed-variable
             (messages: any[]) => messages.push(message)
           );
           const updateCounter = {
             messageType: 'private',
             type: 'increase'
           };
-          this.store.dispatch(new messagingActions.UpdateMessageCounter(updateCounter));
 
           const newTotal = this.totalUnreadMsgCounter += 1;
           this.totalUnreadMsgCounterSubject$.next(newTotal);
@@ -641,7 +643,7 @@ export class MessagingService {
   }
 
   updateMessageFlag(msgId: number): Observable<any> {
-    console.log('Updating red status');
+    console.log('Updating read status');
     const request = {
       messages: [msgId],
       op: 'add',
