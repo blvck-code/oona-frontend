@@ -12,5 +12,6 @@ export interface TopicsModel {
 export interface Topics {
   name: string;
   max_id: number;
+  unread?: number;
 }
 

@@ -5,16 +5,15 @@ import { Title } from '@angular/platform-browser';
 import {Store} from '@ngrx/store';
 import {AppState} from './state/app.state';
 import * as authActions from './auth/state/auth.actions';
-import * as sharedActions from './shared/state/shared.actions';
 import {getIsLoggedIn} from './auth/state/auth.selectors';
 import {OonaSocketService} from './dashboard/messaging/services/oona-socket.service';
 import {ActivatedRoute} from '@angular/router';
-import {BehaviorSubject, Notification} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 import {MessagingService} from "./dashboard/messaging/services/messaging.service";
 import * as messagingActions from './dashboard/messaging/state/messaging.actions';
+import {getPrivateUnreadMessages, getStreamUnreadMessages} from './dashboard/messaging/state/messaging.selectors';
 import {log} from 'util';
-import {getPrivateUnreadMessages, getStreamUnreadMessages, getUnreadMessages} from './dashboard/messaging/state/messaging.selectors';
 
 @Component({
   selector: 'app-root',
@@ -23,11 +22,13 @@ import {getPrivateUnreadMessages, getStreamUnreadMessages, getUnreadMessages} fr
 })
 export class AppComponent implements OnInit {
   title = 'oona';
-  navTitle = '';
 
   totalUnreadMsg = 0;
   totalUnreadMsgSubject$ = new BehaviorSubject<number>(this.totalUnreadMsg);
   totalUnreadMsgObservable = this.totalUnreadMsgSubject$.asObservable();
+
+  privateUnread$!: Observable<number>;
+  streamUnread$!: Observable<number>;
 
   constructor(
     private store: Store<AppState>,
@@ -39,12 +40,9 @@ export class AppComponent implements OnInit {
   }
 
   updateState = () => {
-
     this.store.dispatch(new authActions.UpdateState());
-
     this.store.select(getIsLoggedIn).subscribe(
       status => {
-        // console.log('Is logged in? ', status);
         if (status) {
           this.store.dispatch(new authActions.LoadAllUsers());
           this.store.dispatch(new authActions.LoadZulipUsers());
@@ -54,19 +52,21 @@ export class AppComponent implements OnInit {
   }
 
   tabNotification(): void {
-    // let unreadMessages = 0;
-
-    this.sockets.privateMsgCounterSubject.subscribe(
-      newMessage => {
-        const messages = this.sockets.messagesInPrivate;
-
-      }
-    );
+      this.streamUnread$.subscribe(
+        stream => {
+          this.privateUnread$.subscribe(
+            privateUnread => {
+              this.totalUnreadMsgSubject$.next(privateUnread + stream)
+            }
+          );
+        }
+      );
   }
 
   ngOnInit(): void {
     this.updateState();
     this.initializeState();
+
   }
 
   initializeState(): void {
@@ -75,24 +75,29 @@ export class AppComponent implements OnInit {
     this.store.dispatch(new authActions.LoadZulipUsers());
     this.store.dispatch(new authActions.LoadAllUsers());
 
-    this.handleGetPrivateUnread();
-    this.handleGetStreamUnread();
+    // this.handleGetPrivateUnread();
+    // this.handleGetStreamUnread();
 
     setTimeout(() => {
       this.getMessages();
       this.getTotalCounter();
+
+      this.streamUnread$ = this.store.select(getStreamUnreadMessages);
+      this.privateUnread$ = this.store.select(getPrivateUnreadMessages);
+      this.tabNotification();
     }, 1000);
   }
 
   getTotalCounter(): void {
-    setTimeout(() => {
-
-      if(this.totalUnreadMsg > 0) {
-        this.titleService.setTitle(`(${this.totalUnreadMsg}) - AVL - Oona`);
+    this.totalUnreadMsgObservable.subscribe(
+      (numb: number) => {
+        if (numb > 0) {
+          this.titleService.setTitle(`(${numb}) - AVL - Oona`);
+        } else {
+          this.titleService.setTitle(`AVL - Oona`);
+        }
       }
-
-    }, 1000);
-    this.titleService.setTitle(`AVL - Oona`);
+    );
     this.handleSocketsNewMessage();
   }
 
@@ -105,36 +110,22 @@ export class AppComponent implements OnInit {
       this.messageSrv.handleUnreadPrivateMessages();
       this.messageSrv.handleUnreadStreamMessages();
     }, 3000);
-
   }
 
-  handleGetPrivateUnread(): void {
-    this.store.select(getPrivateUnreadMessages).subscribe(
-      messages => {
-        const total = this.totalUnreadMsg += messages;
-        this.totalUnreadMsgSubject$.next(total);
-      }
-    );
-  }
-
-  handleGetStreamUnread(): void {
-    this.store.select(getStreamUnreadMessages).subscribe(
-      messages => {
-        const total = this.totalUnreadMsg += messages;
-        this.totalUnreadMsgSubject$.next(total);
-      }
-    );
-  }
 
   handleSocketsNewMessage(): void {
+    let total = 0;
     this.sockets.allMsgCounterObservable.subscribe(
       newMessage => {
         if (newMessage === 0) {
           return;
         } else {
-          const newTotal = this.totalUnreadMsg += newMessage;
-          this.titleService.setTitle(`(${newTotal}) - AVL - Oona`);
-          // this.totalUnreadMsgSubject$.next(total);
+          this.totalUnreadMsgSubject$.subscribe(
+            unread => {
+              total = unread + newMessage;
+            }
+          );
+          this.totalUnreadMsgSubject$.next(total);
         }
       }
     );

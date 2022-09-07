@@ -112,17 +112,20 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   }
 
   goToMemberChat(member: any): void {
-    const userUrl = `${member.user_id}-${member.full_name
-      .toLowerCase()
-      .replace(/\s/g, '.')}`;
-
     this.router.navigate(['dashboard/messaging/narrow'], {
-      queryParams: { member: userUrl },
-    });
+      queryParams: {
+        id: member.user_id,
+        member: member.full_name.replace(/\s/g, '')
+      }
+    })
 
     this.store.dispatch(new authActions.SetSelectedUser(member));
 
     this.endPointUnreadId.filter((id) => id === member.user_id);
+
+  }
+
+  navigatePrivate(member: any): void {
 
   }
 

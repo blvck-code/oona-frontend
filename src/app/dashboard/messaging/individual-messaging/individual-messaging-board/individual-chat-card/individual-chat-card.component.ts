@@ -15,7 +15,7 @@ import {ActivatedRoute} from '@angular/router';
   templateUrl: './individual-chat-card.component.html',
   styleUrls: ['./individual-chat-card.component.scss'],
 })
-export class IndividualChatCardComponent implements OnInit, DoCheck {
+export class IndividualChatCardComponent implements OnInit {
   @Input() messageDetail: any;
   @ViewChild('currentChat') endChat: ElementRef | undefined;
 
@@ -35,11 +35,22 @@ export class IndividualChatCardComponent implements OnInit, DoCheck {
 
   routerDetails(): void {
     this.route.queryParams.subscribe(params => {
-      const streamId = params.id;
-      const topic = params.topic;
-      console.log(params);
+      const userId = params.id;
+      console.log('User id ==>>> ', userId);
+      this.store.dispatch(new messagingActions.SelectedUserId(+userId));
     });
+
+    this.route.queryParams.subscribe(params => {
+      // const userId = params.id;
+      // console.log('Show me payload =>', userId)
+      // this.store.dispatch(new messagingActions.SelectedUserId(+userId));
+    });
+
+
+
+
   }
+
 
   getUserInfo(): void {
     this.zulipProfile = this.store.select(getZulipProfile);
@@ -60,10 +71,6 @@ export class IndividualChatCardComponent implements OnInit, DoCheck {
     this.imageURL = `${this.baseURL}${this.messageDetail?.avatar_url}&s=50`;
 
     this.handleDate();
-  }
-
-  ngDoCheck() {
-    // this.isVisible = this.element.nativeElement.offsetParent !== null;
   }
 
   // handleReply(message: any): void {

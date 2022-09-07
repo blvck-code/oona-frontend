@@ -4,6 +4,17 @@ import { MessagesModel } from '../models/messages.model';
 import { StreamDataModel } from '../models/streamData.model';
 
 export enum MessagingActionsTypes {
+  // Create new private message
+  CREATE_PRIVATE_MESSAGE = 'messaging/createPrivateMessage',
+  CREATE_PRIVATE_MESSAGE_SUCCESS = 'messaging/createPrivateMessageSuccess',
+  CREATE_PRIVATE_MESSAGE_FAIL = 'messaging/createPrivateMessageFail',
+
+  // Create stream message
+  CREATE_STREAM_MESSAGE = 'messaging/createStreamMessage',
+  CREATE_STREAM_MESSAGE_SUCCESS = 'messaging/createStreamMessageSuccess',
+  CREATE_STREAM_MESSAGE_FAIL = 'messaging/createStreamMessageFail',
+
+
   // GET MESSAGES
   LOAD_MESSAGES = 'messaging/loadMessages',
   LOAD_MESSAGES_SUCCESS = 'messaging/loadMessagesSuccess',
@@ -63,6 +74,7 @@ export enum MessagingActionsTypes {
   FILTER_MESSAGES = 'messaging/filterMessages',
   HANDLE_UNREAD_MESSAGE = 'messaging/handleUnreadMessage',
   SELECTED_STREAM_ID = 'messaging/selectedStreamId',
+  SELECTED_USER_ID = 'messaging/selectedUserId',
 
   LOAD_MORE_STREAM_MESSAGE = 'messaging/loadMore',
   LOAD_MORE_STREAM_MESSAGE_SUCCESS = 'messaging/loadMoreSuccess',
@@ -73,6 +85,49 @@ export enum MessagingActionsTypes {
   UPDATE_READ_MESSAGE_FAIL = 'messaging/updateReadMessageFail',
 
   UPDATE_MESSAGE_COUNTER = 'messaging/updateMessageCounter'
+}
+
+// CREATE PRIVATE MESSAGE
+export class CreatePrivateMessage implements Action {
+  readonly type = MessagingActionsTypes.CREATE_PRIVATE_MESSAGE;
+  constructor(public payload: any) {
+  }
+}
+
+export class CreatePrivateMessageSuccess implements Action {
+  readonly type = MessagingActionsTypes.CREATE_PRIVATE_MESSAGE_SUCCESS;
+  constructor(
+    public payload: any,
+  ) {
+    console.log('New socket message for store ==>>>', payload);
+  }
+}
+
+export class CreatePrivateMessageFail implements Action {
+  readonly type = MessagingActionsTypes.CREATE_PRIVATE_MESSAGE_FAIL;
+  constructor(public payload: any) {
+    console.log('Send message fail ===>>', payload);
+  }
+}
+
+export class CreateStreamMessage implements Action {
+  readonly type = MessagingActionsTypes.CREATE_STREAM_MESSAGE;
+  constructor(public payload: any) {
+  }
+}
+
+export class CreateStreamMessageSuccess implements Action {
+  readonly type = MessagingActionsTypes.CREATE_STREAM_MESSAGE_SUCCESS;
+  constructor(
+    public payload: any,
+  ) {
+  }
+}
+
+export class CreateStreamMessageFail implements Action {
+  readonly type = MessagingActionsTypes.CREATE_STREAM_MESSAGE_FAIL;
+  constructor(public payload: any) {
+  }
 }
 
 // LOAD MESSAGES ACTIONS
@@ -189,6 +244,7 @@ export class HandleStreamData implements Action {
   constructor(public payload: any) {}
 }
 
+
 // ALL STREAMS ACTIONS
 export class LoadAllStreams implements Action {
   readonly type = MessagingActionsTypes.LOAD_ALL_STREAMS;
@@ -224,7 +280,9 @@ export class LoadStreamTopic implements Action {
 }
 export class LoadStreamTopicSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_TOPIC_SUCCESS;
-  constructor(public payload: TopicsModel) {}
+  constructor(public payload: TopicsModel) {
+    console.log('Topics ', payload);
+  }
 }
 export class LoadStreamTopicFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_STREAM_TOPIC_FAIL;
@@ -290,7 +348,15 @@ export class SelectedStreamId implements Action {
   }
 }
 
+export class SelectedUserId implements Action {
+  readonly type = MessagingActionsTypes.SELECTED_USER_ID;
+  constructor(public payload: any) {
+    console.log('Show me payload =>', payload);
+  }
+}
+
 // More stream messages
+// @ts-ignore
 export class LoadMoreStreams implements Action {
   readonly type = MessagingActionsTypes.LOAD_MORE_STREAM_MESSAGE;
   constructor(public payload: any) {
@@ -298,6 +364,7 @@ export class LoadMoreStreams implements Action {
   }
 }
 
+// @ts-ignore
 export class LoadMoreStreamsSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_MORE_STREAM_MESSAGE_SUCCESS;
   constructor(public payload: any) {
@@ -305,6 +372,7 @@ export class LoadMoreStreamsSuccess implements Action {
   }
 }
 
+// @ts-ignore
 export class LoadMoreStreamsFail implements Action {
   readonly type = MessagingActionsTypes.LOAD_MORE_STREAM_MESSAGE_FAIL;
   constructor(public payload: any) {
@@ -312,10 +380,12 @@ export class LoadMoreStreamsFail implements Action {
   }
 }
 
-
-
-
+// @ts-ignore
 export type MessagingActions =
+  // CREATE PRIVATE MESSAGE
+  | CreatePrivateMessage
+  | CreatePrivateMessageSuccess
+  | CreatePrivateMessageFail
   // MESSAGING ACTIONS
   | LoadMessaging
   | LoadMessagingSuccess
@@ -365,7 +435,12 @@ export type MessagingActions =
   | UpdateReadMessageSuccess
   | UpdateReadMessageFail
   | SelectedStreamId
+  | SelectedUserId
   // Load more streams
   | LoadMoreStreams
   | LoadMoreStreamsSuccess
-  | LoadMoreStreamsFail;
+  | LoadMoreStreamsFail
+  // Create stream message
+  | CreateStreamMessage
+  | CreateStreamMessageSuccess
+  | CreateStreamMessageFail;

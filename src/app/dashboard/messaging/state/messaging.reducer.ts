@@ -27,6 +27,7 @@ export interface MessagingState {
     privateMsgs: {
       loading: boolean;
       filteredMsg: MessagesModel | null;
+      selectedUserId: number | null;
       messages: SingleMessageModel[];
     };
     streamMsg: {
@@ -67,6 +68,7 @@ export const initialState: MessagingState = {
     privateMsgs: {
       loading: false,
       filteredMsg: null,
+      selectedUserId: null,
       messages: [],
     },
     streamMsg: {
@@ -121,7 +123,6 @@ export function messagingReducer(
           }
         }
       };
-
     case messagingActions.MessagingActionsTypes.LOAD_STREAM_MESSAGE_SUCCESS:
       const messagesContent = action.payload.zulip.messages;
       return {
@@ -197,6 +198,28 @@ export function messagingReducer(
         },
       };
     // PRIVATE MESSAGES
+    case messagingActions.MessagingActionsTypes.CREATE_PRIVATE_MESSAGE_SUCCESS:
+      return {
+        ...state,
+        messaging: {
+          ...state.messaging,
+          privateMsgs: {
+            ...state.messaging.privateMsgs,
+            messages: [...state.messaging.privateMsgs.messages, action.payload]
+          }
+        }
+      };
+    case messagingActions.MessagingActionsTypes.CREATE_STREAM_MESSAGE_SUCCESS:
+      return {
+        ...state,
+        messaging: {
+          ...state.messaging,
+          streamMsg: {
+            ...state.messaging.streamMsg,
+            messages: [...state.messaging.streamMsg.messages, action.payload]
+          }
+        }
+      };
     case messagingActions.MessagingActionsTypes.LOAD_PRIVATE_MESSAGES:
       return {
         ...state,
@@ -259,6 +282,17 @@ export function messagingReducer(
           ...state.messaging,
         },
       };
+    case messagingActions.MessagingActionsTypes.SELECTED_USER_ID:
+      return {
+        ...state,
+        messaging: {
+          ...state.messaging,
+          privateMsgs: {
+            ...state.messaging.privateMsgs,
+            selectedUserId: action.payload
+          }
+        }
+      };
     // Updating read flag
     case messagingActions.MessagingActionsTypes.UPDATE_READ_MESSAGE_SUCCESS:
       const index = state.messaging.privateMsgs.messages.findIndex(message => message.id === action.payload);
@@ -276,7 +310,6 @@ export function messagingReducer(
           }
         }
       };
-
     case messagingActions.MessagingActionsTypes.HANDLE_SEND_MESSAGE:
       return {
         ...state,

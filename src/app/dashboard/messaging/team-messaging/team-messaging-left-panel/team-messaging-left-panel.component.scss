@@ -199,7 +199,7 @@ form-control{
 
   &.general-panel {
     .accordion {
-      height: 140px;
+      height: 180px;
     }
   }
 
@@ -272,6 +272,10 @@ form-control{
   border-radius: 3px;
   color: #2D1A14;
   cursor: pointer;
+
+  p {
+    width: 100%;
+  }
 
   &__text {
     font-size: 14px;

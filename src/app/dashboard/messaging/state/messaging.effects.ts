@@ -7,14 +7,57 @@ import { catchError, delay, map, mergeMap, take } from 'rxjs/operators';
 import { MessagesModel } from '../models/messages.model';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/state/app.state';
+import {ToastrService} from "ngx-toastr";
 
 @Injectable()
 export class MessagingEffects {
   constructor(
     private actions$: Actions,
     private messagingSrv: MessagingService,
-    private store: Store<AppState>
+    toastr: ToastrService
   ) {}
+
+  @Effect()
+  privateMessage$: Observable<any> = this.actions$.pipe(
+    ofType<messagingActions.CreatePrivateMessage>(
+      messagingActions.MessagingActionsTypes.CREATE_PRIVATE_MESSAGE
+    ),
+    map((action: messagingActions.CreatePrivateMessage) => action.payload),
+    mergeMap((message: any) =>
+      this.messagingSrv.sendIndividualMessage(message).pipe(
+        map((newMessage: any) =>
+          new messagingActions.CreatePrivateMessageSuccess(newMessage)
+        ),
+      ),
+      catchError((err: any) => of(new messagingActions.CreatePrivateMessageFail(err)))
+    )
+  );
+
+  // Add stream message on store
+  @Effect()
+  streamMessage$: Observable<any> = this.actions$.pipe(
+    ofType<messagingActions.CreateStreamMessage>(
+      messagingActions.MessagingActionsTypes.CREATE_STREAM_MESSAGE
+    ),
+    map((action: messagingActions.CreateStreamMessage) => action.payload),
+    mergeMap((action: any) => action.payload),
+  );
+
+  @Effect()
+  loadStreamMessage$: Observable<any> = this.actions$.pipe(
+    ofType<messagingActions.LoadStreamMessage>(
+      messagingActions.MessagingActionsTypes.LOAD_STREAM_MESSAGES
+    ),
+    map((action: messagingActions.LoadStreamMessage) => action.payload),
+    mergeMap((streamData: any) =>
+      this.messagingSrv.getMessagesOfStream(streamData).pipe(
+        map((message: any) =>
+          new messagingActions.LoadStreamMessageSuccess(message)
+        ),
+        catchError((err) => of(new messagingActions.LoadStreamMessageFail(err)))
+      )
+    )
+  );
 
   @Effect()
   loadAllStreams$: Observable<any> = this.actions$.pipe(
@@ -61,22 +104,6 @@ export class MessagingEffects {
             new messagingActions.LoadStreamTopicSuccess(topicData)
         ),
         catchError((err) => of(new messagingActions.LoadStreamTopicFail(err)))
-      )
-    )
-  );
-
-  @Effect()
-  loadStreamMessage$: Observable<any> = this.actions$.pipe(
-    ofType<messagingActions.LoadStreamMessage>(
-      messagingActions.MessagingActionsTypes.LOAD_STREAM_MESSAGES
-    ),
-    map((action: messagingActions.LoadStreamMessage) => action.payload),
-    mergeMap((streamData: any) =>
-      this.messagingSrv.getMessagesOfStream(streamData).pipe(
-        map((message: any) =>
-          new messagingActions.LoadStreamMessageSuccess(message)
-        ),
-        catchError((err) => of(new messagingActions.LoadStreamMessageFail(err)))
       )
     )
   );

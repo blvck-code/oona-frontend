@@ -1,4 +1,4 @@
-import {TopicsModel} from './topics.model';
+import {TopicsModel, Topics} from './topics.model';
 
 export interface AllStreamsModel {
   date_created: number;
@@ -13,7 +13,8 @@ export interface AllStreamsModel {
   rendered_description: string;
   stream_post_policy: number;
   is_announcement_only: boolean;
-  topics?: TopicsModel;
+  unread: number;
+  topics: any;
 }
 
 export interface TopicModel {

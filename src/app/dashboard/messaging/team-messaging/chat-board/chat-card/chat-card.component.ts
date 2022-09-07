@@ -2,6 +2,9 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { Document } from '@contentful/rich-text-types';
 import { BLOCKS, MARKS } from '@contentful/rich-text-types';
 import {Router} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../../../state/app.state';
+import {getUserDetails, getZulipProfile} from '../../../../../auth/state/auth.selectors';
 
 @Component({
   selector: 'app-chat-card',
@@ -12,6 +15,7 @@ export class ChatCardComponent implements OnInit {
   @Input() messageDetail: any;
   @Output() messageTopic = new EventEmitter<any>();
   @Output() emitReplyMsg = new EventEmitter<any>();
+  userId: any;
   messageTime = '';
   messageDate: any = '';
   document: Document = {
@@ -35,6 +39,7 @@ export class ChatCardComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private store: Store<AppState>
   ) {
   }
 
@@ -43,16 +48,16 @@ export class ChatCardComponent implements OnInit {
       queryParams: {
         team: stream.name.replace(/\s/g, ''),
         id: stream.stream_id,
-        // topic: topic.name.replace(/\s/g, '-'),
       }
     });
-    // console.log('Message details ===>>>', message);
   }
 
   ngOnInit(): void {
+    this.store.select(getZulipProfile).subscribe(
+      (user: any) => this.userId = user.zulip.user_id
+    );
+
     this.messageTime = new Date(this.messageDetail.timestamp * 1000).toLocaleTimeString();
-    // tslint:disable-next-line:max-line-length
-    // this.messageDate = new Date(this.messageDetail.timestamp).getDate() + '/' + (new Date(this.messageDetail.timestamp).getMonth() + 1) + '/' + new Date(this.messageDetail.timestamp).getFullYear();
     this.messageDate = new Date(this.messageDetail.timestamp);
     this.document = {
       nodeType: BLOCKS.DOCUMENT,

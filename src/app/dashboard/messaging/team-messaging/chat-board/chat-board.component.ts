@@ -67,8 +67,6 @@ export class ChatBoardComponent implements OnInit {
         payload.topic = topic.replaceAll('-', ' ');
       }
 
-      console.log('Filter payload =>', payload);
-
       // this.store.dispatch(new messagingActions.SelectedStreamId(+streamId));
       this.store.dispatch(new messagingActions.SelectedStreamId(payload));
 
