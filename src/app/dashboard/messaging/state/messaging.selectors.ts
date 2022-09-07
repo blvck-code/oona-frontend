@@ -6,6 +6,7 @@ import {getZulipUsers} from "../../../auth/state/auth.selectors";
 import {ZulipSingleUser} from "../../../auth/models/user.model";
 
 
+
 export const messagingSelector = 'messaging';
 export const authSelector = 'userCenter';
 
@@ -157,7 +158,7 @@ export const getPrivateUser = createSelector(
   getAuthState,
   getSelectedUserId,
   (state, userId) => state.users.zulipUsers.members.find(
-    (user: any) => user.user_id == 9
+    (user: any) => user.user_id === userId
   )
 );
 
@@ -165,7 +166,10 @@ export const getSelectedUserMessages = createSelector(
   getPrivateMessages,
   getSelectedUserId,
   (privateMessages, userId) =>
-      privateMessages.filter(message => ((message.display_recipient[0].id === userId))
+      privateMessages.filter(message => (
+          // tslint:disable-next-line:max-line-length
+          (message.display_recipient[0].id === userId) || (message.display_recipient[1] ? (message.display_recipient[1].id === userId) : null)
+          )
         || message.sender_id === userId
       )
       .sort((a: SingleMessageModel, b: SingleMessageModel) =>
