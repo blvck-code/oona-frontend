@@ -94,7 +94,7 @@ export class LoginComponent implements OnInit {
           }
 
           if (count === 1) {
-            this.toastr.success('Login successful.', 'Notification');
+            this.toastr.info('Login successful.', 'Notification');
             this.store.dispatch(new authActions.LoginUserSuccess(loginRes));
           }
 

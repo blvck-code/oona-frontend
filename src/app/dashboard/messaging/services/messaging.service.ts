@@ -240,11 +240,11 @@ export class MessagingService {
           // counting total unread messages
           // const newTotal = this.totalUnreadMsgCounter += 1;
           // this.totalUnreadMsgCounterSubject$.next(newTotal);
-          streamIds.push(message.id)
+          streamIds.push(message.id);
 
-        })
+        });
       }
-    )
+    );
   }
 
   getAllUser(): any {
@@ -497,7 +497,7 @@ export class MessagingService {
           }
 
           this.totalUnreadMsgSubject.subscribe(
-            messages => messages.push(message)
+            (messages: any[]) => messages.push(message)
           );
           const updateCounter = {
             messageType: 'private',
@@ -583,7 +583,7 @@ export class MessagingService {
         );
 
       }
-    )
+    );
 
 
   }

@@ -1,6 +1,11 @@
 .chart-item-container {
   display: flex;
   margin-bottom: 10px;
+
+  //&.my-message {
+  //  border: 1px solid red;
+  //  align-self: flex-end;
+  //}
 }
 .chart-item-profile {
   margin-right: 20px;

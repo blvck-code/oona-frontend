@@ -7,7 +7,7 @@ export const frontendPort = ':3443';
 export const jitsiPort = ':8443';
 
 export const backendProtocol = 'https://';
-export const domain = '192.168.0.42';
+export const domain = '192.168.0.32';
 
 export const oonaBaseUrl = `${backendProtocol}${domain}${backendPort}`;
 export const jitsiURL = `${domain}${jitsiPort}`;

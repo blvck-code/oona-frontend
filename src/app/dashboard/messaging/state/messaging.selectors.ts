@@ -91,6 +91,12 @@ export const getStreamUnreadMessages = createSelector(
     messages.filter((message: SingleMessageModel) => !message.flags.includes('read')).length
 );
 
+export const getStreamUnread = createSelector(
+  getStreamMessages,
+  (messages: SingleMessageModel[]) =>
+    messages.filter((message: SingleMessageModel) => !message.flags.includes('read'))
+);
+
 export const getPrivateUnreadMessages = createSelector(
   getPrivateMessages,
   (messages: SingleMessageModel[]) =>
@@ -111,7 +117,7 @@ export const getSelectedStreamMessages = createSelector(
   getStreamMessages,
   getSelectedStreamId,
   getSelectedTopic,
-  (messages, streamId, topic) => topic ?
+  (messages: SingleMessageModel[], streamId: number | null, topic: string) => topic ?
     messages.filter(message => message.stream_id === streamId && message.subject.toLowerCase() === topic.toLowerCase())
     : messages.filter(message => message.stream_id === streamId)
 );

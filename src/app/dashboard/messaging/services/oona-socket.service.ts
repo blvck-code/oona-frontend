@@ -10,10 +10,9 @@ import { environment as env } from '../../../../environments/environment';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../state/app.state';
 import * as authActions from '../../../auth/state/auth.actions';
-import {take} from 'rxjs/operators';
-import {getSelectedUser} from '../../../auth/state/auth.selectors';
-import {ActivatedRoute, Event, Params, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {SingleMessageModel} from '../models/messages.model';
+import * as messagingActions from '../state/messaging.actions';
 
 const msgSocket = webSocket(messageChannel);
 
@@ -61,6 +60,7 @@ export class OonaSocketService {
   newMsgCounterObservable = this.newMsgCounterSubject.asObservable();
 
   newMessagesId: any[] = [];
+  messagesId: number[] = [];
 
   peopleType = Array();
   public typingStatus = Array();
@@ -70,6 +70,7 @@ export class OonaSocketService {
   private websocket: WebSocket | undefined;
   private loggedInUserProfile: any;
 
+
   constructor(
     private authService: AuthService,
     private messagingService: MessagingService,
@@ -78,11 +79,11 @@ export class OonaSocketService {
   ) {
     this.getCurrentProfile();
     this.connect();
-    // this.msgConnect();
     this.userManagement();
   }
 
   notifyMe(message: SingleMessageModel): void {
+    console.log('Notification message ', message);
     if (!('Notification' in window)) {
       // Check if the browser supports notifications
       alert('This browser does not support desktop notification');
@@ -145,14 +146,9 @@ export class OonaSocketService {
      * Creates a websocket connection to the user channel
      */
     const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-
     const url: string = env.userChannel;
     const userChannel = protocol + url;
-
-    // console.log('userChannel URL ===>>>', userChannel);
-
     this.websocket = new WebSocket(userChannel, this.authService.getToken());
-    // console.log('Events sockets successfully connected: ', userChannel);
   }
 
   filterSocketData(userData: any): void {
@@ -163,6 +159,7 @@ export class OonaSocketService {
      */
 
     const socketData  = JSON.parse(userData);
+
     // {
     //   "message": {
     //   "operation": "add",
@@ -180,7 +177,7 @@ export class OonaSocketService {
     // }
     // }
 
-    // console.log('Socket data first time ===>>>', socketData);
+    console.log('Socket data first time ===>>>', socketData);
 
     if (socketData.message.type === 'presence'){
       // console.log('pushing user presence data');
@@ -191,9 +188,9 @@ export class OonaSocketService {
       // this.newMessages.push(socketData);
       // create a new set unique by message id
       // this.newMessagesUnique = new Set(this.newMessages.map(item => item.message.message.id));
+      console.log('Message after filter ==>>', socketData);
       this.newMessageCount = this.newMessages.length;
       this.changeNewMessageCount(this.newMessageCount);
-      this.notifyMe(socketData.message.message);
       this.newMessageCounter(socketData.message.message);
 
     } else if (socketData.message.type === 'update_message_flags'){
@@ -256,10 +253,14 @@ export class OonaSocketService {
 
   // Filter message types from the socket
   private setMessageType(socketData: any): void {
-    console.log('Unread message content from socket ===>>>', socketData);
+    const newMessage: SingleMessageModel = socketData.message.message;
+    if (this.newMessagesId.includes(newMessage.id)) { return; }
+    this.newMessagesId.push(newMessage.id);
 
     const currentUserId =  this.loggedInUserProfile?.user_id;
     const msgSenderId = socketData.message?.message?.sender_id;
+
+    newMessage.flags = [];
 
     if (socketData.message.message.type === 'stream'){
 
@@ -270,6 +271,9 @@ export class OonaSocketService {
         this.myStreamMessagesSocketSubject.next(socketData.message.message);
       }
 
+      this.store.dispatch(new messagingActions.CreateStreamMessageSuccess(socketData.message.message));
+      this.notifyMe(socketData.message.message);
+
       this.messagesToStreams = [...this.messagesToStreams, socketData.message.message];
       // let the array have unique messages
       // ! below is done because this socket service is called multiple times across multiple components
@@ -279,9 +283,11 @@ export class OonaSocketService {
       // console.log('Messages to streams ===>>>>', this.messagesToStreams);
       this.changeNewStreamMessageCount(this.removeLoggedInUserMessages(this.messagesToStreams));
     }else if (socketData.message.message.type === 'private'){
+      this.notifyMe(socketData.message.message);
 
       this.privateMsgCounterSubject.next(this.privateMessagesCounter + 1);
-
+      // send new message to store
+      this.store.dispatch(new messagingActions.CreatePrivateMessageSuccess(socketData.message.message));
 
       // Check if am the sender or not me
       if (msgSenderId === currentUserId){

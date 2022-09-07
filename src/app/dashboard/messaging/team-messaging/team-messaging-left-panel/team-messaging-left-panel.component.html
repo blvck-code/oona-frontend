@@ -1,61 +1,3 @@
-<!--    <div class="input-group mb-3">-->
-<!--      <span class="input-group-text" id="basic-addon1"> <i class="fa fa-search"></i></span>-->
-<!--      <input type="text" class="form-control shadow-none search-form" placeholder="Search..." aria-label="Search" aria-describedby="basic-addon1">-->
-<!--    </div>-->
-
-<!--  <div class="left-container card messages">-->
-<!--         <h5 class="card-title">Messages</h5>-->
-<!--         <div class="card-text">-->
-<!--            <p class="channel-name" (click)="showAllPrivateMessages()">New messages <span class="circle text-center message-count" *ngIf="newMessagesCount">{{ newMessagesCount }}</span></p>-->
-<!--           <div class="dropdown" (click)="showAllPrivateMessages()">-->
-<!--             <p class="dropdown-toggle channel-name" type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">-->
-<!--               Private messages-->
-<!--             </p>-->
-
-<!--             <ul class="dropdown-menu dropdown-menu-dark scrollable-menu pre-scrollable" aria-labelledby="dropdownMenuButton3" >-->
-<!--               <li *ngFor="let nameOfPrivate of pmNames" (click)="messagingService.goToMemberChat(nameOfPrivate)"><span class="dropdown-item" > {{ nameOfPrivate.full_name }}</span></li>-->
-<!--             </ul>-->
-<!--           </div>-->
-<!--            <p class="channel-name" (click)="showAllMentionedMessages()">Mentions</p>-->
-<!--            <p class="channel-name" (click)="showAllGroupPms()">Group PMs</p>-->
-<!--         </div>-->
-<!--        </div>-->
-
-<!--    <div class="left-container card teams">-->
-<!--      <div class="card-title mb-2 d-flex justify-content-between">-->
-<!--         <p>Teams</p>-->
-<!--        <div>-->
-<!--          <i class="bi bi-gear add-team" (click)="teamSettings()"></i>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--         <div class="card-text">-->
-<!--           <div class="dropdown" *ngFor="let team of allTeams" (click)="getStreamDetails(team)">-->
-<!--             <p class="dropdown-toggle" (click)="displayMessagesOfStream()" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">-->
-<!--               <span>{{ team.name }}</span><span *ngIf="team.messageCount > 0" class="circle text-center message-count ms-2">{{team.messageCount}}</span>-->
-<!--             </p>-->
-<!--             <ul class="dropdown-menu dropdown-menu-dark scrollable-menu pre-scrollable" aria-labelledby="dropdownMenuButton1" >-->
-<!--               <li  (click)="displayMessagesOfTopic('')"><span class="dropdown-item" > All</span></li>-->
-<!--               <li *ngFor="let topic of team.topics" (click)="displayMessagesOfTopic(topic)"><span class="dropdown-item" > {{ topic.name}}</span></li>-->
-<!--             </ul>-->
-<!--           </div>-->
-<!--        </div>-->
-<!--    </div>-->
-
-<!--    <div class="left-container card general">-->
-<!--        <h5 class="card-title">General</h5>-->
-<!--        <div class="card-text">-->
-<!--           <div class="dropdown" *ngFor="let team of publicTeams" (click)="getPublicStreamDetails(team)">-->
-<!--             <p class="dropdown-toggle" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer">-->
-<!--               <span>{{ team.name }}</span><span *ngIf="team.messageCount > 0" class="circle text-center message-count ms-2">{{team.messageCount}}</span>-->
-<!--             </p>-->
-<!--             <ul class="dropdown-menu dropdown-menu-dark scrollable-menu pre-scrollable" aria-labelledby="dropdownMenuButton2" >-->
-<!--               <li  (click)="displayMessagesOfTopic('')"><span class="dropdown-item" > All</span></li>-->
-<!--               <li *ngFor="let topic of team.topics" (click)="displayMessagesOfTopic(topic)"><span class="dropdown-item" > {{ topic.name}}</span></li>-->
-<!--             </ul>-->
-<!--           </div>-->
-<!--        </div>-->
-<!--    </div>-->
-
 <div class="main-left-panel-container">
   <div class="panel-box-container">
     <div class="panel-box-title">
@@ -70,7 +12,7 @@
         <p>
           All Messages
           <span
-            *ngIf="( totalUnreadMsgObservable | async )"
+            *ngIf="(totalUnreadMsgObservable | async)"
             class="badge mat-badge-before">
             {{ totalUnreadMsgObservable | async }}
           </span>
@@ -83,9 +25,9 @@
       >
         <p>Private Messages
           <span
-            *ngIf="( privateUnreadMsgCounterObservable | async )"
+            *ngIf="( privateUnreadCount )"
             class="badge mat-badge-before">
-            {{ privateUnreadMsgCounterObservable | async }}
+            {{ privateUnreadCount }}
           </span>
         </p>
       </a>
@@ -94,9 +36,7 @@
   <div class="panel-box-accordion teams-panel">
     <div class="accordion-box-title">
       <p>Private<span
-        *ngIf="( streamsUnreadMsgCounterObservable | async )"
         class="badge badge-dark">
-            {{ streamsUnreadMsgCounterObservable | async }}
           </span></p>
       <svg
         (click)="teamSettings()"
@@ -136,9 +76,9 @@
             <p>
               {{ team?.name | titlecase }}
               <span
-                *ngIf="team.unreadCount > 0"
+                *ngIf="team.unread > 0"
                 class="badge badge-dark ms-2">
-                {{ team.unreadCount }}
+                {{ team?.unread }}
               </span>
             </p>
           </button>
@@ -158,15 +98,15 @@
                  data-toggle="modal" data-target="#exampleModal">+</p>
             </div>
             <div
-              *ngFor="let topic of team?.topics?.zulip.topics"
+              *ngFor="let topic of team?.topics"
               class="accordion-body-item"
             >
-              <p (click)="handlePrivateNavigateTopic(team, topic)">
-                {{ topic?.name | titlecase }}
+              <p  (click)="handlePrivateNavigateTopic(team, topic)">
+                # {{ topic?.name | titlecase }}
                 <span
-                  *ngIf="topic.unread > 0"
+                  *ngIf="topic?.unread > 0"
                   class="badge badge-dark ms-2">
-                {{ topic.unread }}
+                {{ topic?.unread }}
               </span>
               </p>
 
@@ -197,7 +137,12 @@
             aria-expanded="false"
             [attr.aria-controls]="'flush-collapse-general' + i"
           >
-            {{ team.name | titlecase }}
+              {{ team?.name | titlecase }}
+              <span
+                *ngIf="team.unread > 0"
+                class="badge badge-dark ms-2">
+                {{ team?.unread }}
+              </span>
           </button>
         </h2>
         <div
@@ -214,15 +159,15 @@
             </div>
 
             <div
-              *ngFor="let topic of team?.topics?.zulip.topics"
+              *ngFor="let topic of team?.topics"
               class="accordion-body-item"
             >
               <p (click)="handlePublicNavigateTopic(team, topic)">
-                {{ topic?.name | titlecase }}
+                # {{ topic?.name | titlecase }}
                 <span
-                  *ngIf="topic.unread > 0"
+                  *ngIf="topic?.unread > 0"
                   class="badge badge-dark ms-2">
-                {{ topic.unread }}
+                {{ topic?.unread }}
               </span>
               </p>
 
