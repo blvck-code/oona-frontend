@@ -1,7 +1,8 @@
 import * as messagingActions from './messaging.actions';
-import { AllStreamsModel, SubscribedStreams } from '../models/streams.model';
-import { MessagesModel, SingleMessageModel } from '../models/messages.model';
-import { CurrentUserModel } from '../models/currentUser.model';
+import {AllStreamsModel, SubscribedStreams} from '../models/streams.model';
+import {MessagesModel, SingleMessageModel} from '../models/messages.model';
+import {CurrentUserModel} from '../models/currentUser.model';
+import {act} from '@ngrx/effects';
 
 export interface MessagingState {
   loading: boolean;
@@ -293,23 +294,57 @@ export function messagingReducer(
           }
         }
       };
-    // Updating read flag
-    case messagingActions.MessagingActionsTypes.UPDATE_READ_MESSAGE_SUCCESS:
-      const index = state.messaging.privateMsgs.messages.findIndex(message => message.id === action.payload);
-      const updatedMessages = state.messaging.privateMsgs.messages.map(
-        message => message.id === action.payload ? message : message
-      );
-
+    case messagingActions.MessagingActionsTypes.UPDATE_PRIVATE_MESSAGE:
       return {
         ...state,
         messaging: {
           ...state.messaging,
           privateMsgs: {
             ...state.messaging.privateMsgs,
-            messages: updatedMessages
+            messages: [
+              ...state.messaging.privateMsgs.messages.map(
+                (message: SingleMessageModel) => {
+                  if (message.id === action.payload) {
+                    return {
+                      ...message,
+                      flags: ['read']
+                    }
+                  }
+                  return message
+                }
+              )
+            ]
           }
         }
-      };
+      }
+    // Updating read flag
+    case messagingActions.MessagingActionsTypes.UPDATE_READ_MESSAGE_SUCCESS:
+      const messageItem = state.messaging.streamMsg.messages.find((message) => message.id === action.payload);
+      const index = state.messaging.streamMsg.messages.findIndex(
+        (message: SingleMessageModel) => message.id === action.payload);
+      console.log('Message id ==>>', action.payload);
+      return {
+        ...state,
+        messaging: {
+          ...state.messaging,
+          streamMsg: {
+            ...state.messaging.streamMsg,
+            messages: [
+              ...state.messaging.streamMsg.messages.map(
+                (message: SingleMessageModel) => {
+                  if (message.id === action.payload) {
+                    return {
+                      ...message,
+                      flags: ['read']
+                    };
+                  }
+                  return message;
+                }
+              )
+            ]
+          }
+        }
+      } as MessagingState;
     case messagingActions.MessagingActionsTypes.HANDLE_SEND_MESSAGE:
       return {
         ...state,

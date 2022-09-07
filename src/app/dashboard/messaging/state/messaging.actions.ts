@@ -84,6 +84,8 @@ export enum MessagingActionsTypes {
   UPDATE_READ_MESSAGE_SUCCESS = 'messaging/updateReadMessageSuccess',
   UPDATE_READ_MESSAGE_FAIL = 'messaging/updateReadMessageFail',
 
+  UPDATE_PRIVATE_MESSAGE = 'messaging/updatePrivateMessageFlag',
+
   UPDATE_MESSAGE_COUNTER = 'messaging/updateMessageCounter'
 }
 
@@ -327,7 +329,6 @@ export class UpdateReadMessage implements Action {
 export class UpdateReadMessageSuccess implements Action {
   readonly type = MessagingActionsTypes.UPDATE_READ_MESSAGE_SUCCESS;
   constructor(public payload: any) {
-    console.log('Updated success =>', payload);
   }
 }
 
@@ -352,6 +353,11 @@ export class SelectedUserId implements Action {
   readonly type = MessagingActionsTypes.SELECTED_USER_ID;
   constructor(public payload: any) {
     console.log('Show me payload =>', payload);
+  }
+}
+export class UpdatePrivateMessageFlag implements Action {
+  readonly type = MessagingActionsTypes.UPDATE_PRIVATE_MESSAGE;
+  constructor(public payload: any) {
   }
 }
 
@@ -443,4 +449,5 @@ export type MessagingActions =
   // Create stream message
   | CreateStreamMessage
   | CreateStreamMessageSuccess
-  | CreateStreamMessageFail;
+  | CreateStreamMessageFail
+  | UpdatePrivateMessageFlag;

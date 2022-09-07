@@ -18,7 +18,7 @@ import {combineLatest, Observable} from 'rxjs';
 import {SingleMessageModel} from "../../models/messages.model";
 import {map} from "rxjs/operators";
 import {SinglePresentUser} from "../../../../auth/models/user.model";
-import {getPrivateMessages} from "../../state/messaging.selectors";
+import {getPrivateMessages, getPrivateUnread} from "../../state/messaging.selectors";
 
 @Component({
   selector: 'app-landing-messaging-right-panel',
@@ -54,6 +54,7 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   ngOnInit(): void {
     this.onInitPage();
     this.unreadMsg();
+    this.privateUnreadMessages();
 
     this.userSocketService.currentUsers.subscribe(
       (users) => (this.socketUsers = users)
@@ -82,6 +83,37 @@ export class LandingMessagingRightPanelComponent implements OnInit {
         );
       }
     );
+  }
+
+  privateUnreadMessages(): void {
+    this.store.select(getPrivateUnread).subscribe(
+      (messages: SingleMessageModel[]) => {
+        messages.map((message: SingleMessageModel) => {
+          this.endPointUnreadId.push(message.sender_id);
+        })
+      }
+    )
+  }
+
+  unreadMsg(): void {
+    this.userSocketService.privateMessageCountSocket.subscribe((prvMsg) => {
+      console.log(
+        'Unread messages for particular user dm ===>>>',
+        prvMsg.length
+      );
+      prvMsg.map((msg) => {
+        console.log('Unread messages ===>>>', msg);
+        this.endPointUnreadId.push(msg.sender_id);
+        // if (this.messagesId.includes(msg.id)){
+        //   return;
+        // }
+
+        // this.messagesId.push(msg.id);
+        // this.messagesWithPerson.push(msg);
+        // this.change.detectChanges();
+        // this.scrollBottom();
+      });
+    });
   }
 
   onInitPage(): void {
@@ -250,26 +282,5 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   handleShowMoreInfo(user: any): void {
     this.selectedUser = user;
     this.showMoreInfo = !this.showMoreInfo;
-  }
-
-  unreadMsg(): void {
-    this.userSocketService.privateMessageCountSocket.subscribe((prvMsg) => {
-      console.log(
-        'Unread messages for particular user dm ===>>>',
-        prvMsg.length
-      );
-      prvMsg.map((msg) => {
-        console.log('Unread messages ===>>>', msg);
-        this.endPointUnreadId.push(msg.sender_id);
-        // if (this.messagesId.includes(msg.id)){
-        //   return;
-        // }
-
-        // this.messagesId.push(msg.id);
-        // this.messagesWithPerson.push(msg);
-        // this.change.detectChanges();
-        // this.scrollBottom();
-      });
-    });
   }
 }

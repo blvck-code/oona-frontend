@@ -61,7 +61,7 @@
         <app-load-indicator></app-load-indicator>
       </div>
       <div
-        *ngFor="let team of this.privateTopics; index as i"
+        *ngFor="let team of privateTopics; index as i"
         class="accordion-item" (click)="getStreamName(team)"
       >
         <h2 class="accordion-header" id="flush-headingOne">

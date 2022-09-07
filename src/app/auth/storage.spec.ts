@@ -1,3 +1,4 @@
+// @ts-ignore
 import { Storage } from './storage';
 
 describe('Storage', () => {

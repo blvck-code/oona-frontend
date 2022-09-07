@@ -22,7 +22,7 @@ export class TeamMessagingRightPanelComponent implements OnInit {
     private router: Router,
     public messagingService: MessagingService,
     private route: ActivatedRoute,
-    private change: ChangeDetectorRef
+    private change: ChangeDetectorRef,
   ) {
     // this.getAllSubscribers();
   }

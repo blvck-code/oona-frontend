@@ -56,7 +56,7 @@ export class AppComponent implements OnInit {
         stream => {
           this.privateUnread$.subscribe(
             privateUnread => {
-              this.totalUnreadMsgSubject$.next(privateUnread + stream)
+              this.totalUnreadMsgSubject$.next(privateUnread + stream);
             }
           );
         }
@@ -86,6 +86,10 @@ export class AppComponent implements OnInit {
       this.privateUnread$ = this.store.select(getPrivateUnreadMessages);
       this.tabNotification();
     }, 1000);
+
+    this.store.select(getStreamUnreadMessages).subscribe(
+      numb => console.log('Number from app comp ==>>', numb)
+    );
   }
 
   getTotalCounter(): void {

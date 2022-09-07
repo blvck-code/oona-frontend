@@ -23,11 +23,12 @@ import { SingleMessageModel } from '../../models/messages.model';
 import { NotificationService } from '../../../../shared/services/notification.service';
 import {
   getAllMessages,
-  getPrivateMessages,
+  getPrivateMessages, getPrivateUser,
   getSelectedUserMessages,
   getUnreadMessages, getUserUnreadMessages
 } from '../../state/messaging.selectors';
 import * as messagingActions from '../../state/messaging.actions';
+import {log} from 'util';
 
 const turndownService = new TurndownService();
 
@@ -60,7 +61,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
   loading = true;
 
-  messages$!: Observable<SingleMessageModel[]>
+  messages$!: Observable<SingleMessageModel[]>;
 
   messagesWithPerson = Array();
   messagesSubject$ = new BehaviorSubject<SingleMessageModel[]>(
@@ -80,22 +81,23 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
   @ViewChild('endPrivateChat') endPrivateChat: ElementRef | undefined;
 
-  routerChange(): void {
-    this.router.events.subscribe((event: any) => {
-      if (event instanceof NavigationEnd) {
-        this.store.select(getSelectedUserMessages).subscribe(
-          messages => {
-              this.loading = false;
-          },
-          () => {}
-        );
-        this.store.select(getUserUnreadMessages).subscribe(
-          (unreadMessage: SingleMessageModel[]) => console.log('Unread messages =>', unreadMessage)
-        );
-        // user messages
-        this.messages$ = this.store.select(getSelectedUserMessages);
+  constructor(
+    private router: Router,
+    private store: Store<AppState>,
+    private activatedRoute: ActivatedRoute,
+    private messagingService: MessagingService,
+    private change: ChangeDetectorRef,
+    private userSocketService: OonaSocketService,
+    private notify: NotificationService
+  ) {
+    this.store.select(getSelectedUser).subscribe((data) => {
+      if (data) {
+        this.operand = data;
+        this.selectedUserId = data.user_id;
+        this.getSelectedUser();
       }
     });
+    this.routerDetails();
   }
 
   ngOnInit(): void {
@@ -103,8 +105,8 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.changeContentOnRouteChange();
     this.inComingMessage();
     this.resetDmUnreads();
+    this.getUnreadMessages();
 
-    this.messages$ = this.store.select(getSelectedUserMessages);
 
     this.messagingService.currentMemberChatDetail.subscribe((member) => {
       this.memberDetail = member;
@@ -125,27 +127,38 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.updateState();
   }
 
-  constructor(
-    private router: Router,
-    private store: Store<AppState>,
-    private activatedRoute: ActivatedRoute,
-    private messagingService: MessagingService,
-    private change: ChangeDetectorRef,
-    private userSocketService: OonaSocketService,
-    private notify: NotificationService
-  ) {
-    this.store.select(getSelectedUser).subscribe((data) => {
-      if (data) {
-        this.operand = data;
-        this.selectedUserId = data.user_id;
-        this.getSelectedUser();
+  getUnreadMessages(): void {
+    const unreadMessageId: number[] = [];
+
+    this.router.events.subscribe((event: any) => {
+      if (event instanceof NavigationEnd) {
+        this.messages$ = this.store.select(getSelectedUserMessages);
+        this.store.select(getUserUnreadMessages).subscribe(
+          (messages: SingleMessageModel[]) => {
+            messages.map((message: SingleMessageModel) => {
+              if (unreadMessageId.includes(message.id)) { return; }
+
+              this.messagingService.updateMessageFlag(message.id).subscribe(
+                (response: any) => {
+                  const messageId = response.messages[0];
+                  this.store.dispatch(new messagingActions.UpdatePrivateMessageFlag(messageId));
+                }
+              );
+
+            });
+          }
+        );
       }
+
     });
-
-    this.routerChange();
-
   }
 
+  routerDetails(): void {
+    this.activatedRoute.queryParams.subscribe(params => {
+      const userId = params.id;
+      this.store.dispatch(new messagingActions.SelectedUserId(+userId));
+    });
+  }
 
   changeContentOnRouteChange(): void {
     this.router.events.subscribe((event: any) => {
@@ -189,6 +202,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
       this.messagingService.getMessagesOfStream(streamDetail).subscribe(
         (response: any) => {
+          this.loading = false;
           const messages = response.zulip.messages;
           this.messagesWithPerson = messages;
           this.messagesSubject$.next(messages);
@@ -208,70 +222,8 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.scrollBottom();
   }
 
-  handleUnreadMessages(): void {
-    const messageIds: number[] = [];
-
-    this.store.select(getPrivateMessages).subscribe(
-      (messages: SingleMessageModel[]) => {
-        messages.map((message: SingleMessageModel) => {
-
-          if (message.flags.includes('read')){
-            return;
-          }
-
-          if (messageIds.includes(message.id)){
-            return;
-          }
-
-          // const updateFlagPayload = {
-          //   type: message.type,
-          //   id: message.id
-          // };
-
-          // Todo update only if private message and sender_id is for this dm
-          // const updateCounter = {
-          //   messageType: 'private',
-          //   type: 'decrease'
-          // };
-          //
-          // this.store.dispatch(new messagingActions.UpdateMessageCounter(updateCounter));
-
-          this.store.dispatch(new messagingActions.UpdateReadMessage(message.id));
-          messageIds.push(message.id);
-
-        });
-      }
-    );
-
-    const unreadMsgArray: any[] = [];
-    const unreadMsgId: any[] = [];
-    const userId = this.operand.user_id;
-
-    this.messagesSubject$.subscribe((messages: SingleMessageModel[]) => {
-      messages.map((message: SingleMessageModel) => {
-        if (+message.sender_id === +userId){
-          if (message.flags.includes('read')){
-            return;
-          } else {
-            // unreadMsgArray.push(message);
-            // console.log('Unread message for this user ==>>', message);
-            // console.log('User dm ==>>>', this.memberDetail  );
-            unreadMsgId.push(message.id);
-            // this.unreadMessagesSubject.next(unreadMsgArray);
-            this.unreadMessagesIdSubject.next(unreadMsgId);
-          }
-        }
-      });
-    });
-  }
-
-  updateReadMessages(msgId: number): void {
-
-  }
-
 
   privateMessages(): void {
-    this.loading = true;
 
     const streamDetail = {
       use_first_unread_anchor: true,
@@ -288,7 +240,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.messagingService.getMessagesOfStream(streamDetail).subscribe(
       (response: any) => {
         // console.log('Individual messages ===>>>', response);
-        this.loading = false;
 
         this.scrollBottom();
         this.change.detectChanges();
