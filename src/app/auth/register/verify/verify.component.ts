@@ -54,6 +54,8 @@ export class VerifyComponent implements OnInit {
             this.verificationServerError = 'The user email does not exist.';
           } else if (verifyErr.message === 'Your passwords do not match') {
             this.verificationServerError = 'The passwords entered do not match.';
+          } else {
+            this.verificationServerError = 'Please accept the appropriate certificates.';
           }
         }
       );
