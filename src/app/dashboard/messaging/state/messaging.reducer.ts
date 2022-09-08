@@ -308,15 +308,15 @@ export function messagingReducer(
                     return {
                       ...message,
                       flags: ['read']
-                    }
+                    };
                   }
-                  return message
+                  return message;
                 }
               )
             ]
           }
         }
-      }
+      };
     // Updating read flag
     case messagingActions.MessagingActionsTypes.UPDATE_READ_MESSAGE_SUCCESS:
       const messageItem = state.messaging.streamMsg.messages.find((message) => message.id === action.payload);
