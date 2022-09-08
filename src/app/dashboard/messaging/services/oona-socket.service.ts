@@ -322,7 +322,6 @@ export class OonaSocketService {
 
   private getCurrentProfile(): any {
     this.messagingService.currentUserProfile().subscribe( (profile: any) => {
-      this.store.dispatch(new authActions.CurrentUserProfile(profile));
       this.loggedInUserProfile = profile.zulip;
     });
   }

@@ -176,11 +176,11 @@ export class AuthService {
   }
 
   getAllUsers(): Observable<any> {
-    return this.http.get(env.presentUsers, this.getToken());
+    return this.http.get(env.presentUsers);
   }
 
   getUsersByAvailability(): any {
-    return this.http.get(env.presentUsers, this.getToken());
+    return this.http.get(env.presentUsers);
   }
 
   getAllUser(): any {
@@ -188,37 +188,37 @@ export class AuthService {
   }
 
   getZulipUsers(): Observable<any> {
-    return this.http.get(env.zulipUsers, this.getToken());
+    return this.http.get(env.zulipUsers);
   }
 
-  zulipUsers$ = this.http
-    .get<ZulipUsersResponse>(env.zulipUsers)
-    .pipe(tap((data) => console.log(JSON.stringify(data))));
-
-  presentUsers$ = this.http
-    .get<PresentUsersResponse>(env.presentUsers)
-    .pipe(tap((data) => console.log(JSON.stringify(data))));
-
-  oonaUsers$ = this.http
-    .get(env.presentUsers)
-    .pipe(tap((data) => console.log(JSON.stringify(data))));
-
-  allUsers$ = combineLatest([
-    this.zulipUsers$,
-    this.presentUsers$,
-    this.oonaUsers$,
-  ]).pipe(
-    map(([
-      zulipUsers,
-      presentUsers,
-      oonaUsers
-     ]) =>
-      zulipUsers.members?.map((zulipUser: ZulipSingleUser) => ({
-        ...zulipUsers,
-        presence: presentUsers?.members.find(
-          oonaUser => oonaUser.user_id === zulipUser.user_id
-        )?.presence
-      }))
-    )
-  );
+  // zulipUsers$ = this.http
+  //   .get<ZulipUsersResponse>(env.zulipUsers)
+  //   .pipe(tap((data) => console.log(JSON.stringify(data))));
+  //
+  // presentUsers$ = this.http
+  //   .get<PresentUsersResponse>(env.presentUsers)
+  //   .pipe(tap((data) => console.log(JSON.stringify(data))));
+  //
+  // oonaUsers$ = this.http
+  //   .get(env.presentUsers)
+  //   .pipe(tap((data) => console.log(JSON.stringify(data))));
+  //
+  // allUsers$ = combineLatest([
+  //   this.zulipUsers$,
+  //   this.presentUsers$,
+  //   this.oonaUsers$,
+  // ]).pipe(
+  //   map(([
+  //     zulipUsers,
+  //     presentUsers,
+  //     oonaUsers
+  //    ]) =>
+  //     zulipUsers.members?.map((zulipUser: ZulipSingleUser) => ({
+  //       ...zulipUsers,
+  //       presence: presentUsers?.members.find(
+  //         oonaUser => oonaUser.user_id === zulipUser.user_id
+  //       )?.presence
+  //     }))
+  //   )
+  // );
 }

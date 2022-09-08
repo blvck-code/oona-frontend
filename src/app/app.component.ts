@@ -10,7 +10,7 @@ import {OonaSocketService} from './dashboard/messaging/services/oona-socket.serv
 import {ActivatedRoute} from '@angular/router';
 import {BehaviorSubject, Observable} from 'rxjs';
 
-import {MessagingService} from "./dashboard/messaging/services/messaging.service";
+import {MessagingService} from './dashboard/messaging/services/messaging.service';
 import * as messagingActions from './dashboard/messaging/state/messaging.actions';
 import {getPrivateUnreadMessages, getStreamUnreadMessages} from './dashboard/messaging/state/messaging.selectors';
 import {log} from 'util';
@@ -70,25 +70,25 @@ export class AppComponent implements OnInit {
   }
 
   initializeState(): void {
-    this.store.dispatch(new messagingActions.LoadAllStreams());
-    this.store.dispatch(new messagingActions.LoadSubStreams());
-    this.store.dispatch(new authActions.LoadZulipUsers());
-    this.store.dispatch(new authActions.LoadAllUsers());
+    this.store.select(getIsLoggedIn).subscribe(
+      (status: boolean) => {
+        if (status) {
+          this.store.dispatch(new messagingActions.LoadAllStreams());
+          this.store.dispatch(new messagingActions.LoadSubStreams());
+          this.store.dispatch(new authActions.LoadZulipUsers());
+          this.store.dispatch(new authActions.LoadAllUsers());
+          this.store.dispatch(new authActions.CurrentUserProfile());
 
-    // this.handleGetPrivateUnread();
-    // this.handleGetStreamUnread();
+          setTimeout(() => {
+            this.getMessages();
+            this.getTotalCounter();
 
-    setTimeout(() => {
-      this.getMessages();
-      this.getTotalCounter();
-
-      this.streamUnread$ = this.store.select(getStreamUnreadMessages);
-      this.privateUnread$ = this.store.select(getPrivateUnreadMessages);
-      this.tabNotification();
-    }, 1000);
-
-    this.store.select(getStreamUnreadMessages).subscribe(
-      numb => console.log('Number from app comp ==>>', numb)
+            this.streamUnread$ = this.store.select(getStreamUnreadMessages);
+            this.privateUnread$ = this.store.select(getPrivateUnreadMessages);
+            this.tabNotification();
+          }, 1000);
+        }
+      }
     );
   }
 

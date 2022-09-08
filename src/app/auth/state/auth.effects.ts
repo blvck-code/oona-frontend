@@ -48,6 +48,19 @@ export class AuthEffects {
   // ))
 
   @Effect()
+  loadUserProfile: Observable<any> = this.actions$.pipe(
+    ofType<authActions.CurrentUserProfile>(
+      authActions.AuthActionsTypes.CURRENT_USER_PROFILE
+    ),
+    mergeMap(() => {
+      return this.authSrv.getUserProfile().pipe(
+        map((user: any) => new authActions.LoadProfileSuccess(user)),
+        catchError((err: any) => of(new authActions.LoadProfileError(err)))
+      );
+    })
+  );
+
+  @Effect()
   logoutUser$: Observable<any> = this.actions$.pipe(
     ofType<authActions.LogoutUser>(authActions.AuthActionsTypes.LOGOUT_USER),
     mergeMap(() =>
@@ -89,7 +102,7 @@ export class AuthEffects {
         map((users: any) =>
           new authActions.LoadZulipUsersSuccess(users)
         ),
-        catchError(err => of(new authActions.LoadZulipUsersSuccess(err)))
+        catchError(err => of(new authActions.LoadZulipUsersFail(err)))
       )
     )
   );
