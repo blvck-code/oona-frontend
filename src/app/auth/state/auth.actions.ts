@@ -80,19 +80,19 @@ export class LogoutUserFail implements Action {
 // FETCH USER PROFILE
 export class CurrentUserProfile implements Action {
   readonly type = AuthActionsTypes.CURRENT_USER_PROFILE;
-  constructor(public payload: any) {
+  constructor() {
   }
 }
 export class LoadProfileSuccess implements Action {
   readonly type = AuthActionsTypes.FETCH_PROFILE_SUCCESS;
   constructor(public payload: any) {
-    // console.log('Current user profile loaded successfully ====>>>>', payload);
+    console.log('Current user profile loaded successfully ====>>>>', payload);
   }
 }
 export class LoadProfileError implements Action {
   readonly type = AuthActionsTypes.FETCH_PROFILE_FAIL;
   constructor(public payload: any) {
-    // console.log('Load current user profile error ===>>', payload);
+    console.log('Load current user profile error ===>>', payload);
   }
 }
 export class UpdateState implements Action {
