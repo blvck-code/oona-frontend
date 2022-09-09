@@ -72,6 +72,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   finalStreamObservable = this.finalStreamSubject.asObservable();
 
   unreadStreams$!: Observable<SingleMessageModel[]>;
+  uniqueId: number[] = [];
 
   streamTopics: AllStreamsModel[] = [];
   streamTopicsSubject = new BehaviorSubject<AllStreamsModel[]>(this.streamTopics);
@@ -104,6 +105,9 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   ngOnInit(): void {
     // fire on page load handler
     this.streams$ = this.store.select(getAllStreams);
+    this.streamUnread$ = this.store.select(getStreamUnreadMessages);
+    this.privateUnread$ = this.store.select(getPrivateUnreadMessages);
+
     this.initPageHandler();
     this.handleStreams();
     this.streamsList();
@@ -168,39 +172,38 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     );
   }
 
-  streamHandleCounter(): void {
+  handleCounter(stream?: AllStreamsModel, topic?: Topics): void {
     const uniqueId: number[] = [];
+    // tslint:disable-next-line:max-line-length
+    const streamItem: AllStreamsModel = this.allTopics.find((streamContent: AllStreamsModel) => streamContent.stream_id === stream?.stream_id);
+    const topicContent = streamItem.topics.find((topicItem: Topics) => topicItem.name.toLowerCase() === topic?.name.toLowerCase());
 
-    this.unreadStreams$.subscribe((messages: SingleMessageModel[]) => {
+    if (topic) {
+      //
+      this.unreadStreams$.subscribe(
+        (messages: SingleMessageModel[]) => {
+          messages.map((message: SingleMessageModel) => {
+            if (message.subject.toLowerCase() === topic.name.toLowerCase()) {
+              streamItem.unread -= 1;
 
-      messages.map((messageItem: SingleMessageModel) => {
-        if (uniqueId.includes(messageItem.id)) { return; }
-
-        this.streamTopicObservable.subscribe(
-          (streams: AllStreamsModel[]) => {
-            streams.map((streamItem: AllStreamsModel) => {
-              if (messageItem.stream_id !== streamItem.stream_id) { return; }
-              if (uniqueId.includes(messageItem.id)) { return; }
-
-              if (streamItem.stream_id === messageItem.stream_id) {
-                streamItem.unread += 1;
-
-                streamItem.topics.map((topicItem: Topics) => {
-                  if (topicItem.name.toLowerCase() === messageItem.subject.toLowerCase()) {
-                    // @ts-ignore
-                    topicItem.unread += 1;
-                  }
-                });
-
-                console.log(streamItem);
-              }
-              uniqueId.push(messageItem.id);
-
-            });
-          }
-        );
+              streamItem.topics.map((topicItem: Topics) => {
+                if (topicItem.name.toLowerCase() === topic.name.toLowerCase()) {
+                  topicItem.unread ? topicItem.unread -= 1 : topicItem.unread = 0;
+                }
+              });
+            }
+          });
+        }
+      );
+    } else {
+      // set all topics unread to zero
+      streamItem.unread = 0;
+      streamItem.topics.map((topicItem: Topics) => {
+        topicItem.unread = 0;
       });
-    });
+    }
+
+    this.allTopics = [...this.allTopics, streamItem];
   }
 
   handleStreams(): void {
@@ -315,24 +318,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     return this.privateChatMembers;
   }
 
-  getPublicStreamDetails(team: any): void {
-    // find the index of this team within all the teams
-    const index = this.publicTeams.indexOf(team);
-
-    this.messagingService.getTopicsOnStreams(team.stream_id).subscribe((topicResults: { zulip: { topics: any; }; }) => {
-      team.topics = topicResults.zulip.topics;
-    });
-
-    this.publicTeams[index] = team;
-    this.change.detectChanges();
-    this.router.navigate(['dashboard/messaging/team'], {
-      queryParams: {
-        team: team.name.replace(/\s/g, ''),
-        id: team.stream_id
-      }
-    });
-  }
-
   teamSettings(): void {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.height = '80vh';
@@ -374,18 +359,13 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
       this.userSocketService.streamMessageSocket.subscribe(
       (messages: SingleMessageModel[]) => {
        if (!messages.length) { return; }
-
        this.unreadStreams$.subscribe((streamMessages: SingleMessageModel[]) => {
-
           messages.map((message: SingleMessageModel) => {
             streamMessages.push(message);
           });
-
         });
-
       }
     );
-
   }
 
   getStreamName(stream?: any, topic?: any): void {
@@ -395,9 +375,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   }
 
   handleUnreadMsgCounter(): void {
-
-    this.streamUnread$ = this.store.select(getStreamUnreadMessages);
-    this.privateUnread$ = this.store.select(getPrivateUnreadMessages);
 
     this.store.select(getStreamUnreadMessages).subscribe(
       unread => this.streamUnreadCount = unread
@@ -431,10 +408,12 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.checkTopicNavigate(stream, topic);
   }
 
+
   // The private messages topic fetcher
   handlePrivateNavigateTopic(stream?: any, topic?: any): void {
     //
     this.checkTopicNavigate(stream, topic);
+    this.handleCounter(stream, topic);
   }
 
   // Get messages when user clicks a topic name
@@ -446,12 +425,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
     this.allTeams[index] = stream;
     this.change.detectChanges();
-    // this.router.navigate(['dashboard/messaging/team'], {
-    //   queryParams: {
-    //     team: stream.name.replace(/\s/g, ''),
-    //     id: stream.stream_id
-    //   }
-    // });
 
     if (topic) {
       this.router.navigate(['dashboard/messaging/team'], {
@@ -469,8 +442,11 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
         }
       });
     }
+    // this.handleCounter(stream, topic);
   }
 }
+
+
 
 // tslint:disable-next-line:prefer-for-of
 // for (let i = 0; i < this.allTopics.length; i++) {

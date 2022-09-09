@@ -36,6 +36,7 @@ export interface ZulipSingleUser {
   timezone: string;
   is_active: boolean;
   date_joined: string;
+  unread?: number;
   avatar_url: string | null;
 }
 
