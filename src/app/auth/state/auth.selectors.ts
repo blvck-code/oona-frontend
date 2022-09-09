@@ -30,6 +30,12 @@ export const getIsLoggedIn = createSelector(
   state => state.loginStatus.isLoggedIn
 );
 
+export const getUserId = createSelector(
+  getAuthState,
+  // @ts-ignore
+  state => state.zulipProfile?.zulip?.user_id
+);
+
 export const getIsAuthLoading = createSelector(
   getAuthState,
   state => state.loginStatus.isLoading

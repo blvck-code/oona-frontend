@@ -258,6 +258,9 @@ export class OonaSocketService {
 
     const currentUserId =  this.loggedInUserProfile?.user_id;
     const msgSenderId = socketData.message?.message?.sender_id;
+    const recipientOne: SingleMessageModel = socketData.message.message?.display_recipient[0].id;
+    const recipientTwo: SingleMessageModel = socketData.message.message?.display_recipient[1].id;
+
     newMessage.flags = [];
     if (socketData.message.message.type === 'stream'){
 
@@ -299,15 +302,17 @@ export class OonaSocketService {
         privateMessage.flags = ['read'];
         this.myMessagesSocketSubject.next(socketData.message.message);
         this.store.dispatch(new messagingActions.CreatePrivateMessageSuccess(privateMessage));
-      } else {
+      } else if ( recipientOne === currentUserId || recipientTwo === currentUserId ) {
         // Incoming message from other user in socket
+        console.log('recipientOne', recipientOne);
+        console.log('recipientTwo', recipientTwo);
+        console.log('currentUserId', currentUserId);
         privateMessage.flags = [];
         this.store.dispatch(new messagingActions.CreatePrivateMessageSuccess(privateMessage));
         this.notifyMe(privateMessage);
         this.messagesInPrivate = [...this.messagesInPrivate, socketData.message.message];
         this.messagesInPrivate = this.messagesInPrivate.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
 
-        // console.log('Others private messages in my dm ====>>>>', this.messagesInPrivate);
         this.changeNewPrivateMessageCount(this.removeLoggedInUserMessages(this.messagesInPrivate));
         this.privateMsgCounterSubject.next(this.privateMessagesCounter + 1);
       }
