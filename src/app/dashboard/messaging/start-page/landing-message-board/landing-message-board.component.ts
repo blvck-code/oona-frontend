@@ -64,9 +64,9 @@ export class LandingMessageBoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.getMessagesOfTeams();
-    }, 1000);
+    // setTimeout(() => {
+    //   this.getMessagesOfTeams();
+    // }, 1000);
     this.initPage();
   }
 
@@ -129,7 +129,7 @@ export class LandingMessageBoardComponent implements OnInit {
       this.messagingService.getMessagesOfStream(streamDetail).subscribe(
         (response: any) => {
           this.change.detectChanges();
-          this.messagesOfStream.push(...response.zulip.messages);
+          this.messagesOfStream.push(...response?.zulip?.messages);
           // sort by time. latest last
           this.messagesOfStream.sort((a, b) => a.timestamp - b.timestamp);
           this.change.detectChanges();
