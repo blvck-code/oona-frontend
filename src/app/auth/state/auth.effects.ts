@@ -16,37 +16,6 @@ export class AuthEffects {
     private router: Router,
   ) {}
 
-  // @Effect()
-  // loginUser$: Observable<any> = this.actions$.pipe(
-  //   ofType<authActions.LoginUser>(authActions.AuthActionsTypes.LOGIN_USER),
-  //   map((action: authActions.LoginUser) => action.payload),
-  //   mergeMap((userCredentials: any) =>
-  //     this.authSrv.login(userCredentials).pipe(
-  //       map((userInfo: UserModel) => {
-  //         new authActions.LoginUserSuccess(userInfo)
-  //         },
-  //         tap(() => this.router.navigate(['/dashboard']))
-  //       ),
-  //       catchError((err) => of(new authActions.LoginUserFail(err)))
-  //     )
-  //   )
-  // );
-
-  // @Effect()
-  // login$ = createEffect(() => this.actions$.pipe(
-  //   ofType<authActions.LoginUser>(authActions.AuthActionsTypes.LOGIN_USER),
-  //   switchMap((payload: any) => {
-  //     return this.authSrv.login(payload).pipe(
-  //       map((userInfo: UserModel) => {
-  //         new authActions.LoginUserSuccess(userInfo)
-  //       },
-  //         tap(() => this.router.navigate(['/dashboard']))
-  //       ),
-  //       catchError((err) => of(new authActions.LoginUserFail(err)))
-  //     )
-  //   })
-  // ))
-
   @Effect()
   loadUserProfile: Observable<any> = this.actions$.pipe(
     ofType<authActions.CurrentUserProfile>(
@@ -85,15 +54,6 @@ export class AuthEffects {
     )
   );
 
-  // @Effect({ dispatch: false })
-  // authSuccess = this.actions$.pipe(
-  //   ofType<authActions.LoginUserSuccess>(authActions.AuthActionsTypes.LOGIN_USER_SUCCESS),
-  //   tap(() => {
-  //     console.log('automatic');
-  //     this.router.navigate(['/dashboard'])
-  //   })
-  // )
-
   @Effect()
   loadZulipUsers$: Observable<any> = this.actions$.pipe(
     ofType<authActions.LoadZulipUsers>(authActions.AuthActionsTypes.LOAD_ZULIP_USERS),
@@ -107,3 +67,43 @@ export class AuthEffects {
     )
   );
 }
+
+// @Effect({ dispatch: false })
+// authSuccess = this.actions$.pipe(
+//   ofType<authActions.LoginUserSuccess>(authActions.AuthActionsTypes.LOGIN_USER_SUCCESS),
+//   tap(() => {
+//     console.log('automatic');
+//     this.router.navigate(['/dashboard'])
+//   })
+// )
+
+// @Effect()
+// loginUser$: Observable<any> = this.actions$.pipe(
+//   ofType<authActions.LoginUser>(authActions.AuthActionsTypes.LOGIN_USER),
+//   map((action: authActions.LoginUser) => action.payload),
+//   mergeMap((userCredentials: any) =>
+//     this.authSrv.login(userCredentials).pipe(
+//       map((userInfo: UserModel) => {
+//         new authActions.LoginUserSuccess(userInfo)
+//         },
+//         tap(() => this.router.navigate(['/dashboard']))
+//       ),
+//       catchError((err) => of(new authActions.LoginUserFail(err)))
+//     )
+//   )
+// );
+
+// @Effect()
+// login$ = createEffect(() => this.actions$.pipe(
+//   ofType<authActions.LoginUser>(authActions.AuthActionsTypes.LOGIN_USER),
+//   switchMap((payload: any) => {
+//     return this.authSrv.login(payload).pipe(
+//       map((userInfo: UserModel) => {
+//         new authActions.LoginUserSuccess(userInfo)
+//       },
+//         tap(() => this.router.navigate(['/dashboard']))
+//       ),
+//       catchError((err) => of(new authActions.LoginUserFail(err)))
+//     )
+//   })
+// ))

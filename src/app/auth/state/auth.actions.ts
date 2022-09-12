@@ -98,7 +98,7 @@ export class LoadProfileError implements Action {
 export class UpdateState implements Action {
   readonly type = AuthActionsTypes.UPDATE_USER_INFO;
   constructor() {
-    console.log('Auto login')
+    console.log('Auto login');
   }
 }
 

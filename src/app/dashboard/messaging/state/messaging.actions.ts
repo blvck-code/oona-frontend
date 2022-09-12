@@ -337,11 +337,6 @@ export class UpdateReadMessageFail implements Action {
   constructor(public payload: any) {}
 }
 
-export class UpdateMessageCounter implements Action {
-  readonly type = MessagingActionsTypes.UPDATE_MESSAGE_COUNTER;
-  constructor(public payload: { messageType: string, type: string}) {
-  }
-}
 
 export class SelectedStreamId implements Action {
   readonly type = MessagingActionsTypes.SELECTED_STREAM_ID;
@@ -374,7 +369,6 @@ export class LoadMoreStreams implements Action {
 export class LoadMoreStreamsSuccess implements Action {
   readonly type = MessagingActionsTypes.LOAD_MORE_STREAM_MESSAGE_SUCCESS;
   constructor(public payload: any) {
-    console.log('More streams success =>', payload);
   }
 }
 

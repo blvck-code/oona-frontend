@@ -7,6 +7,10 @@ import { Form } from '@angular/forms';
 import { combineLatest, Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import {PresentUsersResponse, ZulipSingleUser, ZulipUsersResponse} from '../models/user.model';
+import {Store} from '@ngrx/store';
+import {AppState} from '../../state/app.state';
+import {getErrorMessage} from '../state/auth.selectors';
+import {NotificationService} from '../../shared/services/notification.service';
 
 @Injectable({
   providedIn: 'root',
@@ -31,8 +35,12 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
+    private store: Store<AppState>,
+    private notification: NotificationService,
     @Inject(BROWSER_STORAGE) private storage: Storage
-  ) {}
+  ) {
+    this.apiErrorMessage();
+  }
 
   login(loginData: FormData): any {
     return this.http.post(this.loginUrl, loginData);
@@ -84,6 +92,16 @@ export class AuthService {
 
   saveToken(token: string): any {
     this.storage.setItem('ot', token);
+  }
+
+  apiErrorMessage(): void {
+    this.store.select(getErrorMessage).subscribe(
+      (message: string) => {
+        if (message) {
+          this.notification.showError(message, 'Error');
+        }
+      }
+    );
   }
 
   saveRefreshToken(refreshToken: string): any {

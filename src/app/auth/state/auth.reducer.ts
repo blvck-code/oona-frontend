@@ -42,14 +42,6 @@ export const initialState: AuthState = {
   },
 };
 
-function handleSelectedUser(state: AuthState, action: any): void{
-  const id = action.payload.userId;
-  const users = state;
-
-  // const currentUser = users?.filter((user: any) => user.user_id === id);
-
-  // console.log('State ===>>', users);
-}
 
 export function authReducer(state = initialState, action: any): AuthState {
   switch (action.type) {
@@ -94,17 +86,6 @@ export function authReducer(state = initialState, action: any): AuthState {
         userInfo: null,
         message: action.payload.message,
       };
-    // Logout
-
-      // return {
-      //   ...state,
-      //   loginStatus: {
-      //     isLoggedIn: false,
-      //     isLoading: false,
-      //   },
-      //   userInfo: null,
-      //   message: action.payload,
-      // };
     case authActions.AuthActionsTypes.LOGOUT_USER_FAIL:
       return {
         ...state,
@@ -142,14 +123,23 @@ export function authReducer(state = initialState, action: any): AuthState {
       };
     // Zulips users
     case authActions.AuthActionsTypes.LOAD_ZULIP_USERS_SUCCESS:
-      return {
-        ...state,
-        users: {
-          ...state.users,
-          loading: false,
-          zulipUsers: action.payload
-        }
-      };
+      const status = action.payload.result;
+
+      if (status === 'error'){
+        return {
+          ...state,
+          message: 'API usage exceeded rate limit, please retry in 30 seconds'
+        };
+      } else {
+        return {
+          ...state,
+          users: {
+            ...state.users,
+            loading: false,
+            zulipUsers: action.payload
+          }
+        };
+      }
     // Selected User
     case authActions.AuthActionsTypes.SET_SELECTED_USER:
       return {
