@@ -190,9 +190,7 @@ export class OonaSocketService {
 
       if (socketData.message.op === 'create'){
         // New stream just created
-        this.newStreamSubject.subscribe(
-          (streams: any[]) => streams.push(socketData.message.streams)
-        );
+        this.newStreamSubject.next(socketData.message.streams);
       }
 
     } else if (socketData.message.type === 'message'){

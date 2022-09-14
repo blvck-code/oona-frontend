@@ -137,11 +137,20 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   }
 
   handleNewStream(): void {
+    const unique: number[] = [];
     this.userSocketService.newStreamObservable.subscribe(
       (newStreams: any[]) => {
-        console.log('New stream item ==>>', newStreams);
+        newStreams.map((stream: AllStreamsModel) => {
+          if (unique.includes(stream.stream_id)) { return; }
+          if (stream.invite_only) {
+            this.privateTopics = [...this.privateTopics, stream];
+          } else {
+            this.publicTopics = [...this.publicTeams, stream];
+          }
+          unique.push(stream.stream_id);
+        });
       }
-    )
+    );
   }
 
   streamsList(): void {
