@@ -66,6 +66,10 @@ export class OonaSocketService {
   newStreamSubject = new BehaviorSubject(this.newStream);
   newStreamObservable = this.newStreamSubject.asObservable();
 
+  readFlags: any[] = [];
+  readFlagsSubject = new BehaviorSubject(this.readFlags);
+  readFlagsObservable = this.readFlagsSubject.asObservable();
+
   peopleType = Array();
   public typingStatus = Array();
   private typingStatusSocket = new BehaviorSubject(this.recognizedUsers);
@@ -205,6 +209,9 @@ export class OonaSocketService {
 
     } else if (socketData.message.type === 'update_message_flags'){
       // how many messages have been read
+      const readMessages = socketData.message.messages;
+      this.readFlagsSubject.next(readMessages);
+
       const messagesRead = socketData.message.messages.length;
       this.newMessageCount = this.newMessageCount - messagesRead;
       const newRead = this.newMessageCount - messagesRead;

@@ -107,6 +107,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.initPageHandler();
     this.handleStreams();
     this.streamsList();
+    this.readMessageFlags();
   }
 
   initPageHandler(): void {
@@ -134,6 +135,14 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     });
 
     // handle unread stream message counter
+  }
+
+  readMessageFlags(): void {
+    this.userSocketService.readFlagsObservable.subscribe(
+      (readMessage: any) => {
+        console.log('Read message flags', readMessage);
+      }
+    );
   }
 
   handleNewStream(): void {

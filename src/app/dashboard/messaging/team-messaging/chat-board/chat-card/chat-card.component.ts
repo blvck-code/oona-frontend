@@ -5,7 +5,7 @@ import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../../state/app.state';
 import {getUserDetails, getZulipProfile} from '../../../../../auth/state/auth.selectors';
-
+import moment from 'moment';
 @Component({
   selector: 'app-chat-card',
   templateUrl: './chat-card.component.html',
@@ -56,7 +56,7 @@ export class ChatCardComponent implements OnInit {
     this.store.select(getZulipProfile).subscribe(
       (user: any) => this.userId = user.zulip.user_id
     );
-
+    //
     this.messageTime = new Date(this.messageDetail.timestamp * 1000).toLocaleTimeString();
     this.messageDate = new Date(this.messageDetail.timestamp);
     this.document = {
