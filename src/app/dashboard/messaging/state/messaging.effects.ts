@@ -69,7 +69,6 @@ export class MessagingEffects {
         map(
           (streams: any) => new messagingActions.LoadAllStreamsSuccess(streams)
         ),
-        // @Todo Error handler
         catchError((err) => of(new messagingActions.LoadAllStreamsFail(err)))
       )
     )

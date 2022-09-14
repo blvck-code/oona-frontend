@@ -347,7 +347,6 @@ export class SelectedStreamId implements Action {
 export class SelectedUserId implements Action {
   readonly type = MessagingActionsTypes.SELECTED_USER_ID;
   constructor(public payload: any) {
-    console.log('Show me payload =>', payload);
   }
 }
 export class UpdatePrivateMessageFlag implements Action {

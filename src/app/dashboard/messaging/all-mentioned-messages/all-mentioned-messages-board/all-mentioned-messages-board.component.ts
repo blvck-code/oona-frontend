@@ -7,7 +7,6 @@ import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
 import * as messagingActions from '../../state/messaging.actions';
 import {Observable} from 'rxjs';
-// @Todo how do we handle loading for mentions?
 import {getLoadingAllMsg, getAllMessages} from '../../state/messaging.selectors';
 import {getUserDetails} from '../../../../auth/state/auth.selectors';
 
@@ -51,7 +50,6 @@ export class AllMentionedMessagesBoardComponent implements OnInit {
       type: [
         {
           operator: 'search',
-          // @Todo change this to current logged in user
           operand: this.userName,
         }
       ]
