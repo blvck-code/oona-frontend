@@ -62,6 +62,10 @@ export class OonaSocketService {
   newMessagesId: any[] = [];
   messagesId: number[] = [];
 
+  newStream: any[] = [];
+  newStreamSubject = new BehaviorSubject(this.newStream);
+  newStreamObservable = this.newStreamSubject.asObservable();
+
   peopleType = Array();
   public typingStatus = Array();
   private typingStatusSocket = new BehaviorSubject(this.recognizedUsers);
@@ -182,6 +186,15 @@ export class OonaSocketService {
     if (socketData.message.type === 'presence'){
       // console.log('pushing user presence data');
       this.recognizedUsers.push(socketData);
+    } else if (socketData.message.type === 'stream') {
+
+      if (socketData.message.op === 'create'){
+        // New stream just created
+        this.newStreamSubject.subscribe(
+          (streams: any[]) => streams.push(socketData.message.streams)
+        );
+      }
+
     } else if (socketData.message.type === 'message'){
       // console.log('message', socketData);
       this.setMessageType(socketData);

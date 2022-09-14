@@ -64,17 +64,28 @@ export class LandingMessageBoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // setTimeout(() => {
-    //   this.getMessagesOfTeams();
-    // }, 1000);
     this.initPage();
+  }
+
+  getLastItem(): void {
+    setTimeout(() => {
+      this.messages$.subscribe(
+        (messages: SingleMessageModel[]) => {
+
+          const lastItem: SingleMessageModel = messages[messages.length - 1];
+          console.log('Last message ==>>', lastItem);
+
+        }
+      );
+    }, 1500);
   }
 
   // Init Page
   initPage(): void {
+    // get messages from store
+    this.messages$ = this.store.select(getBothMessages);
+    this.getLastItem();
     this.getStreamMessage();
-    // this.getPrivateMessages();
-
     // updating UI with the latest messages
     this.inComingMessage();
     this.outGoingMsg();
@@ -88,8 +99,6 @@ export class LandingMessageBoardComponent implements OnInit {
       }
     )
 
-    // get messages from store
-    this.messages$ = this.store.select(getBothMessages);
 
     this.messagesLength();
     // @ts-ignore
