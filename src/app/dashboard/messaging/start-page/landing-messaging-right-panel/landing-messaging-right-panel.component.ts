@@ -148,7 +148,6 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   handleUsers(): void {
     this.store.select(getZulipUsers).subscribe(
       (users: any) => {
-        console.log('Handle zulip users ==>>>', users);
         this.zulipUsersSubject$.next(users.members);
       }
     );
@@ -162,9 +161,7 @@ export class LandingMessagingRightPanelComponent implements OnInit {
       }
     });
 
-    this.store.dispatch(new authActions.SetSelectedUser(member));
-
-    this.endPointUnreadId.filter((id) => id === member.user_id);
+    this.endPointUnreadId.filter((id) => id !== member.user_id);
 
   }
 
@@ -195,7 +192,6 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   unreadMessages(): void {
     this.zulipUserObservable.subscribe(
       (zulipUsers: ZulipSingleUser[]) => {
-        console.log('Zulip users ===>>>', zulipUsers);
       }
     );
   }
