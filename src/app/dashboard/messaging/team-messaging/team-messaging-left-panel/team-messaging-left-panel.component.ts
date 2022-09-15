@@ -438,13 +438,13 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   // The public messages topic fetcher
   handlePublicNavigateTopic(stream?: any, topic?: any): void {
     this.checkTopicNavigate(stream, topic);
+    this.handleCounter(stream, topic);
   }
 
 
   // The private messages topic fetcher
   handlePrivateNavigateTopic(stream?: any, topic?: any): void {
-    // Todo uncomment this function
-    // this.checkTopicNavigate(stream, topic);
+    this.checkTopicNavigate(stream, topic);
     this.handleCounter(stream, topic);
   }
 
