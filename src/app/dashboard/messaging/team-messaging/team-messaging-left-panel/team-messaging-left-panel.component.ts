@@ -231,7 +231,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
         topicItem.unread = 0;
       });
     }
-    console.log('streamItem ==>>', streamItem);
     this.allTopics = [...this.allTopics, streamItem];
   }
 
@@ -390,6 +389,10 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
        if (!messages.length) { return; }
        this.unreadStreams$.subscribe((streamMessages: SingleMessageModel[]) => {
           messages.map((message: SingleMessageModel) => {
+
+            // console.log('Left panel received message ===>>', message);
+            // console.log('Streams ==>>', this.allTopics);
+
             streamMessages.push(message);
           });
         });
