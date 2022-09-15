@@ -387,15 +387,15 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
       this.userSocketService.streamMessageSocket.subscribe(
       (messages: SingleMessageModel[]) => {
        if (!messages.length) { return; }
+       console.log('Unread messages ==>>', messages);
+
        this.unreadStreams$.subscribe((streamMessages: SingleMessageModel[]) => {
-          messages.map((message: SingleMessageModel) => {
-
-            // console.log('Left panel received message ===>>', message);
-            // console.log('Streams ==>>', this.allTopics);
-
-            streamMessages.push(message);
+         streamMessages.map((message: SingleMessageModel) => {
+           console.log('Stream messages ===>>', message);
+           streamMessages.push(message);
           });
         });
+
       }
     );
   }
@@ -437,14 +437,14 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
   // The public messages topic fetcher
   handlePublicNavigateTopic(stream?: any, topic?: any): void {
-    this.checkTopicNavigate(stream, topic);
+    // this.checkTopicNavigate(stream, topic);
     this.handleCounter(stream, topic);
   }
 
 
   // The private messages topic fetcher
   handlePrivateNavigateTopic(stream?: any, topic?: any): void {
-    this.checkTopicNavigate(stream, topic);
+    // this.checkTopicNavigate(stream, topic);
     this.handleCounter(stream, topic);
   }
 
