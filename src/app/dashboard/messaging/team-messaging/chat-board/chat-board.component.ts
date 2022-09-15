@@ -103,14 +103,14 @@ export class ChatBoardComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.select(getSelectedTopic).subscribe(
-      (topicName:string) => {
+      (topicName: string) => {
         if (topicName) {
           this.messageTopic = topicName;
         } else {
-          this.messageTopic = 'new streams'
+          this.messageTopic = 'new streams';
         }
       }
-    )
+    );
 
     this.storeStreamMessages();
     this.messagingService.currentStreamName.subscribe((streamName) => {
@@ -132,7 +132,7 @@ export class ChatBoardComponent implements OnInit {
 
   streamMessages(streamParamDetail: any): void {
     this.messagingService.getAllTeams().subscribe((teams: any) => {
-      const streamName = teams.streams.find((team: { stream_id: any; }) => team.stream_id === Number(streamParamDetail.id)).name;
+      const streamName = teams.streams.find((team: { stream_id: any; }) => team?.stream_id === Number(streamParamDetail.id)).name;
       this.streamName = streamName;
 
       const streamDetail = {

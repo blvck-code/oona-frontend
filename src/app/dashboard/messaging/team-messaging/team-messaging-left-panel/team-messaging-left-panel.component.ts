@@ -107,11 +107,13 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.initPageHandler();
     this.handleStreams();
     this.streamsList();
+    this.readMessageFlags();
   }
 
   initPageHandler(): void {
     // handle All Unread Messages
     this.handleUnreadMsgCounter();
+    this.handleNewStream();
 
     // this.streamTopics();
     this.handleSocketsNewMessage();
@@ -133,6 +135,31 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     });
 
     // handle unread stream message counter
+  }
+
+  readMessageFlags(): void {
+    this.userSocketService.readFlagsObservable.subscribe(
+      (readMessage: any) => {
+        console.log('Read message flags', readMessage);
+      }
+    );
+  }
+
+  handleNewStream(): void {
+    const unique: number[] = [];
+    this.userSocketService.newStreamObservable.subscribe(
+      (newStreams: any[]) => {
+        newStreams.map((stream: AllStreamsModel) => {
+          if (unique.includes(stream.stream_id)) { return; }
+          if (stream.invite_only) {
+            this.privateTopics = [...this.privateTopics, stream];
+          } else {
+            this.publicTopics = [...this.publicTeams, stream];
+          }
+          unique.push(stream.stream_id);
+        });
+      }
+    );
   }
 
   streamsList(): void {

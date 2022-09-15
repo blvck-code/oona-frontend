@@ -62,6 +62,14 @@ export class OonaSocketService {
   newMessagesId: any[] = [];
   messagesId: number[] = [];
 
+  newStream: any[] = [];
+  newStreamSubject = new BehaviorSubject(this.newStream);
+  newStreamObservable = this.newStreamSubject.asObservable();
+
+  readFlags: any[] = [];
+  readFlagsSubject = new BehaviorSubject(this.readFlags);
+  readFlagsObservable = this.readFlagsSubject.asObservable();
+
   peopleType = Array();
   public typingStatus = Array();
   private typingStatusSocket = new BehaviorSubject(this.recognizedUsers);
@@ -182,6 +190,13 @@ export class OonaSocketService {
     if (socketData.message.type === 'presence'){
       // console.log('pushing user presence data');
       this.recognizedUsers.push(socketData);
+    } else if (socketData.message.type === 'stream') {
+
+      if (socketData.message.op === 'create'){
+        // New stream just created
+        this.newStreamSubject.next(socketData.message.streams);
+      }
+
     } else if (socketData.message.type === 'message'){
       // console.log('message', socketData);
       this.setMessageType(socketData);
@@ -194,6 +209,9 @@ export class OonaSocketService {
 
     } else if (socketData.message.type === 'update_message_flags'){
       // how many messages have been read
+      const readMessages = socketData.message.messages;
+      this.readFlagsSubject.next(readMessages);
+
       const messagesRead = socketData.message.messages.length;
       this.newMessageCount = this.newMessageCount - messagesRead;
       const newRead = this.newMessageCount - messagesRead;

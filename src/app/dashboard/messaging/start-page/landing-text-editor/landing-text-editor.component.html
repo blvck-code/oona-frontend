@@ -2,30 +2,26 @@
 <!--  <span style="font-weight: bolder" class="mr-2">To : {{ receiverInfo ? receiverInfo.subject: '' }}</span>-->
   <div style="font-weight: bolder" class="d-flex recipient-user mr-2">
     To :
-    <span class="ps-2" *ngIf="receiverInfo && receiverInfo.display_recipient">{{ receiverInfo.display_recipient | titlecase }}</span>
-    <span class="ps-2" *ngIf="receiverInfo && receiverInfo.subject"> <strong>></strong> {{ receiverInfo.subject | titlecase }}</span>
-  </div>
-<!--  <span style="font-weight: bolder" class="mr-2">To : Brian Maurice</span>-->
 
-  <div class="search-pm-users-container" >
-    <div class="list-pm-members">
-      <div class="pm-member" *ngFor="let person of chatGroup" (click)="removeFromGroup(person)">
-        <p>###{{person.full_name}}</p>
-        <i class="bi bi-x"></i>
-      </div>
-    </div>
-
-    <div class="add-attendees-section dropdown">
-<!--      <input type="text" (keyup)="searchUser($event)" class="search-meeting-attendees" placeholder="Search User" id="dropdownMenuButton1" data-bs-toggle="dropdown"-->
-<!--             aria-expanded="false">-->
-<!--      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" #selectList >-->
-<!--        <li *ngFor="let user of filteredUsers" (click)="addSelectedUser(user)" class="py-2">-->
-<!--          {{user.full_name}}-->
-<!--        </li>-->
-<!--      </ul>-->
-    </div>
+      <span>Stream name</span>
+      <span >
+      <span style="font-weight: bolder" class="mx-2"> ></span>
+      <span>
+        <input
+          type="text"
+          class="border-0 shadow-none"
+          placeholder="Stream topic"
+          (keyup)="onKey($event)"
+          name="first"
+      /></span>
+    </span>
   </div>
+
+
 </div>
+
+
+<div class="parent">
 
 <div class="parent">
 
