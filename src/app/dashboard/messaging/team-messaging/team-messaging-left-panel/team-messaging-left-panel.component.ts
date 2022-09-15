@@ -110,7 +110,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
     this.initPageHandler();
     this.handleStreams();
-    this.streamsList();
+    // this.streamsList();
     this.readMessageFlags();
   }
 
@@ -437,15 +437,13 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
   // The public messages topic fetcher
   handlePublicNavigateTopic(stream?: any, topic?: any): void {
-    // this.checkTopicNavigate(stream, topic);
-    this.handleCounter(stream, topic);
+    this.checkTopicNavigate(stream, topic);
   }
 
 
   // The private messages topic fetcher
   handlePrivateNavigateTopic(stream?: any, topic?: any): void {
-    // this.checkTopicNavigate(stream, topic);
-    this.handleCounter(stream, topic);
+    this.checkTopicNavigate(stream, topic);
   }
 
   // Get messages when user clicks a topic name
@@ -474,8 +472,9 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
         }
       });
     }
-    // this.handleCounter(stream, topic);
+    this.handleCounter(stream, topic);
   }
+
 }
 
 
