@@ -41,6 +41,7 @@ export class ChatBoardComponent implements OnInit {
   newMessagesCount: number | undefined;
   selectedStreamMessages$!: Observable<SingleMessageModel[]>;
   topicSelected = '';
+  loading = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -81,7 +82,9 @@ export class ChatBoardComponent implements OnInit {
     console.log('Selected topic =>', this.messageTopic);
     this.store.select(getSelectedStreamMessages).subscribe(
       (messages: SingleMessageModel[]) => {
-        {}
+        {
+          this.loading = false;
+        }
         // console.log('Stream messages =>', messages)
       }
     );

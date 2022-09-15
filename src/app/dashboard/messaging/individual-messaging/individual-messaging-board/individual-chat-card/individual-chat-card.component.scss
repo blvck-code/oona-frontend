@@ -42,8 +42,9 @@
   border-radius: 10px 10px 10px 0;
   box-shadow: 0 2px 4px rgba(34, 37, 52, 0.0501803);
   background-color: #fff;
-  width: auto;
-  max-width: 70%;
+  width: max-content;
+  max-width: 60%;
+  min-width: 40%;
   overflow-y: scroll;
   scrollbar-width: thin;
   scrollbar-color: #EDEDF6 transparent;

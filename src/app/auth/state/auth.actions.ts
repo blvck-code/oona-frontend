@@ -86,7 +86,6 @@ export class CurrentUserProfile implements Action {
 export class LoadProfileSuccess implements Action {
   readonly type = AuthActionsTypes.FETCH_PROFILE_SUCCESS;
   constructor(public payload: any) {
-    console.log('Current user profile loaded successfully ====>>>>', payload);
   }
 }
 export class LoadProfileError implements Action {

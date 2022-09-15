@@ -14,11 +14,10 @@ import {
   getAllUsers,
   getZulipUsers,
 } from '../../../../auth/state/auth.selectors';
-import {combineLatest, Observable} from 'rxjs';
-import {SingleMessageModel} from "../../models/messages.model";
-import {map} from "rxjs/operators";
-import {SinglePresentUser} from "../../../../auth/models/user.model";
-import {getPrivateMessages, getPrivateUnread} from "../../state/messaging.selectors";
+import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
+import {SingleMessageModel} from '../../models/messages.model';
+import {SinglePresentUser, UserModel, ZulipSingleUser} from '../../../../auth/models/user.model';
+import {getPrivateMessages, getPrivateUnread} from '../../state/messaging.selectors';
 
 @Component({
   selector: 'app-landing-messaging-right-panel',
@@ -35,11 +34,14 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   peopleTyping = Array();
   searchText = '';
   selectedUser: any;
-  loadedUsers: boolean = false;
+  loadedUsers = false;
 
   listedUsersArray: any[] = [];
 
-  // newMsgUsersId: number[] = [];
+  zulipUsers: any[] = [];
+  zulipUsersSubject$ = new BehaviorSubject<any[]>(this.zulipUsers);
+  zulipUserObservable = this.zulipUsersSubject$.asObservable();
+
   endPointUnreadId: number[] = [];
 
   constructor(
@@ -55,6 +57,7 @@ export class LandingMessagingRightPanelComponent implements OnInit {
     this.onInitPage();
     this.unreadMsg();
     this.privateUnreadMessages();
+    this.unreadMessages();
 
     this.userSocketService.currentUsers.subscribe(
       (users) => (this.socketUsers = users)
@@ -70,8 +73,6 @@ export class LandingMessagingRightPanelComponent implements OnInit {
         // @Todo Delete console log
         const usersPresent = users.members.filter((user: any) => user.presence);
         // this.allUsers = this.newListOfUsers(usersPresent);
-
-        console.log('Zulip usrs ===>>', users);
         this.allUsers = users?.members;
       },
       // @ts-ignore
@@ -90,9 +91,9 @@ export class LandingMessagingRightPanelComponent implements OnInit {
       (messages: SingleMessageModel[]) => {
         messages.map((message: SingleMessageModel) => {
           this.endPointUnreadId.push(message.sender_id);
-        })
+        });
       }
-    )
+    );
   }
 
   unreadMsg(): void {
@@ -141,6 +142,15 @@ export class LandingMessagingRightPanelComponent implements OnInit {
 
     this.loadedUsers = true;
     this.getPrivateUnreadMsg();
+    this.handleUsers();
+  }
+
+  handleUsers(): void {
+    this.store.select(getZulipUsers).subscribe(
+      (users: any) => {
+        this.zulipUsersSubject$.next(users.members);
+      }
+    );
   }
 
   goToMemberChat(member: any): void {
@@ -149,15 +159,9 @@ export class LandingMessagingRightPanelComponent implements OnInit {
         id: member.user_id,
         member: member.full_name.replace(/\s/g, '')
       }
-    })
+    });
 
-    this.store.dispatch(new authActions.SetSelectedUser(member));
-
-    this.endPointUnreadId.filter((id) => id === member.user_id);
-
-  }
-
-  navigatePrivate(member: any): void {
+    this.endPointUnreadId.filter((id) => id !== member.user_id);
 
   }
 
@@ -178,34 +182,18 @@ export class LandingMessagingRightPanelComponent implements OnInit {
           }
 
           this.endPointUnreadId.push(message.sender_id);
-          messagesId.push(message.id)
+          messagesId.push(message.id);
 
-        })
+        });
       }
-    )
+    );
+  }
 
-    // this.messagingService.privateUnreadMsgArrayObservable.subscribe(unread => {
-    //
-    //
-    //   unread?.map(message => {
-    //
-    //     // todo fixed to show number of unread messages
-    //     this.listedUsersArray.map((user: any) => {
-    //       if (user.user_id === message.sender_id) {
-    //
-    //         // if(this.endPointUnreadId.includes(user.user_id)){
-    //         //   return
-    //         // }
-    //         user.counter++;
-    //         this.endPointUnreadId.push(user.user_id);
-    //
-    //       }
-    //       }
-    //     );
-    //
-    //   });
-    // });
-
+  unreadMessages(): void {
+    this.zulipUserObservable.subscribe(
+      (zulipUsers: ZulipSingleUser[]) => {
+      }
+    );
   }
 
 

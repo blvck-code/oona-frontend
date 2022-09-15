@@ -125,7 +125,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
         (userInfo: any) => {
           this.selectedUserId = userInfo.user_id;
           this.operand = userInfo;
-          console.log('Current user info ===>>', userInfo);
         }
       );
     }, 1000);

@@ -316,7 +316,6 @@ export class OonaSocketService {
       // Check if am the sender or not me
       if (msgSenderId === currentUserId){
         // My outgoing message from the socket
-        // console.log('Incoming message from other user ===>>>', socketData.message.message);
         privateMessage.flags = ['read'];
         this.myMessagesSocketSubject.next(socketData.message.message);
         this.store.dispatch(new messagingActions.CreatePrivateMessageSuccess(privateMessage));
