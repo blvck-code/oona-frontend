@@ -210,14 +210,16 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
       this.unreadStreams$.subscribe(
         (messages: SingleMessageModel[]) => {
           messages.map((message: SingleMessageModel) => {
-            if (message.subject.toLowerCase() === topic.name.toLowerCase()) {
-              streamItem.unread -= 1;
+            if (message.subject.toLowerCase() === topic.name.toLowerCase() && streamItem.unread > 0) {
 
               streamItem.topics.map((topicItem: Topics) => {
-                if (topicItem.name.toLowerCase() === topic.name.toLowerCase()) {
+                // @ts-ignore
+                if (topicItem.name.toLowerCase() === topic.name.toLowerCase() && topicItem?.unread > 0) {
                   topicItem.unread ? topicItem.unread -= 1 : topicItem.unread = 0;
+                  streamItem.unread -= 1;
                 }
               });
+
             }
           });
         }
@@ -229,7 +231,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
         topicItem.unread = 0;
       });
     }
-
+    console.log('streamItem ==>>', streamItem);
     this.allTopics = [...this.allTopics, streamItem];
   }
 
@@ -438,8 +440,8 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
   // The private messages topic fetcher
   handlePrivateNavigateTopic(stream?: any, topic?: any): void {
-    //
-    this.checkTopicNavigate(stream, topic);
+    // Todo uncomment this function
+    // this.checkTopicNavigate(stream, topic);
     this.handleCounter(stream, topic);
   }
 
