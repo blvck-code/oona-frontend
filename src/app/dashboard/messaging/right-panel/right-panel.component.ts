@@ -26,4 +26,8 @@ export class RightPanelComponent implements OnInit {
     }
   }
 
+  rightPanelTypeListener($event: any): void {
+    this.userContent = $event;
+  }
+
 }

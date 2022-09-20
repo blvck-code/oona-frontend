@@ -114,17 +114,6 @@ export class MessagingComponent implements OnInit {
     this.getUsersFromStore();
     this.getUsers();
   }
-
-  initializeState(): void {
-    this.store.dispatch(new messagingActions.LoadAllStreams());
-    this.store.dispatch(new messagingActions.LoadSubStreams());
-    this.store.dispatch(new authActions.LoadZulipUsers());
-    this.store.dispatch(new authActions.LoadAllUsers());
-
-    // gets unread messages
-    // this.messagingService.getUnreadMessages();
-  }
-
   logoutUser(): void {
     this.authService.logout();
     this.router.navigate(['/']);

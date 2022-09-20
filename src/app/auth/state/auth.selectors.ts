@@ -1,5 +1,6 @@
 import {createFeatureSelector, createSelector} from "@ngrx/store";
 import {AuthState} from './auth.reducer';
+import {ZulipSingleUser} from '../models/user.model';
 
 export const authSelector = 'userCenter';
 
@@ -58,11 +59,35 @@ export const getZulipUsersMembers = createSelector(
 
 export const getAllUsers = createSelector(
   getAuthState,
-  state => state?.users?.all?.members
+  state => state?.users?.all
 );
 
 export const getSelectedUser = createSelector(
   getAuthState,
   state => state.users.selectedUser
 );
+
+export const getPresentUser = createSelector(
+  getAuthState,
+  state => state.users.all
+);
+//
+// export const getPresentUsers = createSelector(
+//   getZulipUsers,
+//   getPresentUser,
+//   (zulipUsers, presentUser) => {
+//     zulipUsers.map(
+//       (zulip: ZulipSingleUser) => {
+//         presentUser.map((user: any) => {
+//           if (zulip.user_id === user.user_id) {
+//             zulip = {
+//               ...zulip,
+//               ...user
+//             };
+//           }
+//         });
+//       }
+//     )
+//   }
+// );
 

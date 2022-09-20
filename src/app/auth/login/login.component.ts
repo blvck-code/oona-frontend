@@ -58,6 +58,7 @@ export class LoginComponent implements OnInit {
 
         if (status) {
           this.route.navigate(['/dashboard']);
+          // tslint:disable-next-line:new-parens
           this.store.dispatch(new authActions.LoadZulipUsers);
           this.store.dispatch(new messagingActions.LoadAllStreams);
         }
@@ -65,7 +66,7 @@ export class LoginComponent implements OnInit {
         return;
       }
     );
-    this.store.dispatch(new authActions.LoadAllUsers);
+    this.store.dispatch(new authActions.LoadPresentUsers);
   }
 
   onLogin(): any {

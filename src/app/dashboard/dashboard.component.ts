@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 // NgRx
-import * as authActions from '../auth/state/auth.actions'
+import * as authActions from '../auth/state/auth.actions';
 import {Store} from '@ngrx/store';
 import {AppState} from '../state/app.state';
 import {getToken} from 'codelyzer/angular/styles/cssLexer';
@@ -19,20 +19,6 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     // this.initOnLoad();
-  }
-
-  initOnLoad(): void {
-    this.store.dispatch(new authActions.UpdateState());
-
-    this.store.select(getIsLoggedIn).subscribe(
-      status => {
-        // console.log('Is logged in? ', status);
-        if (status) {
-          this.store.dispatch(new authActions.LoadAllUsers());
-          this.store.dispatch(new authActions.LoadZulipUsers());
-        }
-      }
-    );
   }
 
 }

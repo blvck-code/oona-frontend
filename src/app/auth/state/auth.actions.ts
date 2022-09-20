@@ -21,9 +21,9 @@ export enum AuthActionsTypes {
   LOGOUT_USER_FAIL = 'userCenter/logoutUserFail',
 
   // All Users
-  LOAD_ALL_USERS = 'userCenter/loadAllUsers',
-  LOAD_ALL_USERS_SUCCESS = 'userCenter/loadAllUsersSuccess',
-  LOAD_ALL_USERS_FAIL = 'userCenter/loadAllUsersFail',
+  LOAD_PRESENT_USERS = 'userCenter/loadPresentUsers',
+  LOAD_PRESENT_USERS_SUCCESS = 'userCenter/loadPresentUsersSuccess',
+  LOAD_PRESENT_USERS_FAIL = 'userCenter/loadPresentUsersFail',
 
   // Zulip Users
   LOAD_ZULIP_USERS = 'userCenter/loadZulipUsers',
@@ -102,21 +102,20 @@ export class UpdateState implements Action {
 }
 
 // ALL USERS
-export class LoadAllUsers implements Action {
-  readonly type = AuthActionsTypes.LOAD_ALL_USERS;
+export class LoadPresentUsers implements Action {
+  readonly type = AuthActionsTypes.LOAD_PRESENT_USERS;
   constructor() {
   }
 }
-export class LoadAllUsersSuccess implements Action {
-  readonly type = AuthActionsTypes.LOAD_ALL_USERS_SUCCESS;
+export class LoadPresentUsersSuccess implements Action {
+  readonly type = AuthActionsTypes.LOAD_PRESENT_USERS_SUCCESS;
   constructor(public payload: any) {
-    console.log('Loaded a');
+    console.log('Present users ===>>>', payload);
   }
 }
-export class LoadAllUsersFail implements Action {
-  readonly type = AuthActionsTypes.LOAD_ALL_USERS_FAIL;
+export class LoadPresentUsersFail implements Action {
+  readonly type = AuthActionsTypes.LOAD_PRESENT_USERS_FAIL;
   constructor(public payload: any) {
-    // console.log('load all users fail ===>>', payload);
   }
 }
 
@@ -167,9 +166,9 @@ export type AuthActions =
   // UPDATE STATE
   | UpdateState
   // LOAD ALL USERS
-  | LoadAllUsers
-  | LoadAllUsersSuccess
-  | LoadAllUsersFail
+  | LoadPresentUsers
+  | LoadPresentUsersSuccess
+  | LoadPresentUsersFail
   // Load Zulip Users
   | LoadZulipUsers
   | LoadZulipUsersSuccess
