@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {MessagingService} from '../../services/messaging.service';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
@@ -41,12 +41,12 @@ interface TopicDetails {
 
 export class TeamMessagingLeftPanelComponent implements OnInit {
   newTopicsArray: TopicDetails[] = [];
-
   allTeams: any;
   streamName: any;
   publicTeams: any = [];
   private allAvailableTeams: any;
   @Output() topicToDisplay = new EventEmitter<any>();
+  @Output() rightPanelEvent = new EventEmitter<string>();
   displayCreateTeamComponentRef: MatDialogRef<CreateTeamComponent> | undefined;
   displayTeamSettingsComponentRef: MatDialogRef<TeamSettingsComponent> | undefined;
   displayCreatChannelComponentRef: MatDialogRef<ChannelSettingsComponent> | undefined;
@@ -434,15 +434,20 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     );
   }
 
+  handleShowAllUsers(): void {
+    this.rightPanelEvent.emit('all_users');
+  }
 
   // The public messages topic fetcher
   handlePublicNavigateTopic(stream?: any, topic?: any): void {
     this.checkTopicNavigate(stream, topic);
+    this.rightPanelEvent.emit('team_users');
   }
 
 
   // The private messages topic fetcher
   handlePrivateNavigateTopic(stream?: any, topic?: any): void {
+    this.rightPanelEvent.emit('team_users');
     this.checkTopicNavigate(stream, topic);
   }
 

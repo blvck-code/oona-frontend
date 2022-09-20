@@ -110,6 +110,7 @@ export class LoadAllUsers implements Action {
 export class LoadAllUsersSuccess implements Action {
   readonly type = AuthActionsTypes.LOAD_ALL_USERS_SUCCESS;
   constructor(public payload: any) {
+    console.log('Loaded a');
   }
 }
 export class LoadAllUsersFail implements Action {
