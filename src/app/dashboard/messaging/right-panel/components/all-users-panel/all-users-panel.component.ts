@@ -1,6 +1,10 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Router} from '@angular/router';
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../../../state/app.state';
+import {getPrivateUnread} from '../../../state/messaging.selectors';
+import {SingleMessageModel} from '../../../models/messages.model';
 
 @Component({
   selector: 'app-all-users-panel',
@@ -15,10 +19,12 @@ export class AllUsersPanelComponent implements OnInit {
   endPointUnreadId: number[] = [];
 
   constructor(
-    private router: Router
+    private router: Router,
+    private store: Store<AppState>
   ) { }
 
   ngOnInit(): void {
+    this.privateUnreadMessages();
   }
 
   handleShowSearchUser(): void {
@@ -35,7 +41,18 @@ export class AllUsersPanelComponent implements OnInit {
     });
     this.rightPanelEvent.emit('individual_user');
 
-    this.endPointUnreadId.filter((id) => id !== member.user_id);
+    this.endPointUnreadId.unshift(member.user_id);
 
+  }
+
+  privateUnreadMessages(): void{
+    this.store.select(getPrivateUnread).subscribe(
+      (messages: SingleMessageModel[]) => {
+        messages.map((message: SingleMessageModel) => {
+          if (this.endPointUnreadId.includes(message.sender_id)) { return; }
+          this.endPointUnreadId.push(message.sender_id);
+        });
+      }
+    );
   }
 }

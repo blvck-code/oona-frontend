@@ -4,7 +4,7 @@
     <div class="member-profile-details">
       <img *ngIf="currentUser.avatar_url;else noAvatar" [src]="currentUser.avatar_url" class="rounded-circle" alt="...">
       <ng-template #noAvatar>
-        <img src="../../../../../../assets/img/user/Bitmap.jpg" class="rounded-circle" alt="...">
+        <img src="../../../../../../assets/img/user/avatarHolder.png" class="rounded-circle" alt="...">
       </ng-template>
       <div class="member-info">
         <p class="member-name">{{ currentUser.full_name }}</p>
