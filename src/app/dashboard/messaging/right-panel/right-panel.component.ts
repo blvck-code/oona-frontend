@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Observable} from 'rxjs';
 
 @Component({
@@ -9,15 +9,13 @@ import {Observable} from 'rxjs';
 export class RightPanelComponent implements OnInit {
   @Input() allUsers$!: Observable<any>;
   @Input() userContent!: string;
+  @Output() rightPanelEvent = new EventEmitter<string>();
 
   constructor(
   ) { }
 
   ngOnInit(): void {
     this.defaultUser();
-    this.allUsers$.subscribe(
-      users => console.log('Hell yeah ===>>>', users)
-    );
   }
 
   defaultUser(): void {
@@ -27,7 +25,7 @@ export class RightPanelComponent implements OnInit {
   }
 
   rightPanelTypeListener($event: any): void {
-    this.userContent = $event;
+    this.rightPanelEvent.emit('individual_user');
   }
 
 }

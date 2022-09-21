@@ -4,7 +4,7 @@
     <div class="member-profile-details">
       <img src="../../../../../../assets/img/user/Bitmap.jpg" class="rounded-circle" alt="...">
       <div class="member-info">
-        <p class="member-name">Keith Shikuku</p>
+        <p class="member-name">{{ currentUser.full_name }}</p>
         <p class="member-role">UI Designer</p>
       </div>
     </div>
@@ -26,7 +26,7 @@
 
     <div class="member-profile-date">
       <p class="title me-2">Member since:</p>
-      <p class="">2020</p>
+      <p class="">{{ currentUser?.date_joined | date: 'dd/MM/yyyy'}}</p>
     </div>
     <div class="member-common-teams-container">
       <p class="common-teams-title">Common Teams</p>
@@ -39,11 +39,6 @@
           <a href="#" class="common-teams-item">Oona (Tester)</a>
           <a href="#" class="common-teams-item">Mnara (UI Designer)</a>
           <a href="#" class="common-teams-item">Smart Parking (UI Designer)</a>
-          <a href="#" class="common-teams-item">Oona (Tester)</a>
-          <a href="#" class="common-teams-item">Mnara (UI Designer)</a>
-          <a href="#" class="common-teams-item">Smart Parking (UI Designer)</a>
-          <a href="#" class="common-teams-item">Oona (Tester)</a>
-          <a href="#" class="common-teams-item">Mnara (UI Designer)</a>
         </div>
 <!--        <div>-->
 <!--          <a href="#" class="common-teams-item">No teams in common</a>-->
@@ -54,22 +49,23 @@
 
   <div class="staff-members">
     <div class="all-users-title">
-      <div class="all-users-wrap">
+      <div class="all-users-wrap" (click)="handleShowSearchUser()">
         <p>Other staff</p>
         <div class="search-people">
           <img src="../../../../../assets/img/icons/search.svg" alt="" />
         </div>
       </div>
-      <div *ngIf="!true" class="search-user-form">
+      <div class="search-user-form" *ngIf="showSearchUser">
         <input
           type="text"
+          [(ngModel)]="searchText"
           placeholder="Search people..."
         />
       </div>
     </div>
-    <div class="team-members">
+    <div class="team-members" *ngFor="let member of (users$ | async) | userFilter: searchText">
       <div class="m-2">
-        <div class="member">
+        <div class="member" (click)="rightPanelTypeListener(member)">
           <div class="member-info" >
             <div class="member-content">
               <img
@@ -80,343 +76,7 @@
                 alt="..."
               />
               <div class="member-name">
-                <span>Keith Shikuku</span>
-              </div>
-            </div>
-            <div class="member-option" >
-              <img src="../../../../../assets/img/icons/dots.svg" alt="" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="m-2">
-        <div class="member">
-          <div class="member-info" >
-            <div class="member-content">
-              <img
-                src="../../../../../../assets/img/user/avatarHolder.png"
-                height="32px"
-                width="32px"
-                class="rounded-circle me-2"
-                alt="..."
-              />
-              <div class="member-name">
-                <span>Keith Shikuku</span>
-              </div>
-            </div>
-            <div class="member-option" >
-              <img src="../../../../../assets/img/icons/dots.svg" alt="" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="m-2">
-        <div class="member">
-          <div class="member-info" >
-            <div class="member-content">
-              <img
-                src="../../../../../../assets/img/user/avatarHolder.png"
-                height="32px"
-                width="32px"
-                class="rounded-circle me-2"
-                alt="..."
-              />
-              <div class="member-name">
-                <span>Keith Shikuku</span>
-              </div>
-            </div>
-            <div class="member-option" >
-              <img src="../../../../../assets/img/icons/dots.svg" alt="" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="m-2">
-        <div class="member">
-          <div class="member-info" >
-            <div class="member-content">
-              <img
-                src="../../../../../../assets/img/user/avatarHolder.png"
-                height="32px"
-                width="32px"
-                class="rounded-circle me-2"
-                alt="..."
-              />
-              <div class="member-name">
-                <span>Keith Shikuku</span>
-              </div>
-            </div>
-            <div class="member-option" >
-              <img src="../../../../../assets/img/icons/dots.svg" alt="" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="m-2">
-        <div class="member">
-          <div class="member-info" >
-            <div class="member-content">
-              <img
-                src="../../../../../../assets/img/user/avatarHolder.png"
-                height="32px"
-                width="32px"
-                class="rounded-circle me-2"
-                alt="..."
-              />
-              <div class="member-name">
-                <span>Keith Shikuku</span>
-              </div>
-            </div>
-            <div class="member-option" >
-              <img src="../../../../../assets/img/icons/dots.svg" alt="" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="m-2">
-        <div class="member">
-          <div class="member-info" >
-            <div class="member-content">
-              <img
-                src="../../../../../../assets/img/user/avatarHolder.png"
-                height="32px"
-                width="32px"
-                class="rounded-circle me-2"
-                alt="..."
-              />
-              <div class="member-name">
-                <span>Keith Shikuku</span>
-              </div>
-            </div>
-            <div class="member-option" >
-              <img src="../../../../../assets/img/icons/dots.svg" alt="" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="m-2">
-        <div class="member">
-          <div class="member-info" >
-            <div class="member-content">
-              <img
-                src="../../../../../../assets/img/user/avatarHolder.png"
-                height="32px"
-                width="32px"
-                class="rounded-circle me-2"
-                alt="..."
-              />
-              <div class="member-name">
-                <span>Keith Shikuku</span>
-              </div>
-            </div>
-            <div class="member-option" >
-              <img src="../../../../../assets/img/icons/dots.svg" alt="" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="m-2">
-        <div class="member">
-          <div class="member-info" >
-            <div class="member-content">
-              <img
-                src="../../../../../../assets/img/user/avatarHolder.png"
-                height="32px"
-                width="32px"
-                class="rounded-circle me-2"
-                alt="..."
-              />
-              <div class="member-name">
-                <span>Keith Shikuku</span>
-              </div>
-            </div>
-            <div class="member-option" >
-              <img src="../../../../../assets/img/icons/dots.svg" alt="" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="m-2">
-        <div class="member">
-          <div class="member-info" >
-            <div class="member-content">
-              <img
-                src="../../../../../../assets/img/user/avatarHolder.png"
-                height="32px"
-                width="32px"
-                class="rounded-circle me-2"
-                alt="..."
-              />
-              <div class="member-name">
-                <span>Keith Shikuku</span>
-              </div>
-            </div>
-            <div class="member-option" >
-              <img src="../../../../../assets/img/icons/dots.svg" alt="" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="m-2">
-        <div class="member">
-          <div class="member-info" >
-            <div class="member-content">
-              <img
-                src="../../../../../../assets/img/user/avatarHolder.png"
-                height="32px"
-                width="32px"
-                class="rounded-circle me-2"
-                alt="..."
-              />
-              <div class="member-name">
-                <span>Keith Shikuku</span>
-              </div>
-            </div>
-            <div class="member-option" >
-              <img src="../../../../../assets/img/icons/dots.svg" alt="" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="m-2">
-        <div class="member">
-          <div class="member-info" >
-            <div class="member-content">
-              <img
-                src="../../../../../../assets/img/user/avatarHolder.png"
-                height="32px"
-                width="32px"
-                class="rounded-circle me-2"
-                alt="..."
-              />
-              <div class="member-name">
-                <span>Keith Shikuku</span>
-              </div>
-            </div>
-            <div class="member-option" >
-              <img src="../../../../../assets/img/icons/dots.svg" alt="" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="m-2">
-        <div class="member">
-          <div class="member-info" >
-            <div class="member-content">
-              <img
-                src="../../../../../../assets/img/user/avatarHolder.png"
-                height="32px"
-                width="32px"
-                class="rounded-circle me-2"
-                alt="..."
-              />
-              <div class="member-name">
-                <span>Keith Shikuku</span>
-              </div>
-            </div>
-            <div class="member-option" >
-              <img src="../../../../../assets/img/icons/dots.svg" alt="" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="m-2">
-        <div class="member">
-          <div class="member-info" >
-            <div class="member-content">
-              <img
-                src="../../../../../../assets/img/user/avatarHolder.png"
-                height="32px"
-                width="32px"
-                class="rounded-circle me-2"
-                alt="..."
-              />
-              <div class="member-name">
-                <span>Keith Shikuku</span>
-              </div>
-            </div>
-            <div class="member-option" >
-              <img src="../../../../../assets/img/icons/dots.svg" alt="" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="m-2">
-        <div class="member">
-          <div class="member-info" >
-            <div class="member-content">
-              <img
-                src="../../../../../../assets/img/user/avatarHolder.png"
-                height="32px"
-                width="32px"
-                class="rounded-circle me-2"
-                alt="..."
-              />
-              <div class="member-name">
-                <span>Keith Shikuku</span>
-              </div>
-            </div>
-            <div class="member-option" >
-              <img src="../../../../../assets/img/icons/dots.svg" alt="" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="m-2">
-        <div class="member">
-          <div class="member-info" >
-            <div class="member-content">
-              <img
-                src="../../../../../../assets/img/user/avatarHolder.png"
-                height="32px"
-                width="32px"
-                class="rounded-circle me-2"
-                alt="..."
-              />
-              <div class="member-name">
-                <span>Keith Shikuku</span>
-              </div>
-            </div>
-            <div class="member-option" >
-              <img src="../../../../../assets/img/icons/dots.svg" alt="" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="m-2">
-        <div class="member">
-          <div class="member-info" >
-            <div class="member-content">
-              <img
-                src="../../../../../../assets/img/user/avatarHolder.png"
-                height="32px"
-                width="32px"
-                class="rounded-circle me-2"
-                alt="..."
-              />
-              <div class="member-name">
-                <span>Keith Shikuku</span>
-              </div>
-            </div>
-            <div class="member-option" >
-              <img src="../../../../../assets/img/icons/dots.svg" alt="" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="m-2">
-        <div class="member">
-          <div class="member-info" >
-            <div class="member-content">
-              <img
-                src="../../../../../../assets/img/user/avatarHolder.png"
-                height="32px"
-                width="32px"
-                class="rounded-circle me-2"
-                alt="..."
-              />
-              <div class="member-name">
-                <span>Keith Shikuku</span>
+                <span>{{ member.full_name }}</span>
               </div>
             </div>
             <div class="member-option" >

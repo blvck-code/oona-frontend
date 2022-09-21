@@ -8,7 +8,7 @@
   .member-details {
     height: 350px;
     padding: 24px;
-    border-radius: 0 0 10px 10px;
+    border-radius: 10px;
     background-color: #ECF4FB;
     overflow-y: hidden;
 
@@ -47,12 +47,12 @@
   }
 
   .staff-members {
-    padding:0 10px 10px 10px;
+    padding:0 20px 20px 20px;
     margin-top: 10px;
     height: 60%;
     overflow-y: scroll;
     background-color: #ECF4FB;
-    border-radius: 10px 10px 0 0;
+    border-radius: 10px;
 
     .all-users-title {
       position: sticky;
@@ -107,8 +107,9 @@
           padding: 12px;
           user-select: none;
 
-          &:active {
-            border: 1px solid #D7ECFF;
+          &:active,
+          &:focus {
+            border: 1px solid #D7ECFF !important;
           }
         }
       }
