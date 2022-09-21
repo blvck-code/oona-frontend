@@ -37,7 +37,7 @@
               <!--                *ngIf="member.presence.aggregated.status === 'offline'"-->
               <!--              ></app-idle-tag>-->
               <img
-                src="assets/img/placeholder.jpg"
+                src="../../../../../../assets/img/user/avatarHolder.png"
                 height="32px"
                 width="32px"
                 class="rounded-circle me-2"
@@ -45,7 +45,8 @@
               />
               <div class="member-name">
                 <span>{{ member?.full_name }}</span>
-                <!--              <span *ngIf="endPointUnreadId.includes(member.user_id) && !member.typing" class="new-message">New message</span>-->
+                <span *ngIf="endPointUnreadId.includes(member.user_id)" class="new-message">New message</span>
+<!--                              <span *ngIf="endPointUnreadId.includes(member.user_id) && !member.typing" class="new-message">New message</span>-->
                 <!--              <span *ngIf="member.typing" class="typing">typing...</span>-->
               </div>
               <span
