@@ -32,10 +32,13 @@ export class MessagingComponent implements OnInit {
   streams!: Observable<AllStreamsModel[]>;
   allTopics: any = [];
   initialMessageCount = 30;
+  rightPanelUsers = '';
 
   allUsers: any = [];
   allUsersSubject = new BehaviorSubject<any>(this.allUsers);
   allUserObservable = this.allUsersSubject.asObservable();
+
+  users$!: Observable<any>;
 
   constructor(
     private route: ActivatedRoute,
@@ -68,6 +71,10 @@ export class MessagingComponent implements OnInit {
         this.navTitle = 'Team messaging';
       }
     });
+  }
+
+  rightPanelTypeListener($event: any): void {
+    this.rightPanelUsers = $event;
   }
 
   getAllMessages(): void {
@@ -104,24 +111,9 @@ export class MessagingComponent implements OnInit {
   }
 
   initPage(): void {
-    // this.initializeState();
-    // this.getAllMessages();
-    // this.getPrivateMessages();
     this.getUsersFromStore();
-    // this.getAllPrivateMessages();
-    // this.getStreamData();
+    this.getUsers();
   }
-
-  initializeState(): void {
-    this.store.dispatch(new messagingActions.LoadAllStreams());
-    this.store.dispatch(new messagingActions.LoadSubStreams());
-    this.store.dispatch(new authActions.LoadZulipUsers());
-    this.store.dispatch(new authActions.LoadAllUsers());
-
-    // gets unread messages
-    // this.messagingService.getUnreadMessages();
-  }
-
   logoutUser(): void {
     this.authService.logout();
     this.router.navigate(['/']);
@@ -180,34 +172,8 @@ export class MessagingComponent implements OnInit {
     });
   }
 
-  getAllStreamData(): void {
-    this.store.select(getAllStreams).subscribe((streams: any) => {
-      streams?.map((stream: any) => {
-        const streamDetail = {
-          anchor: 'newest',
-          num_before: 100,
-          num_after: 0,
-          type: [
-            {
-              operator: 'stream',
-              operand: stream?.name,
-            },
-          ],
-        };
-
-        this.messagingService
-          .getMessagesOfStream(streamDetail)
-          .subscribe((response: any) => {
-            const messages = response?.zulip?.messages;
-
-            messages?.forEach((msg: SingleMessageModel) => {
-              if (msg) {
-                this.store.dispatch(new messagingActions.HandleStreamData(msg));
-              }
-            });
-          });
-      });
-    });
+  getUsers(): void {
+    this.users$ = this.store.select(getZulipUsers);
   }
 
   getAllPrivateMessages(): void {
@@ -230,14 +196,14 @@ export class MessagingComponent implements OnInit {
           .subscribe((response: any) => {
             const messages = response?.zulip?.messages;
 
-            if(!messages.length){
-              return
+            if (!messages.length){
+              return;
             }
             messages?.forEach((msg: SingleMessageModel) => {
               if (msg) {
                 // this.privateMessages.push(msg);
                 // this.sortMessages();
-                this.store.dispatch(new messagingActions.LoadAllMessagesSuccess(msg))
+                this.store.dispatch(new messagingActions.LoadAllMessagesSuccess(msg));
               }
             });
           });

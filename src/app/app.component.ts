@@ -44,7 +44,7 @@ export class AppComponent implements OnInit {
     this.store.select(getIsLoggedIn).subscribe(
       status => {
         if (status) {
-          this.store.dispatch(new authActions.LoadAllUsers());
+          this.store.dispatch(new authActions.LoadPresentUsers());
           this.store.dispatch(new authActions.LoadZulipUsers());
         }
       }
@@ -76,7 +76,7 @@ export class AppComponent implements OnInit {
           this.store.dispatch(new messagingActions.LoadAllStreams());
           this.store.dispatch(new messagingActions.LoadSubStreams());
           this.store.dispatch(new authActions.LoadZulipUsers());
-          this.store.dispatch(new authActions.LoadAllUsers());
+          this.store.dispatch(new authActions.LoadPresentUsers());
           this.store.dispatch(new authActions.CurrentUserProfile());
 
           setTimeout(() => {

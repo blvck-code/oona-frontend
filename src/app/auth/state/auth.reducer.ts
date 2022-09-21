@@ -112,13 +112,13 @@ export function authReducer(state = initialState, action: any): AuthState {
         zulipProfile: action.payload
       };
       // Load All Users
-    case authActions.AuthActionsTypes.LOAD_ALL_USERS_SUCCESS:
+    case authActions.AuthActionsTypes.LOAD_PRESENT_USERS_SUCCESS:
       return {
         ...state,
         users: {
           ...state.users,
           loading: false,
-          all: action.payload,
+          all: action.payload.members,
         },
       };
     // Zulips users
@@ -136,7 +136,7 @@ export function authReducer(state = initialState, action: any): AuthState {
           users: {
             ...state.users,
             loading: false,
-            zulipUsers: action.payload
+            zulipUsers: action.payload.members
           }
         };
       }
@@ -156,12 +156,8 @@ export function authReducer(state = initialState, action: any): AuthState {
 }
 // Save on local storage
 const saveUserData = (userInfo: UserModel) => {
-  // console.log('User info ===>>', userInfo);
   const userData = userInfo.user;
   const tokenData = userInfo.token;
-
-  // console.log('User data ====>>>', userData);
-  // console.log('Token data =====>>>', tokenData);
 
   const firstName: string = userData.first_name;
   const lastName: string = userData.last_name;
@@ -169,12 +165,6 @@ const saveUserData = (userInfo: UserModel) => {
   const accessToken: string = tokenData.access;
   const refreshToken: string = tokenData.refresh;
 
-  // console.log('Last name ===>>>', lastName);
-  // let lastName: string = userInfo.user.last_name;
-  // let email: string = userInfo.user.email;
-  // let accessToken: string = userInfo.token?.access;
-  // let refreshToken: string = userInfo.token?.refresh;
-  //
   localStorage.setItem('firstName', firstName);
   localStorage.setItem('lastName', lastName);
   localStorage.setItem('email', email);

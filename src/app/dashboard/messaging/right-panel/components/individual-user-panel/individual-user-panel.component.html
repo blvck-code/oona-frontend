@@ -1,0 +1,97 @@
+<div class="team-users-container">
+  <div class="member-details mb-2">
+
+    <div class="member-profile-details">
+      <img *ngIf="currentUser.avatar_url;else noAvatar" [src]="currentUser.avatar_url" class="rounded-circle" alt="...">
+      <ng-template #noAvatar>
+        <img src="../../../../../../assets/img/user/Bitmap.jpg" class="rounded-circle" alt="...">
+      </ng-template>
+      <div class="member-info">
+        <p class="member-name">{{ currentUser.full_name }}</p>
+        <p class="member-role" *ngIf="currentUser.role === 100">Organization owner</p>
+        <p class="member-role" *ngIf="currentUser.role === 200">Organization administrator</p>
+        <p class="member-role" *ngIf="currentUser.role === 300">300</p>
+        <p class="member-role" *ngIf="currentUser.role === 400">Member</p>
+        <p class="member-role" *ngIf="currentUser.role === 600">Guest</p>
+      </div>
+    </div>
+
+
+    <div class="member-contact-icons">
+      <div class="contact-icon-container" >
+        <svg height="20" width="20"  viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6.66965 9.7014C7.44762 11.2919 8.73687 12.5753 10.3309 13.346C10.4475 13.4013 10.5765 13.4252 10.7052 13.4155C10.8339 13.4058 10.9579 13.3627 11.0648 13.2905L13.4119 11.7254C13.5157 11.6562 13.6352 11.6139 13.7594 11.6025C13.8837 11.5911 14.0088 11.6109 14.1235 11.66L18.5144 13.5419C18.6636 13.6052 18.7881 13.7154 18.8693 13.8556C18.9504 13.9959 18.9838 14.1588 18.9643 14.3197C18.8255 15.4057 18.2956 16.4039 17.4739 17.1273C16.6521 17.8508 15.5948 18.2499 14.5 18.25C11.1185 18.25 7.87548 16.9067 5.48439 14.5156C3.0933 12.1245 1.75 8.88148 1.75 5.49997C1.75006 4.40513 2.14918 3.34786 2.87264 2.5261C3.5961 1.70435 4.59428 1.17448 5.68028 1.03569C5.84117 1.01622 6.00403 1.04956 6.14432 1.1307C6.28461 1.21183 6.39473 1.33636 6.4581 1.48552L8.34158 5.88032C8.3903 5.994 8.41015 6.11796 8.39936 6.24116C8.38858 6.36436 8.3475 6.48299 8.27977 6.58647L6.72011 8.96957C6.64912 9.07677 6.60716 9.20056 6.59831 9.32883C6.58947 9.4571 6.61405 9.58547 6.66965 9.7014V9.7014Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="contact-icon-container" title="set meeting">
+        <svg height="20" width="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1.875 4.6875H11.875C12.538 4.6875 13.1739 4.95089 13.6428 5.41973C14.1116 5.88857 14.375 6.52446 14.375 7.1875V14.6875C14.375 14.8533 14.3092 15.0122 14.1919 15.1294C14.0747 15.2467 13.9158 15.3125 13.75 15.3125H3.75C3.08696 15.3125 2.45107 15.0491 1.98223 14.5803C1.51339 14.1114 1.25 13.4755 1.25 12.8125V5.3125C1.25 5.14674 1.31585 4.98777 1.43306 4.87056C1.55027 4.75335 1.70924 4.6875 1.875 4.6875V4.6875Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M14.375 8.75L18.75 6.25V13.75L14.375 11.25" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="member-profile-date">
+      <p class="title me-2">Member since:</p>
+      <p class="">{{ currentUser?.date_joined | date: 'dd/MM/yyyy'}}</p>
+    </div>
+    <div class="member-common-teams-container">
+      <p class="common-teams-title">Common Teams</p>
+      <div class="common-teams-list">
+<!--        <div *ngIf="commonTeams">-->
+<!--          <p class="common-teams-item" *ngFor="let team of commonTeams"> {{ team.name }}</p>-->
+<!--        </div>-->
+        <div class="common-teams-group">
+          <a href="#" class="common-teams-item">Smart Parking (UI Designer)</a>
+          <a href="#" class="common-teams-item">Oona (Tester)</a>
+          <a href="#" class="common-teams-item">Mnara (UI Designer)</a>
+          <a href="#" class="common-teams-item">Smart Parking (UI Designer)</a>
+        </div>
+<!--        <div>-->
+<!--          <a href="#" class="common-teams-item">No teams in common</a>-->
+<!--        </div>-->
+      </div>
+    </div>
+  </div>
+
+  <div class="staff-members">
+    <div class="all-users-title">
+      <div class="all-users-wrap" (click)="handleShowSearchUser()">
+        <p>Other staff</p>
+        <div class="search-people">
+          <img src="../../../../../assets/img/icons/search.svg" alt="" />
+        </div>
+      </div>
+      <div class="search-user-form" *ngIf="showSearchUser">
+        <input
+          type="text"
+          [(ngModel)]="searchText"
+          placeholder="Search people..."
+        />
+      </div>
+    </div>
+    <div class="team-members" *ngFor="let member of staffUsers | userFilter: searchText">
+      <div class="m-2">
+        <div class="member" (click)="rightPanelTypeListener(member)">
+          <div class="member-info" >
+            <div class="member-content">
+              <img
+                src="../../../../../../assets/img/user/avatarHolder.png"
+                height="32px"
+                width="32px"
+                class="rounded-circle me-2"
+                alt="..."
+              />
+              <div class="member-name">
+                <span>{{ member.full_name }}</span>
+              </div>
+            </div>
+            <div class="member-option" >
+              <img src="../../../../../assets/img/icons/dots.svg" alt="" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

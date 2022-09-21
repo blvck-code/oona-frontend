@@ -26,11 +26,14 @@ import {AuthEffects} from './auth/state/auth.effects';
 import {MessagingEffects} from './dashboard/messaging/state/messaging.effects';
 import {messagingReducer} from './dashboard/messaging/state/messaging.reducer';
 import {authReducer} from './auth/state/auth.reducer';
+import { HeaderComponent } from './header/header.component';
+import {SharedModule} from './shared/shared.module';
 
 @NgModule({
     declarations: [
         AppComponent,
         LandingPageComponent,
+        HeaderComponent,
     ],
     imports: [
         BrowserModule,
@@ -44,13 +47,14 @@ import {authReducer} from './auth/state/auth.reducer';
         RichTextEditorAllModule,
         BrowserAnimationsModule, // required animations module
         HttpClientModule,
-        StoreModule.forRoot({ userCenter: authReducer, messaging: messagingReducer }),
+        StoreModule.forRoot({userCenter: authReducer, messaging: messagingReducer}),
         StoreDevtoolsModule.instrument({
             name: 'Oona',
             maxAge: 25,
             logOnly: env.production
         }),
         EffectsModule.forRoot([AuthEffects, MessagingEffects]),
+        SharedModule,
     ],
     providers: [
         {

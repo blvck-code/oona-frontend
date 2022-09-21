@@ -159,7 +159,7 @@ export const getSelectedUserId = createSelector(
 export const getPrivateUser = createSelector(
   getAuthState,
   getSelectedUserId,
-  (state, userId) => state?.users?.zulipUsers?.members?.find(
+  (state, userId) => state?.users?.zulipUsers?.find(
     (user: any) => user.user_id === userId
   )
 );

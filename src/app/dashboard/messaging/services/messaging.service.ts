@@ -587,13 +587,12 @@ export class MessagingService {
       }
     );
 
-
   }
 
   handleGetPrivateMessages(): void {
     this.store.select(getZulipUsers).subscribe(
       (users: any) => {
-        users?.members.map((user: any) => {
+        users?.map((user: any) => {
 
           const streamDetail = {
             anchor: 'newest',

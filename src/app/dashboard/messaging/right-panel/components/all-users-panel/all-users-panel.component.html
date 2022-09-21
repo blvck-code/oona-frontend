@@ -1,0 +1,161 @@
+<div class="all-users-container">
+  <div class="group-members">
+    <div class="all-users-title">
+      <div class="all-users-wrap" (click)="handleShowSearchUser()">
+        <p>All Users</p>
+        <div class="search-people">
+          <img src="../../../../../assets/img/icons/search.svg" alt="" />
+        </div>
+      </div>
+
+      <div class="search-user-form" *ngIf="showSearchUser">
+        <input
+          [(ngModel)]="searchText"
+          type="text"
+          placeholder="Search people..."
+        />
+      </div>
+    </div>
+
+    <div class="group-members-wrap">
+      <div *ngIf="!(users$ | async)" class="d-flex justify-content-center">
+        <div>
+          <app-loading-animation></app-loading-animation>
+        </div>
+      </div>
+      <div class="mb-2" *ngFor="let member of (users$ | async) | userFilter: searchText">
+        <div class="member">
+          <div class="member-info" >
+            <div class="member-content" (click)="goToMemberChat(member)">
+              <!--              <app-active-tag-->
+              <!--                *ngIf="member.presence.aggregated.status === 'active'"-->
+              <!--              ></app-active-tag>-->
+              <!--              <app-inactive-tag-->
+              <!--                *ngIf="member.presence.aggregated.status === 'idle'"-->
+              <!--              ></app-inactive-tag>-->
+              <!--              <app-idle-tag-->
+              <!--                *ngIf="member.presence.aggregated.status === 'offline'"-->
+              <!--              ></app-idle-tag>-->
+              <img
+                src="assets/img/placeholder.jpg"
+                height="32px"
+                width="32px"
+                class="rounded-circle me-2"
+                alt="..."
+              />
+              <div class="member-name">
+                <span>{{ member?.full_name }}</span>
+                <!--              <span *ngIf="endPointUnreadId.includes(member.user_id) && !member.typing" class="new-message">New message</span>-->
+                <!--              <span *ngIf="member.typing" class="typing">typing...</span>-->
+              </div>
+              <span
+                *ngIf="member.role === 100 || member.role === 200"
+                class="member-role"
+                [class.role-team-leader]="
+                member.role === 100 || member.role === 200
+              "
+              >
+              {{ member.role === 100 ? 'Admin' : 'Team leader' }}
+            </span>
+              <span
+                *ngIf="member.role === 600"
+                class="member-role"
+                [class.role-team-guest]="member.role === 600"
+              >Guest</span
+              >
+            </div>
+            <div class="member-option" >
+              <img src="../../../../../assets/img/icons/dots.svg" alt="" />
+            </div>
+          </div>
+        </div>
+
+        <!--        <div class="member">-->
+        <!--          <div class="member-info" >-->
+        <!--            <div class="member-content" (click)="goToMemberChat(member)" >-->
+        <!--              <app-active-tag-->
+        <!--                *ngIf="member.presence.aggregated.status === 'active'"-->
+        <!--              ></app-active-tag>-->
+        <!--              <app-inactive-tag-->
+        <!--                *ngIf="member.presence.aggregated.status === 'idle'"-->
+        <!--              ></app-inactive-tag>-->
+        <!--              <app-idle-tag-->
+        <!--                *ngIf="member.presence.aggregated.status === 'offline'"-->
+        <!--              ></app-idle-tag>-->
+        <!--              <img-->
+        <!--                src="assets/img/placeholder.jpg"-->
+        <!--                height="32px"-->
+        <!--                width="32px"-->
+        <!--                class="rounded-circle me-2"-->
+        <!--                alt="..."-->
+        <!--              />-->
+        <!--              <span class="member-name">{{ member?.full_name }}</span>-->
+        <!--              <span-->
+        <!--                *ngIf="member.role === 100 || member.role === 200"-->
+        <!--                class="member-role"-->
+        <!--                [class.role-team-leader]="-->
+        <!--                member.role === 100 || member.role === 200-->
+        <!--              "-->
+        <!--              >-->
+        <!--              {{ member.role === 100 ? 'Admin' : 'Team leader' }}-->
+        <!--            </span>-->
+        <!--              <span-->
+        <!--                *ngIf="member.role === 600"-->
+        <!--                class="member-role"-->
+        <!--                [class.role-team-guest]="member.role === 600"-->
+        <!--              >Guest</span-->
+        <!--              >-->
+        <!--            </div>-->
+        <!--            <div class="member-option" (click)="handleShowMoreInfo(member)">-->
+        <!--              <img src="../../../../../assets/img/icons/dots.svg" alt="" />-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </div>-->
+
+        <!--        <div class="member">-->
+        <!--          <div class="member-info" >-->
+        <!--            <div class="member-content" (click)="goToMemberChat(member)" >-->
+        <!--              <app-active-tag-->
+        <!--                *ngIf="member.presence.aggregated.status === 'active'"-->
+        <!--              ></app-active-tag>-->
+        <!--              <app-inactive-tag-->
+        <!--                *ngIf="member.presence.aggregated.status === 'idle'"-->
+        <!--              ></app-inactive-tag>-->
+        <!--              <app-idle-tag-->
+        <!--                *ngIf="member.presence.aggregated.status === 'offline'"-->
+        <!--              ></app-idle-tag>-->
+        <!--              <img-->
+        <!--                src="assets/img/placeholder.jpg"-->
+        <!--                height="32px"-->
+        <!--                width="32px"-->
+        <!--                class="rounded-circle me-2"-->
+        <!--                alt="..."-->
+        <!--              />-->
+        <!--              <span class="member-name">{{ member?.full_name }}</span>-->
+        <!--              <span-->
+        <!--                *ngIf="member.role === 100 || member.role === 200"-->
+        <!--                class="member-role"-->
+        <!--                [class.role-team-leader]="-->
+        <!--                member.role === 100 || member.role === 200-->
+        <!--              "-->
+        <!--              >-->
+        <!--              {{ member.role === 100 ? 'Admin' : 'Team leader' }}-->
+        <!--            </span>-->
+        <!--              <span-->
+        <!--                *ngIf="member.role === 600"-->
+        <!--                class="member-role"-->
+        <!--                [class.role-team-guest]="member.role === 600"-->
+        <!--              >Guest</span-->
+        <!--              >-->
+        <!--            </div>-->
+        <!--            <div class="member-option" (click)="handleShowMoreInfo(member)">-->
+        <!--              <img src="../../../../../assets/img/icons/dots.svg" alt="" />-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </div>-->
+        <!--      -->
+      </div>
+    </div>
+  </div>
+
+</div>

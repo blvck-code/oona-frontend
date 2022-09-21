@@ -42,14 +42,14 @@ export class AuthEffects {
 
   @Effect()
   loadAllUsers$: Observable<any> = this.actions$.pipe(
-    ofType<authActions.LoadAllUsers>(authActions.AuthActionsTypes.LOAD_ALL_USERS),
-    mergeMap((action: authActions.LoadAllUsers) =>
+    ofType<authActions.LoadPresentUsers>(authActions.AuthActionsTypes.LOAD_PRESENT_USERS),
+    mergeMap((action: authActions.LoadPresentUsers) =>
       this.authSrv.getUsersByAvailability().pipe(
         map((allUsers: any) =>
-          new authActions.LoadAllUsersSuccess(allUsers)
+          new authActions.LoadPresentUsersSuccess(allUsers)
         ),
         // ToDo Error handler
-        catchError((err) => of(new authActions.LoadAllUsersFail(err)))
+        catchError((err) => of(new authActions.LoadPresentUsersFail(err)))
       )
     )
   );

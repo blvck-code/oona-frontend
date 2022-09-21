@@ -19,7 +19,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { retagTsFile } from '@angular/compiler-cli/src/ngtsc/shims';
 import * as events from 'events';
 import * as messageActions from '../state/messaging.actions';
-import * as messagingActions from "../state/messaging.actions";
+import * as messagingActions from '../state/messaging.actions';
 
 @Component({
   selector: 'app-individual-messaging',
@@ -52,18 +52,6 @@ export class IndividualMessagingComponent implements OnInit {
   }
 
   onInitHandler(): void {
-    this.store.select(getSelectedUserId).subscribe(
-      (userIds: any) => {
-
-        this.store.select(getAllUsers).subscribe(
-          (allUsers: any[]) => {
-
-          }
-        )
-
-      }
-    )
-
     const currentUser = this.activatedRoute.snapshot.queryParams?.member;
 
 
@@ -90,21 +78,21 @@ export class IndividualMessagingComponent implements OnInit {
     }, 500);
   }
 
-  // @ts-ignore
-  changeContentOnRouteChange(): void {
-    // @ts-ignore
-    this.route.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd) {
-        this.onInitHandler();
-      }
-
-      if (event instanceof NavigationStart) {
-        setTimeout(() => {
-          this.getUserMessages();
-        }, 1000);
-      }
-    });
-  }
+  // // @ts-ignore
+  // changeContentOnRouteChange(): void {
+  //   // @ts-ignore
+  //   this.route.events.subscribe((event: Event) => {
+  //     if (event instanceof NavigationEnd) {
+  //       this.onInitHandler();
+  //     }
+  //
+  //     if (event instanceof NavigationStart) {
+  //       setTimeout(() => {
+  //         this.getUserMessages();
+  //       }, 1000);
+  //     }
+  //   });
+  // }
 
   getUserMessages(): void {
     const streamDetail = {
@@ -127,9 +115,6 @@ export class IndividualMessagingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.onInitHandler();
-    // this.fetchUserMessages();
-    this.changeContentOnRouteChange();
 
     this.activatedRoute.params.subscribe(
       (params: Params) => (this.myParam = params.member)

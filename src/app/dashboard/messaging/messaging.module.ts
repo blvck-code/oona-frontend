@@ -60,6 +60,10 @@ import { AppModule } from '../../app.module';
 import { HomeModule } from '../home/home.module';
 import { StreamsTextEditorComponent } from './streams/streams-text-editor/streams-text-editor.component';
 import { ChannelSettingsComponent } from './team-messaging/channel-settings/channel-settings.component';
+import { RightPanelComponent } from './right-panel/right-panel.component';
+import { TeamUsersPanelComponent } from './right-panel/components/team-users-panel/team-users-panel.component';
+import { AllUsersPanelComponent } from './right-panel/components/all-users-panel/all-users-panel.component';
+import { IndividualUserPanelComponent } from './right-panel/components/individual-user-panel/individual-user-panel.component';
 
 @NgModule({
   // tslint:disable-next-line:max-line-length
@@ -104,7 +108,11 @@ import { ChannelSettingsComponent } from './team-messaging/channel-settings/chan
     StreamsBoardComponent,
     UserFilterPipe,
     StreamsTextEditorComponent,
-    ChannelSettingsComponent
+    ChannelSettingsComponent,
+    RightPanelComponent,
+    TeamUsersPanelComponent,
+    AllUsersPanelComponent,
+    IndividualUserPanelComponent
   ],
   exports: [LoadingAnimationComponent],
   imports: [
