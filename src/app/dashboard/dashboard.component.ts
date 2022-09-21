@@ -12,7 +12,7 @@ import {getIsLoggedIn} from '../auth/state/auth.selectors';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-
+  title = 'Team Messaging';
   constructor(
     private store: Store<AppState>
   ) { }

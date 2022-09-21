@@ -2,76 +2,149 @@
   height: 100%;
   padding: 0 15px;
   position: relative;
-  background-color: #ECF4FB;
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: visible;
 
-  .all-users-title {
-    position: sticky;
-    top: 0;
-    margin-top: 0;
-    width: 100%;
-    padding: 10px 20px;
-    z-index: 3;
+  .group-members {
+    padding: 0 10px;
+    height: 40%;
+    overflow-y: scroll;
     background-color: #ECF4FB;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 
-    .all-users-wrap {
-      display: flex;
-      justify-content: space-between;
-      align-content: center;
-      cursor: pointer;
-      user-select: none;
+    .all-users-title {
+      position: sticky;
+      top: 0;
+      margin-top: 0;
+      width: 100%;
+      padding: 10px 20px;
+      z-index: 3;
+      background-color: #ECF4FB;
 
-
-      &:hover .search-people > img {
-        opacity: 1;
-      }
-
-      p {
-        font-size: 16px;
-        font-weight: 500;
-        margin: 0;
-        color: #57506c;
-        line-height: 19px;
-      }
-
-      .search-people {
-        width: 20px;
-        height: 20px;
-
-        img {
-          width: 100%;
-          opacity: 0.5;
-          transition: opacity 0.5s ease-in-out;
-        }
-      }
-    }
-
-    .search-user-form {
-      margin: 5px 0;
-      input {
-        background: #fff;
-        width: 100%;
-        border: 1px solid #D7ECFF;
-        border-radius: 5px;
-        font-size: 14px;
-        height: 30px;
-        padding: 12px;
+      .all-users-wrap {
+        display: flex;
+        justify-content: space-between;
+        align-content: center;
+        cursor: pointer;
         user-select: none;
 
-        &:active {
+
+        &:hover .search-people > img {
+          opacity: 1;
+        }
+
+        p {
+          font-size: 16px;
+          font-weight: 500;
+          margin: 0;
+          color: #57506c;
+          line-height: 19px;
+        }
+
+        .search-people {
+          width: 20px;
+          height: 20px;
+
+          img {
+            width: 100%;
+            opacity: 0.5;
+            transition: opacity 0.5s ease-in-out;
+          }
+        }
+      }
+
+      .search-user-form {
+        margin: 5px 0;
+        input {
+          background: #fff;
+          width: 100%;
           border: 1px solid #D7ECFF;
+          border-radius: 5px;
+          font-size: 14px;
+          height: 30px;
+          padding: 12px;
+          user-select: none;
+
+          &:active {
+            border: 1px solid #D7ECFF;
+          }
         }
       }
     }
   }
 
-  .group-members-wrap {
-    padding: 10px;
+  .staff-members {
+    padding:0 10px 10px 10px;
+    margin-top: 10px;
+    height: 60%;
+    overflow-y: scroll;
+    background-color: #ECF4FB;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: 1px solid red;
+
+    .all-users-title {
+      position: sticky;
+      top: 0;
+      margin-top: 0;
+      width: 100%;
+      padding: 10px 20px;
+      z-index: 3;
+      background-color: #ECF4FB;
+
+      .all-users-wrap {
+        display: flex;
+        justify-content: space-between;
+        align-content: center;
+        cursor: pointer;
+        user-select: none;
+
+
+        &:hover .search-people > img {
+          opacity: 1;
+        }
+
+        p {
+          font-size: 16px;
+          font-weight: 500;
+          margin: 0;
+          color: #57506c;
+          line-height: 19px;
+        }
+
+        .search-people {
+          width: 20px;
+          height: 20px;
+
+          img {
+            width: 100%;
+            opacity: 0.5;
+            transition: opacity 0.5s ease-in-out;
+          }
+        }
+      }
+
+      .search-user-form {
+        margin: 5px 0;
+        input {
+          background: #fff;
+          width: 100%;
+          border: 1px solid #D7ECFF;
+          border-radius: 5px;
+          font-size: 14px;
+          height: 30px;
+          padding: 12px;
+          user-select: none;
+
+          &:active {
+            border: 1px solid #D7ECFF;
+          }
+        }
+      }
+    }
   }
 }
-
-
 
 .circle {
   width: 12px;
