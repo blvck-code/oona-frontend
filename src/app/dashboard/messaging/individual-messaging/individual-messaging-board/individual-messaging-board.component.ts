@@ -104,8 +104,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getIndividualUser();
-    this.changeContentOnRouteChange();
     this.inComingMessage();
     this.resetDmUnreads();
     this.getUnreadMessages();
@@ -115,19 +113,22 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
     this.store.select(getSelectedUserMessages).subscribe(
       (messages: SingleMessageModel[]) => {
+        console.log('Message ===>>>', messages);
         this.loading = false;
       }
     );
 
-    setTimeout(() => {
-      this.currentUser$ = this.store.select(getPrivateUser);
-      this.store.select(getPrivateUser).subscribe(
-        (userInfo: any) => {
-          this.selectedUserId = userInfo.user_id;
-          this.operand = userInfo;
-        }
-      );
-    }, 1000);
+    this.currentUser$ = this.store.select(getPrivateUser);
+    this.store.select(getPrivateUser).subscribe(
+      (userInfo: any) => {
+        this.selectedUserId = userInfo.user_id;
+        this.operand = userInfo;
+      }
+    );
+
+    // setTimeout(() => {
+    //
+    // }, 1000);
 
 
     this.messagingService.currentMemberChatDetail.subscribe((member) => {
@@ -188,15 +189,13 @@ export class IndividualMessagingBoardComponent implements OnInit {
     });
   }
 
-  changeContentOnRouteChange(): void {
-    this.router.events.subscribe((event: any) => {
-      if (event instanceof NavigationStart) {
-        console.log('Route change start');
-        // this.ngOnInit();
-        this.getSelectedUser();
-      }
-    });
-  }
+  // changeContentOnRouteChange(): void {
+  //   this.router.events.subscribe((event: any) => {
+  //     if (event instanceof NavigationStart) {
+  //       this.getSelectedUser();
+  //     }
+  //   });
+  // }
 
   getIndividualUser(): void {
     this.store.select(getSelectedUser).subscribe((user) => {

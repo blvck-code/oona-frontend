@@ -14,6 +14,7 @@ export class IndividualUserPanelComponent implements OnInit {
   searchText = '';
   showSearchUser = false;
   currentUser: any;
+  staffUsers: ZulipSingleUser[] = [];
 
   constructor(
     private router: Router,
@@ -28,11 +29,8 @@ export class IndividualUserPanelComponent implements OnInit {
   routerDetails(): void {
     this.route.queryParams.subscribe(params => {
       const userId = params.id;
-      console.log('Current user id ==>>', userId);
-
       this.users$.subscribe(
         (users: ZulipSingleUser[]) => {
-
           users.map(
             (user: ZulipSingleUser) => {
               if (user.user_id === +userId) {
@@ -41,9 +39,13 @@ export class IndividualUserPanelComponent implements OnInit {
             }
           );
 
+          this.users$.subscribe(
+            (staffUsers: ZulipSingleUser[]) => {
+              this.staffUsers = staffUsers.filter(user => user.user_id !== +userId);
+            }
+          );
         }
       );
-
     });
   }
 

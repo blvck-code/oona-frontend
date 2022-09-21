@@ -2,10 +2,17 @@
   <div class="member-details mb-2">
 
     <div class="member-profile-details">
-      <img src="../../../../../../assets/img/user/Bitmap.jpg" class="rounded-circle" alt="...">
+      <img *ngIf="currentUser.avatar_url;else noAvatar" [src]="currentUser.avatar_url" class="rounded-circle" alt="...">
+      <ng-template #noAvatar>
+        <img src="../../../../../../assets/img/user/Bitmap.jpg" class="rounded-circle" alt="...">
+      </ng-template>
       <div class="member-info">
         <p class="member-name">{{ currentUser.full_name }}</p>
-        <p class="member-role">UI Designer</p>
+        <p class="member-role" *ngIf="currentUser.role === 100">Organization owner</p>
+        <p class="member-role" *ngIf="currentUser.role === 200">Organization administrator</p>
+        <p class="member-role" *ngIf="currentUser.role === 300">300</p>
+        <p class="member-role" *ngIf="currentUser.role === 400">Member</p>
+        <p class="member-role" *ngIf="currentUser.role === 600">Guest</p>
       </div>
     </div>
 
@@ -63,7 +70,7 @@
         />
       </div>
     </div>
-    <div class="team-members" *ngFor="let member of (users$ | async) | userFilter: searchText">
+    <div class="team-members" *ngFor="let member of staffUsers | userFilter: searchText">
       <div class="m-2">
         <div class="member" (click)="rightPanelTypeListener(member)">
           <div class="member-info" >
