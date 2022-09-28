@@ -66,6 +66,10 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   privateTopics: any = [];
   publicTopics: any = [];
 
+  streams: any[] = [];
+  streamsSubject$ = new BehaviorSubject(this.streams);
+  streamsObservable = this.streamsSubject$.asObservable();
+
   streamUnreadCounter: any[] = [];
   finalStream: any[] = [];
   finalStreamSubject = new BehaviorSubject(this.finalStream);
@@ -166,39 +170,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     );
   }
 
-  streamsList(): void {
-    this.streams$.subscribe(
-      streamList => {
-
-        streamList.map((streamItem: AllStreamsModel) => {
-
-          this.messagingService.getTopicsOnStreams(streamItem.stream_id).subscribe(
-            (response: any) => {
-              const topics = response?.zulip.topics;
-
-              topics.map((topicItem: Topics) => {
-                topicItem.unread = 0;
-              });
-
-              streamItem = {
-                ...streamItem,
-                topics,
-                unread: 0
-              };
-
-              this.streamTopicsSubject.subscribe(
-                streams => streams.push(streamItem)
-              );
-
-            }
-          );
-
-        });
-
-      }
-    );
-  }
-
   handleCounter(stream?: AllStreamsModel, topic?: Topics): void {
     const uniqueId: number[] = [];
     // tslint:disable-next-line:max-line-length
@@ -232,6 +203,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
       });
     }
     this.allTopics = [...this.allTopics, streamItem];
+
   }
 
   handleStreams(): void {
@@ -263,6 +235,10 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
                     unread: 0
                   };
 
+                  this.streamsSubject$.subscribe(
+                    (streamsContent: any[]) => [...streamsContent, stream]
+                  );
+
                   this.allTopics = [...this.allTopics, stream];
 
                   this.unreadStreams$.subscribe(
@@ -273,6 +249,22 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
                         if (uniqueId.includes(message.id)) { return; }
 
                         if (message.stream_id === stream.stream_id) {
+                          // @ts-ignore
+                          this.streamsSubject$.find(
+                            (streamItem: AllStreamsModel) => {
+                              // tslint:disable-next-line:no-unused-expression
+                              if (streamItem.stream_id === stream.stream_id) {
+                                streamItem.unread += 1;
+
+                                streamItem.topics.map((topicItem: Topics) => {
+                                  if (topicItem.name.toLowerCase() === message.subject.toLowerCase()) {
+                                    // @ts-ignore
+                                    topicItem.unread += 1;
+                                  }
+                                });
+                              }
+                            }
+                          );
                           this.allTopics.find(
                             (streamItem: AllStreamsModel) => {
                               // tslint:disable-next-line:no-unused-expression
@@ -479,26 +471,4 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     }
     this.handleCounter(stream, topic);
   }
-
 }
-
-
-
-// tslint:disable-next-line:prefer-for-of
-// for (let i = 0; i < this.allTopics.length; i++) {
-//   if (this.allTopics[i].invite_only === true) {
-//     this.privateTopics.push(this.allTopics[i]);
-//     this.privateTopics = this.privateTopics.filter((v: any, ind: any, s: string | any[]) => {
-//       return s.indexOf(v) === ind;
-//     });
-//   }
-// }
-// // tslint:disable-next-line:prefer-for-of
-// for (let i = 0; i < this.allTopics.length; i++) {
-//   if (this.allTopics[i].invite_only === false) {
-//     this.publicTopics.push(this.allTopics[i]);
-//     this.publicTopics = this.publicTopics.filter((v: any, ind: any, s: string | any[]) => {
-//       return s.indexOf(v) === ind;
-//     });
-//   }
-// }
