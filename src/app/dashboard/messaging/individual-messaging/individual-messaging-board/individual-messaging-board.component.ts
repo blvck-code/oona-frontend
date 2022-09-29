@@ -113,7 +113,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
     this.store.select(getSelectedUserMessages).subscribe(
       (messages: SingleMessageModel[]) => {
-        console.log('Message ===>>>', messages);
         this.loading = false;
       }
     );

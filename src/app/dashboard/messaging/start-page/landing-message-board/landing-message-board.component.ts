@@ -20,7 +20,7 @@ import {
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { SingleChat, SingleMessageModel } from '../../models/messages.model';
 import { map, switchMap } from 'rxjs/operators';
-import {OonaSocketService} from "../../services/oona-socket.service";
+import {OonaSocketService} from '../../services/oona-socket.service';
 
 @Component({
   selector: 'app-landing-message-board',
@@ -73,7 +73,6 @@ export class LandingMessageBoardComponent implements OnInit {
         (messages: SingleMessageModel[]) => {
 
           const lastItem: SingleMessageModel = messages[messages.length - 1];
-          console.log('Last message ==>>', lastItem);
 
         }
       );

@@ -14,12 +14,13 @@ import TurndownService from 'turndown';
 import {HomeService} from '../../../home/shared/home.service';
 import {OonaSocketService} from '../../services/oona-socket.service';
 import * as messagingActions from '../../state/messaging.actions';
-import {getSelectedStreamMessages, getSelectedTopic} from '../../state/messaging.selectors';
+import {getAllStreams, getSelectedStreamId, getSelectedStreamMessages, getSelectedTopic} from '../../state/messaging.selectors';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
 import {Observable} from 'rxjs';
 import {SingleMessageModel} from '../../models/messages.model';
 import {log} from 'util';
+import {AllStreamsModel} from '../../models/streams.model';
 
 const turndownService = new TurndownService();
 
@@ -116,21 +117,44 @@ export class ChatBoardComponent implements OnInit {
     );
 
     this.storeStreamMessages();
-    this.messagingService.currentStreamName.subscribe((streamName) => {
-      this.streamName = streamName; // always get the current value
-    });
+    this.getStreamName();
+    // this.messagingService.currentStreamName.subscribe((streamName) => {
+    //   this.streamName = streamName; // always get the current value
+    // });
+    //
+    // this.route.queryParams.subscribe((params) => {
+    //   this.streamMessages(params);
+    //   this.userSocketService.messageCount.subscribe(messages => {
+    //     this.newMessagesCount = messages;
+    //     this.streamMessages(params);
+    //   });
+    // });
+    // this.messagingService.currentStreamTopic.subscribe((streamTopic) => {
+    //   this.filteredStreamTopic = streamTopic; // always get the current value
+    //   this.filterMessagesByTopic(streamTopic);
+    // });
+  }
 
-    this.route.queryParams.subscribe((params) => {
-      this.streamMessages(params);
-      this.userSocketService.messageCount.subscribe(messages => {
-        this.newMessagesCount = messages;
-        this.streamMessages(params);
-      });
-    });
-    this.messagingService.currentStreamTopic.subscribe((streamTopic) => {
-      this.filteredStreamTopic = streamTopic; // always get the current value
-      this.filterMessagesByTopic(streamTopic);
-    });
+  getStreamName(): void {
+    this.store.select(getSelectedStreamId).subscribe(
+      (streamId: number | null) => {
+
+        if (streamId) {
+          this.store.select(getAllStreams).subscribe(
+            (streams: AllStreamsModel[]) => {
+              streams.map((stream: AllStreamsModel) => {
+
+                if (+stream.stream_id === streamId ) {
+                  this.streamName = stream.name;
+                }
+
+              });
+            }
+          );
+        }
+
+      }
+    );
   }
 
   streamMessages(streamParamDetail: any): void {

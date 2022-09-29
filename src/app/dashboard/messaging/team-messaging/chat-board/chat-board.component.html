@@ -22,7 +22,7 @@
     <div class="tab-pane messages-tab-pane fade show active border-bottom-0" style="height: 100%" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
 
       <div class="overflow-chat">
-        <div *ngIf="messagesOfStream.length >= 1" #myList id="box">
+        <div *ngIf="(selectedStreamMessages$ | async)?.length" #myList id="box">
           <div class="d-flex justify-content-center">
             <button class="btn load-more-messages-btn" (click)="getMorePrivateMessages()">Get more</button>
           </div>
