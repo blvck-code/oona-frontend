@@ -36,7 +36,7 @@
           <div #endPrivateChat></div>
         </div>
 
-        <div *ngIf="!(messages$ | async)?.length" class="d-flex justify-content-center">
+        <div *ngIf="!loading && !(messages$ | async)?.length" class="d-flex justify-content-center">
           <p>No messages with {{ (currentUser$ | async)?.full_name }}</p>
         </div>
 

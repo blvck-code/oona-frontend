@@ -2,7 +2,6 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  HostListener,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -15,11 +14,10 @@ import { AppState } from '../../../../state/app.state';
 import {
   getLoadingAllMsg,
   getAllMessages,
-  getAllStreamData, getPrivateMessages, getStreamMessages, getBothMessages,
+  getPrivateMessages, getStreamMessages, getBothMessages,
 } from '../../state/messaging.selectors';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { SingleChat, SingleMessageModel } from '../../models/messages.model';
-import { map, switchMap } from 'rxjs/operators';
 import {OonaSocketService} from '../../services/oona-socket.service';
 
 @Component({
@@ -50,9 +48,7 @@ export class LandingMessageBoardComponent implements OnInit {
 
   privateMessages = Array();
   privateMessagesSubject = new BehaviorSubject(this.privateMessages);
-  privateMessageObservable = this.privateMessagesSubject.asObservable();
 
-  allMessages$!: Observable<any>;
 
   constructor(
     private messagingService: MessagingService,
@@ -60,50 +56,43 @@ export class LandingMessageBoardComponent implements OnInit {
     private userSocketService: OonaSocketService,
     private store: Store<AppState>
   ) {
-    this.allMemberTeams();
+    // this.allMemberTeams();
   }
 
   ngOnInit(): void {
     this.initPage();
   }
 
-  getLastItem(): void {
-    setTimeout(() => {
-      this.messages$.subscribe(
-        (messages: SingleMessageModel[]) => {
-
-          const lastItem: SingleMessageModel = messages[messages.length - 1];
-
-        }
-      );
-    }, 1500);
-  }
+  // getLastItem(): void {
+  //   setTimeout(() => {
+  //     this.messages$.subscribe(
+  //       (messages: SingleMessageModel[]) => {
+  //
+  //         const lastItem: SingleMessageModel = messages[messages.length - 1];
+  //
+  //       }
+  //     );
+  //   }, 1500);
+  // }
 
   // Init Page
   initPage(): void {
     // get messages from store
+    this.store.select(getBothMessages).subscribe(
+      (messages: SingleMessageModel[]) => {
+        if (messages) {
+          this.loading = false;
+          this.scrollBottom();
+        }
+      }
+    );
     this.messages$ = this.store.select(getBothMessages);
-    this.getLastItem();
-    this.getStreamMessage();
-    // updating UI with the latest messages
-    this.inComingMessage();
-    this.outGoingMsg();
 
     // get Loading Message
     this.loadingMessages = this.store.select(getLoadingAllMsg);
 
-    this.store.select(getBothMessages).subscribe(
-      (messages: SingleMessageModel[]) => {
-        messages ? this.loading = false :  ''
-      }
-    )
-
-
     this.messagesLength();
-    // @ts-ignore
-    document
-      ?.getElementById('box')
-      ?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+    this.scrollBottom();
   }
 
   messagesLength(): void {
@@ -116,43 +105,6 @@ export class LandingMessageBoardComponent implements OnInit {
   allMemberTeams(): void {
     this.messagingService.getAllTeams().subscribe((teams: any) => {
       this.allTeams = teams.streams.map((team: { name: any }) => team.name);
-    });
-  }
-
-  getMessagesOfTeams(): void {
-    // get messages of each team
-
-    this.allTeams?.map((teamName: any) => {
-      const streamDetail = {
-        use_first_unread_anchor: true,
-        num_before: this.initialMessageCount,
-        type: [
-          {
-            operator: 'stream',
-            operand: teamName,
-          },
-        ],
-      };
-
-      this.messagingService.getMessagesOfStream(streamDetail).subscribe(
-        (response: any) => {
-          this.change.detectChanges();
-          this.messagesOfStream.push(...response?.zulip?.messages);
-          // sort by time. latest last
-          this.messagesOfStream.sort((a, b) => a.timestamp - b.timestamp);
-          this.change.detectChanges();
-
-          // @ts-ignore
-          document.getElementById('box').scrollIntoView({
-            behavior: 'smooth',
-            block: 'end',
-            inline: 'nearest',
-          });
-        },
-        (error: any) => {
-          console.log('error', error);
-        }
-      );
     });
   }
 
@@ -173,7 +125,6 @@ export class LandingMessageBoardComponent implements OnInit {
       this.messagingService.getMessagesOfStream(streamDetail).subscribe(
         (response: any) => {
           this.change.detectChanges();
-          // get first 10 items from this new array array.slice(0, 10);
           // add the 10 items to the top of the stack
           this.messagesOfStream.unshift(
             ...response.zulip.messages.slice(0, 10)
@@ -268,14 +219,12 @@ export class LandingMessageBoardComponent implements OnInit {
 
   scrollBottom(): any {
     if (this.endChat) {
-      setTimeout(() => {
         // @ts-ignore
         this.endChat.nativeElement.scrollIntoView({
           behavior: 'smooth',
-          block: 'start',
-          inline: 'nearest',
+          // block: 'start',
+          // inline: 'nearest',
         });
-      }, 500);
     }
   }
 }

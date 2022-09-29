@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap');
+//@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap');
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
 @font-face {
@@ -6,6 +6,18 @@
   src: local("Gilroy"),
   url(assets/font/Gilroy-Regular.woff);
   font-weight: normal;
+}
+@font-face {
+  font-family: Poppin;
+  src: local("Poppin"),
+  url(assets/font/Poppins-Regular.woff);
+  font-weight: normal;
+}
+@font-face {
+  font-family: Poppin;
+  src: local("Poppin"),
+  url(assets/font/Poppins-Bold.woff);
+  font-weight: bold;
 }
 @font-face {
   font-family: Gilroy;

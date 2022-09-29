@@ -1,17 +1,12 @@
 import {
   ChangeDetectorRef,
   Component,
-  ElementRef,
   OnInit,
-  QueryList,
-  ViewChild,
-  ViewChildren,
 } from '@angular/core';
-import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { MessagingService } from '../../services/messaging.service';
 
 import TurndownService from 'turndown';
-import {HomeService} from '../../../home/shared/home.service';
 import {OonaSocketService} from '../../services/oona-socket.service';
 import * as messagingActions from '../../state/messaging.actions';
 import {getAllStreams, getSelectedStreamId, getSelectedStreamMessages, getSelectedTopic} from '../../state/messaging.selectors';
@@ -19,7 +14,6 @@ import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
 import {Observable} from 'rxjs';
 import {SingleMessageModel} from '../../models/messages.model';
-import {log} from 'util';
 import {AllStreamsModel} from '../../models/streams.model';
 
 const turndownService = new TurndownService();
@@ -30,7 +24,6 @@ const turndownService = new TurndownService();
   styleUrls: ['./chat-board.component.scss'],
 })
 export class ChatBoardComponent implements OnInit {
-  streamDetails = {};
   streamName = '';
   messagesOfStream = Array();
   filteredMessagesOfStream = Array();
@@ -39,7 +32,6 @@ export class ChatBoardComponent implements OnInit {
   filteredStreamTopic = '';
   latItemTopic: any;
   initialMessageCount =  30;
-  newMessagesCount: number | undefined;
   selectedStreamMessages$!: Observable<SingleMessageModel[]>;
   topicSelected = '';
   loading = true;
@@ -82,11 +74,8 @@ export class ChatBoardComponent implements OnInit {
     console.log('Selected topic =>', this.topicSelected);
     console.log('Selected topic =>', this.messageTopic);
     this.store.select(getSelectedStreamMessages).subscribe(
-      (messages: SingleMessageModel[]) => {
-        {
+      () => {
           this.loading = false;
-        }
-        // console.log('Stream messages =>', messages)
       }
     );
   }
@@ -236,7 +225,7 @@ export class ChatBoardComponent implements OnInit {
       content: markdown,
     };
     this.messagingService.sendStreamMessage(messageDetail).subscribe(
-      (response: any) => {
+      () => {
         // re-fetch messages with pm
         const streamId = window.location.href.split('id=')[1];
         this.streamMessages({id: streamId});
@@ -295,16 +284,16 @@ export class ChatBoardComponent implements OnInit {
     );
   }
 
-  private filterMessagesByTopic(streamTopic: string): void {
-
-    if (streamTopic !== ''){
-      this.filteredMessagesOfStream = this.messagesOfStream.filter(
-        (message: { subject: string }) =>
-          message.subject === streamTopic
-      );
-    }else{
-      this.filteredMessagesOfStream = this.messagesOfStream;
-    }
-    this.change.detectChanges();
-  }
+  // private filterMessagesByTopic(streamTopic: string): void {
+  //
+  //   if (streamTopic !== ''){
+  //     this.filteredMessagesOfStream = this.messagesOfStream.filter(
+  //       (message: { subject: string }) =>
+  //         message.subject === streamTopic
+  //     );
+  //   }else{
+  //     this.filteredMessagesOfStream = this.messagesOfStream;
+  //   }
+  //   this.change.detectChanges();
+  // }
 }
