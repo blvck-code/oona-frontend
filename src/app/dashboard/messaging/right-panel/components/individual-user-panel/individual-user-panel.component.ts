@@ -2,7 +2,10 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {ZulipSingleUser} from '../../../../../auth/models/user.model';
 import {ActivatedRoute, Router} from '@angular/router';
-import * as messagingActions from '../../../state/messaging.actions';
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../../../state/app.state';
+import {getPrivateUnread, getPrivateUser} from '../../../state/messaging.selectors';
+import {SingleMessageModel} from '../../../models/messages.model';
 
 @Component({
   selector: 'app-individual-user-panel',
@@ -15,15 +18,22 @@ export class IndividualUserPanelComponent implements OnInit {
   showSearchUser = false;
   currentUser: any;
   staffUsers: ZulipSingleUser[] = [];
+  unreadMessagesId: number[] = [];
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private store: Store<AppState>
   ) {
   }
 
   ngOnInit(): void {
+    this.onInitHandler();
+  }
+
+  onInitHandler(): void {
     this.routerDetails();
+    this.unreadMessages();
   }
 
   routerDetails(): void {
@@ -38,7 +48,6 @@ export class IndividualUserPanelComponent implements OnInit {
               }
             }
           );
-
           this.users$.subscribe(
             (staffUsers: ZulipSingleUser[]) => {
               this.staffUsers = staffUsers.filter(user => user.user_id !== +userId);
@@ -49,7 +58,20 @@ export class IndividualUserPanelComponent implements OnInit {
     });
   }
 
-  rightPanelTypeListener(member: any): void {
+  unreadMessages(): void {
+    this.store.select(getPrivateUnread).subscribe(
+      (messages: SingleMessageModel[]) => {
+        messages.map((message: SingleMessageModel) => {
+          if (this.unreadMessagesId.includes(message.sender_id)) { return; }
+          this.unreadMessagesId.push(message.sender_id);
+        });
+      }
+    );
+  }
+
+  rightPanelTypeListener(member: ZulipSingleUser): void {
+    const index = this.unreadMessagesId.indexOf(member.user_id);
+    this.unreadMessagesId.splice(index);
     this.router.navigate(['dashboard/messaging/narrow'], {
       queryParams: {
         id: member.user_id,

@@ -26,18 +26,10 @@
         *ngFor="let chat of messages$ | async"
         [messageDetail]="chat"
       ></app-chat-card>
+      <div #endChat></div>
       <div>
-<!--        <div class="d-flex justify-content-center">-->
-<!--          <button-->
-<!--            type="button"-->
-<!--            class="btn btn-date btn-secondary btn-sm"-->
-<!--            disabled-->
-<!--          >-->
-<!--            Today-->
-<!--          </button>-->
-<!--        </div>-->
         <div
-          *ngIf="!dateSortedPrivateMessages.length"
+          *ngIf="!(messages$ | async)?.length"
           class="d-flex justify-content-center"
         >
           <div *ngIf="loading">

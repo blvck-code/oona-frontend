@@ -1,5 +1,5 @@
 <div class="right-panel-wrap">
   <app-all-users-panel (rightPanelEvent)="rightPanelTypeListener($event)"  [users$]="allUsers$" *ngIf="userContent === 'all_users' "></app-all-users-panel>
   <app-team-users-panel (rightPanelEvent)="rightPanelTypeListener($event)"  [users$]="allUsers$"  *ngIf="userContent === 'team_users' "></app-team-users-panel>
-  <app-individual-user-panel [users$]="allUsers$"  *ngIf="userContent === 'individual_user' "></app-individual-user-panel>
+  <app-individual-user-panel [users$]="allUsers$" *ngIf="userContent === 'individual_user' "></app-individual-user-panel>
 </div>

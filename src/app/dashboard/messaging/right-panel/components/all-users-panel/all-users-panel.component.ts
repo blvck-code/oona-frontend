@@ -32,6 +32,8 @@ export class AllUsersPanelComponent implements OnInit {
   }
 
   goToMemberChat(member: any): void {
+    const index = this.endPointUnreadId.indexOf(member.user_id);
+    this.endPointUnreadId.splice(index);
 
     this.router.navigate(['dashboard/messaging/narrow'], {
       queryParams: {

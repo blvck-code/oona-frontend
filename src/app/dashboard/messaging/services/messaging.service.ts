@@ -1,30 +1,22 @@
 import { Injectable } from '@angular/core';
 import {
   environment as env,
-  messageChannel,
   oonaBaseUrl,
 } from '../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../../auth/services/auth.service';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { AllStreamsModel } from '../models/streams.model';
-import { map, take } from 'rxjs/operators';
 import { MessagesSocketService } from './messages-socket.service';
-import { AllStreamsResponseModel } from '../models/allStreamsResponse.model';
-import { Topics, TopicsModel } from '../models/topics.model';
 import {
-  getAllMessages,
-  getAllStreamData,
   getAllStreams, getPrivateMessages,
   getStreamMessages, getStreamMsgStatus,
-  getUnreadMessages
 } from '../state/messaging.selectors';
 import { SingleMessageModel } from '../models/messages.model';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../state/app.state';
-import {getAllUsers, getZulipUsers} from '../../../auth/state/auth.selectors';
-import { Title } from '@angular/platform-browser';
+import {getZulipUsers} from '../../../auth/state/auth.selectors';
 import * as messagingActions from '../state/messaging.actions';
 
 // export interface UnreadMessageModel {
@@ -86,11 +78,6 @@ export class MessagingService {
 
   public streamName = '';
   private stream = new BehaviorSubject(this.streamName);
-  currentStreamName = this.stream.asObservable();
-
-  public streamTopicDetail = '';
-  private topic = new BehaviorSubject(this.streamTopicDetail);
-  currentStreamTopic = this.topic.asObservable();
 
   public textEditorTopic = '';
   private editorTopic = new BehaviorSubject(this.textEditorTopic);
@@ -102,36 +89,11 @@ export class MessagingService {
 
   public streamMemberNames = Array();
   private names = new BehaviorSubject(this.streamMemberNames);
-  currentStreamMemberNames = this.names.asObservable();
-
-  unreadCount = [];
-  unreadMessagesSubject = new BehaviorSubject(this.unreadCount);
-  unreadMessagesObservable = this.unreadMessagesSubject.asObservable();
-
-  unreadStreams: any[] = [];
-  unreadStreamSubject = new BehaviorSubject<any[]>(this.unreadStreams);
-  unreadStreamObservable = this.unreadStreamSubject.asObservable();
-
-  streamsUnreadMsgCounter = 0;
-  streamsUnreadMsgCounterSubject = new BehaviorSubject(
-    this.streamsUnreadMsgCounter
-  );
-  streamsUnreadMsgCounterObservable =
-    this.streamsUnreadMsgCounterSubject.asObservable();
-
-  privateUnreadMsgCounter = 0;
-  privateUnreadMsgCounterSubject = new BehaviorSubject(
-    this.privateUnreadMsgCounter
-  );
-  privateUnreadMsgCounterObservable =
-    this.privateUnreadMsgCounterSubject.asObservable();
 
   totalUnreadMsgCounter = 0;
   totalUnreadMsgCounterSubject$ = new BehaviorSubject<number>(
     this.totalUnreadMsgCounter
   );
-  totalUnreadMsgCounterObservable =
-    this.totalUnreadMsgCounterSubject$.asObservable();
 
   streamsUnreadMsgArray: any[] = [];
   streamsUnreadMsgArraySubject = new BehaviorSubject(
@@ -151,17 +113,12 @@ export class MessagingService {
   totalUnreadMsgSubject = new BehaviorSubject(this.totalUnreadMsgArray);
   totalUnreadMsgObservable = this.totalUnreadMsgSubject.asObservable();
 
-  allUnreadMsg: any = [];
-  allUnreadMsgSubject = new BehaviorSubject(this.allUnreadMsg);
-  allUnreadMsgObserver = this.allUnreadMsgSubject.asObservable();
-
   constructor(
     private http: HttpClient,
     private authService: AuthService,
     private router: Router,
     private msgSocket: MessagesSocketService,
     private store: Store<AppState>,
-    private titleService: Title
   ) {
     // getting all users
     this.getAllUsers();
@@ -184,17 +141,11 @@ export class MessagingService {
       }) as Subject<Message>;
   }
 
-  changeMemberDetail(details: any): void {
-    this.memberDetail.next(details);
-  }
 
   changeStreamName(name: string): void {
     this.stream.next(name);
   }
 
-  changeTeamTopicMessages(streamTopic: any): void {
-    this.topic.next(streamTopic);
-  }
 
   changeEditorTopic(editorTopic: any): void {
     this.editorTopic.next(editorTopic);
@@ -217,43 +168,43 @@ export class MessagingService {
       });
   }
 
-  getStreamUnreadMessages(): void {
+  // getStreamUnreadMessages(): void {
+  //
+  //   const streamIds: number[] = [];
+  //
+  //   this.store.select(getAllStreamData).subscribe(
+  //     (messages: SingleMessageModel[]) => {
+  //       messages.map((message: SingleMessageModel) => {
+  //
+  //         if (message.flags.includes('read')){
+  //           return;
+  //         }
+  //
+  //         if (streamIds.includes(message.id)){
+  //           return;
+  //         }
+  //
+  //         // counting unread steams
+  //         const newCount = this.streamsUnreadMsgCounter += 1;
+  //         this.streamsUnreadMsgCounterSubject.next(newCount);
+  //
+  //         // counting total unread messages
+  //         // const newTotal = this.totalUnreadMsgCounter += 1;
+  //         // this.totalUnreadMsgCounterSubject$.next(newTotal);
+  //         streamIds.push(message.id);
+  //
+  //       });
+  //     }
+  //   );
+  // }
 
-    const streamIds: number[] = [];
-
-    this.store.select(getAllStreamData).subscribe(
-      (messages: SingleMessageModel[]) => {
-        messages.map((message: SingleMessageModel) => {
-
-          if (message.flags.includes('read')){
-            return;
-          }
-
-          if (streamIds.includes(message.id)){
-            return;
-          }
-
-          // counting unread steams
-          const newCount = this.streamsUnreadMsgCounter += 1;
-          this.streamsUnreadMsgCounterSubject.next(newCount);
-
-          // counting total unread messages
-          // const newTotal = this.totalUnreadMsgCounter += 1;
-          // this.totalUnreadMsgCounterSubject$.next(newTotal);
-          streamIds.push(message.id);
-
-        });
-      }
-    );
-  }
-
-  getAllUser(): any {
-    return this.http.get(env.allUsers);
-  }
-
-  getAllPlatformUsers(): any {
-    return this.http.get(this.users, this.authService.getHeaders());
-  }
+  // getAllUser(): any {
+  //   return this.http.get(env.allUsers);
+  // }
+  //
+  // getAllPlatformUsers(): any {
+  //   return this.http.get(this.users, this.authService.getHeaders());
+  // }
 
   getUsersByAvailability(): any {
     return this.http.get(this.presentUsers, this.authService.getHeaders());
@@ -276,15 +227,14 @@ export class MessagingService {
   }
 
   goToMemberChat(member: any): void {
-    console.log('User his')
     this.router.navigate(['dashboard/messaging/narrow'], {
       queryParams: { member: member.full_name.replace(/\s/g, '') },
     });
   }
 
-  getDetailsOfStream(streamId: string): any {
-    return this.http.get(this.subscribedStreams, this.authService.getHeaders());
-  }
+  // getDetailsOfStream(streamId: string): any {
+  //   return this.http.get(this.subscribedStreams, this.authService.getHeaders());
+  // }
 
   newListOfUsers(usersPresent: any): any[] {
     const allOnline = usersPresent?.filter(
@@ -450,7 +400,6 @@ export class MessagingService {
   // counting unread private messages
   handleUnreadPrivateMessages(): void {
     const messageIds: number[] = [];
-    const unreadArray: any[] = [];
 
     this.store.select(getPrivateMessages).subscribe(
       (messages: SingleMessageModel[]) => {
@@ -502,10 +451,6 @@ export class MessagingService {
             // tslint:disable-next-line:no-shadowed-variable
             (messages: any[]) => messages.push(message)
           );
-          const updateCounter = {
-            messageType: 'private',
-            type: 'increase'
-          };
 
           const newTotal = this.totalUnreadMsgCounter += 1;
           this.totalUnreadMsgCounterSubject$.next(newTotal);
@@ -517,7 +462,6 @@ export class MessagingService {
   }
 
   handleGetStreamMessages(): void {
-
     this.store.select(getStreamMsgStatus).subscribe(
       (status: boolean) => {
 
@@ -540,46 +484,7 @@ export class MessagingService {
                   },
                 ],
               };
-
-
               this.store.dispatch(new messagingActions.LoadStreamMessage(streamDetail));
-
-              // this
-              //   .getMessagesOfStream(streamDetail)
-              //   .subscribe((response: any) => {
-              //     const messages = response?.zulip?.messages;
-              //
-              //     messages?.forEach((msg: SingleMessageModel) => {
-              //       if (msg) {
-              //         this.store.dispatch(new messagingActions.HandleStreamData(msg));
-              //
-              //
-              //         if (msg.flags.includes('read')) {
-              //           return;
-              //         } else {
-              //
-              //           if (this.unreadMsgId.includes(msg.id)){
-              //             return;
-              //           } else {
-              //             this.allUnreadMsg.push(msg);
-              //
-              //             this.store.dispatch(new messagingActions.HandleUnreadMessage(msg));
-              //
-              //             // stream counter
-              //             // const newCount = this.streamsUnreadMsgCounter += 1;
-              //             // this.streamsUnreadMsgCounterSubject.next(newCount);
-              //
-              //             // total unread counter
-              //             // const totalUnread = this.totalUnreadMsgCounter += 1;
-              //             // this.totalUnreadMsgCounterSubject$.next(totalUnread);
-              //             this.unreadMsgId.push(msg.id);
-              //           }
-              //         }
-              //
-              //         // this.handleStreamUnread(msg);
-              //       }
-              //     });
-              //   });
             });
           }
         );
@@ -611,7 +516,6 @@ export class MessagingService {
         });
     });
   }
-
 
   updateReadMessagesFlags(messageType: string, unreadMsgIds: number[]): Observable<any> {
 

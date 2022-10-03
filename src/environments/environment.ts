@@ -12,7 +12,7 @@ export const domain = '192.168.0.42';
 export const oonaBaseUrl = `${backendProtocol}${domain}${backendPort}`;
 export const jitsiURL = `${domain}${jitsiPort}`;
 
-export const oonaFrontendUrl = `${domain}${frontendPort}`;
+export const oonaFrontendUrl = `${backendProtocol}${domain}${frontendPort}`;
 export const userChannel = `${domain}${backendPort}/ws/on/event/`;
 export const messageChannel = `${domain}${backendPort}/ws/on/message/`;
 export const firmName = '8teq';

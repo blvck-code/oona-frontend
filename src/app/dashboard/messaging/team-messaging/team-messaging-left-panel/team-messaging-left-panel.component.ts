@@ -433,13 +433,17 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   // The public messages topic fetcher
   handlePublicNavigateTopic(stream?: any, topic?: any): void {
     this.checkTopicNavigate(stream, topic);
-    this.rightPanelEvent.emit('team_users');
+    // Todo change this back to team users when the endpoint is ready for subscribed users
+    // this.rightPanelEvent.emit('team_users');
+    this.rightPanelEvent.emit('all_users');
   }
 
 
   // The private messages topic fetcher
   handlePrivateNavigateTopic(stream?: any, topic?: any): void {
-    this.rightPanelEvent.emit('team_users');
+    // Todo change this back to team users when the endpoint is ready for subscribed users
+    // this.rightPanelEvent.emit('team_users');
+    this.rightPanelEvent.emit('all_users');
     this.checkTopicNavigate(stream, topic);
   }
 

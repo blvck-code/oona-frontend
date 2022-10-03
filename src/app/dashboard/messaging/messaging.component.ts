@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../../state/app.state';
 import * as messagingActions from './state/messaging.actions';
 import { MessagesSocketService } from './services/messages-socket.service';
-import { getAllStreams, getStreamsLoading } from './state/messaging.selectors';
+import {getAllStreams, getPrivateUnread, getStreamsLoading} from './state/messaging.selectors';
 import { map, take } from 'rxjs/operators';
 import { AllStreamsModel } from './models/streams.model';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -17,6 +17,7 @@ import * as authActions from '../../auth/state/auth.actions';
 import { getAllUsers, getZulipUsers } from '../../auth/state/auth.selectors';
 import { Title } from '@angular/platform-browser';
 import { SingleMessageModel } from './models/messages.model';
+import {ZulipSingleUser} from '../../auth/models/user.model';
 
 @Component({
   selector: 'app-messaging',
@@ -36,9 +37,10 @@ export class MessagingComponent implements OnInit {
 
   allUsers: any = [];
   allUsersSubject = new BehaviorSubject<any>(this.allUsers);
-  allUserObservable = this.allUsersSubject.asObservable();
+  // allUserObservable = this.allUsersSubject.asObservable();
 
   users$!: Observable<any>;
+  unreadMessage$!: Observable<SingleMessageModel[]>;
 
   constructor(
     private route: ActivatedRoute,
@@ -111,113 +113,54 @@ export class MessagingComponent implements OnInit {
   }
 
   initPage(): void {
+    this.unreadMessage$ = this.store.select(getPrivateUnread);
+    this.users$ = this.store.select(getZulipUsers);
+
     this.getUsersFromStore();
-    this.getUsers();
+    // this.getUsers();
   }
+
   logoutUser(): void {
     this.authService.logout();
     this.router.navigate(['/']);
   }
 
-  // get streams for left handle
-  getStreamsTopics(): void {
-    this.streams = this.store.select(getAllStreams);
-
-    this.store.select(getAllStreams).subscribe((streams) => {
-      take(streams.length),
-        streams.map((stream: AllStreamsModel) => {
-          const streamId = stream?.stream_id;
-
-          take(1),
-            this.messagingService
-              .getTopicsOnStreams(stream.stream_id)
-              .subscribe(
-                // tslint:disable-next-line:no-shadowed-variable
-                (data: any) => {
-                  const topicId = data?.oz?.stream_id;
-                  if (topicId === streamId) {
-                    stream = {
-                      ...stream,
-                      topics: data,
-                    };
-                    this.allTopics = [...this.allTopics, stream];
-                  }
-                }
-              );
-          // this.store.dispatch(new messagingActions.LoadStreamTopic(item.stream_id));
-          // this.streamIds = [...this.streamMessages, item.stream_id];
-        });
-    });
-  }
-
-  // get stream content
-  getStreamData(): void {
-    this.store.select(getAllStreams).subscribe((streams) => {
-      streams.map((stream: any) => {
-        const streamName = stream?.name;
-
-        const streamDetails = {
-          anchor: 'newest',
-          num_before: 10,
-          type: [
-            {
-              operator: 'stream',
-              operand: streamName,
-            },
-          ],
-        };
-
-        this.store.dispatch(new messagingActions.LoadStreamData(streamDetails));
-      });
-    });
-  }
-
   getUsers(): void {
-    this.users$ = this.store.select(getZulipUsers);
-  }
+    const uniqueMsgId: number[] = [];
+    const uniqueUserId: number[] = [];
 
-  getAllPrivateMessages(): void {
-    this.store.select(getAllUsers).subscribe((users) => {
-      users?.map((user: any) => {
-        const streamDetail = {
-          anchor: 'newest',
-          num_before: 100,
-          num_after: 0,
-          type: [
-            {
-              operator: 'pm-with',
-              operand: user?.email,
-            },
-          ],
-        };
+    this.users$.subscribe(
+      (users: ZulipSingleUser[]) => {
+        users.map((user: ZulipSingleUser) => {
+          // if (uniqueUserId.includes(user.user_id)) { return; }
 
-        this.messagingService
-          .getMessagesOfStream(streamDetail)
-          .subscribe((response: any) => {
-            const messages = response?.zulip?.messages;
+          this.unreadMessage$.subscribe(
+            (messages: SingleMessageModel[]) => {
+              messages.map((message: SingleMessageModel) => {
+                // if (uniqueMsgId.includes(message.id)) { return; }
 
-            if (!messages.length){
-              return;
+                if (+message.sender_id === +user.user_id) {
+                  console.log('Unread messages ==>>', message);
+                  console.log('Unread messages ==>>', user);
+                }
+
+                // uniqueMsgId.push(message.id);
+              });
             }
-            messages?.forEach((msg: SingleMessageModel) => {
-              if (msg) {
-                // this.privateMessages.push(msg);
-                // this.sortMessages();
-                this.store.dispatch(new messagingActions.LoadAllMessagesSuccess(msg));
-              }
-            });
-          });
-      });
-    });
+          );
+
+          // uniqueUserId.push(user.user_id);
+        });
+      }
+    );
   }
 
   getUsersFromStore(): void {
-    // console.log('Getting users from store');
 
     take(1),
-      this.store.select('userCenter').subscribe((userState: any) => {
-        const allUserState = userState?.users?.all;
-        this.allUsersSubject.next(allUserState?.members);
-      });
+    this.store.select('userCenter').subscribe((userState: any) => {
+      const allUserState = userState?.users?.all;
+      this.allUsersSubject.next(allUserState?.members);
+    });
   }
 }

@@ -110,7 +110,6 @@ export class LoadPresentUsers implements Action {
 export class LoadPresentUsersSuccess implements Action {
   readonly type = AuthActionsTypes.LOAD_PRESENT_USERS_SUCCESS;
   constructor(public payload: any) {
-    console.log('Present users ===>>>', payload);
   }
 }
 export class LoadPresentUsersFail implements Action {
