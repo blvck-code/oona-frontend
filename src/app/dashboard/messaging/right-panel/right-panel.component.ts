@@ -5,6 +5,7 @@ import {AppState} from '../../../state/app.state';
 import {getPrivateUnread} from '../state/messaging.selectors';
 import {SingleMessageModel} from '../models/messages.model';
 import {ZulipSingleUser} from '../../../auth/models/user.model';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-right-panel',
@@ -17,7 +18,8 @@ export class RightPanelComponent implements OnInit {
   @Output() rightPanelEvent = new EventEmitter<string>();
 
   constructor(
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {

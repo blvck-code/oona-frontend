@@ -2,10 +2,13 @@
   <div class="member-details mb-2">
 
     <div class="member-profile-details">
-      <img *ngIf="currentUser.avatar_url;else noAvatar" [src]="currentUser.avatar_url" class="rounded-circle" alt="...">
-      <ng-template #noAvatar>
-        <img src="../../../../../../assets/img/user/avatarHolder.png" class="rounded-circle" alt="...">
-      </ng-template>
+<!--      <img *ngIf="currentUser.avatar_url;else noAvatar"-->
+<!--           src="https://192.168.0.42:3443/{{currentUser.avatar_url}}"-->
+<!--           class="rounded-circle" alt="...">-->
+<!--      <ng-template #noAvatar>-->
+<!--        <img src="../../../../../../assets/img/user/avatarHolder.png" class="rounded-circle" alt="...">-->
+<!--      </ng-template>-->
+      <img src="../../../../../../assets/img/user/avatarHolder.png" class="rounded-circle" alt="...">
       <div class="member-info">
         <p class="member-name">{{ currentUser.full_name }}</p>
         <p class="member-role" *ngIf="currentUser.role === 100">Organization owner</p>
@@ -38,18 +41,15 @@
     <div class="member-common-teams-container">
       <p class="common-teams-title">Common Teams</p>
       <div class="common-teams-list">
-<!--        <div *ngIf="commonTeams">-->
-<!--          <p class="common-teams-item" *ngFor="let team of commonTeams"> {{ team.name }}</p>-->
+<!--        <div class="common-teams-group">-->
+<!--          <a href="#" class="common-teams-item">Smart Parking (UI Designer)</a>-->
+<!--          <a href="#" class="common-teams-item">Oona (Tester)</a>-->
+<!--          <a href="#" class="common-teams-item">Mnara (UI Designer)</a>-->
+<!--          <a href="#" class="common-teams-item">Smart Parking (UI Designer)</a>-->
 <!--        </div>-->
-        <div class="common-teams-group">
-          <a href="#" class="common-teams-item">Smart Parking (UI Designer)</a>
-          <a href="#" class="common-teams-item">Oona (Tester)</a>
-          <a href="#" class="common-teams-item">Mnara (UI Designer)</a>
-          <a href="#" class="common-teams-item">Smart Parking (UI Designer)</a>
+        <div>
+          <p class="common-teams-item">No teams in common</p>
         </div>
-<!--        <div>-->
-<!--          <a href="#" class="common-teams-item">No teams in common</a>-->
-<!--        </div>-->
       </div>
     </div>
   </div>
@@ -84,6 +84,7 @@
               />
               <div class="member-name">
                 <span>{{ member.full_name }}</span>
+                <span *ngIf="unreadMessagesId.includes(member.user_id)" class="new-message">New message</span>
               </div>
             </div>
             <div class="member-option" >
