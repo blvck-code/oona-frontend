@@ -86,6 +86,21 @@
                 <span>{{ member.full_name }}</span>
                 <span *ngIf="unreadMessagesId.includes(member.user_id)" class="new-message">New message</span>
               </div>
+              <span
+                *ngIf="member.role === 100 || member.role === 200"
+                class="member-role"
+                [class.role-team-leader]="
+                member.role === 100 || member.role === 200
+              "
+              >
+              {{ member.role === 100 ? 'Admin' : 'Team leader' }}
+            </span>
+              <span
+                *ngIf="member.role === 600"
+                class="member-role"
+                [class.role-team-guest]="member.role === 600"
+              >Guest</span
+              >
             </div>
             <div class="member-option" >
               <img src="../../../../../assets/img/icons/dots.svg" alt="" />

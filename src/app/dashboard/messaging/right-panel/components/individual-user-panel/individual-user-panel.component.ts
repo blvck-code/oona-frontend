@@ -70,13 +70,14 @@ export class IndividualUserPanelComponent implements OnInit {
   }
 
   rightPanelTypeListener(member: ZulipSingleUser): void {
+    const index = this.unreadMessagesId.indexOf(member.user_id);
+    this.unreadMessagesId.splice(index);
     this.router.navigate(['dashboard/messaging/narrow'], {
       queryParams: {
         id: member.user_id,
         member: member.full_name.replace(/\s/g, '')
       }
     });
-    this.unreadMessagesId.filter(senderIds => senderIds !== member.user_id);
   }
 
   handleShowSearchUser(): void {
