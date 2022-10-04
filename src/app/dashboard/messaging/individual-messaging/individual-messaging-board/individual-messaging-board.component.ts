@@ -16,7 +16,7 @@ import { OonaSocketService } from '../../services/oona-socket.service';
 // NgRx
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../state/app.state';
-import { getSelectedUser } from '../../../../auth/state/auth.selectors';
+import {getSelectedUser, getUserId} from '../../../../auth/state/auth.selectors';
 import { BehaviorSubject, Observable } from 'rxjs';
 // @Todo change this to fetch only individual messages
 import { SingleMessageModel } from '../../models/messages.model';
@@ -61,6 +61,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
   loading = true;
 
   currentUser$!: Observable<any>;
+  currentUserId$!: Observable<number>;
   messages$!: Observable<SingleMessageModel[]>;
 
   messagesWithPerson = Array();
@@ -102,6 +103,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
     this.messages$ = this.store.select(getSelectedUserMessages);
 
     this.currentUser$ = this.store.select(getPrivateUser);
+    this.currentUserId$ = this.store.select(getUserId);
     this.store.select(getPrivateUser).subscribe(
       (userInfo: any) => {
         this.selectedUserId = userInfo.user_id;

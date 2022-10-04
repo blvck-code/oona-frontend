@@ -38,13 +38,13 @@
           <!--          <div class="d-flex justify-content-center">-->
           <!--            <button class="btn btn-primary shadow-none" *ngIf="messageExist" (click)="getMorePrivateMessages()">Get more</button>-->
           <!--          </div>-->
-          <app-individual-chat-card
+          <app-all-private-messages-card
             (click)="replyMessage(chat)"
             class="mt-4"
             *ngFor="let chat of (messages$ | async)"
             [messageDetail]="chat"
             [userId$]="currentUserId$"
-          ></app-individual-chat-card>
+          ></app-all-private-messages-card>
         </div>
         <div #endChat></div>
 

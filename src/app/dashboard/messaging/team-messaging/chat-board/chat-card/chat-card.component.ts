@@ -9,6 +9,7 @@ import moment from 'moment';
 import {Observable} from 'rxjs';
 import {getAllStreams} from '../../../state/messaging.selectors';
 import {AllStreamsModel} from '../../../models/streams.model';
+
 @Component({
   selector: 'app-chat-card',
   templateUrl: './chat-card.component.html',
@@ -72,7 +73,7 @@ export class ChatCardComponent implements OnInit {
       (user: any) => this.userId = user.zulip.user_id
     );
     //
-    this.messageTime = new Date(this.messageDetail.timestamp * 1000).toLocaleTimeString();
+    this.messageTime = moment(this.messageDetail.timestamp * 1000).calendar();
     this.messageDate = new Date(this.messageDetail.timestamp);
     this.document = {
       nodeType: BLOCKS.DOCUMENT,
