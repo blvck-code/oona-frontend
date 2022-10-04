@@ -43,6 +43,7 @@
             class="mt-4"
             *ngFor="let chat of (messages$ | async)"
             [messageDetail]="chat"
+            [userId$]="currentUserId$"
           ></app-individual-chat-card>
         </div>
         <div #endChat></div>
@@ -56,7 +57,7 @@
 
         <div
           class="py-4"
-          *ngIf="!loading && !dateSortedPrivateMessages.length"
+          *ngIf="!(messages$ | async)?.length"
         >
           <p>No Messages</p>
         </div>

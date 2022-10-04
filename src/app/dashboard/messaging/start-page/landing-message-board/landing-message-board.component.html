@@ -23,6 +23,7 @@
 
       <app-chat-card
         (emitReplyMsg)="selectedChat(chat)"
+        [userId$]="currentUserId$"
         *ngFor="let chat of messages$ | async"
         [messageDetail]="chat"
       ></app-chat-card>

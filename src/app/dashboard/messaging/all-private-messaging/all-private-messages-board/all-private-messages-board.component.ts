@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../state/app.state';
 // @Todo change this to fetch only private messages
-import {getAllMessages, getPrivateMessages} from '../../state/messaging.selectors';
+import {getPrivateMessages} from '../../state/messaging.selectors';
 import * as messageActions from '../../state/messaging.actions';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import {
@@ -23,8 +23,7 @@ import {
   SingleMessageModel,
   StreamDetail,
 } from '../../models/messages.model';
-import { getAllUsers } from '../../../../auth/state/auth.selectors';
-import { map, take } from 'rxjs/operators';
+import {getAllUsers, getUserId} from '../../../../auth/state/auth.selectors';
 import { OonaSocketService } from '../../services/oona-socket.service';
 
 @Component({
@@ -56,6 +55,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
   messagesId: number[] = [];
   storeMessagesId: number[] = [];
 
+  currentUserId$!: Observable<number>;
   @ViewChild('endChat') endChat: ElementRef | undefined;
 
   constructor(
@@ -70,6 +70,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initPage();
+    this.currentUserId$ = this.store.select(getUserId);
   }
 
   ngOnDestroy(): void {
@@ -81,9 +82,10 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
   // Init page
   initPage(): void {
     this.messages$ = this.store.select(getPrivateMessages);
+    this.store.select(getPrivateMessages).subscribe(
+      () => {this.loading = false; }
+    );
     this.getStateAllPrivateMessages();
-    // this.inComingMessage();
-    // this.outGoingMsg();
   }
 
   allUsersRegistered(): void {
@@ -138,37 +140,6 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
     });
   }
 
-  getAllPrivateMessages(): void {
-    this.store.select(getAllUsers).subscribe((users) => {
-      users?.map((user: any) => {
-        const streamDetail = {
-          anchor: 'newest',
-          num_before: 100,
-          num_after: 0,
-          type: [
-            {
-              operator: 'pm-with',
-              operand: user?.email,
-            },
-          ],
-        };
-
-        this.messagingService
-          .getMessagesOfStream(streamDetail)
-          .subscribe((response: any) => {
-            const messages = response?.zulip?.messages;
-
-            messages?.forEach((msg: SingleMessageModel) => {
-              if (msg) {
-                this.privateMessages.push(msg);
-                this.sortMessages();
-              }
-            });
-          });
-      });
-    });
-  }
-
   getStateAllPrivateMessages(): void {
     this.subscription = this.store
       .select(getPrivateMessages)
@@ -179,7 +150,6 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
               return;
             } else {
               this.privateMessages.push(msg);
-              this.loading = false;
               this.sortMessages();
             }
             this.storeMessagesId.push(msg.id);
@@ -235,41 +205,6 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
     });
   }
 
-  inComingMessage(): void {
-    this.userSocketService.privateMessageCountSocket.subscribe((prvMsg) => {
-      prvMsg.map((msg) => {
-        if (this.messagesId.includes(msg.id)) {
-          return;
-        }
-
-        this.messagesId.push(msg.id);
-        this.dateSortedPrivateMessages.push(msg);
-        // this.change.detectChanges();
-        // this.scrollBottom();
-      });
-    });
-  }
-
-  outGoingMsg(): void {
-    this.userSocketService.myMessagesSocketSubject.subscribe((msg: any) => {
-      console.log('My sent outgoing message content ===>>>', msg);
-
-      this.privateMessagesSubject.subscribe((messages) => {
-
-        if (this.messagesId.includes(msg.id)) {
-          return;
-        }
-
-        if (!msg.id) {
-          return;
-        }
-
-        this.messagesId.push(msg.id);
-        this.dateSortedPrivateMessages.push(msg);
-      });
-    });
-  }
-
   replyMessage(chat: any): void {
     this.activeMessage = chat;
     this.store.dispatch(new messageActions.HandleSendMessage(chat));
@@ -287,4 +222,71 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
       }, 500);
     }
   }
+
+  // inComingMessage(): void {
+  //   this.userSocketService.privateMessageCountSocket.subscribe((prvMsg) => {
+  //     prvMsg.map((msg) => {
+  //       if (this.messagesId.includes(msg.id)) {
+  //         return;
+  //       }
+  //
+  //       this.messagesId.push(msg.id);
+  //       this.dateSortedPrivateMessages.push(msg);
+  //       // this.change.detectChanges();
+  //       // this.scrollBottom();
+  //     });
+  //   });
+  // }
+
+  // outGoingMsg(): void {
+  //   this.userSocketService.myMessagesSocketSubject.subscribe((msg: any) => {
+  //     console.log('My sent outgoing message content ===>>>', msg);
+  //
+  //     this.privateMessagesSubject.subscribe((messages) => {
+  //
+  //       if (this.messagesId.includes(msg.id)) {
+  //         return;
+  //       }
+  //
+  //       if (!msg.id) {
+  //         return;
+  //       }
+  //
+  //       this.messagesId.push(msg.id);
+  //       this.dateSortedPrivateMessages.push(msg);
+  //     });
+  //   });
+  // }
+
+  // getAllPrivateMessages(): void {
+  //   this.store.select(getAllUsers).subscribe((users) => {
+  //     users?.map((user: any) => {
+  //       const streamDetail = {
+  //         anchor: 'newest',
+  //         num_before: 100,
+  //         num_after: 0,
+  //         type: [
+  //           {
+  //             operator: 'pm-with',
+  //             operand: user?.email,
+  //           },
+  //         ],
+  //       };
+  //
+  //       this.messagingService
+  //         .getMessagesOfStream(streamDetail)
+  //         .subscribe((response: any) => {
+  //           const messages = response?.zulip?.messages;
+  //
+  //           messages?.forEach((msg: SingleMessageModel) => {
+  //             if (msg) {
+  //               this.privateMessages.push(msg);
+  //               this.sortMessages();
+  //             }
+  //           });
+  //         });
+  //     });
+  //   });
+  // }
+
 }

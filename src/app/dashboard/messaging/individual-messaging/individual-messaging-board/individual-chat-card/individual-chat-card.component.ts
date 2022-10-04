@@ -17,6 +17,7 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class IndividualChatCardComponent implements OnInit {
   @Input() messageDetail: any;
+  @Input() userId$!: Observable<number>;
   @ViewChild('currentChat') endChat: ElementRef | undefined;
 
   messageTime = '';

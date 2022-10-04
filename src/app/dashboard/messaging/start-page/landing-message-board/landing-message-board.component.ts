@@ -19,6 +19,7 @@ import {
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SingleChat, SingleMessageModel } from '../../models/messages.model';
 import {OonaSocketService} from '../../services/oona-socket.service';
+import {getUserId} from '../../../../auth/state/auth.selectors';
 
 @Component({
   selector: 'app-landing-message-board',
@@ -45,6 +46,7 @@ export class LandingMessageBoardComponent implements OnInit {
   socketsMsgIds: number[] = [];
 
   loading = true;
+  currentUserId$!: Observable<number>;
 
   privateMessages = Array();
   privateMessagesSubject = new BehaviorSubject(this.privateMessages);
@@ -61,19 +63,8 @@ export class LandingMessageBoardComponent implements OnInit {
 
   ngOnInit(): void {
     this.initPage();
+    this.currentUserId$ = this.store.select(getUserId);
   }
-
-  // getLastItem(): void {
-  //   setTimeout(() => {
-  //     this.messages$.subscribe(
-  //       (messages: SingleMessageModel[]) => {
-  //
-  //         const lastItem: SingleMessageModel = messages[messages.length - 1];
-  //
-  //       }
-  //     );
-  //   }, 1500);
-  // }
 
   // Init Page
   initPage(): void {
