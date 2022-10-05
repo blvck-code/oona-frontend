@@ -1,55 +1,55 @@
-<p class="message-topic" *ngIf="streamName">
-  <span>{{ streamName }}</span>
-  <span *ngIf="messageTopic">
-    <span style="font-weight: bolder" class="mx-2"> ></span>
-    <span>
-      <input
-        type="text"
-        class="border-0 shadow-none"
-        [placeholder]="messageTopic"
-        (keyup)="onKey($event)"
-        name="first"
-    /></span>
-  </span>
-</p>
+<div class="text-editor">
+  <p class="message-topic" *ngIf="streamName">
+    <span class="editor-message me-1">Message </span>
+    <span class="editor-stream">#{{ streamName }}</span>
+    <span *ngIf="messageTopic">
+    <i class="fa fa-solid fa-chevron-right" aria-hidden="true"></i>
+      <span>
+        <input
+          type="text"
+          class="border-0 shadow-none"
+          [placeholder]="messageTopic"
+          (keyup)="onKey($event)"
+          name="first"
+        /></span>
+    </span>
+  </p>
 
-<div class="parent">
+  <div class="parent">
+    <form #form="ngForm" (ngSubmit)="onSubmit(form)" class="text-editor-container layer1">
+      <div class="form-group ">
+        <ejs-richtexteditor
+          #fromRTE
+          [(value)]="editorData"
+          [toolbarSettings]='tools'
+          [insertImageSettings]='insertImageSettings'
+          required
+          name="name"
+          [(ngModel)]="editorData"
+          (keydown.enter)="onSubmit(form)"
+          class="overflow-chat"
+        ></ejs-richtexteditor>
+        <div class="d-flex justify-content-end send-message-btn-container">
+          <button
+            type="submit"
+            class="border-0 submit-btn btn btn-dark shadow-none"
+            ejs-button
+          >
+            Send
+          </button>
+        </div>
+      </div>
+    </form>
+    <span class="d-flex justify-content-end child" title="React"
+          (click)="toggled = !toggled"
+          [(emojiPickerIf)]="toggled"
+          [emojiPickerDirection]="'bottom' || 'top' || 'left' || 'right'"
+          (emojiPickerSelect)="handleSelection($event)"
+    >😄</span>
 
-<form #form="ngForm" (ngSubmit)="onSubmit(form)" class="text-editor-container layer1">
-  <div class="form-group ">
-    <ejs-richtexteditor
-      #fromRTE
-      [(value)]="editorData"
-      [toolbarSettings]='tools'
-      [insertImageSettings]='insertImageSettings'
-      required
-      name="name"
-      [(ngModel)]="editorData"
-      (keydown.enter)="onSubmit(form)"
-      class="overflow-chat"
-    ></ejs-richtexteditor>
-    <div class="d-flex justify-content-end send-message-btn-container">
-      <button
-        type="submit"
-        class="border-0 submit-btn btn btn-dark shadow-none"
-        ejs-button
-      >
-        Send
-      </button>
-    </div>
-  </div>
-</form>
-
-  <span class="d-flex justify-content-end child" title="React"
-        (click)="toggled = !toggled"
-        [(emojiPickerIf)]="toggled"
-        [emojiPickerDirection]="'bottom' || 'top' || 'left' || 'right'"
-        (emojiPickerSelect)="handleSelection($event)"
-  >😄</span>
-
-  <span class="d-flex justify-content-end child-file" title="Share file">
+    <span class="d-flex justify-content-end child-file" title="Share file">
       <div class="dropup"><button class="e-tbar-btn e-btn file-share" data-bs-toggle="dropdown" aria-expanded="false" tabindex="-1" id="custom_tbar"  style="width:100%">
-          <i class="bi bi-file-earmark-check"></i></button>
+          <i class="fa fa-paperclip" aria-hidden="true"></i></button>
           <ul class="dropdown-menu p-3">
               <li>
                 <form [formGroup]="newFileGroup" (click)="fileInput.click()">
@@ -65,4 +65,6 @@
             </ul>
           </div>
   </span>
+  </div>
+
 </div>
