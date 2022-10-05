@@ -43,22 +43,13 @@ import { MarkdownToHtmlModule } from 'markdown-to-html-pipe';
 import { MeetingCardComponent } from './meeting-card/meeting-card.component';
 import { TeamMeetingsComponent } from './team-messaging/team-meetings/team-meetings.component';
 
-// NgRx
-import { StoreModule } from '@ngrx/store';
-import { messagingReducer } from './state/messaging.reducer';
-import { EffectsModule } from '@ngrx/effects';
-import { MessagingEffects } from './state/messaging.effects';
 import { AllMsgTextEditorComponent } from './all-mentioned-messages/all-msg-text-editor/all-msg-text-editor.component';
 import { PrivateMsgTextEditorComponent } from './all-private-messaging/private-msg-text-editor/private-msg-text-editor.component';
 import { LandingTextEditorComponent } from './start-page/landing-text-editor/landing-text-editor.component';
 import { DashboardModule } from '../dashboard.module';
 import { EditorComponent } from '../editor/editor.component';
-import { StreamsComponent } from './streams/streams.component';
-import { StreamsBoardComponent } from './streams/streams-board/streams-board.component';
 import { UserFilterPipe } from '../../pipes/user-filter.pipe';
-import { AppModule } from '../../app.module';
 import { HomeModule } from '../home/home.module';
-import { StreamsTextEditorComponent } from './streams/streams-text-editor/streams-text-editor.component';
 import { ChannelSettingsComponent } from './team-messaging/channel-settings/channel-settings.component';
 import { RightPanelComponent } from './right-panel/right-panel.component';
 import { TeamUsersPanelComponent } from './right-panel/components/team-users-panel/team-users-panel.component';
@@ -105,10 +96,7 @@ import { AllPrivateMessagesCardComponent } from './all-private-messaging/all-pri
     PrivateMsgTextEditorComponent,
     LandingTextEditorComponent,
     EditorComponent,
-    StreamsComponent,
-    StreamsBoardComponent,
     UserFilterPipe,
-    StreamsTextEditorComponent,
     ChannelSettingsComponent,
     RightPanelComponent,
     TeamUsersPanelComponent,
@@ -129,8 +117,6 @@ import { AllPrivateMessagesCardComponent } from './all-private-messaging/all-pri
     NgxContentfulRichTextModule,
     ShowdownModule,
     MarkdownToHtmlModule,
-    // StoreModule.forFeature('messaging', messagingReducer),
-    // EffectsModule.forFeature([MessagingEffects]),
     DashboardModule,
     HomeModule,
   ],
