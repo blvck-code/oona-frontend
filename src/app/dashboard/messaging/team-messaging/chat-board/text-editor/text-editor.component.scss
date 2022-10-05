@@ -13,15 +13,27 @@
   align-items: center;
   height: 30px;
   margin-bottom: 0;
-  padding-left: 10px;
-  border: 1px solid #dadadd;
+  padding: 8px 15px;
   border-bottom: none;
-  background-color: #fafafa;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  background-color: #ecf4fb;
   color: #2D1A14;
   font-weight: 500;
 
+  .editor-message,
+  .editor-stream {
+    font-size: 14px;
+  }
+
+  .fa {
+    font-size: 10px;
+    margin: 0 5px;
+  }
+
   input {
     background-color: transparent;
+    font-size: 14px;
 
     &:focus {
       outline: none;
@@ -69,7 +81,7 @@
 }
 
 .e-rte-img-dialog{
-  top: -350px !important;
+  top: -450px !important;
 }
 .file-share {
 box-shadow: none;

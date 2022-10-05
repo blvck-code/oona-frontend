@@ -40,6 +40,7 @@
     "bootstrap-icons": "^1.4.0",
     "dayjs": "^1.10.7",
     "flatpickr": "^4.6.9",
+    "font-awesome": "^4.7.0",
     "http-server": "^14.1.1",
     "markdown-to-html-pipe": "^1.2.5",
     "moment": "^2.29.4",
