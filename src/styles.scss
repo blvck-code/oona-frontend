@@ -1,5 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap');
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import '~@syncfusion/ej2-base/styles/material.css';
+@import '~@syncfusion/ej2-icons/styles/material.css';
+@import '~@syncfusion/ej2-buttons/styles/material.css';
+@import '~@syncfusion/ej2-splitbuttons/styles/material.css';
+@import '~@syncfusion/ej2-inputs/styles/material.css';
+@import '~@syncfusion/ej2-lists/styles/material.css';
+@import '~@syncfusion/ej2-navigations/styles/material.css';
+@import '~@syncfusion/ej2-popups/styles/material.css';
+@import '~@syncfusion/ej2-richtexteditor/styles/material.css';
 
 @font-face {
   font-family: Gilroy;
@@ -153,4 +161,3 @@ showdown {
     @content;
   }
 }
- @import "material.scss";

@@ -9,7 +9,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import { NgxEditorModule } from 'ngx-editor';
 import {ToastrModule} from 'ngx-toastr';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {RichTextEditorAllModule} from '@syncfusion/ej2-angular-richtexteditor';
+import {HtmlEditorService, ImageService, LinkService, RichTextEditorModule, RichTextEditorAllModule, ToolbarService} from '@syncfusion/ej2-angular-richtexteditor';
 import {MatDialogModule} from '@angular/material/dialog';
 import {NgxEmojiPickerModule} from 'ngx-emoji-picker';
 import {ShowdownModule} from 'ngx-showdown';
@@ -44,6 +44,7 @@ import {SharedModule} from './shared/shared.module';
         ShowdownModule,
         ToastrModule.forRoot(),
         NgxEmojiPickerModule.forRoot(),
+        RichTextEditorModule,
         RichTextEditorAllModule,
         BrowserAnimationsModule, // required animations module
         HttpClientModule,
@@ -57,6 +58,8 @@ import {SharedModule} from './shared/shared.module';
         SharedModule,
     ],
     providers: [
+        ToolbarService,
+        LinkService, ImageService, HtmlEditorService,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: TokenInterceptorService,
