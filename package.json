@@ -32,7 +32,7 @@
     "@ngrx/store": "^13.2.0",
     "@ngrx/store-devtools": "^13.2.0",
     "@syncfusion/ej2-angular-base": "^20.3.47",
-    "@syncfusion/ej2-angular-richtexteditor": "^19.1.65",
+    "@syncfusion/ej2-angular-richtexteditor": "^19.4.56",
     "@syncfusion/ej2-material-theme": "^20.3.47",
     "@syncfusion/ej2-richtexteditor": "^20.3.47",
     "angular-password-strength-meter": "^5.0.1",

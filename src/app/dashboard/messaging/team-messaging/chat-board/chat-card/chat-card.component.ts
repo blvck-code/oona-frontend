@@ -6,6 +6,10 @@ import {Store} from '@ngrx/store';
 import {AppState} from '../../../../../state/app.state';
 import {getUserDetails, getZulipProfile} from '../../../../../auth/state/auth.selectors';
 import moment from 'moment';
+import {Observable} from 'rxjs';
+import {getAllStreams} from '../../../state/messaging.selectors';
+import {AllStreamsModel} from '../../../models/streams.model';
+
 @Component({
   selector: 'app-chat-card',
   templateUrl: './chat-card.component.html',
@@ -13,6 +17,7 @@ import moment from 'moment';
 })
 export class ChatCardComponent implements OnInit {
   @Input() messageDetail: any;
+  @Input() userId$!: Observable<number>;
   @Output() messageTopic = new EventEmitter<any>();
   @Output() emitReplyMsg = new EventEmitter<any>();
   userId: any;
@@ -52,12 +57,23 @@ export class ChatCardComponent implements OnInit {
     });
   }
 
+  streamName(streamId: number): Observable<string> {
+    let currentStream;
+    this.store.select(getAllStreams).subscribe(
+      (streams: AllStreamsModel[]) => {
+        currentStream = streams.find(stream => stream.stream_id === streamId);
+      }
+    );
+    // @ts-ignore
+    return currentStream.name;
+  }
+
   ngOnInit(): void {
     this.store.select(getZulipProfile).subscribe(
       (user: any) => this.userId = user.zulip.user_id
     );
     //
-    this.messageTime = new Date(this.messageDetail.timestamp * 1000).toLocaleTimeString();
+    this.messageTime = moment(this.messageDetail.timestamp * 1000).calendar();
     this.messageDate = new Date(this.messageDetail.timestamp);
     this.document = {
       nodeType: BLOCKS.DOCUMENT,

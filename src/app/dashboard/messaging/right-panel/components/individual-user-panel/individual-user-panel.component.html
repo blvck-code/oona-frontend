@@ -8,7 +8,7 @@
 <!--      <ng-template #noAvatar>-->
 <!--        <img src="../../../../../../assets/img/user/avatarHolder.png" class="rounded-circle" alt="...">-->
 <!--      </ng-template>-->
-      <img src="../../../../../../assets/img/user/avatarHolder.png" class="rounded-circle" alt="...">
+      <img src="/assets/img/user/avatarHolder.png" class="rounded-circle" alt="...">
       <div class="member-info">
         <p class="member-name">{{ currentUser.full_name }}</p>
         <p class="member-role" *ngIf="currentUser.role === 100">Organization owner</p>
@@ -59,7 +59,7 @@
       <div class="all-users-wrap" (click)="handleShowSearchUser()">
         <p>Other staff</p>
         <div class="search-people">
-          <img src="../../../../../assets/img/icons/search.svg" alt="" />
+          <img src="/assets/img/icons/search.svg" alt="" />
         </div>
       </div>
       <div class="search-user-form" *ngIf="showSearchUser">
@@ -76,7 +76,7 @@
           <div class="member-info" >
             <div class="member-content">
               <img
-                src="../../../../../../assets/img/user/avatarHolder.png"
+                src="/assets/img/user/avatarHolder.png"
                 height="32px"
                 width="32px"
                 class="rounded-circle me-2"
@@ -103,7 +103,7 @@
               >
             </div>
             <div class="member-option" >
-              <img src="../../../../../assets/img/icons/dots.svg" alt="" />
+              <img src="/assets/img/icons/dots.svg" alt="" />
             </div>
           </div>
         </div>

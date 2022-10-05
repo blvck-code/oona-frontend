@@ -30,6 +30,7 @@
             *ngFor="let message of (selectedStreamMessages$ | async)"
             [messageDetail]="message"
             (messageTopic)="setMessageTopic($event)"
+            [userId$]="currentUserId$"
           ></app-chat-card>
         </div>
         <div *ngIf="!(selectedStreamMessages$ | async)?.length">

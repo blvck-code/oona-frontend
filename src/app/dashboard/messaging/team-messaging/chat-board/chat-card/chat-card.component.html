@@ -1,7 +1,7 @@
-<div class="chart-item-container" [class.my-message]="messageDetail.sender_id === userId" >
+<div class="chart-item-container" [class.my-message]="messageDetail.sender_id === (userId$ | async)" >
   <div class="chart-item-profile">
     <img
-      src="../../../../../../assets/img/placeholder.jpg"
+      src="/assets/img/placeholder.jpg"
       height="32px"
       width="32px"
       class="rounded-circle"
@@ -13,13 +13,18 @@
       <div class="chart-item-content">
         <div *ngIf="messageDetail.type === 'stream' " class="chart-item-title" (click)="navigateSubject(messageDetail)">
           <p class="chat-tag">
-            #{{ messageDetail.subject | titlecase }}
+            {{ streamName(messageDetail.stream_id) }} #{{ messageDetail.subject | titlecase }}
           </p>
         </div>
         <div *ngIf="messageDetail.type === 'private' " class="chart-item-title" (click)="navigateSubject(messageDetail)">
-          <p class="chat-tag">
-            Private message
+          <p class="chat-tag" *ngIf="messageDetail.display_recipient[1]; else noRecipient">
+            {{ messageDetail.display_recipient[0].id === (userId$ | async) ? 'You' : messageDetail.display_recipient[0].full_name }} and {{ messageDetail.display_recipient[1].id === (userId$ | async) ? 'You' : messageDetail.display_recipient[1].full_name }}
           </p>
+          <ng-template #noRecipient>
+            <p class="chat-tag">
+              {{ messageDetail.display_recipient[0].id === (userId$ | async) ? 'You' : messageDetail.display_recipient[0].full_name }} and {{ messageDetail.display_recipient[0].full_name }}
+            </p>
+          </ng-template>
         </div>
         <div class="message-card" (click)="handleReplyMsg(messageDetail)" title="Click to reply">
           <div class="d-flex justify-content-between">

@@ -15,6 +15,7 @@ import {AppState} from '../../../../state/app.state';
 import {Observable} from 'rxjs';
 import {SingleMessageModel} from '../../models/messages.model';
 import {AllStreamsModel} from '../../models/streams.model';
+import {getUserId} from '../../../../auth/state/auth.selectors';
 
 const turndownService = new TurndownService();
 
@@ -35,6 +36,7 @@ export class ChatBoardComponent implements OnInit {
   selectedStreamMessages$!: Observable<SingleMessageModel[]>;
   topicSelected = '';
   loading = true;
+  currentUserId$!: Observable<number>;
 
   constructor(
     private route: ActivatedRoute,
@@ -107,6 +109,7 @@ export class ChatBoardComponent implements OnInit {
 
     this.storeStreamMessages();
     this.getStreamName();
+    this.currentUserId$ = this.store.select(getUserId);
     // this.messagingService.currentStreamName.subscribe((streamName) => {
     //   this.streamName = streamName; // always get the current value
     // });

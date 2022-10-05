@@ -16,6 +16,8 @@ export const getZulipProfile = createSelector(
   state => state.zulipProfile
 );
 
+
+
 export const getUserDetails = createSelector(
   getAuthState,
   state => state.userInfo
