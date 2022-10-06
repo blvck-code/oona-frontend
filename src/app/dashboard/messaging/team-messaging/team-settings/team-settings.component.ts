@@ -1,10 +1,15 @@
 import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {MessagingService} from '../../services/messaging.service';
-import {FormBuilder} from '@angular/forms';
+import {FormBuilder, Validators} from '@angular/forms';
 import {NotificationService} from '../../../../shared/services/notification.service';
 import {CreateTeamComponent} from '../create-team/create-team.component';
 import {LeaveTeamComponent} from './leave-team/leave-team.component';
+import {ZulipSingleUser} from '../../../../auth/models/user.model';
+import {Observable} from 'rxjs';
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../../state/app.state';
+import {getUserId, getZulipUsers} from '../../../../auth/state/auth.selectors';
 
 @Component({
   selector: 'app-team-settings',
@@ -13,7 +18,11 @@ import {LeaveTeamComponent} from './leave-team/leave-team.component';
 })
 export class TeamSettingsComponent implements OnInit {
   teams: any;
-  allUsers = Array();
+  allUsers: ZulipSingleUser[] = Array();
+  users$!: Observable<ZulipSingleUser[]>;
+  userId$!: Observable<number>;
+  searchText = '';
+  filterWord = '';
   teamOfChoice: any;
   displayCreateTeamComponentRef: MatDialogRef<CreateTeamComponent> | undefined;
   displayLeaveTeamComponentRef: MatDialogRef<LeaveTeamComponent> | undefined;
@@ -27,7 +36,8 @@ export class TeamSettingsComponent implements OnInit {
     full_name: '',
     email: ''
   };
-
+  selectedSubscribers: any[] = [];
+  oneByOneUser: any[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<TeamSettingsComponent>,
@@ -36,6 +46,7 @@ export class TeamSettingsComponent implements OnInit {
     private dialog: MatDialog,
     private  notificationService: NotificationService,
     private change: ChangeDetectorRef,
+    private store: Store<AppState>,
     // @ts-ignore
     @Inject(MAT_DIALOG_DATA) data,
   ) {
@@ -44,12 +55,34 @@ export class TeamSettingsComponent implements OnInit {
     this.getAllSubscribers();
   }
 
+  streamForm = this.formBuilder.group({
+    teamName: ['', Validators.required],
+    teamDescription: ['', Validators.required],
+    teamMembers: [''],
+    authErr: [true],
+    teamInvite: [false],
+    announce: [false],
+    teamHistory: [false],
+    privateShare: [false],
+    privateShareNo: [false],
+    public: [false],
+  });
+  emptyForm = false;
+  announceF = '';
+  privateTeamInviteShare = '';
+  privateTeamInviteNo = '';
+  publicF = '';
+  selectedUserEmail = [];
+
   ngOnInit(): void {
     this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
 
       this.allUsers = users.members.filter(user => user.presence );
       this.filteredUsers = users.members.filter(user => user.presence );
     });
+
+    this.users$ = this.store.select(getZulipUsers);
+    this.userId$ = this.store.select(getUserId);
   }
 
   getAllSubscribers(): void{
@@ -58,6 +91,78 @@ export class TeamSettingsComponent implements OnInit {
         this.allSubscribers = subscribers.subscriptions;
       });
 
+  }
+
+  submitForm(): any {
+    // console.log('public, prish, prino', this.publicF, this.privateTeamInviteShare,  this.privateTeamInviteNo );
+    if ( this.publicF !== '' ){
+      this.streamForm.controls.announce.setValue(false);
+      this.streamForm.controls.teamHistory.setValue(true);
+      this.streamForm.controls.teamInvite.setValue(false);
+
+    }
+
+    if ( this.privateTeamInviteShare  !== '' ){
+      this.streamForm.controls.announce.setValue(false);
+      this.streamForm.controls.teamHistory.setValue(true);
+      this.streamForm.controls.teamInvite.setValue(true);
+
+    }
+
+    if ( this.privateTeamInviteNo  !== '' ){
+      this.streamForm.controls.announce.setValue(false);
+      this.streamForm.controls.teamHistory.setValue(false);
+      this.streamForm.controls.teamInvite.setValue(true);
+    }
+
+
+    const teamData = {
+      name: this.streamForm.value.teamName,
+      description: this.streamForm.value.teamDescription,
+      // user_id: [this.loggedUserProfile.email, ...this.selectedUserEmail],
+      authorization_errors_fatal: this.streamForm.value.authErr,
+
+      invite_only: this.streamForm.value.teamInvite,
+      announce: this.streamForm.value.announce,
+      history_public_to_subscribers: this.streamForm.value.teamHistory,
+
+
+      // Todo add more members here. Automatically add current logged in user
+      // user_id: [this.loggedUserProfile.email]
+    };
+
+    this.messagingService.createTeam(teamData).subscribe((response: any) => {
+      console.log('the team data=====', teamData);
+      if (response['zulip message'].result === 'success'){
+        this.dialogRef.close('success');
+        this.notificationService.showSuccess(`Team ${teamData.name} created`, 'Team created');
+      }else{
+        this.notificationService.showError(`Unable to create ${teamData.name} at this time`, 'Team not created');
+      }
+
+    });
+  }
+
+  addAllUsers(): void {
+      this.users$.subscribe(
+        (users: ZulipSingleUser[]) => {
+          this.selectedSubscribers = users;
+        }
+      );
+  }
+
+  removeUser(userId: number): void {
+    this.selectedSubscribers = this.selectedSubscribers.filter(user => +user.user_id !== userId);
+  }
+
+  removeFromOneByOneUser(person: any): void {
+    this.oneByOneUser = this.oneByOneUser.filter(user => user.user_id !== person.user_id);
+  }
+
+  addSingleUser(member: any): void {
+    if (this.oneByOneUser.includes(member)) { return; }
+    this.oneByOneUser.push(member);
+    this.filterWord = '';
   }
 
   getSubscribersOfTeam(streamId: any): void{
@@ -100,17 +205,18 @@ export class TeamSettingsComponent implements OnInit {
   }
 
   createTeam(): void {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.height = '60vh';
-    dialogConfig.width = '50vw';
-    this.displayCreateTeamComponentRef = this.dialog.open(CreateTeamComponent, dialogConfig);
-    this.displayCreateTeamComponentRef.afterClosed().subscribe(
-      data => {
-        if (data === 'success'){
-          this.listAllTeams();
-        }
-      }
-    );
+    this.teamOfChoice = !this.teamOfChoice;
+    // const dialogConfig = new MatDialogConfig();
+    // dialogConfig.height = '60vh';
+    // dialogConfig.width = '50vw';
+    // this.displayCreateTeamComponentRef = this.dialog.open(CreateTeamComponent, dialogConfig);
+    // this.displayCreateTeamComponentRef.afterClosed().subscribe(
+    //   data => {
+    //     if (data === 'success'){
+    //       this.listAllTeams();
+    //     }
+    //   }
+    // );
   }
 
   searchTeam(event: any): any {

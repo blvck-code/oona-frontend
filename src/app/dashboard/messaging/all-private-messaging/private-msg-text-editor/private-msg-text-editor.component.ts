@@ -17,7 +17,6 @@ import TurndownService from 'turndown';
 // NgRx
 import { AppState } from '../../../../state/app.state';
 import { Store } from '@ngrx/store';
-import { getAllUsers } from '../../../../auth/state/auth.selectors';
 import {SingleChat} from '../../models/messages.model';
 import {getReceiverInfo} from '../../state/messaging.selectors';
 
@@ -132,7 +131,6 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
   }
 
   public onClick(): any {
-    const currentUrl = window.location.href;
     const meetingAttendees: any[] = [];
     if (this.chatGroup.length < 1) {
       this.notificationService.showWarning(
@@ -191,7 +189,7 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
 
     this.messagingService
       .createMeeting(meetingDetail)
-      .subscribe((response: any) => {
+      .subscribe(() => {
         this.notificationService.showInfo(
           'Your meeting has been created. Go back to the meeting page to view',
           'Meeting created'
