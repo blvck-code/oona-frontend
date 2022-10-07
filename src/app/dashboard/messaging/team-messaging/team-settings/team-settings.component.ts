@@ -63,14 +63,14 @@ export class TeamSettingsComponent implements OnInit {
     teamInvite: [false],
     announce: [false],
     teamHistory: [false],
+    public: [false],
     privateShare: [false],
     privateShareNo: [false],
-    public: [false],
   });
   emptyForm = false;
   announceF = '';
-  privateTeamInviteShare = '';
-  privateTeamInviteNo = '';
+  privateShareF = '';
+  // privateShareF = '';
   publicF = '';
   selectedUserEmail = [];
 
@@ -102,18 +102,18 @@ export class TeamSettingsComponent implements OnInit {
 
     }
 
-    if ( this.privateTeamInviteShare  !== '' ){
+    if ( this.privateShareF  !== '' ){
       this.streamForm.controls.announce.setValue(false);
       this.streamForm.controls.teamHistory.setValue(true);
       this.streamForm.controls.teamInvite.setValue(true);
 
     }
 
-    if ( this.privateTeamInviteNo  !== '' ){
-      this.streamForm.controls.announce.setValue(false);
-      this.streamForm.controls.teamHistory.setValue(false);
-      this.streamForm.controls.teamInvite.setValue(true);
-    }
+    // if ( this.privateTeamInviteNo  !== '' ){
+    //   this.streamForm.controls.announce.setValue(false);
+    //   this.streamForm.controls.teamHistory.setValue(false);
+    //   this.streamForm.controls.teamInvite.setValue(true);
+    // }
 
 
     const teamData = {
@@ -149,6 +149,16 @@ export class TeamSettingsComponent implements OnInit {
           this.selectedSubscribers = users;
         }
       );
+  }
+
+  addToSelected(): void {
+    this.oneByOneUser.map(
+      (user: ZulipSingleUser) => {
+        if (this.selectedSubscribers.includes(user)) { return; }
+        this.selectedSubscribers.push(user);
+      }
+    );
+    this.oneByOneUser = [];
   }
 
   removeUser(userId: number): void {
@@ -193,6 +203,49 @@ export class TeamSettingsComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  valideChecks(): void {
+    if ( this.publicF !== '' ){
+      this.streamForm.controls.announce.setValue(false);
+      this.streamForm.controls.teamHistory.setValue(true);
+      this.streamForm.controls.teamInvite.setValue(false);
+
+    }
+
+    if ( this.privateShareF  !== '' ){
+      this.streamForm.controls.announce.setValue(false);
+      this.streamForm.controls.teamHistory.setValue(true);
+      this.streamForm.controls.teamInvite.setValue(true);
+
+    }
+
+    if ( this.privateShareF !== '' ){
+      this.streamForm.controls.announce.setValue(false);
+      this.streamForm.controls.teamHistory.setValue(false);
+      this.streamForm.controls.teamInvite.setValue(true);
+    }
+
+    const teamData = {
+      name: this.streamForm.value.teamName,
+      description: this.streamForm.value.teamDescription,
+      // user_id: [...this.selectedUserEmail],
+      authorization_errors_fatal: this.streamForm.value.authErr,
+
+      invite_only: this.streamForm.value.teamInvite,
+      announce: this.streamForm.value.announce,
+      history_public_to_subscribers: this.streamForm.value.teamHistory,
+
+
+      // Todo add more members here. Automatically add current logged in user
+      // user_id: [this.loggedUserProfile.email]
+    };
+
+    console.log('Team data ===>>', teamData);
+  }
+
+  onSubmit(): void {
+    this.valideChecks();
+    console.log('Form data ==>>', this.streamForm.value);
+  }
 
   selectTeam(team: any): void {
     this.teamOfChoice = team;
@@ -205,18 +258,18 @@ export class TeamSettingsComponent implements OnInit {
   }
 
   createTeam(): void {
-    this.teamOfChoice = !this.teamOfChoice;
-    // const dialogConfig = new MatDialogConfig();
-    // dialogConfig.height = '60vh';
-    // dialogConfig.width = '50vw';
-    // this.displayCreateTeamComponentRef = this.dialog.open(CreateTeamComponent, dialogConfig);
-    // this.displayCreateTeamComponentRef.afterClosed().subscribe(
-    //   data => {
-    //     if (data === 'success'){
-    //       this.listAllTeams();
-    //     }
-    //   }
-    // );
+    // this.teamOfChoice = !this.teamOfChoice;
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.height = '60vh';
+    dialogConfig.width = '50vw';
+    this.displayCreateTeamComponentRef = this.dialog.open(CreateTeamComponent, dialogConfig);
+    this.displayCreateTeamComponentRef.afterClosed().subscribe(
+      data => {
+        if (data === 'success'){
+          this.listAllTeams();
+        }
+      }
+    );
   }
 
   searchTeam(event: any): any {
