@@ -1,0 +1,141 @@
+.create-stream-content {
+  height: 600px;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  padding: 0 15px;
+}
+.close-btn{
+  font-size: 25px;
+}
+.team-names{
+  height: 470px;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+}
+
+.team-search{
+  border-radius: 7px;
+  width: 200px;
+}
+.specific-team, .member-detail, .team-member, .filtered-user{
+  cursor: pointer;
+}
+.user-names{
+  height: 350px;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+}
+
+.specific-team{
+  //width: 90%;
+  border-right: none;
+  border-left: none;
+}
+.no-team{
+  display: grid;
+  place-items: center;
+}
+.add-team{
+  font-size: 19px;
+}
+.searchable-users{
+  max-height: 70px;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+}
+.create-stream-wrap {
+  input,
+  label {
+    font-size: 14px;
+  }
+
+  .stream-naming {
+    padding: 0 10px 10px 10px;
+    margin-bottom: 10px;
+  }
+
+
+  .stream-name {
+    input {
+      width: 40%;
+      font-size: 14px;
+    }
+  }
+  .stream-privacy {
+  }
+  .stream-select-sender {
+    select {
+      font-size: 14px;
+      width: 60%;
+    }
+  }
+}
+
+.table {
+  font-size: 14px;
+}
+
+.stream-subscribers {
+  input {
+    font-size: 14px;
+    width: 30%;
+  }
+}
+.stream-subscribers-top {
+  input {
+    width: 100%;
+  }
+}
+.stream-users {
+  .stream-filter-users {
+    position: relative;
+
+    .stream-filter-users-list {
+      width: 60%;
+      position: absolute;
+      bottom: 25px;
+      z-index: 2;
+      //min-height: 100px;
+
+      .list-group-item {
+        font-size: 14px;
+
+        span {
+          font-size: 12px;
+          margin-left: 15px;
+        }
+      }
+    }
+  }
+}
+
+.stream-add-all {
+  font-size: 14px;
+  align-items: center;
+}
+.list-pm-members {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 10px;
+}
+
+.pm-member {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  margin-right: 5px;
+  margin-top: 3px;
+  padding: 0 10px;
+  border-radius: 5px;
+  background-color: #051EC4;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+
+  p {
+    min-width: max-content;
+    margin-right: 5px;
+    margin-bottom: 0;
+  }
+}

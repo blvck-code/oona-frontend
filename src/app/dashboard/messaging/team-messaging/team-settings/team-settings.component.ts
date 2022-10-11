@@ -19,10 +19,9 @@ import {getUserId, getZulipUsers} from '../../../../auth/state/auth.selectors';
 export class TeamSettingsComponent implements OnInit {
   teams: any;
   allUsers: ZulipSingleUser[] = Array();
-  users$!: Observable<ZulipSingleUser[]>;
-  userId$!: Observable<number>;
-  searchText = '';
-  filterWord = '';
+  allUsers$!: Observable<ZulipSingleUser[]>;
+  currentUserId$!: Observable<number>;
+
   teamOfChoice: any;
   displayCreateTeamComponentRef: MatDialogRef<CreateTeamComponent> | undefined;
   displayLeaveTeamComponentRef: MatDialogRef<LeaveTeamComponent> | undefined;
@@ -36,8 +35,6 @@ export class TeamSettingsComponent implements OnInit {
     full_name: '',
     email: ''
   };
-  selectedSubscribers: any[] = [];
-  oneByOneUser: any[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<TeamSettingsComponent>,
@@ -67,15 +64,10 @@ export class TeamSettingsComponent implements OnInit {
     privateShare: [false],
     privateShareNo: [false],
   });
-  emptyForm = false;
-  announceF = '';
-  privateTeamInviteShare = '';
-  privateTeamInviteNo = '';
-  privateShareF = '';
-  // privateShareF = '';
-  publicF = '';
-  selectedUserEmail = [];
 
+  emptyForm = false;
+
+  // privateShareF = '';
   ngOnInit(): void {
     this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
 
@@ -83,8 +75,8 @@ export class TeamSettingsComponent implements OnInit {
       this.filteredUsers = users.members.filter(user => user.presence );
     });
 
-    this.users$ = this.store.select(getZulipUsers);
-    this.userId$ = this.store.select(getUserId);
+    this.allUsers$ = this.store.select(getZulipUsers);
+    this.currentUserId$ = this.store.select(getUserId);
   }
 
   getAllSubscribers(): void{
@@ -92,90 +84,6 @@ export class TeamSettingsComponent implements OnInit {
       ( subscribers: { subscriptions: any; name: any; }) => {
         this.allSubscribers = subscribers.subscriptions;
       });
-
-  }
-
-  submitForm(): any {
-    // console.log('public, prish, prino', this.publicF, this.privateTeamInviteShare,  this.privateTeamInviteNo );
-    if ( this.publicF !== '' ){
-      this.streamForm.controls.announce.setValue(false);
-      this.streamForm.controls.teamHistory.setValue(true);
-      this.streamForm.controls.teamInvite.setValue(false);
-
-    }
-
-    if ( this.privateTeamInviteShare  !== '' ){
-      this.streamForm.controls.announce.setValue(false);
-      this.streamForm.controls.teamHistory.setValue(true);
-      this.streamForm.controls.teamInvite.setValue(true);
-
-    }
-
-    if ( this.privateTeamInviteNo  !== '' ){
-      this.streamForm.controls.announce.setValue(false);
-      this.streamForm.controls.teamHistory.setValue(false);
-      this.streamForm.controls.teamInvite.setValue(true);
-    }
-
-
-    const teamData = {
-      name: this.streamForm.value.teamName,
-      description: this.streamForm.value.teamDescription,
-      // user_id: [this.loggedUserProfile.email, ...this.selectedUserEmail],
-      authorization_errors_fatal: this.streamForm.value.authErr,
-
-      invite_only: this.streamForm.value.teamInvite,
-      announce: this.streamForm.value.announce,
-      history_public_to_subscribers: this.streamForm.value.teamHistory,
-
-
-      // Todo add more members here. Automatically add current logged in user
-      // user_id: [this.loggedUserProfile.email]
-    };
-
-    console.log('Team data ===>>>', teamData);
-
-  //   this.messagingService.createTeam(teamData).subscribe((response: any) => {
-  //     console.log('the team data=====', teamData);
-  //     if (response['zulip message'].result === 'success'){
-  //       this.dialogRef.close('success');
-  //       this.notificationService.showSuccess(`Team ${teamData.name} created`, 'Team created');
-  //     }else{
-  //       this.notificationService.showError(`Unable to create ${teamData.name} at this time`, 'Team not created');
-  //     }
-  //   });
-  }
-
-  addAllUsers(): void {
-      this.users$.subscribe(
-        (users: ZulipSingleUser[]) => {
-          this.selectedSubscribers = users;
-        }
-      );
-  }
-
-  addToSelected(): void {
-    this.oneByOneUser.map(
-      (user: ZulipSingleUser) => {
-        if (this.selectedSubscribers.includes(user)) { return; }
-        this.selectedSubscribers.push(user);
-      }
-    );
-    this.oneByOneUser = [];
-  }
-
-  removeUser(userId: number): void {
-    this.selectedSubscribers = this.selectedSubscribers.filter(user => +user.user_id !== userId);
-  }
-
-  removeFromOneByOneUser(person: any): void {
-    this.oneByOneUser = this.oneByOneUser.filter(user => user.user_id !== person.user_id);
-  }
-
-  addSingleUser(member: any): void {
-    if (this.oneByOneUser.includes(member)) { return; }
-    this.oneByOneUser.push(member);
-    this.filterWord = '';
   }
 
   getSubscribersOfTeam(streamId: any): void{
@@ -204,50 +112,6 @@ export class TeamSettingsComponent implements OnInit {
 
   closeTeamSettings(): void {
     this.dialogRef.close();
-  }
-
-  valideChecks(): void {
-    if ( this.publicF !== '' ){
-      this.streamForm.controls.announce.setValue(false);
-      this.streamForm.controls.teamHistory.setValue(true);
-      this.streamForm.controls.teamInvite.setValue(false);
-
-    }
-
-    if ( this.privateShareF  !== '' ){
-      this.streamForm.controls.announce.setValue(false);
-      this.streamForm.controls.teamHistory.setValue(true);
-      this.streamForm.controls.teamInvite.setValue(true);
-
-    }
-
-    if ( this.privateShareF !== '' ){
-      this.streamForm.controls.announce.setValue(false);
-      this.streamForm.controls.teamHistory.setValue(false);
-      this.streamForm.controls.teamInvite.setValue(true);
-    }
-
-    const teamData = {
-      name: this.streamForm.value.teamName,
-      description: this.streamForm.value.teamDescription,
-      // user_id: [...this.selectedUserEmail],
-      authorization_errors_fatal: this.streamForm.value.authErr,
-
-      invite_only: this.streamForm.value.teamInvite,
-      announce: this.streamForm.value.announce,
-      history_public_to_subscribers: this.streamForm.value.teamHistory,
-
-
-      // Todo add more members here. Automatically add current logged in user
-      // user_id: [this.loggedUserProfile.email]
-    };
-
-    console.log('Team data ===>>', teamData);
-  }
-
-  onSubmit(): void {
-    this.valideChecks();
-    console.log('Form data ==>>', this.streamForm.value);
   }
 
   selectTeam(team: any): void {
