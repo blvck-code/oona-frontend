@@ -28,6 +28,7 @@ import {messagingReducer} from './dashboard/messaging/state/messaging.reducer';
 import {authReducer} from './auth/state/auth.reducer';
 import { HeaderComponent } from './header/header.component';
 import {SharedModule} from './shared/shared.module';
+import {QuillModule} from 'ngx-quill';
 
 @NgModule({
     declarations: [
@@ -44,6 +45,7 @@ import {SharedModule} from './shared/shared.module';
         ShowdownModule,
         ToastrModule.forRoot(),
         NgxEmojiPickerModule.forRoot(),
+        QuillModule.forRoot(),
         RichTextEditorModule,
         RichTextEditorAllModule,
         BrowserAnimationsModule, // required animations module
