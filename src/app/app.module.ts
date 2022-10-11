@@ -9,7 +9,8 @@ import {ReactiveFormsModule} from '@angular/forms';
 import { NgxEditorModule } from 'ngx-editor';
 import {ToastrModule} from 'ngx-toastr';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {HtmlEditorService, ImageService, LinkService, RichTextEditorModule, RichTextEditorAllModule, ToolbarService} from '@syncfusion/ej2-angular-richtexteditor';
+// tslint:disable-next-line:max-line-length
+import {HtmlEditorService, ImageService, LinkService, RichTextEditorAllModule, ToolbarService} from '@syncfusion/ej2-angular-richtexteditor';
 import {MatDialogModule} from '@angular/material/dialog';
 import {NgxEmojiPickerModule} from 'ngx-emoji-picker';
 import {ShowdownModule} from 'ngx-showdown';
@@ -44,7 +45,6 @@ import {SharedModule} from './shared/shared.module';
         ShowdownModule,
         ToastrModule.forRoot(),
         NgxEmojiPickerModule.forRoot(),
-        RichTextEditorModule,
         RichTextEditorAllModule,
         BrowserAnimationsModule, // required animations module
         HttpClientModule,
