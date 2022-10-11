@@ -4,7 +4,10 @@
     <div class="stream-naming">
       <div class="form-group stream-name">
         <label>Stream name</label>
-        <input formControlName="teamName" type="text" class="form-control" placeholder="Stream name">
+        <input #streamName (keyup)="checkStreamName(streamName.value)" formControlName="teamName" type="text" class="form-control" placeholder="Stream name">
+        <div class="stream-name-alert">
+          <span *ngIf="!showStreamNameError" class="stream-name-alert-message">A stream with this name already exists</span>
+        </div>
       </div>
       <div class="form-group pt-2">
         <label>Stream description</label>

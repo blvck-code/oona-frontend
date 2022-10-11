@@ -2,6 +2,10 @@ import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {ZulipSingleUser} from '../../../../../auth/models/user.model';
 import {Observable} from 'rxjs';
+import {AllStreamsModel} from '../../../models/streams.model';
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../../../state/app.state';
+import {getAllStreams} from '../../../state/messaging.selectors';
 
 @Component({
   selector: 'app-new-team',
@@ -22,12 +26,16 @@ export class NewTeamComponent implements OnInit {
   @Input() users$!: Observable<ZulipSingleUser[]>;
   @Input() userId$!: Observable<number>;
 
+  streams$!: Observable<AllStreamsModel[]>;
+  showStreamNameError = false;
+
   selectedUserEmail = [];
   selectedSubscribers: any[] = [];
   oneByOneUser: any[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
+    private store: Store<AppState>
   ) { }
 
   streamForm = this.formBuilder.group({
@@ -44,9 +52,10 @@ export class NewTeamComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.streams$ = this.store.select(getAllStreams);
   }
 
-  valideChecks(): void {
+  validChecks(): void {
     if ( this.publicF !== '' ){
       this.streamForm.controls.announce.setValue(false);
       this.streamForm.controls.teamHistory.setValue(true);
@@ -85,9 +94,25 @@ export class NewTeamComponent implements OnInit {
     console.log('Team data ===>>', teamData);
   }
 
+  checkStreamName(streamName: string): void {
+    this.streams$.subscribe(
+      (streams: AllStreamsModel[]) => {
+        streams.map((streamItem: AllStreamsModel) => {
+          if (streamItem.name.toLowerCase() === streamName.toLowerCase()) {
+            // Todo add stream form to be invalid
+            this.showStreamNameError = true;
+            console.log('A stream with this name already exists');
+          } else {
+            this.showStreamNameError = false;
+          }
+        });
+      }
+    );
+    console.log('Stream name ==>>', streamName);
+  }
 
   onSubmit(): void {
-    this.valideChecks();
+    this.validChecks();
     console.log('Form data ==>>', this.streamForm.value);
   }
 
