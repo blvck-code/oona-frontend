@@ -20,6 +20,18 @@
   font-weight: bold;
 }
 @font-face {
+  font-family: Roboto;
+  src: local("Roboto"),
+  url(assets/font/Roboto-Regular-500.woff);
+  font-weight: 500;
+}
+@font-face {
+  font-family: Roboto;
+  src: local("Roboto"),
+  url(assets/font/Roboto-Regular.woff);
+  font-weight: 400;
+}
+@font-face {
   font-family: Gilroy;
   src: local("Gilroy"),
   url(assets/font/Gilroy-SemiBold.woff);
@@ -154,12 +166,12 @@ showdown {
   }
 }
 
-@import '~@syncfusion/ej2-base/styles/material.css';
-@import '~@syncfusion/ej2-icons/styles/material.css';
-@import '~@syncfusion/ej2-buttons/styles/material.css';
-@import '~@syncfusion/ej2-splitbuttons/styles/material.css';
-@import '~@syncfusion/ej2-inputs/styles/material.css';
-@import '~@syncfusion/ej2-lists/styles/material.css';
-@import '~@syncfusion/ej2-navigations/styles/material.css';
-@import '~@syncfusion/ej2-popups/styles/material.css';
-@import '~@syncfusion/ej2-richtexteditor/styles/material.css';
+//@import '~@syncfusion/ej2-base/styles/material.css';
+//@import '~@syncfusion/ej2-icons/styles/material.css';
+//@import '~@syncfusion/ej2-buttons/styles/material.css';
+//@import '~@syncfusion/ej2-splitbuttons/styles/material.css';
+//@import '~@syncfusion/ej2-inputs/styles/material.css';
+//@import '~@syncfusion/ej2-lists/styles/material.css';
+//@import '~@syncfusion/ej2-navigations/styles/material.css';
+//@import '~@syncfusion/ej2-popups/styles/material.css';
+//@import '~@syncfusion/ej2-richtexteditor/styles/material.css';
