@@ -69,6 +69,8 @@ export class TeamSettingsComponent implements OnInit {
   });
   emptyForm = false;
   announceF = '';
+  privateTeamInviteShare = '';
+  privateTeamInviteNo = '';
   privateShareF = '';
   // privateShareF = '';
   publicF = '';
@@ -102,18 +104,18 @@ export class TeamSettingsComponent implements OnInit {
 
     }
 
-    if ( this.privateShareF  !== '' ){
+    if ( this.privateTeamInviteShare  !== '' ){
       this.streamForm.controls.announce.setValue(false);
       this.streamForm.controls.teamHistory.setValue(true);
       this.streamForm.controls.teamInvite.setValue(true);
 
     }
 
-    // if ( this.privateTeamInviteNo  !== '' ){
-    //   this.streamForm.controls.announce.setValue(false);
-    //   this.streamForm.controls.teamHistory.setValue(false);
-    //   this.streamForm.controls.teamInvite.setValue(true);
-    // }
+    if ( this.privateTeamInviteNo  !== '' ){
+      this.streamForm.controls.announce.setValue(false);
+      this.streamForm.controls.teamHistory.setValue(false);
+      this.streamForm.controls.teamInvite.setValue(true);
+    }
 
 
     const teamData = {
@@ -131,16 +133,17 @@ export class TeamSettingsComponent implements OnInit {
       // user_id: [this.loggedUserProfile.email]
     };
 
-    this.messagingService.createTeam(teamData).subscribe((response: any) => {
-      console.log('the team data=====', teamData);
-      if (response['zulip message'].result === 'success'){
-        this.dialogRef.close('success');
-        this.notificationService.showSuccess(`Team ${teamData.name} created`, 'Team created');
-      }else{
-        this.notificationService.showError(`Unable to create ${teamData.name} at this time`, 'Team not created');
-      }
+    console.log('Team data ===>>>', teamData);
 
-    });
+  //   this.messagingService.createTeam(teamData).subscribe((response: any) => {
+  //     console.log('the team data=====', teamData);
+  //     if (response['zulip message'].result === 'success'){
+  //       this.dialogRef.close('success');
+  //       this.notificationService.showSuccess(`Team ${teamData.name} created`, 'Team created');
+  //     }else{
+  //       this.notificationService.showError(`Unable to create ${teamData.name} at this time`, 'Team not created');
+  //     }
+  //   });
   }
 
   addAllUsers(): void {

@@ -90,15 +90,15 @@
                 </div>
 
                 <div class="form-check">
-                  <input formControlName="privateShare" [(ngModel)]="privateShareF" class="form-check-input" type="radio" name="privateShare" id="privateShare" >
-                  <label class="form-check-label" for="privateShare">
+                  <input formControlName="public" [(ngModel)]="privateTeamInviteShare" value="trues" class="form-check-input" type="radio" name="public" id="teamInvite">
+                  <label class="form-check-label" for="teamInvite">
                     <b>Private, shared history</b>: Must be invited by a subscriber; new subscribers can view complete message history; hidden from non-administrator users
                   </label>
                 </div>
 
                 <div class="form-check">
-                  <input formControlName="privateShareNo" class="form-check-input"  type="radio" name="privateShareNo" id="privateShareNo" >
-                  <label class="form-check-label" for="privateShareNo">
+                  <input formControlName="public" [(ngModel)]="privateTeamInviteNo" value="truess" class="form-check-input"  type="radio" name="public" id="teamHistory" >
+                  <label class="form-check-label" for="teamHistory">
                     <b>Private, protected history</b>: Must be invited by a subscriber; new subscribers can only see messages sent after they join; hidden from non-administrator users
                   </label>
                 </div>

@@ -45,7 +45,6 @@ export class CreateTeamComponent implements OnInit {
   hostError = false;
   loggedInUserId: number[] = [];
 
-
   constructor(
     private dialogRef: MatDialogRef<CreateTeamComponent>,
     public messagingService: MessagingService,
