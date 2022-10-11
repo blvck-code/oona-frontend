@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {ZulipSingleUser} from '../../../../../auth/models/user.model';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {AllStreamsModel} from '../../../models/streams.model';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../../state/app.state';
@@ -27,7 +27,10 @@ export class NewTeamComponent implements OnInit {
   @Input() userId$!: Observable<number>;
 
   streams$!: Observable<AllStreamsModel[]>;
-  showStreamNameError = false;
+
+  streamExist = false;
+  streamExistSubject = new BehaviorSubject<boolean>(this.streamExist);
+  streamExistObservable = this.streamExistSubject.asObservable();
 
   selectedUserEmail = [];
   selectedSubscribers: any[] = [];
@@ -94,16 +97,18 @@ export class NewTeamComponent implements OnInit {
     console.log('Team data ===>>', teamData);
   }
 
-  checkStreamName(streamName: string): void {
+  checkStreamName($event: any): void {
+    const streamName = $event.target.value;
+
     this.streams$.subscribe(
       (streams: AllStreamsModel[]) => {
         streams.map((streamItem: AllStreamsModel) => {
           if (streamItem.name.toLowerCase() === streamName.toLowerCase()) {
             // Todo add stream form to be invalid
-            this.showStreamNameError = true;
+            this.streamExistSubject.next(true);
             console.log('A stream with this name already exists');
           } else {
-            this.showStreamNameError = false;
+            this.streamExistSubject.next(false);
           }
         });
       }
