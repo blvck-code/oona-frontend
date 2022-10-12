@@ -166,6 +166,16 @@ showdown {
   }
 }
 
+@import 'assets/styles/ej2base';
+@import 'assets/styles/ej2buttons';
+@import 'assets/styles/ej2icon';
+@import 'assets/styles/ej2inputs';
+@import 'assets/styles/ej2lists';
+@import 'assets/styles/ej2navigation';
+@import 'assets/styles/ej2popups';
+@import 'assets/styles/ej2richtext';
+@import 'assets/styles/ej2splitbuttons';
+
 //@import '~@syncfusion/ej2-base/styles/material.css';
 //@import '~@syncfusion/ej2-icons/styles/material.css';
 //@import '~@syncfusion/ej2-buttons/styles/material.css';
