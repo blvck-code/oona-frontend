@@ -28,6 +28,8 @@
     "@fullcalendar/daygrid": "^5.8.0",
     "@material/dialog": "^11.0.0",
     "@mui/material": "^5.10.7",
+    "@ngneat/hot-toast": "^4.1.0",
+    "@ngneat/overview": "^3.0.0",
     "@ngrx/effects": "^13.2.0",
     "@ngrx/store": "^13.2.0",
     "@ngrx/store-devtools": "^13.2.0",

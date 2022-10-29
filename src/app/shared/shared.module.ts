@@ -7,6 +7,7 @@ import { InactiveTagComponent } from './components/inactive-tag/inactive-tag.com
 import { IdleTagComponent } from './components/idle-tag/idle-tag.component';
 import { TypingComponent } from './components/typing/typing.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { HotToastModule } from '@ngneat/hot-toast';
 
 // NgRx
 import {StoreModule} from '@ngrx/store';
@@ -15,8 +16,7 @@ import {sharedSelectors} from './state/shared.selectors';
 import {EffectsModule} from '@ngrx/effects';
 import {SharedEffects} from './state/shared.effects';
 import { SearchPipe } from './pipe/search.pipe';
-import {RouterModule} from "@angular/router";
-// import {DashboardRoutingModule} from '../dashboard/dashboard-routing.module';
+import {RouterModule} from '@angular/router';
 
 @NgModule({
   // tslint:disable-next-line:max-line-length
@@ -45,6 +45,7 @@ import {RouterModule} from "@angular/router";
     StoreModule.forFeature(sharedSelectors, sharedReducer),
     EffectsModule.forFeature([SharedEffects]),
     RouterModule,
+    HotToastModule.forRoot()
     // DashboardRoutingModule
   ]
 })

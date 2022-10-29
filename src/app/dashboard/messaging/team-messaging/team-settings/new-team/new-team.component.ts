@@ -6,6 +6,9 @@ import {AllStreamsModel} from '../../../models/streams.model';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../../state/app.state';
 import {getAllStreams} from '../../../state/messaging.selectors';
+import {MessagingService} from '../../../services/messaging.service';
+import {SharedService} from '../../../../../shared/services/shared.service';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-new-team',
@@ -38,7 +41,9 @@ export class NewTeamComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private messagingService: MessagingService,
+    private sharedSrv: SharedService
   ) { }
 
   streamForm = this.formBuilder.group({
@@ -118,7 +123,43 @@ export class NewTeamComponent implements OnInit {
 
   onSubmit(): void {
     this.validChecks();
-    console.log('Form data ==>>', this.streamForm.value);
+    const teamData = {
+      name: this.streamForm.value.teamName,
+      description: this.streamForm.value.teamDescription,
+      // user_id: [this.loggedUserProfile.email, ...this.selectedUserEmail],
+      authorization_errors_fatal: this.streamForm.value.authErr,
+      user_id: [...this.getUsersEmail(this.selectedSubscribers)],
+      invite_only: this.streamForm.value.teamInvite,
+      announce: this.streamForm.value.announce,
+      history_public_to_subscribers: this.streamForm.value.teamHistory,
+
+
+      // Todo add more members here. Automatically add current logged in user
+      // user_id: [this.loggedUserProfile.email]
+    };
+
+    this.messagingService.subscribeMember(teamData).subscribe(
+      (response: any) => {
+      console.log('Create stream success ===>>>', response);
+      if (response['zulip message'].result === 'success'){
+        this.sharedSrv.showNotification('Stream successfully created', 'success');
+        // this.getSubscribersOfTeam(this.teamOfChoice.stream_id);
+        // this.change.detectChanges();
+      }else{
+        // this.notificationService.showError(`Cannot add ${this.selectedUser.full_name} at this time`, 'Could not add member');
+      }
+    },
+      (err: HttpErrorResponse) => console.log('Create stream err ==>>', err) );
+  }
+
+  getUsersEmail(users: ZulipSingleUser[]): any {
+    const emails: string[] = [];
+
+    users.map((user: ZulipSingleUser) => {
+      emails.push(user.email);
+    });
+
+    return emails;
   }
 
   onChangeWhoCanPost(value: any): void {
@@ -147,24 +188,6 @@ export class NewTeamComponent implements OnInit {
       this.streamForm.controls.teamInvite.setValue(true);
     }
 
-
-    const teamData = {
-      name: this.streamForm.value.teamName,
-      description: this.streamForm.value.teamDescription,
-      // user_id: [this.loggedUserProfile.email, ...this.selectedUserEmail],
-      authorization_errors_fatal: this.streamForm.value.authErr,
-
-      invite_only: this.streamForm.value.teamInvite,
-      announce: this.streamForm.value.announce,
-      history_public_to_subscribers: this.streamForm.value.teamHistory,
-
-
-      // Todo add more members here. Automatically add current logged in user
-      // user_id: [this.loggedUserProfile.email]
-    };
-
-    console.log('Team data ===>>>', teamData);
-
     //   this.messagingService.createTeam(teamData).subscribe((response: any) => {
     //     console.log('the team data=====', teamData);
     //     if (response['zulip message'].result === 'success'){
@@ -179,7 +202,7 @@ export class NewTeamComponent implements OnInit {
   addAllUsers(): void {
     this.users$.subscribe(
       (users: ZulipSingleUser[]) => {
-        this.selectedSubscribers = users;
+       this.selectedSubscribers = users;
       }
     );
   }

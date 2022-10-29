@@ -125,18 +125,18 @@ export class TeamSettingsComponent implements OnInit {
   }
 
   createTeam(): void {
-    // this.teamOfChoice = !this.teamOfChoice;
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.height = '60vh';
-    dialogConfig.width = '50vw';
-    this.displayCreateTeamComponentRef = this.dialog.open(CreateTeamComponent, dialogConfig);
-    this.displayCreateTeamComponentRef.afterClosed().subscribe(
-      data => {
-        if (data === 'success'){
-          this.listAllTeams();
-        }
-      }
-    );
+    this.teamOfChoice = false;
+    // const dialogConfig = new MatDialogConfig();
+    // dialogConfig.height = '60vh';
+    // dialogConfig.width = '50vw';
+    // this.displayCreateTeamComponentRef = this.dialog.open(CreateTeamComponent, dialogConfig);
+    // this.displayCreateTeamComponentRef.afterClosed().subscribe(
+    //   data => {
+    //     if (data === 'success'){
+    //       this.listAllTeams();
+    //     }
+    //   }
+    // );
   }
 
   searchTeam(event: any): any {
