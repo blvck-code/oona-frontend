@@ -27,14 +27,12 @@ import {AuthEffects} from './auth/state/auth.effects';
 import {MessagingEffects} from './dashboard/messaging/state/messaging.effects';
 import {messagingReducer} from './dashboard/messaging/state/messaging.reducer';
 import {authReducer} from './auth/state/auth.reducer';
-import { HeaderComponent } from './header/header.component';
 import {SharedModule} from './shared/shared.module';
 
 @NgModule({
     declarations: [
         AppComponent,
         LandingPageComponent,
-        HeaderComponent,
     ],
     imports: [
         BrowserModule,

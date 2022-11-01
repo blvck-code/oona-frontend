@@ -1609,6 +1609,20 @@
     "prop-types" "^15.8.1"
     "react-is" "^18.2.0"
 
+"@ngneat/hot-toast@^4.1.0":
+  "integrity" "sha512-5QgxYXAGNmg0J10QjHOBu8Go5SZ9WIg5TDFm60ecMK/BUcuaHB7QeVfY/YFUPsw1iXaO3IVb81w9LdqXz2GNsg=="
+  "resolved" "https://registry.npmjs.org/@ngneat/hot-toast/-/hot-toast-4.1.0.tgz"
+  "version" "4.1.0"
+  dependencies:
+    "tslib" "^2.3.0"
+
+"@ngneat/overview@^3.0.0":
+  "integrity" "sha512-tPj58vs2dVafBZr84K/kZ9xCw3y1v3MwrR3AX6VLGPA7x/JDZgApaFTRjuMBVfqd5c3zFmgjB26TzkNGDW/y3Q=="
+  "resolved" "https://registry.npmjs.org/@ngneat/overview/-/overview-3.0.0.tgz"
+  "version" "3.0.0"
+  dependencies:
+    "tslib" "^2.0.0"
+
 "@ngrx/effects@^13.2.0":
   "integrity" "sha512-HmWggpl3xGQFfUzON/uel5jSyUWsrGZsR5qR/oFLGjPRWzwKfdHrl0OcBl5IhFgFxT74cAi9F4JTICUytGRbFA=="
   "resolved" "https://registry.npmjs.org/@ngrx/effects/-/effects-13.2.0.tgz"

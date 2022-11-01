@@ -26,7 +26,7 @@
 
       </div>
     </div>
-    <div class="col">
+    <div class="col create-stream">
       <div *ngIf="teamOfChoice">
         <div>
           <div class="d-flex justify-content-between">
@@ -36,14 +36,13 @@
           <p *ngIf="teamOfChoice.description">{{teamOfChoice.description}}</p>
           <p *ngIf="teamOfChoice.description == ''">No description for this team yet</p>
         </div>
-
-                <div class="d-flex justify-content-end">
-                  <ul class="searchable-users list-group">
-                    <li *ngFor="let show of searchResult" class="list-group-item filtered-user" (click)="addMemberToTeam(show)">
-                      {{ show.full_name }}
-                    </li>
-                  </ul>
-                </div>
+        <div class="d-flex justify-content-end">
+          <ul class="searchable-users list-group">
+            <li *ngFor="let show of searchResult" class="list-group-item filtered-user" (click)="addMemberToTeam(show)">
+              {{ show.full_name }}
+            </li>
+          </ul>
+        </div>
         <div class="d-flex justify-content-around">
           <input type="text" class="form-control shadow-none team-search p-2" placeholder="Search subscribers" aria-label="search" aria-describedby="basic-addon1" (keyup)="searchSubscriber($event)" >
           <input type="text" class="form-control shadow-none team-search p-2" placeholder="Name or email" aria-label="Name" aria-describedby="basic-addon1" [(ngModel)]="selectedUser.full_name" (keyup)="searchUser($event)">
@@ -64,7 +63,7 @@
       </div>
 
       <div *ngIf="!teamOfChoice" >
-        <p class="no-team">Select a team to view choices</p>
+       <app-new-team [userId$]="currentUserId$" [users$]="allUsers$"></app-new-team>
       </div>
     </div>
   </div>

@@ -1,5 +1,5 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {NavigationEnd, Router} from '@angular/router';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Router} from '@angular/router';
 import {MessagingService} from '../../services/messaging.service';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {CreateTeamComponent} from '../create-team/create-team.component';
@@ -12,25 +12,21 @@ import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
 import {
   getAllStreams,
-  getPrivateUnreadMessages, getStreamMessages,
+  getPrivateUnreadMessages,
   getStreamUnread,
   getStreamUnreadMessages,
-  getTopics
 } from '../../state/messaging.selectors';
-import {AllStreamsModel, TopicModel} from '../../models/streams.model';
-import {delay, take} from 'rxjs/operators';
+import {AllStreamsModel} from '../../models/streams.model';
+import {take} from 'rxjs/operators';
 import {ChannelSettingsComponent} from '../channel-settings/channel-settings.component';
 import {SingleMessageModel} from '../../models/messages.model';
 import {Topics} from '../../models/topics.model';
-import {log} from 'util';
-
 
 interface TopicDetails {
   topic_name: string;
   max_id: number;
   count: number;
 }
-
 
 @Component({
   selector: 'app-team-messaging-left-panel',
@@ -44,7 +40,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   allTeams: any;
   streamName: any;
   publicTeams: any = [];
-  private allAvailableTeams: any;
   @Output() topicToDisplay = new EventEmitter<any>();
   @Output() rightPanelEvent = new EventEmitter<string>();
   displayCreateTeamComponentRef: MatDialogRef<CreateTeamComponent> | undefined;
