@@ -3,6 +3,7 @@
   grid-template-columns: repeat(24, 1fr);
   height: 100vh;
   background-color: #F8F8FB;
+  overflow: hidden;
 }
 .sidenav-section {
   height: 100%;
@@ -18,9 +19,14 @@
 }
 .sidenav-branding {
   height: 80px;
+  padding: 0 10px;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  img {
+    width: 100%;
+  }
 }
 .sidenav-icons {
   padding-top: 30px;

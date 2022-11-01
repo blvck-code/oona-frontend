@@ -1,24 +1,38 @@
-<div #currentChat class="individual-message-item" [class.my-message]="messageDetail?.sender_id === ( userId$ | async )">
-  <div class="message-sender-icon">
-    <img src="assets/img/placeholder.jpg" class="rounded-circle me-2" alt="...">
-    <!--    <img *ngIf="messageDetail?.avatar_url; else noAvatar" [src]="imageURL" class="rounded-circle me-2" alt="...">-->
-    <!--    <ng-template #noAvatar>-->
-    <!--      <img *ngIf="!messageDetail?.avatar_url" src="assets/img/placeholder.jpg" class="rounded-circle me-2" alt="...">-->
-    <!--    </ng-template>-->
-  </div>
-  <div class="message-item-content">
-    <div class="message-body">
-      <div class="d-flex justify-content-between">
-        <p class="name">{{ showUserInfo(messageDetail.sender_full_name, ( zulipProfile | async ).zulip.full_name) }}</p>
-        <!--        <p class="name">{{ messageDetail.sender_full_name }}</p>-->
-        <p class="chat-time">{{ messageTime }}</p>
+<div class="message-container">
+  <div class="message-wrap" id="initial-message">
+    <div class="message-card">
+      <div class="message-sender-img">
+        <img src="assets/img/placeholder.jpg" class="rounded-circle me-2" alt="...">
       </div>
-
-      <showdown class="chat-msg" [value]="messageDetail?.content"></showdown>
-
-    </div>
-    <div class="message-feedback">
-
+     <div class="message-body">
+       <div class="message-card-title">
+         <p class="name">{{ showUserInfo(messageDetail.sender_full_name, ( zulipProfile | async ).zulip.full_name) }}</p>
+         <p class="chat-time">{{ messageTime }}</p>
+       </div>
+       <div class="message-card-content">
+         <showdown class="chat-msg" [value]="messageDetail?.content"></showdown>
+       </div>
+       <div class="message-card-footer">
+         <div class="message-card-icon-footer">
+           <span class="icon">😄</span>
+           <span class="numbers">123</span>
+         </div>
+         <div class="message-card-icon-footer">
+           <span class="icon">😍</span>
+           <span class="numbers">3</span>
+         </div>
+         <div class="message-card-icon-footer">
+           <span class="icon">👏</span>
+           <span class="numbers">5</span>
+         </div>
+       </div>
+     </div>
     </div>
   </div>
+  <app-individual-chat-card-response></app-individual-chat-card-response>
 </div>
+
+
+
+
+
