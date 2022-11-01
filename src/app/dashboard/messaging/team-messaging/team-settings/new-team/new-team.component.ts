@@ -22,7 +22,7 @@ export class NewTeamComponent implements OnInit {
   privateTeamInviteNo = '';
   privateShareF = '';
   whoCanPost = '';
-
+  privacyType = '';
   searchText = '';
   filterWord = '';
 
@@ -49,57 +49,46 @@ export class NewTeamComponent implements OnInit {
   streamForm = this.formBuilder.group({
     teamName: ['', Validators.required],
     teamDescription: ['', Validators.required],
+    stream_post_policy: [''],
     teamMembers: [''],
-    authErr: [true],
     teamInvite: [false],
     announce: [false],
     teamHistory: [false],
     public: [false],
-    privateShare: [false],
-    privateShareNo: [false],
   });
 
   ngOnInit(): void {
     this.streams$ = this.store.select(getAllStreams);
   }
 
+  handlePrivacyType(type: string): void {
+    this.privacyType = type;
+    this.validChecks();
+  }
+
   validChecks(): void {
-    if ( this.publicF !== '' ){
-      this.streamForm.controls.announce.setValue(false);
+
+    console.log('Privacy type ==>>', this.privacyType);
+
+    if ( this.privacyType !== 'public' ){
+      this.streamForm.controls.public.setValue(true);
+      this.streamForm.controls.teamHistory.setValue(false);
+      this.streamForm.controls.teamInvite.setValue(false);
+
+    }
+
+    if ( this.privacyType  !== 'privateTeamInviteShare' ){
+      this.streamForm.controls.public.setValue(false);
       this.streamForm.controls.teamHistory.setValue(true);
       this.streamForm.controls.teamInvite.setValue(false);
 
     }
 
-    if ( this.privateShareF  !== '' ){
-      this.streamForm.controls.announce.setValue(false);
-      this.streamForm.controls.teamHistory.setValue(true);
-      this.streamForm.controls.teamInvite.setValue(true);
-
-    }
-
-    if ( this.privateShareF !== '' ){
-      this.streamForm.controls.announce.setValue(false);
+    if ( this.privacyType !== 'privateTeamInviteNo' ){
+      this.streamForm.controls.public.setValue(false);
       this.streamForm.controls.teamHistory.setValue(false);
       this.streamForm.controls.teamInvite.setValue(true);
     }
-
-    const teamData = {
-      name: this.streamForm.value.teamName,
-      description: this.streamForm.value.teamDescription,
-      // user_id: [...this.selectedUserEmail],
-      authorization_errors_fatal: this.streamForm.value.authErr,
-
-      invite_only: this.streamForm.value.teamInvite,
-      announce: this.streamForm.value.announce,
-      history_public_to_subscribers: this.streamForm.value.teamHistory,
-
-
-      // Todo add more members here. Automatically add current logged in user
-      // user_id: [this.loggedUserProfile.email]
-    };
-
-    console.log('Team data ===>>', teamData);
   }
 
   checkStreamName($event: any): void {
@@ -126,30 +115,26 @@ export class NewTeamComponent implements OnInit {
     const teamData = {
       name: this.streamForm.value.teamName,
       description: this.streamForm.value.teamDescription,
-      // user_id: [this.loggedUserProfile.email, ...this.selectedUserEmail],
       authorization_errors_fatal: this.streamForm.value.authErr,
       user_id: [...this.getUsersEmail(this.selectedSubscribers)],
       invite_only: this.streamForm.value.teamInvite,
       announce: this.streamForm.value.announce,
       history_public_to_subscribers: this.streamForm.value.teamHistory,
-
-
-      // Todo add more members here. Automatically add current logged in user
-      // user_id: [this.loggedUserProfile.email]
     };
 
-    this.messagingService.subscribeMember(teamData).subscribe(
-      (response: any) => {
-      console.log('Create stream success ===>>>', response);
-      if (response['zulip message'].result === 'success'){
-        this.sharedSrv.showNotification('Stream successfully created', 'success');
-        // this.getSubscribersOfTeam(this.teamOfChoice.stream_id);
-        // this.change.detectChanges();
-      }else{
-        // this.notificationService.showError(`Cannot add ${this.selectedUser.full_name} at this time`, 'Could not add member');
-      }
-    },
-      (err: HttpErrorResponse) => console.log('Create stream err ==>>', err) );
+    console.log('Team data ===>>', teamData);
+    console.log('Form data ===>>', this.streamForm.value);
+    //
+    // this.messagingService.subscribeMember(teamData).subscribe({
+    //   next: (response: any) => {
+    //     if (response['zulip message'].result === 'success'){
+    //       this.sharedSrv.showNotification('Stream successfully created', 'success');
+    //     }else{
+    //       // this.notificationService.showError(`Cannot add ${this.selectedUser.full_name} at this time`, 'Could not add member');
+    //     }
+    //   },
+    //   error: (err: HttpErrorResponse) => console.log('Create stream err ==>>', err)
+    // });
   }
 
   getUsersEmail(users: ZulipSingleUser[]): any {
@@ -187,16 +172,6 @@ export class NewTeamComponent implements OnInit {
       this.streamForm.controls.teamHistory.setValue(false);
       this.streamForm.controls.teamInvite.setValue(true);
     }
-
-    //   this.messagingService.createTeam(teamData).subscribe((response: any) => {
-    //     console.log('the team data=====', teamData);
-    //     if (response['zulip message'].result === 'success'){
-    //       this.dialogRef.close('success');
-    //       this.notificationService.showSuccess(`Team ${teamData.name} created`, 'Team created');
-    //     }else{
-    //       this.notificationService.showError(`Unable to create ${teamData.name} at this time`, 'Team not created');
-    //     }
-    //   });
   }
 
   addAllUsers(): void {

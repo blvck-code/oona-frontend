@@ -22,13 +22,11 @@ import {ChannelSettingsComponent} from '../channel-settings/channel-settings.com
 import {SingleMessageModel} from '../../models/messages.model';
 import {Topics} from '../../models/topics.model';
 
-
 interface TopicDetails {
   topic_name: string;
   max_id: number;
   count: number;
 }
-
 
 @Component({
   selector: 'app-team-messaging-left-panel',
