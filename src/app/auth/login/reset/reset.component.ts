@@ -32,6 +32,7 @@ export class ResetComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.authService.redirectOnLogin();
   }
 
   onReset(): any {

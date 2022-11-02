@@ -30,6 +30,7 @@ export class RequestOtpComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.authService.redirectOnLogin();
   }
 
   onRequestOTP(): any {

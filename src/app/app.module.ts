@@ -14,12 +14,12 @@ import {HtmlEditorService, ImageService, LinkService, RichTextEditorAllModule, T
 import {MatDialogModule} from '@angular/material/dialog';
 import {NgxEmojiPickerModule} from 'ngx-emoji-picker';
 import {ShowdownModule} from 'ngx-showdown';
-
+import {SharedModule} from './shared/shared.module';
 // NgRx
-import { StoreModule } from '@ngrx/store';
+import {ActionReducer, ActionReducerMap, MetaReducer, StoreModule} from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment as env } from '../environments/environment';
-import { appReducer } from './state/app.state';
+import {appReducer, AppState} from './state/app.state';
 import {EffectsModule} from '@ngrx/effects';
 import {TokenInterceptorService} from './interceptors/token-interceptor.service';
 import {ErrorInterceptorService} from './interceptors/error-interceptor.service';
@@ -27,7 +27,14 @@ import {AuthEffects} from './auth/state/auth.effects';
 import {MessagingEffects} from './dashboard/messaging/state/messaging.effects';
 import {messagingReducer} from './dashboard/messaging/state/messaging.reducer';
 import {authReducer} from './auth/state/auth.reducer';
-import {SharedModule} from './shared/shared.module';
+import { localStorageSync } from 'ngrx-store-localstorage';
+
+
+export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {
+  return localStorageSync({keys: ['userCenter']})(reducer);
+}
+const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
+
 
 @NgModule({
     declarations: [

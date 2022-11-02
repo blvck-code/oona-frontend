@@ -112,6 +112,62 @@ body {
   border-color: #051EC4 !important;
 }
 
+.submit-form-btn {
+  margin-top: 20px;
+  color: #fff;
+
+  .form-btn {
+    height: 55px;
+    width: 100%;
+    border: none;
+    border-radius: 30px;
+    background-color: #051EC4;
+    font-family: Poppin, sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: #ffffff;
+    cursor: pointer;
+    position: relative;
+
+    .form-btn-text {
+      color: #ffffff;
+    }
+
+    &.btn-loading {
+      opacity: 0.5;
+
+      .btn-text {
+        visibility: hidden;
+        opacity: 0;
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        pointer-events: none;
+        width: 30px;
+        height: 30px;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        border: 2px solid transparent;
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: btn-loading-spinner 1s ease infinite;
+      }
+    }
+  }
+}
+@keyframes btn-loading-spinner {
+  from {
+    transform: rotate(0turn);
+  }
+  to {
+    transform: rotate(1turn);
+  }
+}
 
 showdown {
   pre {

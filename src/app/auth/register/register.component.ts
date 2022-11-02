@@ -26,9 +26,9 @@ export class RegisterComponent implements OnInit {
     password1: ['',
       Validators.required,
     ],
-    confirmPass: ['', Validators.required]
+    password2: ['', Validators.required]
   }, {
-    validator: ConfirmedValidator('password1', 'confirmPass')
+    validator: ConfirmedValidator('password1', 'password2')
   });
 
   public account = {
@@ -58,7 +58,7 @@ export class RegisterComponent implements OnInit {
     registrationInfo.append('first_name', this.registrationForm.value.firstName);
     registrationInfo.append('last_name', this.registrationForm.value.secondName);
     registrationInfo.append('password1', this.registrationForm.value.password1);
-    registrationInfo.append('password2', this.registrationForm.value.confirmPass);
+    registrationInfo.append('password2', this.registrationForm.value.password2);
     this.authService.registerUser(registrationInfo)
       .subscribe({
         next: (res: any) => {

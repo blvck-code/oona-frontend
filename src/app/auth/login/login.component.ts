@@ -16,6 +16,7 @@ import {ToastrService} from 'ngx-toastr';
 import {take} from 'rxjs/operators';
 import {HttpErrorResponse} from '@angular/common/http';
 import {SharedService} from '../../shared/services/shared.service';
+import {AuthResponseModel} from '../../shared/models/auth.model';
 
 @Component({
   selector: 'app-login',
@@ -47,32 +48,15 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.handleShowErrorMsg();
-    // this.redirectOnLogin();
+    this.authService.redirectOnLogin();
+    this.authService.redirectOnLogin();
   }
 
   handleShowErrorMsg(): any {
     this.errorMsg$ = this.store.select(getErrorMessage);
   }
 
-  redirectOnLogin(): void {
-    this.store.select(getIsLoggedIn).subscribe(
-      (status: boolean) => {
-
-        if (status) {
-          this.route.navigate(['/dashboard']);
-          // tslint:disable-next-line:new-parens
-          this.store.dispatch(new authActions.LoadZulipUsers);
-          this.store.dispatch(new messagingActions.LoadAllStreams);
-        }
-
-        return;
-      }
-    );
-    this.store.dispatch(new authActions.LoadPresentUsers);
-  }
-
   onLogin(): any {
-    let count = 0;
     if (!this.loginForm.valid) {
       return;
     }
@@ -82,14 +66,9 @@ export class LoginComponent implements OnInit {
     loginInfo.append('email', this.loginForm.value.email);
     loginInfo.append('password', this.loginForm.value.password);
 
-
     this.authService.login(loginInfo)
-      .subscribe(
-        (loginRes: any) => {
-          // console.log('Login response ===>>>', loginRes);
-          // take(1)
-          count += 1;
-
+      .subscribe({
+        next: (loginRes: AuthResponseModel) => {
           if (loginRes.message === 'Verify your account to retrieve token.') {
             this.loginServerError = 'Your account is not verified.';
             this.sharedSrv.showNotification('Your account is not verified.', 'info');
@@ -98,10 +77,10 @@ export class LoginComponent implements OnInit {
             return;
           }
 
-          if (count === 1) {
-            this.sharedSrv.showNotification('Login successful.', 'success');
-            this.store.dispatch(new authActions.LoginUserSuccess(loginRes));
-          }
+          console.log(loginRes);
+
+          this.sharedSrv.showNotification(`Welcome back ${loginRes.user.first_name} ${loginRes.user.last_name}`, 'success');
+          this.store.dispatch(new authActions.LoginUserSuccess(loginRes));
 
           this.loading = false;
           this.authService.saveToken(
@@ -110,16 +89,16 @@ export class LoginComponent implements OnInit {
           this.authService.saveRefreshToken(
             loginRes.token.refresh
           );
-          // this.handleRedirect();
           const redirectUrl = this.authService.redirectUrl;
           this.route.navigate(['/dashboard']);
         },
-        (loginErr: HttpErrorResponse) => {
+        error: (loginErr: HttpErrorResponse) => {
           this.loginError = true;
           this.loading = false;
           console.log('Log in error ==>>', loginErr);
           this.handleError(loginErr.error);
         }
+      }
       );
   }
 
@@ -128,8 +107,6 @@ export class LoginComponent implements OnInit {
     const email = error?.email;
     const nonField = error[0]?.non_field_errors;
     const msg = error?.msg;
-
-    console.log('nonField', nonField);
 
     if (email) {
       this.sharedSrv.showNotification(email.toString(), 'error');

@@ -65,7 +65,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateState();
-    this.initializeState();
+    // this.initializeState();
 
   }
 

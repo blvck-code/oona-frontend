@@ -28,6 +28,7 @@ export class RequestComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.authService.redirectOnLogin();
   }
 
   onLogin(): any {
