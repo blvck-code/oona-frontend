@@ -3,6 +3,9 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {AuthService} from '../services/auth.service';
 import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
+import {HttpErrorResponse} from '@angular/common/http';
+import {SharedService} from '../../shared/services/shared.service';
+import {ConfirmedValidator} from './confirmed.validators';
 
 @Component({
   selector: 'app-register',
@@ -24,6 +27,8 @@ export class RegisterComponent implements OnInit {
       Validators.required,
     ],
     confirmPass: ['', Validators.required]
+  }, {
+    validator: ConfirmedValidator('password1', 'confirmPass')
   });
 
   public account = {
@@ -37,7 +42,7 @@ export class RegisterComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private toastr: ToastrService
+    private sharedSrv: SharedService
   ) { }
 
   ngOnInit(): void {
@@ -55,29 +60,37 @@ export class RegisterComponent implements OnInit {
     registrationInfo.append('password1', this.registrationForm.value.password1);
     registrationInfo.append('password2', this.registrationForm.value.confirmPass);
     this.authService.registerUser(registrationInfo)
-      .subscribe(
-        (res: any) => {
+      .subscribe({
+        next: (res: any) => {
           this.router.navigate(['/verify-account']);
           this.loading = false;
-          this.toastr.success('Account created successful.', 'Notification');
+          this.sharedSrv.showNotification('Account created successful.', 'success');
         },
-        (signupError: any) => {
+        error: (signupError: HttpErrorResponse) => {
           this.loading = false;
           this.signupError = true;
-          if (signupError.message === 'User with this email already exists.') {
-            this.signupServerError = 'A User with this email already exists.';
-          } else  if (signupError.message === 'The passwords don\'t match.') {
-            this.signupServerError = 'The passwords do not match. Please try again.';
-          } else if (signupError.message === 'This field may not be blank.') {
-            this.signupServerError = 'Please fill all the required fields and try again.';
-          } else {
-            this.signupServerError = 'Please accept the appropriate certificates.';
-          }
-          this.registrationForm.get('password1')?.reset();
-          this.registrationForm.get('confirmPass')?.reset();
+          this.handleError(signupError.error);
         }
-      );
+      });
   }
+
+  handleError(error: any): void {
+    const email = error.email;
+    const nonField = error.non_field_errors;
+    const msg = error.msg;
+
+    if (email) {
+      this.sharedSrv.showNotification(email.toString(), 'error');
+      this.signupServerError = email.toString();
+    } else if (nonField) {
+      this.sharedSrv.showNotification(nonField.toString(), 'error');
+      this.signupServerError = nonField.toString();
+    } else if (msg) {
+      this.sharedSrv.showNotification(msg, 'error');
+      this.signupServerError = msg;
+    }
+  }
+
 
   get registrationFormControls(): any {
     return this.registrationForm.controls;

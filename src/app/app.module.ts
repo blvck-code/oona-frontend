@@ -63,11 +63,11 @@ import {SharedModule} from './shared/shared.module';
             useClass: TokenInterceptorService,
             multi: true
         },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: ErrorInterceptorService,
-            multi: true
-        }
+        // {
+        //     provide: HTTP_INTERCEPTORS,
+        //     useClass: ErrorInterceptorService,
+        //     multi: true
+        // }
     ],
     exports: [
     ],

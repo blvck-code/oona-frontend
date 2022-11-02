@@ -53,6 +53,9 @@
           <label for="confirmPass">Confirm Password*</label>
           <input type="password" id="confirmPass" formControlName="confirmPass" placeholder="Confirm Password">
           <span *ngIf="registrationFormControls.confirmPass.touched && registrationFormControls.confirmPass.errors?.required">Please confirm your password.</span>
+          <span *ngIf="registrationFormControls.confirmPass.touched && registrationFormControls.confirmPass.errors['confirmedValidator']">
+            Password and Confirm Password must be match.
+          </span>
           <span *ngIf="!registrationFormControls.confirmPass.touched && emptyForm">Please confirm your password.</span>
         </div>
 

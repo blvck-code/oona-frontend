@@ -3,6 +3,7 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {AuthService} from '../../services/auth.service';
 import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
+import {SharedService} from '../../../shared/services/shared.service';
 
 @Component({
   selector: 'app-verify',
@@ -16,7 +17,7 @@ export class VerifyComponent implements OnInit {
   emptyForm = false;
 
   verifyAccountForm = this.formBuilder.group({
-    email: ['', [Validators.email, Validators.required]],
+    email: ['', [Validators.required]],
     verifyCode: ['', Validators.required]
   });
 
@@ -24,7 +25,7 @@ export class VerifyComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private toastr: ToastrService
+    private sharedSrv: SharedService
   ) { }
 
   ngOnInit(): void {
@@ -43,22 +44,28 @@ export class VerifyComponent implements OnInit {
       .subscribe(
         (verifyRes: any) => {
           this.router.navigate(['/login']);
-          this.toastr.info('Account verified.', 'Notification');
+          this.sharedSrv.showNotification('Account verified.', 'success');
         },
         (verifyErr: any) => {
+          console.log('Verify error ==>>>', verifyErr);
           this.verificationError = true;
           // console.log('verifyErr: ', verifyErr);
-          if (verifyErr.message === 'Invalid or expired verification token.') {
-            this.verificationServerError = 'The verification code is Invalid or Expired.';
-          } else if (verifyErr.message === 'User not found.') {
-            this.verificationServerError = 'The user email does not exist.';
-          } else if (verifyErr.message === 'Your passwords do not match') {
-            this.verificationServerError = 'The passwords entered do not match.';
-          } else {
-            this.verificationServerError = 'Please accept the appropriate certificates.';
-          }
+          this.handleError(verifyErr.error);
         }
       );
+  }
+
+  handleError(error: any): void {
+    if (error.error === 'Invalid or expired verification token.') {
+      this.verificationServerError = 'The verification code is Invalid or Expired.';
+    } else if (error.error === 'User not found.') {
+      this.verificationServerError = 'The user email does not exist.';
+    } else if (error.error === 'Your passwords do not match') {
+      this.verificationServerError = 'The passwords entered do not match.';
+    } else {
+      this.verificationServerError = 'Please accept the appropriate certificates.';
+    }
+    this.sharedSrv.showNotification(this.verificationServerError, 'error');
   }
 
   get verificationFormControls(): any {

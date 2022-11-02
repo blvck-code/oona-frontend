@@ -28,6 +28,7 @@ export class ErrorInterceptorService implements HttpInterceptor{
         const errorStatus = error.status;
         console.log('Error status code ==>', errorStatus);
         console.log('Error  ==>', error);
+        console.log('Dig deepers  ==>', error.error.msg);
         let errorMsg;
 
 
@@ -51,14 +52,19 @@ export class ErrorInterceptorService implements HttpInterceptor{
           // console.log('Server side error ===>>> ', error);
           // console.log('Error message ===>>> ', error?.error.toString());
 
-          if (error?.error.toString()) {
+          if (error.error.msg) {
+            const err = {
+              status: error.status,
+              message: error?.error.msg
+            };
+            errorMsg = err;
+          } else if (error?.error.toString()) {
             // tslint:disable-next-line:no-shadowed-variable
             const err = {
               status: error.status,
               message: error?.error.toString()
             };
             errorMsg = err;
-            // console.log('Error content: ', err);
           }
 
           if (error?.error?.error) {

@@ -14,6 +14,8 @@ import * as messagingActions from '../../dashboard/messaging/state/messaging.act
 import {log} from 'util';
 import {ToastrService} from 'ngx-toastr';
 import {take} from 'rxjs/operators';
+import {HttpErrorResponse} from '@angular/common/http';
+import {SharedService} from '../../shared/services/shared.service';
 
 @Component({
   selector: 'app-login',
@@ -30,7 +32,7 @@ export class LoginComponent implements OnInit {
   loading = false;
 
   loginForm = this.formBuilder.group({
-    email: ['', [Validators.email, Validators.required]],
+    email: ['', [Validators.required]],
     password: ['', Validators.required]
   });
 
@@ -39,7 +41,7 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private route: Router,
     private store: Store<AppState>,
-    private toastr: ToastrService
+    private sharedSrv: SharedService
   ) {
   }
 
@@ -90,12 +92,14 @@ export class LoginComponent implements OnInit {
 
           if (loginRes.message === 'Verify your account to retrieve token.') {
             this.loginServerError = 'Your account is not verified.';
+            this.sharedSrv.showNotification('Your account is not verified.', 'info');
             this.loginError = true;
             this.loading = false;
+            return;
           }
 
           if (count === 1) {
-            this.toastr.info('Login successful.', 'Notification');
+            this.sharedSrv.showNotification('Login successful.', 'success');
             this.store.dispatch(new authActions.LoginUserSuccess(loginRes));
           }
 
@@ -110,13 +114,36 @@ export class LoginComponent implements OnInit {
           const redirectUrl = this.authService.redirectUrl;
           this.route.navigate(['/dashboard']);
         },
-        (loginErr: any) => {
-          this.loginServerError = loginErr.message;
+        (loginErr: HttpErrorResponse) => {
           this.loginError = true;
           this.loading = false;
           console.log('Log in error ==>>', loginErr);
+          this.handleError(loginErr.error);
         }
       );
+  }
+
+  handleError(error: any): void {
+    console.log('Login error ===>>', error);
+    const email = error?.email;
+    const nonField = error[0]?.non_field_errors;
+    const msg = error?.msg;
+
+    console.log('nonField', nonField);
+
+    if (email) {
+      this.sharedSrv.showNotification(email.toString(), 'error');
+      this.loginServerError = email.toString();
+    } else if (nonField) {
+      this.sharedSrv.showNotification(nonField.toString(), 'error');
+      this.loginServerError = nonField.toString();
+    } else if (msg) {
+      this.sharedSrv.showNotification(msg, 'error');
+      this.loginServerError = msg.toString();
+    } else {
+      this.sharedSrv.showNotification('Invalid credentials', 'error');
+      this.loginServerError = 'Invalid credentials';
+    }
   }
 
   get addLoginFormControls(): any {

@@ -18,7 +18,6 @@
           <label for="userName">Username</label>
           <input type="text" id="userName" formControlName="email" placeholder="Email Address">
           <span *ngIf="addLoginFormControls.email.touched && addLoginFormControls.email.errors?.required">Please enter your email address.</span>
-          <span *ngIf="addLoginFormControls.email.touched && addLoginFormControls.email.errors?.email">Please enter a Valid email address.</span>
           <span *ngIf="!addLoginFormControls.email.touched && emptyForm">Please enter a your email address.</span>
         </div>
         <div class="password-details">
