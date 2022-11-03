@@ -6,6 +6,9 @@ import { ConferenceService } from '../shared/conference.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { MeetingParticipant } from '../shared/meetingParticipant';
 import { environment as env } from '../../../../environments/environment';
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../state/app.state';
+import {getAllUsers} from '../../../auth/state/auth.selectors';
 
 declare var JitsiMeetExternalAPI: any;
 
@@ -67,7 +70,8 @@ export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private conferenceService: ConferenceService,
     private authService: AuthService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private store: Store<AppState>
   ) {}
 
   ngOnInit(): void {
@@ -141,7 +145,7 @@ export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    console.log('After init')
+    console.log('After init');
     this.options = {
       roomName: this.room,
       width: '100%',
@@ -193,7 +197,7 @@ export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   handleRoleChanged = async (newRole: any) => {
     this.isModerator = newRole.role === 'moderator';
-  };
+  }
 
   handleTileView = async (tileViewStatus: any) => {
     if (tileViewStatus.enabled === true) {
@@ -201,7 +205,7 @@ export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.tileViewEnabled = false;
     }
-  };
+  }
 
   handleScreenSharingStatus = async (screenSharingStatus: any) => {
     if (screenSharingStatus.on === true) {
@@ -209,16 +213,16 @@ export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.screenSharingOn = false;
     }
-  };
+  }
 
   handleClose = () => {
     console.log('handleClose');
-  };
+  }
 
   handleParticipantLeft = async (participant: any) => {
     console.log('handleParticipantLeft', participant);
     // const data = await this.getParticipants();
-  };
+  }
 
   handleParticipantJoined = async (participant: any) => {
     console.log('handleParticipantJoined', participant);
@@ -231,7 +235,7 @@ export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
   handleVideoConferenceLeft = () => {
     console.log('handleVideoConferenceLeft');
     this.showParticipants = false;
-  };
+  }
 
   handleMuteStatus = (audio: any) => {
     console.log('handleMuteStatus', audio);
@@ -240,7 +244,7 @@ export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.isAudioMuted = false;
     }
-  };
+  }
 
   handleVideoStatus = (video: any) => {
     console.log('handleVideoStatus', video);
@@ -249,7 +253,7 @@ export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.isVideoMuted = false;
     }
-  };
+  }
 
   getParticipants(): any {
     this.meetingParticipants = this.api.getParticipantsInfo();
@@ -319,12 +323,18 @@ export class OonaIframeComponent implements OnInit, AfterViewInit, OnDestroy {
   getCurrentMembers(): void {
     this.getMeetingDetails();
 
-    this.conferenceService.getAllUsers().subscribe(
-      (allUsersRes: any) => {
+    this.store.select(getAllUsers).subscribe({
+      next: (allUsersRes: any) => {
         this.allUsers = allUsersRes.results;
       },
-      (allUsersErr: any) => {}
-    );
+      error: (allUsersErr: any) => {}
+    });
+    // this.conferenceService.getAllUsers().subscribe(
+    //   (allUsersRes: any) => {
+    //     this.allUsers = allUsersRes.results;
+    //   },
+    //   (allUsersErr: any) => {}
+    // );
   }
 
   removeMember(memberIndex: number): void {

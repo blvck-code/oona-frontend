@@ -21,7 +21,8 @@ export class IndividualChatCardComponent implements OnInit {
 
   messageTime = '';
   zulipProfile!: Observable<any>;
-  baseURL = oonaFrontendUrl;
+  // Todo change to end point
+  baseURL = 'https://192.168.0.42:3443';
   imageURL = '';
   isVisible = false;
 

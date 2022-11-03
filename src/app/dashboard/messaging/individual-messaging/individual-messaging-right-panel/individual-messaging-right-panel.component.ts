@@ -5,7 +5,7 @@ import * as authActions from '../../../../auth/state/auth.actions';
 import {environment} from '../../../../../environments/environment';
 
 import {NotificationService} from '../../../../shared/services/notification.service';
-import {getAllUsers, getLoadingUsers, getSelectedUser, getZulipUsers, getZulipUsersMembers} from '../../../../auth/state/auth.selectors';
+import {getAllUsers, getSelectedUser, getZulipUsers, getZulipUsersMembers} from '../../../../auth/state/auth.selectors';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
 import {Observable} from 'rxjs';

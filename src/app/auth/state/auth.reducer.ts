@@ -19,7 +19,7 @@ export interface AuthState {
   userInfo: UserInfoState | null;
   zulipProfile: null;
   users: {
-    loading: boolean,
+    loaded: boolean,
     all: any;
     zulipUsers: any;
     selectedUser: any;
@@ -35,7 +35,7 @@ export const initialState: AuthState = {
   userInfo: null,
   zulipProfile: null,
   users: {
-    loading: true,
+    loaded: false,
     all: null,
     zulipUsers: null,
     selectedUser: null,
@@ -117,7 +117,7 @@ export function authReducer(state = initialState, action: any): AuthState {
         ...state,
         users: {
           ...state.users,
-          loading: false,
+          loaded: true,
           all: action.payload.members,
         },
       };
@@ -135,7 +135,7 @@ export function authReducer(state = initialState, action: any): AuthState {
           ...state,
           users: {
             ...state.users,
-            loading: false,
+            loaded: false,
             zulipUsers: action.payload.members
           }
         };

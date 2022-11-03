@@ -16,6 +16,11 @@ const getAuthState =
 const getMessagingState =
   createFeatureSelector<MessagingState>(messagingSelector);
 
+export const streamsLoaded = createSelector(
+  getMessagingState,
+  state => state.streams.loaded
+);
+
 export const getAllStreams = createSelector(
   getMessagingState,
   (state) => state.streams.allStreams
@@ -88,7 +93,7 @@ export const getPrivateMessages = createSelector(
 // ge stream messages
 export const getStreamMessages = createSelector(
   getMessagingState,
-  (state) => state.messaging.streamMsg.messages
+  (state) => state?.messaging.streamMsg.messages
 );
 
 export const getStreamMsgStatus = createSelector(

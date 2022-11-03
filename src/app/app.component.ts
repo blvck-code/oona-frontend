@@ -27,8 +27,8 @@ export class AppComponent implements OnInit {
   totalUnreadMsgSubject$ = new BehaviorSubject<number>(this.totalUnreadMsg);
   totalUnreadMsgObservable = this.totalUnreadMsgSubject$.asObservable();
 
-  privateUnread$!: Observable<number>;
-  streamUnread$!: Observable<number>;
+  privateUnread$: Observable<number> = this.store.select(getStreamUnreadMessages)
+  streamUnread$: Observable<number> = this.store.select(getStreamUnreadMessages)
 
   constructor(
     private store: Store<AppState>,
@@ -41,14 +41,7 @@ export class AppComponent implements OnInit {
 
   updateState = () => {
     this.store.dispatch(new authActions.UpdateState());
-    this.store.select(getIsLoggedIn).subscribe(
-      status => {
-        if (status) {
-          this.store.dispatch(new authActions.LoadPresentUsers());
-          this.store.dispatch(new authActions.LoadZulipUsers());
-        }
-      }
-    );
+
   }
 
   tabNotification(): void {
@@ -65,9 +58,10 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateState();
-    // this.initializeState();
-
+    // this.getTotalCounter();
   }
+
+
 
   initializeState(): void {
     this.store.select(getIsLoggedIn).subscribe(

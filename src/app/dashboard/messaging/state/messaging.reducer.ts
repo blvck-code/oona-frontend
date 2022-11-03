@@ -6,7 +6,10 @@ import {act} from '@ngrx/effects';
 
 export interface MessagingState {
   loading: boolean;
+  loaded: boolean;
   streams: {
+    loading: boolean;
+    loaded: boolean;
     allStreams: AllStreamsModel[] | any;
     streamData: AllStreamsModel[] | any;
     subStreams: SubscribedStreams[];
@@ -47,7 +50,10 @@ export interface MessagingState {
 
 export const initialState: MessagingState = {
   loading: false,
+  loaded: false,
   streams: {
+    loading: false,
+    loaded: false,
     allStreams: [],
     streamData: [],
     subStreams: [],
@@ -103,6 +109,10 @@ export function messagingReducer(
       return {
         ...state,
         loading: false,
+        streams: {
+          ...state.streams,
+          loaded: false
+        }
       };
     case messagingActions.MessagingActionsTypes.LOAD_ALL_STREAMS_SUCCESS:
       return {
@@ -110,6 +120,7 @@ export function messagingReducer(
         loading: false,
         streams: {
           ...state.streams,
+          loaded: true,
           allStreams: action?.payload?.streams,
         },
       };

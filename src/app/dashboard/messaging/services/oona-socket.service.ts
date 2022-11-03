@@ -85,11 +85,19 @@ export class OonaSocketService {
     private route: Router,
     private store: Store<AppState>
   ) {
+    this.connect();
+  }
 
+  notifySound(): void {
+    let audio = new Audio();
+    audio.src = '../../../../assets/notification.mp3';
+    audio.load();
+    audio.play();
   }
 
   notifyMe(message: SingleMessageModel): void {
     console.log('Notification message ', message);
+    this.notifySound();
     if (!('Notification' in window)) {
       // Check if the browser supports notifications
       alert('This browser does not support desktop notification');
@@ -255,6 +263,7 @@ export class OonaSocketService {
     // @ts-ignore
     this.websocket.onmessage = (evt) => {
       this.filterSocketData(evt.data);
+      console.log('Sockets connected');
     };
 
     // @ts-ignore
