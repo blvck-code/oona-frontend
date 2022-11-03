@@ -85,7 +85,6 @@ export class OonaSocketService {
     private route: Router,
     private store: Store<AppState>
   ) {
-    this.connect();
   }
 
   notifySound(): void {
@@ -263,7 +262,6 @@ export class OonaSocketService {
     // @ts-ignore
     this.websocket.onmessage = (evt) => {
       this.filterSocketData(evt.data);
-      console.log('Sockets connected');
     };
 
     // @ts-ignore

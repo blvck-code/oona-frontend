@@ -91,10 +91,10 @@ export class LoginComponent implements OnInit {
           this.sharedSrv.showNotification(`Welcome back ${loginRes.user.first_name} ${loginRes.user.last_name}`, 'success');
           this.store.dispatch(new authActions.LoginUserSuccess(loginRes));
 
-          this.msgSockets.messageConnect();
-          this.oonaSockets.getCurrentProfile();
-          this.oonaSockets.connect();
-          this.oonaSockets.userManagement();
+          // this.msgSockets.messageConnect();
+          // this.oonaSockets.getCurrentProfile();
+          // this.oonaSockets.connect();
+          // this.oonaSockets.userManagement();
 
           this.loading = false;
 

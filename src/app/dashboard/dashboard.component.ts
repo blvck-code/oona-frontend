@@ -26,7 +26,6 @@ export class DashboardComponent implements OnInit {
     this.store.select(getIsLoggedIn).subscribe({
       next: (status: boolean) => {
         this.initializeState();
-        this.handshakeSocket();
       },
       error: (error: any) => {
         console.log('Get login status error ==>>', error);
@@ -41,8 +40,7 @@ export class DashboardComponent implements OnInit {
     // get users
     this.store.dispatch(new authActions.LoadPresentUsers());
     this.store.dispatch(new authActions.LoadZulipUsers());
-    // this.store.dispatch(new authActions.CurrentUserProfile());
-
+    this.store.dispatch(new authActions.CurrentUserProfile());
 
     // get stream messages
     this.store.select(streamsLoaded).subscribe({
@@ -65,16 +63,4 @@ export class DashboardComponent implements OnInit {
       });
   }
 
-  handshakeSocket(): void {
-    this.store.select(getIsLoggedIn).subscribe({
-      next: (status: boolean) => {
-        if (status) {
-          this.oonaSockets.connect();
-          console.log('Connecting ');
-        } else {
-          this.oonaSockets.disconnect();
-        }
-      }
-    });
-  }
 }

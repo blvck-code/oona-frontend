@@ -11,6 +11,7 @@ import {ToastrService} from 'ngx-toastr';
 import {SharedService} from '../../services/shared.service';
 import {BROWSER_STORAGE} from '../../../auth/storage';
 import {OonaSocketService} from '../../../dashboard/messaging/services/oona-socket.service';
+import * as authActions from '../../../auth/state/auth.actions';
 
 @Component({
   selector: 'app-navbar',
@@ -48,6 +49,7 @@ export class NavbarComponent implements OnInit {
         this.storage.removeItem('u?');
         localStorage.clear();
         this.router.navigate(['/']);
+        // this.store.dispatch(new authActions.LogoutUserSuccess());
         this.oonaSockets.disconnect();
         this.sharedSrv.showNotification('Logout successful.', 'success');
       },
