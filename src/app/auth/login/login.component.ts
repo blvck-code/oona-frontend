@@ -17,6 +17,8 @@ import {take} from 'rxjs/operators';
 import {HttpErrorResponse} from '@angular/common/http';
 import {SharedService} from '../../shared/services/shared.service';
 import {AuthResponseModel} from '../../shared/models/auth.model';
+import {MessagesSocketService} from '../../dashboard/messaging/services/messages-socket.service';
+import {OonaSocketService} from '../../dashboard/messaging/services/oona-socket.service';
 
 @Component({
   selector: 'app-login',
@@ -42,7 +44,9 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private route: Router,
     private store: Store<AppState>,
-    private sharedSrv: SharedService
+    private sharedSrv: SharedService,
+    private msgSockets: MessagesSocketService,
+    private oonaSockets: OonaSocketService
   ) {
   }
 
@@ -77,18 +81,23 @@ export class LoginComponent implements OnInit {
             return;
           }
 
-          console.log(loginRes);
-
-          this.sharedSrv.showNotification(`Welcome back ${loginRes.user.first_name} ${loginRes.user.last_name}`, 'success');
-          this.store.dispatch(new authActions.LoginUserSuccess(loginRes));
-
-          this.loading = false;
           this.authService.saveToken(
             loginRes.token.access
           );
           this.authService.saveRefreshToken(
             loginRes.token.refresh
           );
+
+          this.sharedSrv.showNotification(`Welcome back ${loginRes.user.first_name} ${loginRes.user.last_name}`, 'success');
+          this.store.dispatch(new authActions.LoginUserSuccess(loginRes));
+
+          this.msgSockets.messageConnect();
+          this.oonaSockets.getCurrentProfile();
+          this.oonaSockets.connect();
+          this.oonaSockets.userManagement();
+
+          this.loading = false;
+
           const redirectUrl = this.authService.redirectUrl;
           this.route.navigate(['/dashboard']);
         },

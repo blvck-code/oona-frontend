@@ -85,9 +85,7 @@ export class OonaSocketService {
     private route: Router,
     private store: Store<AppState>
   ) {
-    this.getCurrentProfile();
-    this.connect();
-    this.userManagement();
+
   }
 
   notifyMe(message: SingleMessageModel): void {
@@ -157,6 +155,14 @@ export class OonaSocketService {
     const url: string = env.userChannel;
     const userChannel = protocol + url;
     this.websocket = new WebSocket(userChannel, this.authService.getToken());
+  }
+
+  disconnect(): void {
+    this.websocket?.close();
+    // @ts-ignore
+    this.websocket.onclose = (evt) => {
+      console.log('Websockets closed ==>>', evt);
+    };
   }
 
   filterSocketData(userData: any): void {
@@ -342,7 +348,7 @@ export class OonaSocketService {
     this.newMessages = this.removeLoggedInUserMessages([...this.messagesToStreams, ...this.messagesInPrivate]);
   }
 
-  private getCurrentProfile(): any {
+  getCurrentProfile(): any {
     this.messagingService.currentUserProfile().subscribe( (profile: any) => {
       this.loggedInUserProfile = profile.zulip;
     });

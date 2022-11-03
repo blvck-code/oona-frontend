@@ -53,13 +53,13 @@ const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
         RichTextEditorAllModule,
         BrowserAnimationsModule, // required animations module
         HttpClientModule,
-        StoreModule.forRoot({userCenter: authReducer, messaging: messagingReducer}),
+        StoreModule.forRoot({userCenter: authReducer}),
         StoreDevtoolsModule.instrument({
             name: 'Oona',
             maxAge: 25,
             logOnly: env.production
         }),
-        EffectsModule.forRoot([AuthEffects, MessagingEffects]),
+        EffectsModule.forRoot([AuthEffects]),
         SharedModule,
     ],
     providers: [

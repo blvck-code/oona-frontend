@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 // NgRx
-import * as authActions from '../auth/state/auth.actions';
 import {Store} from '@ngrx/store';
 import {AppState} from '../state/app.state';
-import {getToken} from 'codelyzer/angular/styles/cssLexer';
 import {getIsLoggedIn} from '../auth/state/auth.selectors';
+// import * as messagingActions from ''
 
 @Component({
   selector: 'app-dashboard',
@@ -18,7 +17,18 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // this.initOnLoad();
+    this.store.select(getIsLoggedIn).subscribe({
+      next: (status: boolean) => {
+        console.log('Login status ==>>', status);
+      },
+      error: (error: any) => {
+        console.log('Get login status error ==>>', error);
+      }
+    });
+  }
+
+  initializeState(): void {
+
   }
 
 }

@@ -5,12 +5,12 @@ import {Router} from '@angular/router';
 // NgRx
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../state/app.state';
-import * as authActions from '../../../auth/state/auth.actions'
 import {getUserDetails} from '../../../auth/state/auth.selectors';
 import {Observable} from 'rxjs';
 import {ToastrService} from 'ngx-toastr';
 import {SharedService} from '../../services/shared.service';
 import {BROWSER_STORAGE} from '../../../auth/storage';
+import {OonaSocketService} from '../../../dashboard/messaging/services/oona-socket.service';
 
 @Component({
   selector: 'app-navbar',
@@ -25,6 +25,7 @@ export class NavbarComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private store: Store<AppState>,
+    private oonaSockets: OonaSocketService,
     private sharedSrv: SharedService,
     @Inject(BROWSER_STORAGE) private storage: Storage
   ) { }
@@ -47,6 +48,7 @@ export class NavbarComponent implements OnInit {
         this.storage.removeItem('u?');
         localStorage.clear();
         this.router.navigate(['/']);
+        this.oonaSockets.disconnect();
         this.sharedSrv.showNotification('Logout successful.', 'success');
       },
       error: () => {
