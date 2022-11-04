@@ -9,8 +9,9 @@ import { catchError, map, tap } from 'rxjs/operators';
 import {PresentUsersResponse, ZulipSingleUser, ZulipUsersResponse} from '../models/user.model';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../state/app.state';
-import {getErrorMessage} from '../state/auth.selectors';
+import {getErrorMessage, getIsLoggedIn} from '../state/auth.selectors';
 import {NotificationService} from '../../shared/services/notification.service';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -37,6 +38,7 @@ export class AuthService {
     private http: HttpClient,
     private store: Store<AppState>,
     private notification: NotificationService,
+    private route: Router,
     @Inject(BROWSER_STORAGE) private storage: Storage
   ) {
     this.apiErrorMessage();
@@ -66,12 +68,9 @@ export class AuthService {
     return this.http.post(this.generateOTPUrl, userEmail);
   }
 
-  logout(): any {
-    this.http.get(this.logoutUrl, this.getToken());
-    this.storage.removeItem('ot');
-    this.storage.removeItem('or');
-    this.storage.removeItem('u?');
-    localStorage.clear();
+  logout(): Observable<any> {
+    return this.http.get(this.logoutUrl, this.getToken());
+
   }
 
   logoutUser(): Observable<any> {
@@ -106,6 +105,17 @@ export class AuthService {
 
   saveRefreshToken(refreshToken: string): any {
     this.storage.setItem('or', refreshToken);
+  }
+
+  redirectOnLogin(): void {
+    this.store.select(getIsLoggedIn).subscribe(
+      (status: boolean) => {
+        if (status) {
+          this.route.navigate(['/dashboard']);
+        }
+        return;
+      }
+    );
   }
 
   isLoggedIn(): boolean {

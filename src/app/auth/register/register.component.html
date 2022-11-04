@@ -14,31 +14,30 @@
         <p>Create a new Oona Account.</p>
       </div>
       <form autocomplete="false" [formGroup]="registrationForm" (ngSubmit)="onRegister()" class="register-form">
-        <div class="input-details">
+        <div class="input-details" [class.invalid-feedback]="registrationFormControls.email.touched && registrationFormControls.email.errors">
           <label for="email">Email*</label>
-          <input type="email" id="email" formControlName="email" placeholder="Email Address">
+          <input type="email" id="email" formControlName="email" [class.is-invalid]="registrationFormControls.email.touched && registrationFormControls.email.errors" placeholder="Email Address">
           <span *ngIf="registrationFormControls.email.touched && registrationFormControls.email.errors?.required">Please enter your email address.</span>
-          <span *ngIf="registrationFormControls.email.touched && registrationFormControls.email.errors?.email">Please enter a valid email address!</span>
           <span *ngIf="!registrationFormControls.email.touched && emptyForm">Please enter your email address.</span>
         </div>
 
-        <div class="input-details">
+        <div class="input-details" [class.invalid-feedback]="registrationFormControls.firstName.touched && registrationFormControls.firstName.errors">
           <label for="firstName">First Name*</label>
-          <input type="text" id="firstName" formControlName="firstName" placeholder="First Name">
+          <input type="text" id="firstName" [class.is-invalid]="registrationFormControls.firstName.touched && registrationFormControls.firstName.errors" formControlName="firstName" placeholder="First Name">
           <span *ngIf="registrationFormControls.firstName.touched && registrationFormControls.firstName.errors?.required">Please enter your first name.</span>
           <span *ngIf="!registrationFormControls.firstName.touched && emptyForm">Please enter your first name.</span>
         </div>
 
-        <div class="input-details">
+        <div class="input-details" [class.invalid-feedback]="registrationFormControls.secondName.touched && registrationFormControls.secondName.errors">
           <label for="secondName">Second Name*</label>
-          <input type="text" id="secondName" formControlName="secondName"  placeholder="Second Name">
+          <input type="text" id="secondName" [class.is-invalid]="registrationFormControls.secondName.touched && registrationFormControls.secondName.errors" formControlName="secondName"  placeholder="Second Name">
           <span *ngIf="registrationFormControls.secondName.touched && registrationFormControls.secondName.errors?.required">Please enter your second name.</span>
           <span *ngIf="!registrationFormControls.secondName.touched && emptyForm">Please enter your second name.</span>
         </div>
 
-        <div class="input-details">
+        <div class="input-details" [class.invalid-feedback]="registrationFormControls.password1.touched && registrationFormControls.password1.errors">
           <label for="pass">Password*</label>
-          <input type="password" name="password1" id="pass" autocomplete="false" formControlName="password1" placeholder="Password">
+          <input type="password" name="password1" id="pass" [class.is-invalid]="registrationFormControls.password1.touched && registrationFormControls.password1.errors" autocomplete="false" formControlName="password1" placeholder="Password">
           <span *ngIf="registrationFormControls.password1.touched && registrationFormControls.password1.errors?.required">Please enter your password.</span>
           <span *ngIf="!registrationFormControls.password1.touched && emptyForm">Please enter your password.</span>
           <ng9-password-strength-bar *ngIf="registrationForm.get('password1')?.value"
@@ -49,11 +48,14 @@
           </ng9-password-strength-bar>
         </div>
 
-        <div class="input-details">
+        <div class="input-details" [class.invalid-feedback]="registrationFormControls.password2.touched && registrationFormControls.password2.errors">
           <label for="confirmPass">Confirm Password*</label>
-          <input type="password" id="confirmPass" formControlName="confirmPass" placeholder="Confirm Password">
-          <span *ngIf="registrationFormControls.confirmPass.touched && registrationFormControls.confirmPass.errors?.required">Please confirm your password.</span>
-          <span *ngIf="!registrationFormControls.confirmPass.touched && emptyForm">Please confirm your password.</span>
+          <input type="password" id="confirmPass" [class.is-invalid]="registrationFormControls.password2.touched && registrationFormControls.password2.errors" formControlName="password2" placeholder="Confirm Password">
+          <span *ngIf="registrationFormControls.password2.touched && registrationFormControls.password2.errors?.required">Please confirm your password.</span>
+          <span *ngIf="registrationFormControls.password2.errors?.['confirmedValidator']">
+            Password and Confirm Password must be match.
+          </span>
+          <span *ngIf="!registrationFormControls.password2.touched && emptyForm">Please confirm your password.</span>
         </div>
 
         <div class="register-buttons">

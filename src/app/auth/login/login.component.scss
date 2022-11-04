@@ -46,6 +46,11 @@
   border-radius: 10px;
   padding: 5px 15px;
   font-size: 16px;
+
+  &.is-invalid {
+    border: 1px solid #d91500;
+    color: #d91500;
+  }
 }
 .username-details input:focus {
   outline: none;
@@ -67,6 +72,11 @@
   border-radius: 10px;
   padding: 5px 15px;
   font-size: 16px;
+
+  &.is-invalid {
+    border: 1px solid #d91500;
+    color: #d91500;
+  }
 }
 .password-details input:focus {
   outline: none;

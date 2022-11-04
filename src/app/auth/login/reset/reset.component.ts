@@ -3,6 +3,8 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {AuthService} from '../../services/auth.service';
 import {Router} from '@angular/router';
 import {NotificationService} from '../../../shared/services/notification.service';
+import {HttpErrorResponse} from '@angular/common/http';
+import {SharedService} from '../../../shared/services/shared.service';
 
 @Component({
   selector: 'app-reset',
@@ -16,7 +18,7 @@ export class ResetComponent implements OnInit {
   emptyForm = false;
 
   resetPassForm = this.formBuilder.group({
-    email: ['', [Validators.email, Validators.required]],
+    email: ['', [Validators.required]],
     password: ['', Validators.required],
     confirmPass: ['', Validators.required],
     verifyCode: ['', Validators.required]
@@ -26,10 +28,11 @@ export class ResetComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private notify: NotificationService
+    private sharedSrv: SharedService
   ) { }
 
   ngOnInit(): void {
+    this.authService.redirectOnLogin();
   }
 
   onReset(): any {
@@ -48,25 +51,49 @@ export class ResetComponent implements OnInit {
     this.authService.resetUserPassword(resetInfo)
       .subscribe(
         (resetRes: any) => {
+          this.sharedSrv.showNotification('Password reset successful', 'success');
           this.router.navigate(['/login']);
+          console.log('Success ==>>', resetRes);
         },
-        (resetErr: any) => {
-          // console.log('Error message from component ===>>>>', resetErr);
-          this.resetPassServerError = resetErr.message;
-
+        (resetErr: HttpErrorResponse) => {
+          this.handleError(resetErr.error);
           this.resetPassError = true;
-          // if (resetErr?.error.error === 'Invalid or expired verification token.') {
-          //   this.resetPassServerError = 'The verification code is Invalid or Expired.';
-          // } else if (resetErr?.error.error === 'User not found.') {
-          //   this.resetPassServerError = 'The user email does not exist.';
-          // } else if (resetErr?.error.non_field_errors[0] === 'Your passwords do not match') {
-          //   this.resetPassServerError = 'The passwords entered do not match.';
-          // }
         }
       );
 
-    // console.log('Message ===>>>', this.resetPassServerError);
   }
+
+  handleError(error: any): void {
+    const email = error.email;
+    const nonField = error.non_field_errors;
+    const msg = error.msg;
+    const password1 = error.password1;
+    const password2 = error.password2;
+    const errorMsg = error.error;
+
+    console.log('Error ==>>', error);
+
+    if (email) {
+      this.sharedSrv.showNotification(email.toString(), 'error');
+      this.resetPassServerError = email.toString();
+    } else if (nonField) {
+      this.sharedSrv.showNotification(nonField.toString(), 'error');
+      this.resetPassServerError = nonField.toString();
+    } else if (msg) {
+      this.sharedSrv.showNotification(msg, 'error');
+      this.resetPassServerError = msg;
+    } else if (errorMsg) {
+      this.sharedSrv.showNotification(errorMsg, 'error');
+      this.resetPassServerError = errorMsg;
+    } else if ( password1 && password2 && password1.toString() === password2.toString()) {
+      this.sharedSrv.showNotification(password1.toString(), 'error');
+      this.resetPassServerError = password1.toString();
+    } else if (password2 && password1 !== password2) {
+      this.sharedSrv.showNotification(password2, 'error');
+      this.resetPassServerError = password2;
+    }
+  }
+
 
   get resetPassFormControls(): any {
     return this.resetPassForm.controls;

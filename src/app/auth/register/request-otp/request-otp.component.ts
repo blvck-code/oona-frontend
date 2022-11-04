@@ -3,6 +3,8 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {AuthService} from '../../services/auth.service';
 import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
+import {SharedService} from '../../../shared/services/shared.service';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-request-otp',
@@ -24,10 +26,11 @@ export class RequestOtpComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private toastr: ToastrService
+    private sharedSrv: SharedService
   ) { }
 
   ngOnInit(): void {
+    this.authService.redirectOnLogin();
   }
 
   onRequestOTP(): any {
@@ -42,22 +45,26 @@ export class RequestOtpComponent implements OnInit {
       .subscribe(
         (requestOTPRes: any) => {
           this.router.navigate(['/verify-account']);
-          this.toastr.info('OTP has been sent to your email address and it expires in 5 mins.', 'Notification');
+          this.sharedSrv.showNotification('OTP has been sent to your email address and it expires in 5 mins.', 'success');
         },
-        (requestOTPErr: any) => {
-          this.requestOTPError = true;
+        (requestOTPErr: HttpErrorResponse) => {
           console.log('Request OTP Error', requestOTPErr);
-          if (requestOTPErr.message === 'Invalid or expired verification token.') {
-            this.requestOTPEServerError = 'The verification code is Invalid or Expired.';
-          } else if (requestOTPErr.message === 'User not found.') {
-            this.requestOTPEServerError = 'The user email does not exist.';
-          } else if (requestOTPErr.message === 'Your passwords do not match') {
-            this.requestOTPEServerError = 'The passwords entered do not match.';
-          } else {
-            this.requestOTPEServerError = 'Please accept the appropriate certificates.';
-          }
+          this.handleError(requestOTPErr.error);
         }
       );
+  }
+
+  handleError(error: any): void {
+    if (error.error === 'Invalid or expired verification token.') {
+      this.requestOTPEServerError = 'The verification code is Invalid or Expired.';
+    } else if (error.error === 'User not found.') {
+      this.requestOTPEServerError = 'The user email does not exist.';
+    } else if (error.error === 'Your passwords do not match') {
+      this.requestOTPEServerError = 'The passwords entered do not match.';
+    } else {
+      this.requestOTPEServerError = 'Please accept the appropriate certificates.';
+    }
+    this.sharedSrv.showNotification(this.requestOTPEServerError, 'error');
   }
 
   get requestOTPFormControls(): any {

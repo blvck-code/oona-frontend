@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Inject, Input, OnInit} from '@angular/core';
 import {AuthService} from '../../../auth/services/auth.service';
 import {Router} from '@angular/router';
 
@@ -9,6 +9,8 @@ import * as authActions from '../../../auth/state/auth.actions'
 import {getUserDetails} from '../../../auth/state/auth.selectors';
 import {Observable} from 'rxjs';
 import {ToastrService} from 'ngx-toastr';
+import {SharedService} from '../../services/shared.service';
+import {BROWSER_STORAGE} from '../../../auth/storage';
 
 @Component({
   selector: 'app-navbar',
@@ -23,7 +25,8 @@ export class NavbarComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private store: Store<AppState>,
-    private toastr: ToastrService
+    private sharedSrv: SharedService,
+    @Inject(BROWSER_STORAGE) private storage: Storage
   ) { }
 
   ngOnInit(): void {
@@ -37,9 +40,19 @@ export class NavbarComponent implements OnInit {
   logoutUser(): void {
     // this.store.dispatch(new authActions.LogoutUser());
     // console.log('logout')
-    this.authService.logout();
-    this.router.navigate(['/']);
-    this.toastr.success('Logout successful.', 'Notification');
+    this.authService.logout().subscribe({
+      next: () => {
+        this.storage.removeItem('ot');
+        this.storage.removeItem('or');
+        this.storage.removeItem('u?');
+        localStorage.clear();
+        this.router.navigate(['/']);
+        this.sharedSrv.showNotification('Logout successful.', 'success');
+      },
+      error: () => {
+        this.sharedSrv.showNotification('Logged out successful.', 'error');
+      }
+    });
   }
 
 }
