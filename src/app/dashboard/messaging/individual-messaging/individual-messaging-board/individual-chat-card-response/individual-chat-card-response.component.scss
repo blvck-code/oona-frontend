@@ -1,42 +1,81 @@
-.container-fluid{
-  //margin-left: -1%;
-}
-.respondent{
-  font-family: Gilroy !important;
-  font-size: 14px;
-  line-height: 16px;
-  color: #323037;
-  font-weight: bolder;
-}
-.card{
-  border: none;
+.message-comment-wrap {
   border-radius: 10px 10px 10px 0px;
-  height: 77%;
-  width: 100%;
-  background: #EDEDF6;
+  position: relative;
+  margin-top: 25px;
+  margin-left: 7%;
+  width: 50%;
 
-}
-.colored-tag{
-  background: #C3CAFD;
-  border-radius: 10px 10px 0px 0px;
-  padding: 1%;
-}
-.chat-tag{
-  font-size: 12px;
-  line-height: 14px;
-  color: #051EC4;
-}
-.chat-msg{
-  font-family: Gilroy-Regular;
-  font-size: 12px;
-  line-height: 16px;
-  /* identical to box height, or 140% */
-  color: #554E6A;
-}
-.chat-time{
-  font-family: Gilroy-Regular;
-  font-size: 12px;
-  line-height: 14px;
-  /* identical to box height */
-  color: #8A8D92;
+  &::after {
+    position: absolute;
+    content: '';
+    top: -25px;
+    left: 16px;
+    width: 2px;
+    height: 20px;
+    background: rgba(166, 172, 190, 1);
+  }
+
+  .message-comment-card {
+    display: flex;
+    min-width: 80%;
+    max-width: 100%;
+    z-index: 3;
+
+    .message-sender-img {
+      margin-right: 10px;
+
+      img {
+        height: 35px;
+        width: 35px;
+      }
+    }
+
+    .message-comment-body {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      background: #FFFFFF;
+      padding: 8px 20px;
+      border-radius: 10px;
+
+
+      .message-card-title {
+        display: flex;
+        padding: 0;
+        justify-content: space-between;
+        width: 100%;
+
+        .name {
+          font-size: 13px;
+          font-weight: bold;
+          color: #323037;
+          padding: 0;
+        }
+
+        .chat-time {
+          font-size: 12px;
+          color: #8A8D92;
+          padding: 0;
+        }
+      }
+
+      .message-card-content {
+
+        p {
+          font-size: 13px;
+          color: #323037;
+          padding: 0;
+        }
+      }
+
+      .message-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        font-size: 13px;
+        gap: 30px;
+        opacity: 0.6;
+      }
+    }
+  }
 }
