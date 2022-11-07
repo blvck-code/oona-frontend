@@ -5,6 +5,8 @@ import {Store} from '@ngrx/store';
 import {AppState} from '../../../../../state/app.state';
 import {getPrivateUnread} from '../../../state/messaging.selectors';
 import {SingleMessageModel} from '../../../models/messages.model';
+import {PersonModel} from '../../../../models/person.model';
+import {getUsers, usersLoading} from '../../../../state/entities/users.entity';
 
 @Component({
   selector: 'app-all-users-panel',
@@ -17,6 +19,9 @@ export class AllUsersPanelComponent implements OnInit {
   searchText = '';
   showSearchUser = false;
   endPointUnreadId: number[] = [];
+
+  allUsers$: Observable<PersonModel[]> = this.store.select(getUsers);
+  usersLoading$: Observable<boolean> = this.store.select(usersLoading);
 
   constructor(
     private router: Router,

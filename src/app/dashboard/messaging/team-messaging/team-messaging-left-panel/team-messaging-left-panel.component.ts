@@ -21,6 +21,10 @@ import {take} from 'rxjs/operators';
 import {ChannelSettingsComponent} from '../channel-settings/channel-settings.component';
 import {SingleMessageModel} from '../../models/messages.model';
 import {Topics} from '../../models/topics.model';
+import {StreamsModel, SubStreamsModel} from '../../../models/streams.model';
+import {getStreams, privateStreams, publicStreams} from '../../../state/entities/streams.entity';
+import {log} from 'util';
+import {TopicsModel} from '../../../models/topics.model';
 
 interface TopicDetails {
   topic_name: string;
@@ -91,6 +95,10 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   streamUnreadCount = 0;
   privateUnreadCount = 0;
 
+  subStreams$: Observable<SubStreamsModel[]> = this.store.select(getStreams);
+  privateStreams$: Observable<SubStreamsModel[]> = this.store.select(privateStreams);
+  publicStreams$: Observable<SubStreamsModel[]> = this.store.select(publicStreams);
+
   constructor(
     public messagingService: MessagingService,
     private router: Router,
@@ -109,8 +117,8 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
     this.initPageHandler();
     this.handleStreams();
-    // this.streamsList();
     this.readMessageFlags();
+    this.handleStreamCategory();
   }
 
   initPageHandler(): void {
@@ -136,8 +144,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.messagingService.currentUserProfile().subscribe((profile: any) => {
       this.loggedInUserProfile = profile;
     });
-
-    // handle unread stream message counter
   }
 
   readMessageFlags(): void {
@@ -281,7 +287,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
                     }
                   );
 
-                  this.handleStreamCategory();
                   this.change.detectChanges();
                 }
               }
@@ -291,24 +296,46 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   }
 
   handleStreamCategory(): void {
-    this.allTopics.map(
-      (item: AllStreamsModel) => {
-        if (item.invite_only) {
-          this.privateTopics.push(item);
-          this.privateTopics = this.privateTopics.filter((v: any, ind: any, s: string | any[]) => {
-            return s.indexOf(v) === ind;
-          });
-          this.privateTopics = this.privateTopics.sort((a: AllStreamsModel, b: AllStreamsModel) => b.unread - a.unread);
 
-        } else {
-          this.publicTopics.push(item);
-          this.publicTopics = this.publicTopics.filter((v: any, ind: any, s: string | any[]) => {
-            return s.indexOf(v) === ind;
-          });
-          this.publicTopics = this.publicTopics.sort((a: AllStreamsModel, b: AllStreamsModel) => b.unread - a.unread);
-        }
+    this.subStreams$.subscribe({
+      next: (streams: SubStreamsModel[]) => {
+        streams.map((item: SubStreamsModel) => {
+          if (item.invite_only) {
+            this.privateTopics.push(item);
+            this.privateTopics = this.privateTopics.filter((v: any, ind: any, s: string | any[]) => {
+              return s.indexOf(v) === ind;
+            });
+            this.privateTopics = this.privateTopics.sort((a: AllStreamsModel, b: AllStreamsModel) => b.unread - a.unread);
+
+          } else {
+            this.publicTopics.push(item);
+            this.publicTopics = this.publicTopics.filter((v: any, ind: any, s: string | any[]) => {
+              return s.indexOf(v) === ind;
+            });
+            this.publicTopics = this.publicTopics.sort((a: AllStreamsModel, b: AllStreamsModel) => b.unread - a.unread);
+          }
+        });
       }
-    );
+    });
+
+    // this.allTopics.map(
+    //   (item: AllStreamsModel) => {
+    //     if (item.invite_only) {
+    //       this.privateTopics.push(item);
+    //       this.privateTopics = this.privateTopics.filter((v: any, ind: any, s: string | any[]) => {
+    //         return s.indexOf(v) === ind;
+    //       });
+    //       this.privateTopics = this.privateTopics.sort((a: AllStreamsModel, b: AllStreamsModel) => b.unread - a.unread);
+    //
+    //     } else {
+    //       this.publicTopics.push(item);
+    //       this.publicTopics = this.publicTopics.filter((v: any, ind: any, s: string | any[]) => {
+    //         return s.indexOf(v) === ind;
+    //       });
+    //       this.publicTopics = this.publicTopics.sort((a: AllStreamsModel, b: AllStreamsModel) => b.unread - a.unread);
+    //     }
+    //   }
+    // );
   }
 
   listAllTeams(): any {

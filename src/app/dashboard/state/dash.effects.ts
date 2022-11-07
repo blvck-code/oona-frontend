@@ -2,15 +2,18 @@ import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {Observable, of} from 'rxjs';
 import {Action} from '@ngrx/store';
-import {catchError, map, switchMap} from 'rxjs/operators';
+import {catchError, map, switchMap, take} from 'rxjs/operators';
 import {DashService} from '../service/dash-service.service';
 import {StreamsResponseModel, SubStreamsResponseModel} from '../models/streams.model';
+import {PersonResponseModel} from '../models/person.model';
+import {TopicResponseModel} from '../models/topics.model';
+import {MessagesResponseModel} from '../models/messages.model';
 
 // Actions
 import * as streamActions from './actions/streams.actions';
 import * as dashActions from './dash.actions';
 import * as userActions from './actions/users.actions';
-import {PersonResponseModel} from '../models/person.model';
+import * as msgActions from './actions/messages.action';
 
 @Injectable()
 
@@ -38,6 +41,24 @@ export class DashEffects {
       )
     )
   );
+
+  // topics$: Observable<Action> = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType<streamActions.LoadTopic>(
+  //       dashActions.DashActions.LOAD_TOPIC
+  //     ),
+  //     map((action: streamActions.LoadTopic) => action.payload),
+  //     switchMap((streamId: number | string) =>
+  //       this.dashSrv.streamTopics(streamId).pipe(
+  //         map(
+  //           (topicContent: TopicResponseModel) =>
+  //             new streamActions.LoadTopicSuccess(topicContent)
+  //         ),
+  //         catchError((err) => of(new streamActions.LoadTopicFail(err)))
+  //       )
+  //     )
+  //   )
+  // );
 
   presentUsers$: Observable<Action> = createEffect(() =>
     this.actions$.pipe(
@@ -68,6 +89,24 @@ export class DashEffects {
               new userActions.LoadZulipUsersSuccess(users)
           ),
           catchError((err) => of(new userActions.LoadZulipUsersFail(err)))
+        )
+      )
+    )
+  );
+
+  messages$: Observable<Action> = createEffect(() =>
+    this.actions$.pipe(
+      ofType<msgActions.LoadMessage>(
+        dashActions.DashActions.LOAD_MESSAGE
+      ),
+      map((action: msgActions.LoadMessage) => action.payload),
+      switchMap((content: any) =>
+        this.dashSrv.streamMessages(content).pipe(
+          map(
+            (messages: MessagesResponseModel) =>
+              new msgActions.LoadMessageSuccess(messages)
+          ),
+          catchError((err) => of(new msgActions.LoadMessageFail(err)))
         )
       )
     )

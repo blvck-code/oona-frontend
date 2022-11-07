@@ -8,3 +8,8 @@ export const streamStateKey = createSelector(
   getDashboardStateKey,
   state => state.streams
 );
+
+export const userStateKey = createSelector(
+  getDashboardStateKey,
+  state => state.users
+);

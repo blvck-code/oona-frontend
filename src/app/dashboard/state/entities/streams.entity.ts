@@ -49,6 +49,15 @@ export function streamsReducer(
         loaded: true
       });
       // Todo Error handling
+
+    case dashActions.DashActions.LOAD_TOPICS:
+      const newState = streamsAdapter.map(
+        (stream: SubStreamsModel) => stream.stream_id === action.payload.oz.stream_id ? {
+          ...stream,
+          topic: action.payload.zulip.topics
+        } : stream, state
+      );
+      return newState;
     default:
       return state;
   }
@@ -59,6 +68,10 @@ export const getStreams = createSelector(
   streamStateKey,
   streamsAdapter.getSelectors().selectAll
 );
+export const getStreamsId = createSelector(
+  streamStateKey,
+  streamsAdapter.getSelectors().selectIds
+);
 export const getSelectedStream = createSelector(
   streamStateKey,
   state => state.selectedStreamId
@@ -66,4 +79,20 @@ export const getSelectedStream = createSelector(
 export const getSelectedTopic = createSelector(
   streamStateKey,
   state => state.selectedTopic
-)
+);
+export const getStreamsLoaded = createSelector(
+  streamStateKey,
+  state => state.loaded
+);
+export const privateStreams = createSelector(
+  getStreams,
+  streams => streams.filter(
+    (stream: SubStreamsModel) => stream.invite_only
+  )
+);
+export const publicStreams = createSelector(
+  getStreams,
+  streams => streams.filter(
+    (stream: SubStreamsModel) => !stream.invite_only
+  )
+);

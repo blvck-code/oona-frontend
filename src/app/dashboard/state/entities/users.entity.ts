@@ -3,6 +3,8 @@ import {PersonModel} from '../../models/person.model';
 
 // Actions
 import * as dashActions from '../dash.actions';
+import {createSelector} from '@ngrx/store';
+import {userStateKey} from '../dash.selectors';
 
 export interface UsersState extends EntityState<PersonModel> {
   loading: boolean;
@@ -53,3 +55,17 @@ export function usersReducer(
       return state;
   }
 }
+
+// Selectors
+export const getUsers = createSelector(
+  userStateKey,
+  userAdapter.getSelectors().selectAll
+);
+export const usersLoaded = createSelector(
+  userStateKey,
+  state => state.loaded
+);
+export const usersLoading = createSelector(
+  userStateKey,
+  state => state.loading
+);

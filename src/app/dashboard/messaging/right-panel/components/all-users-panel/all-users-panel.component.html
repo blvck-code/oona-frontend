@@ -18,12 +18,12 @@
     </div>
 
     <div class="group-members-wrap">
-      <div *ngIf="!(users$ | async)" class="d-flex justify-content-center">
+      <div *ngIf="(usersLoading$ | async)" class="d-flex justify-content-center">
         <div>
           <app-loading-animation></app-loading-animation>
         </div>
       </div>
-      <div class="mb-2" *ngFor="let member of (users$ | async) | userFilter: searchText">
+      <div class="mb-2" *ngFor="let member of (allUsers$ | async) | userFilter: searchText">
         <div class="member">
           <div class="member-info" >
             <div class="member-content" (click)="goToMemberChat(member)">

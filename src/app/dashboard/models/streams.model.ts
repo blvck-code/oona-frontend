@@ -1,3 +1,4 @@
+import {TopicResponseModel, TopicsModel} from './topics.model';
 
 export interface StreamsResponseModel {
   result: string;
@@ -18,6 +19,7 @@ export interface StreamsModel{
   rendered_description: string;
   stream_post_policy: number;
   is_announcement_only: boolean;
+  unread?: number;
 }
 
 export interface SubStreamsResponseModel {
@@ -51,4 +53,5 @@ export interface SubStreamsModel {
   stream_post_policy: number;
   stream_weekly_traffic: number;
   wildcard_mentions_notify: any;
+  topic?: TopicsModel[];
 }

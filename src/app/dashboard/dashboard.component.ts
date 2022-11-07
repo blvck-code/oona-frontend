@@ -26,14 +26,6 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.dashSrv.onInitHandler();
-    // this.store.select(getIsLoggedIn).subscribe({
-    //   next: (status: boolean) => {
-    //     this.initializeState();
-    //   },
-    //   error: (error: any) => {
-    //     console.log('Get login status error ==>>', error);
-    //   }
-    // });
   }
 
   initializeState(): void {
@@ -60,7 +52,7 @@ export class DashboardComponent implements OnInit {
       next: (status: boolean) => {
         // Only get private messages when users are loaded
         if (status) {
-          this.messageSrv.handleGetPrivateMessages();
+          // this.messageSrv.handleGetPrivateMessages();
         }
       }
       });

@@ -1,4 +1,4 @@
-export interface MessagesModel {
+export interface MessagesResponseModel {
   oz: OzModel;
   zulip: {
     result: string,

@@ -18,6 +18,8 @@ import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {SingleMessageModel} from '../../models/messages.model';
 import {SinglePresentUser, UserModel, ZulipSingleUser} from '../../../../auth/models/user.model';
 import {getPrivateMessages, getPrivateUnread} from '../../state/messaging.selectors';
+import {PersonModel} from '../../../models/person.model';
+import {getUsers, usersLoading} from '../../../state/entities/users.entity';
 
 @Component({
   selector: 'app-landing-messaging-right-panel',
@@ -43,6 +45,9 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   zulipUserObservable = this.zulipUsersSubject$.asObservable();
 
   endPointUnreadId: number[] = [];
+
+  allUsers$: Observable<PersonModel[]> = this.store.select(getUsers);
+  usersLoading$: Observable<boolean> = this.store.select(usersLoading);
 
   constructor(
     private messagingService: MessagingService,
