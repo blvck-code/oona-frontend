@@ -10,6 +10,7 @@ export const backendProtocol = 'https://';
 export const domain = '192.168.0.42';
 
 export const oonaBaseUrl = `${backendProtocol}${domain}${backendPort}`;
+export const oonaVersion = '/api/v1';
 export const jitsiURL = `${domain}${jitsiPort}`;
 
 export const oonaFrontendUrl = `${backendProtocol}${domain}${frontendPort}`;
@@ -38,7 +39,7 @@ export const environment = {
   changePasswordUrl: oonaBaseUrl + '/api/v1/accounts/password/change/',
 
   // Streams
-  subscribedStream: oonaBaseUrl + '/streams/get-subscribed-streams', // Get
+  subscribedStream: oonaBaseUrl + oonaVersion + '/streams/get-subscribed-streams', // Get
   getStreamID: oonaBaseUrl + '/streams/get-stream-id', // Get  payload id
   archiveStream: oonaBaseUrl + '/streams/archive-a-stream', // Get payload stream id
   getStreamTopics: oonaBaseUrl + '/streams/get-topics-in-a-stream?stream_id=',  // Get append stream id in the URL
@@ -55,6 +56,7 @@ export const environment = {
   addDefaultStream: oonaBaseUrl + '/streams/add-default-stream', // Post
   removeDefaultStream: oonaBaseUrl + '/streams/remove-default-stream', // Post
   deleteTopic: oonaBaseUrl + '/streams/delete-a-topic', // Post
+
 
   // Messaging Urls
   users: oonaBaseUrl + '/api/v1/accounts/z/user/',

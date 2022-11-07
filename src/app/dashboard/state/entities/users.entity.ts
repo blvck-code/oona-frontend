@@ -1,0 +1,55 @@
+import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
+import {PersonModel} from '../../models/person.model';
+
+// Actions
+import * as dashActions from '../dash.actions';
+
+export interface UsersState extends EntityState<PersonModel> {
+  loading: boolean;
+  loaded: boolean;
+  selectedUserId: number | null;
+  error: string;
+}
+
+export const userAdapter: EntityAdapter<PersonModel> = createEntityAdapter<PersonModel>({
+  selectId: (user: PersonModel) => user.user_id
+});
+
+export const defaultUsers: UsersState = {
+  ids: [],
+  entities: {},
+  loading: false,
+  loaded: false,
+  selectedUserId: null,
+  error: ''
+};
+
+export const initialState = userAdapter.getInitialState(defaultUsers);
+
+export function usersReducer(
+  state = initialState,
+  action: any
+): UsersState {
+  switch (action.type) {
+    case dashActions.DashActions.LOAD_PRESENT_USERS:
+    case dashActions.DashActions.LOAD_ZULIP_USERS:
+      return {
+        ...state,
+        loading: true
+      };
+    case dashActions.DashActions.LOAD_ZULIP_USERS_SUCCESS:
+      return userAdapter.addMany(action.payload.members, {
+        ...state,
+        loading: false,
+        loaded: true
+      });
+    case dashActions.DashActions.LOAD_PRESENT_USERS_SUCCESS:
+      return userAdapter.upsertMany(action.payload.members, {
+        ...state,
+        loading: false,
+        loaded: true
+      });
+    default:
+      return state;
+  }
+}

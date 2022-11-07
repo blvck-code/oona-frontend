@@ -8,6 +8,7 @@ import * as authActions from '../auth/state/auth.actions';
 import {streamsLoaded} from './messaging/state/messaging.selectors';
 import {MessagingService} from './messaging/services/messaging.service';
 import {OonaSocketService} from './messaging/services/oona-socket.service';
+import {DashService} from './service/dash-service.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,10 +20,12 @@ export class DashboardComponent implements OnInit {
   constructor(
     private store: Store<AppState>,
     private messageSrv: MessagingService,
-    private oonaSockets: OonaSocketService
+    private oonaSockets: OonaSocketService,
+    private dashSrv: DashService
   ) { }
 
   ngOnInit(): void {
+    this.dashSrv.onInitHandler();
     // this.store.select(getIsLoggedIn).subscribe({
     //   next: (status: boolean) => {
     //     this.initializeState();

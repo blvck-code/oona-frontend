@@ -1,17 +1,13 @@
 import {Action, ActionReducer, ActionReducerMap} from '@ngrx/store';
 import * as fromStreamEnt from './entities/streams.entity';
-
-// export interface DashState {
-//   streams: any;
-//   users: any;
-//   messages: any;
-// }
+import * as fromUserEnt from './entities/users.entity';
 
 export interface DashboardState {
   streams: fromStreamEnt.StreamsState;
+  users: fromUserEnt.UsersState;
 }
 
 export const dashReducer: ActionReducerMap<DashboardState> = {
   streams: fromStreamEnt.streamsReducer,
+  users: fromUserEnt.usersReducer
 };
-
