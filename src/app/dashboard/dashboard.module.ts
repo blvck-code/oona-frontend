@@ -7,6 +7,7 @@ import {StoreModule} from '@ngrx/store';
 import {messagingReducer} from './messaging/state/messaging.reducer';
 import {EffectsModule} from '@ngrx/effects';
 import {MessagingEffects} from './messaging/state/messaging.effects';
+import {dashReducer} from './state/dash.reducer';
 
 
 @NgModule({
@@ -18,7 +19,7 @@ import {MessagingEffects} from './messaging/state/messaging.effects';
     CommonModule,
     DashboardRoutingModule,
     SharedModule,
-    StoreModule.forFeature('messaging', messagingReducer),
+    StoreModule.forFeature('dashboard', dashReducer),
     EffectsModule.forFeature([MessagingEffects])
   ]
 })

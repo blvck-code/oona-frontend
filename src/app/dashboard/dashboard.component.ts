@@ -23,14 +23,14 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.store.select(getIsLoggedIn).subscribe({
-      next: (status: boolean) => {
-        this.initializeState();
-      },
-      error: (error: any) => {
-        console.log('Get login status error ==>>', error);
-      }
-    });
+    // this.store.select(getIsLoggedIn).subscribe({
+    //   next: (status: boolean) => {
+    //     this.initializeState();
+    //   },
+    //   error: (error: any) => {
+    //     console.log('Get login status error ==>>', error);
+    //   }
+    // });
   }
 
   initializeState(): void {

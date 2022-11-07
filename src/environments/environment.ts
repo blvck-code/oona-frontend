@@ -37,6 +37,25 @@ export const environment = {
   meetingDetailsUrl: oonaBaseUrl + '/api/v1/meet/meetings/',
   changePasswordUrl: oonaBaseUrl + '/api/v1/accounts/password/change/',
 
+  // Streams
+  subscribedStream: oonaBaseUrl + '/streams/get-subscribed-streams', // Get
+  getStreamID: oonaBaseUrl + '/streams/get-stream-id', // Get  payload id
+  archiveStream: oonaBaseUrl + '/streams/archive-a-stream', // Get payload stream id
+  getStreamTopics: oonaBaseUrl + '/streams/get-topics-in-a-stream?stream_id=',  // Get append stream id in the URL
+  streamSubscribers: oonaBaseUrl + '/streams/get-stream-members', // Get
+  subscribeToStream: oonaBaseUrl + '/streams/subscribe-to-a-stream', // Post
+  unsubscribeToStream: oonaBaseUrl + '/streams/unsubscribe-from-stream', // Post
+  subscribeSubscriptionStatus: oonaBaseUrl + '/streams/get-subscription-status', // Post
+  updateSubscriptionSettings: oonaBaseUrl + '/streams/update-subscription-settings', // Post
+  allStreams: oonaBaseUrl + '/streams/', // Post
+  updateStream: oonaBaseUrl + '/streams/update-a-stream', // Post
+  muteTopic: oonaBaseUrl + '/streams/topic-muting', // Post
+  sendMessageToStream: oonaBaseUrl + '/streams/send-message-to-stream', // Post
+  sendFileToStream: oonaBaseUrl + '/streams/send-file-to-stream', // Post
+  addDefaultStream: oonaBaseUrl + '/streams/add-default-stream', // Post
+  removeDefaultStream: oonaBaseUrl + '/streams/remove-default-stream', // Post
+  deleteTopic: oonaBaseUrl + '/streams/delete-a-topic', // Post
+
   // Messaging Urls
   users: oonaBaseUrl + '/api/v1/accounts/z/user/',
   zulipUsers: oonaBaseUrl + '/api/v1/accounts/z/user/',

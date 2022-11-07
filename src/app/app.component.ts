@@ -13,7 +13,6 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {MessagingService} from './dashboard/messaging/services/messaging.service';
 import * as messagingActions from './dashboard/messaging/state/messaging.actions';
 import {getPrivateUnreadMessages, getStreamUnreadMessages} from './dashboard/messaging/state/messaging.selectors';
-import {log} from 'util';
 import {MessagesSocketService} from './dashboard/messaging/services/messages-socket.service';
 
 @Component({
@@ -28,8 +27,8 @@ export class AppComponent implements OnInit {
   totalUnreadMsgSubject$ = new BehaviorSubject<number>(this.totalUnreadMsg);
   totalUnreadMsgObservable = this.totalUnreadMsgSubject$.asObservable();
 
-  privateUnread$: Observable<number> = this.store.select(getStreamUnreadMessages)
-  streamUnread$: Observable<number> = this.store.select(getStreamUnreadMessages)
+  streamUnread$!: Observable<number>;
+  privateUnread$!: Observable<number>;
 
   constructor(
     private store: Store<AppState>,
@@ -52,7 +51,7 @@ export class AppComponent implements OnInit {
           this.tabNotification();
         }
       }
-    })
+    });
   }
 
   tabNotification(): void {
@@ -70,6 +69,21 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.updateState();
     this.handShakeSockets();
+    // console.log(2022);
+    // this.privateUnread$ = this.store.select(getStreamUnreadMessages);
+    // this.streamUnread$ = this.store.select(getStreamUnreadMessages);
+    //
+    // this.privateUnread$.subscribe({
+    //   next: (numb: number) => {
+    //     console.log('Unread private ==>>', numb);
+    //   }
+    // });
+    //
+    // this.streamUnread$.subscribe({
+    //   next: (numb: number) => {
+    //     console.log('Unread stream ==>>', numb);
+    //   }
+    // });
   }
 
   handShakeSockets(): void {

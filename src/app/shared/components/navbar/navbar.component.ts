@@ -54,7 +54,7 @@ export class NavbarComponent implements OnInit {
         this.sharedSrv.showNotification('Logout successful.', 'success');
       },
       error: () => {
-        this.sharedSrv.showNotification('Logged out successful.', 'error');
+        this.sharedSrv.showNotification('Logged out failed.', 'error');
       }
     });
   }
