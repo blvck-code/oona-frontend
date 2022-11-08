@@ -25,6 +25,7 @@ import {
 } from '../../models/messages.model';
 import {getAllUsers, getUserId} from '../../../../auth/state/auth.selectors';
 import { OonaSocketService } from '../../services/oona-socket.service';
+import {getMessages, messagesLoaded, messagesLoading} from '../../../state/entities/messages.entity';
 
 @Component({
   selector: 'app-all-private-messages-board',
@@ -38,7 +39,6 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
   @Output() pmMemberNames = new EventEmitter<any>();
   @Output() emitReplyMsg = new EventEmitter<any>();
   initialMessageCount = 10;
-  messages$!: Observable<any>;
   loadingMessages = true;
   operator = '';
   activeMessage: SingleChat | undefined;
@@ -57,6 +57,10 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
 
   currentUserId$!: Observable<number>;
   @ViewChild('endChat') endChat: ElementRef | undefined;
+
+  messages$: Observable<any> = this.store.select(getMessages);
+  loading$: Observable<boolean> = this.store.select(messagesLoading);
+  loaded$: Observable<boolean> = this.store.select(messagesLoaded);
 
   constructor(
     private messagingService: MessagingService,
@@ -81,11 +85,11 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
 
   // Init page
   initPage(): void {
-    this.messages$ = this.store.select(getPrivateMessages);
-    this.store.select(getPrivateMessages).subscribe(
-      () => {this.loading = false; }
-    );
-    this.getStateAllPrivateMessages();
+    // this.messages$ = this.store.select(getPrivateMessages);
+    // this.store.select(getPrivateMessages).subscribe(
+    //   () => {this.loading = false; }
+    // );
+    // this.getStateAllPrivateMessages();
   }
 
   allUsersRegistered(): void {
@@ -93,7 +97,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
       if (users) {
         this.stateUsers = users?.filter((user: any) => user.presence);
         // Todo add loading indicator for this time
-        this.getAllPrivateChatsTwo();
+        // this.getAllPrivateChatsTwo();
       }
     });
   }

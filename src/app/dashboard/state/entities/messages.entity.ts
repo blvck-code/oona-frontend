@@ -1,6 +1,8 @@
 import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
 import {SingleMessageModel} from '../../models/messages.model';
 import * as dashActions from '../dash.actions';
+import {createSelector} from '@ngrx/store';
+import {messagesStateKey} from '../dash.selectors';
 // import * as userActions from '../../../auth/state/auth.actions';
 
 export interface MessagesState extends EntityState<SingleMessageModel> {
@@ -45,3 +47,17 @@ export function messagesReducer(
       return state;
   }
 }
+
+// Selectors
+export const getMessages = createSelector(
+  messagesStateKey,
+  messagesAdapter.getSelectors().selectAll
+);
+export const messagesLoading = createSelector(
+  messagesStateKey,
+  state => state.loading
+);
+export const messagesLoaded = createSelector(
+  messagesStateKey,
+  state => state.loaded
+);

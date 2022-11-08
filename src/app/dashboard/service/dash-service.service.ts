@@ -104,9 +104,9 @@ export class DashService {
       client_gravatar: true
     };
 
-    this.store.dispatch(new msgActions.LoadMessage(request2));
-    this.store.dispatch(new msgActions.LoadMessage(request3));
-    this.store.dispatch(new msgActions.LoadMessage(request4));
+    // this.store.dispatch(new msgActions.LoadMessage(request2));
+    // this.store.dispatch(new msgActions.LoadMessage(request3));
+    // this.store.dispatch(new msgActions.LoadMessage(request4));
   }
 
   subStreams(): Observable<SubStreamsResponseModel> {

@@ -48,7 +48,7 @@
         </div>
         <div #endChat></div>
 
-        <div *ngIf="loading" class="d-flex justify-content-center">
+        <div *ngIf="loading$ | async" class="d-flex justify-content-center">
           <div>
             <app-loading-animation></app-loading-animation>
             <p class="teams-belonging me-5">Fetching messages</p>
@@ -57,7 +57,7 @@
 
         <div
           class="py-4"
-          *ngIf="!(messages$ | async)?.length"
+          *ngIf="(loaded$ | async) && !(messages$ | async)?.length"
         >
           <p>No Messages</p>
         </div>

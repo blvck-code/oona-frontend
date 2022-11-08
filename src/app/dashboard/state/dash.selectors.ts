@@ -13,3 +13,8 @@ export const userStateKey = createSelector(
   getDashboardStateKey,
   state => state.users
 );
+
+export const messagesStateKey = createSelector(
+  getDashboardStateKey,
+  state => state.messages
+);

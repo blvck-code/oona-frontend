@@ -57,6 +57,23 @@ export const environment = {
   removeDefaultStream: oonaBaseUrl + '/streams/remove-default-stream', // Post
   deleteTopic: oonaBaseUrl + '/streams/delete-a-topic', // Post
 
+  // Messages
+  sendMessage: oonaBaseUrl + '/message/send-a-message', // Post
+  uploadFile: oonaBaseUrl + '/message/upload-a-file', // Post
+  editMessage: oonaBaseUrl + '/message/edit-a-message', // Post
+  deleteMessage: oonaBaseUrl + '/message/delete-a-message', // Post
+  getMessages: oonaBaseUrl + '/message/', // Post
+  messagesMatchNarrow: oonaBaseUrl + '/message/check-if-messages-match-a-narrow', // Post
+  addEmojiReaction: oonaBaseUrl + '/message/add-emoji', // Post
+  removeEmojiReaction: oonaBaseUrl + '//message/remove-emoji', // Post
+  singleMessage: oonaBaseUrl + '/message/fetch-a-single-message?message_id=', // Get
+  idsWithRead: oonaBaseUrl + '/message/get-list-of-id-that-read?message_id=', // Get
+  messageEditHistory: oonaBaseUrl + '/message/get-a-message-edit-history', // Post
+  updatePersonalMessageFlag: oonaBaseUrl + '/message/update-personal-message-flags', // Post
+  markAllMessagesRead: oonaBaseUrl + '/message/all/read', // Get
+  markMessageInStreamRead: oonaBaseUrl + '/message/mark-messages-in-stream-as-read', // Post
+  markMessageInTopicAsRead: oonaBaseUrl + '/message/mark-messages-in-topic-as-read', // Post
+  renderMessage: oonaBaseUrl + '/message/render-message', // Post
 
   // Messaging Urls
   users: oonaBaseUrl + '/api/v1/accounts/z/user/',

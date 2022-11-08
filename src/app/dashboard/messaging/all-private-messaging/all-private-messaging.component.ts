@@ -9,6 +9,7 @@ import {getAllUsers, getUserDetails, getZulipUsers} from '../../../auth/state/au
 import {firmName} from '../../../../environments/environment';
 import {MessagingService} from '../services/messaging.service';
 import {BehaviorSubject} from 'rxjs';
+import * as msgActions from '../../state/actions/messages.action';
 
 @Component({
   selector: 'app-all-private-messaging',
@@ -28,6 +29,7 @@ export class AllPrivateMessagingComponent implements OnInit {
   ngOnInit(): void {
     this.changeMessageCount();
     this.handlePrivateUnread();
+    this.getPrivateMessages();
   }
 
   // Todo update this messages flad to read on component load
@@ -49,29 +51,20 @@ export class AllPrivateMessagingComponent implements OnInit {
     this.userSocketService.changeNewMessageCount(this.userSocketService.newMessageCount);
   }
 
-  // onInitHandler(): void {
-  //   document.title = `Private messages - ${firmName} - Oona`;
-  //   this.store.select(getUserDetails).subscribe(
-  //     data => {
-  //       this.operand = data?.email;
-  //     }
-  //   );
-  //
-  //   // Message parameters
-  //   const streamDetail = {
-  //     use_first_unread_anchor: true,
-  //     apply_markdown: false,
-  //     num_before: this.initialMessageCount,
-  //     type: [
-  //       {
-  //         operator: 'pm-with',
-  //         // change to user.email
-  //         operand: this.operand,
-  //       }
-  //     ]
-  //   };
-  //
-  //   // fetch from server
-  //   this.store.dispatch(new messagingActions.LoadPrivateMessages(streamDetail));
-  // }
+  private getPrivateMessages(): void {
+    const request = {
+      anchor: 1905,
+      num_before: 50,
+      num_after: 50,
+      narrow: [{
+        negated: false,
+        operator: 'is',
+        operand: 'private'
+      }],
+      client_gravatar: true
+    };
+
+    this.store.dispatch(new msgActions.LoadMessage(request));
+
+  }
 }
