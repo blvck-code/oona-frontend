@@ -20,6 +20,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { SingleChat, SingleMessageModel } from '../../models/messages.model';
 import {OonaSocketService} from '../../services/oona-socket.service';
 import {getUserId} from '../../../../auth/state/auth.selectors';
+import {getMessages, messagesLoaded, messagesLoading} from '../../../state/entities/messages.entity';
+import * as msgActions from '../../../state/actions/messages.action';
 
 @Component({
   selector: 'app-landing-message-board',
@@ -32,7 +34,6 @@ export class LandingMessageBoardComponent implements OnInit {
   allTeams = Array();
   messagesOfStream = Array();
   initialMessageCount = 30;
-  messages$!: Observable<any>;
   loadingMessages!: Observable<boolean>;
   messageExist: any;
   editorActive = true;
@@ -51,6 +52,9 @@ export class LandingMessageBoardComponent implements OnInit {
   privateMessages = Array();
   privateMessagesSubject = new BehaviorSubject(this.privateMessages);
 
+  messages$: Observable<any> = this.store.select(getMessages);
+  loading$: Observable<boolean> = this.store.select(messagesLoading);
+  loaded$: Observable<boolean> = this.store.select(messagesLoaded);
 
   constructor(
     private messagingService: MessagingService,
@@ -58,12 +62,34 @@ export class LandingMessageBoardComponent implements OnInit {
     private userSocketService: OonaSocketService,
     private store: Store<AppState>
   ) {
-    // this.allMemberTeams();
+
   }
 
   ngOnInit(): void {
     this.initPage();
     this.currentUserId$ = this.store.select(getUserId);
+    this.getMessages();
+  }
+
+  getMessages(): void {
+    const payload = {
+      anchor: 'first_unread',
+      num_before: 200,
+      num_after: 200,
+    };
+    const payload2 = {
+      anchor: 'newest',
+      numb_before: 400,
+      num_after: 0,
+      narrow: [{
+        negated: false,
+        operator: 'in',
+        operand: 'home'
+      }],
+      client_gravatar: true
+    };
+
+    this.store.dispatch(new msgActions.LoadMessage(payload2));
   }
 
   // Init Page
@@ -77,7 +103,7 @@ export class LandingMessageBoardComponent implements OnInit {
         }
       }
     );
-    this.messages$ = this.store.select(getBothMessages);
+    // this.messages$ = this.store.select(getBothMessages);
 
     // get Loading Message
     this.loadingMessages = this.store.select(getLoadingAllMsg);
