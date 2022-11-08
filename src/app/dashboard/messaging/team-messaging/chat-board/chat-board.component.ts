@@ -16,6 +16,10 @@ import {Observable} from 'rxjs';
 import {SingleMessageModel} from '../../models/messages.model';
 import {AllStreamsModel} from '../../models/streams.model';
 import {getUserId} from '../../../../auth/state/auth.selectors';
+import {getSelectedStream, getStreams} from '../../../state/entities/streams.entity';
+import * as streamActions from '../../../state/actions/streams.actions';
+import {filteredMsg, getMessages, messagesLoaded, messagesLoading} from '../../../state/entities/messages.entity';
+import * as msgActions from '../../../state/actions/messages.action';
 
 const turndownService = new TurndownService();
 
@@ -33,10 +37,17 @@ export class ChatBoardComponent implements OnInit {
   filteredStreamTopic = '';
   latItemTopic: any;
   initialMessageCount =  30;
-  selectedStreamMessages$!: Observable<SingleMessageModel[]>;
   topicSelected = '';
   loading = true;
   currentUserId$!: Observable<number>;
+
+  selectedStreamMessages$: Observable<any> = this.store.select(getStreams);
+
+  messages$: Observable<any> = this.store.select(filteredMsg);
+  loading$: Observable<boolean> = this.store.select(messagesLoading);
+  loaded$: Observable<boolean> = this.store.select(messagesLoaded);
+  selectedStream$: Observable<any> = this.store.select(getSelectedStream);
+  selectedTopic$: Observable<string> = this.store.select(getSelectedTopic);
 
   constructor(
     private route: ActivatedRoute,
@@ -46,35 +57,78 @@ export class ChatBoardComponent implements OnInit {
     private userSocketService: OonaSocketService,
     private store: Store<AppState>
   ) {
-    this.routerDetails();
   }
 
-  routerDetails(): void {
-    this.route.queryParams.subscribe(params => {
-      const streamId = params.id;
-      const topic = params.topic;
+  getStreamMessages(): void {
+    const topicRequest = {
+      anchor: 1750,
+      num_before: 50,
+      num_after: 50,
+      narrow: [
+        {
+          negated: false,
+          operator: 1,
+          operand: 'private' // stream id
+        },
+        {
+          negated: false,
+          operator: 'topic',
+          operand: 'new streams' // topic name
+        }
+      ],
+      client_gravatar: true
+    };
+    // this.store.dispatch(new msgActions.LoadMessage(topicRequest));
 
-      const payload = {
-        streamId: +streamId,
-        topic: ''
-      };
-
-      if (topic){
-        payload.topic = topic.replaceAll('-', ' ');
-      }
-
-      // this.store.dispatch(new messagingActions.SelectedStreamId(+streamId));
-      this.store.dispatch(new messagingActions.SelectedStreamId(payload));
-
-      this.handleStreamContent(topic);
-
-    });
+    // this.selectedStream$.subscribe({
+    //   next: (streamId: any) => {
+    //
+    //     if (this.selectedTopic$) {
+    //       this.selectedTopic$.subscribe({
+    //         next: (topic: string) => {
+    //           console.log('Getting topic content ==>>', topic);
+    //           const topicRequest = {
+    //             anchor: 1750,
+    //             num_before: 50,
+    //             num_after: 50,
+    //             narrow: [
+    //               {
+    //                 negated: false,
+    //                 operator: 1,
+    //                 operand: 'private' // stream id
+    //               },
+    //               {
+    //                 negated: false,
+    //                 operator: 'topic',
+    //                 operand: topic // topic name
+    //               }
+    //             ],
+    //             client_gravatar: true
+    //           };
+    //           this.store.dispatch(new msgActions.LoadMessage(topicRequest));
+    //         }
+    //       });
+    //     } else {
+    //       console.log('Getting stream content ==>>', streamId);
+    //       const streamRequest = {
+    //         anchor: 1860,
+    //         num_before: 50,
+    //         num_after: 50,
+    //         narrow: [{
+    //           negated: false,
+    //           operator: 'stream',
+    //           operand: streamId // stream id
+    //         }],
+    //         client_gravatar: true
+    //       };
+    //       this.store.dispatch(new msgActions.LoadMessage(streamRequest));
+    //     }
+    //   }
+    // });
   }
 
   storeStreamMessages(): void {
     this.selectedStreamMessages$ = this.store.select(getSelectedStreamMessages);
-    console.log('Selected topic =>', this.topicSelected);
-    console.log('Selected topic =>', this.messageTopic);
     this.store.select(getSelectedStreamMessages).subscribe(
       () => {
           this.loading = false;
@@ -82,49 +136,14 @@ export class ChatBoardComponent implements OnInit {
     );
   }
 
-  handleStreamContent(topic?: string): void {
-
-    this.store.select(getSelectedStreamMessages).subscribe(
-      (messages: SingleMessageModel[]) => {
-
-        if (topic) {
-          messages.filter((message: SingleMessageModel) =>
-            message.subject.toLowerCase() === topic);
-        }
-
-      }
-    );
-  }
 
   ngOnInit(): void {
-    this.store.select(getSelectedTopic).subscribe(
-      (topicName: string) => {
-        if (topicName) {
-          this.messageTopic = topicName;
-        } else {
-          this.messageTopic = 'new streams';
-        }
+    this.getStreamMessages();
+    this.messages$.subscribe({
+      next: (message) => {
+        console.log('Messages ==>>', message);
       }
-    );
-
-    this.storeStreamMessages();
-    this.getStreamName();
-    this.currentUserId$ = this.store.select(getUserId);
-    // this.messagingService.currentStreamName.subscribe((streamName) => {
-    //   this.streamName = streamName; // always get the current value
-    // });
-    //
-    // this.route.queryParams.subscribe((params) => {
-    //   this.streamMessages(params);
-    //   this.userSocketService.messageCount.subscribe(messages => {
-    //     this.newMessagesCount = messages;
-    //     this.streamMessages(params);
-    //   });
-    // });
-    // this.messagingService.currentStreamTopic.subscribe((streamTopic) => {
-    //   this.filteredStreamTopic = streamTopic; // always get the current value
-    //   this.filterMessagesByTopic(streamTopic);
-    // });
+    });
   }
 
   getStreamName(): void {

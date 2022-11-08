@@ -7,8 +7,11 @@ import {Observable} from 'rxjs';
 import {SingleMessageModel} from '../models/messages.model';
 import {getUnreadStreamMessages} from '../state/messaging.selectors';
 import * as messagingActions from '../state/messaging.actions';
-import {NavigationEnd, Router} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {MessagingService} from '../services/messaging.service';
+import * as msgActions from '../../state/actions/messages.action';
+import * as streamActions from '../../state/actions/streams.actions';
+import {getStreams} from '../../state/entities/streams.entity';
 
 
 @Component({
@@ -22,15 +25,52 @@ export class TeamMessagingComponent implements OnInit {
 
   constructor(
     private store: Store<AppState>,
-    private messageSrv: MessagingService
+    private messageSrv: MessagingService,
+    private route: ActivatedRoute,
   ) {
-
+    this.routerDetails();
   }
 
-  ngOnInit(): void {
-    this.messageUpdate$ = this.store.select(getUnreadStreamMessages);
-    this.updateMessageFlags();
+  routerDetails(): void {
+    this.route.queryParams.subscribe(params => {
+      const streamId = params.id;
+      const topic = params.topic;
+
+      const payload = {
+        streamId: +streamId,
+        topic: ''
+      };
+
+      if (topic){
+        payload.topic = topic.replaceAll('-', ' ');
+      }
+
+
+      const topicRequest = {
+        anchor: 1750,
+        num_before: 50,
+        num_after: 50,
+        narrow: [
+          {
+            negated: false,
+            operator: streamId,
+            operand: 'public' // stream id
+          },
+          {
+            negated: false,
+            operator: 'topic',
+            operand: topic.replaceAll('-', ' ') // topic name
+          }
+        ],
+        client_gravatar: true
+      };
+
+      this.store.dispatch(new streamActions.SelectedStream(payload));
+      // this.store.dispatch(new msgActions.LoadMessage(topicRequest));
+    });
   }
+
+  ngOnInit(): void {}
 
   updateMessageFlags(): void {
     const unreadMessageId: number[] = [];

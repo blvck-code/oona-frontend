@@ -25,37 +25,47 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.dashSrv.onInitHandler();
+    this.onInitHandler();
   }
 
-  initializeState(): void {
-    // get streams
-    this.store.dispatch(new messagingActions.LoadAllStreams());
-    this.store.dispatch(new messagingActions.LoadSubStreams());
-    // get users
-    this.store.dispatch(new authActions.LoadPresentUsers());
-    this.store.dispatch(new authActions.LoadZulipUsers());
-    this.store.dispatch(new authActions.CurrentUserProfile());
-
-    // get stream messages
-    this.store.select(streamsLoaded).subscribe({
+  onInitHandler(): void {
+    this.store.select(getIsLoggedIn).subscribe({
       next: (status: boolean) => {
         if (status) {
-          // todo get stream messages here after streams are loaded
-          this.messageSrv.handleGetStreamMessages();
+          this.dashSrv.onInitHandler();
         }
       }
     });
-
-    // get Private messages
-    this.store.select(usersLoaded).subscribe({
-      next: (status: boolean) => {
-        // Only get private messages when users are loaded
-        if (status) {
-          // this.messageSrv.handleGetPrivateMessages();
-        }
-      }
-      });
   }
+
+  // initializeState(): void {
+  //   // get streams
+  //   this.store.dispatch(new messagingActions.LoadAllStreams());
+  //   this.store.dispatch(new messagingActions.LoadSubStreams());
+  //   // get users
+  //   this.store.dispatch(new authActions.LoadPresentUsers());
+  //   this.store.dispatch(new authActions.LoadZulipUsers());
+  //   this.store.dispatch(new authActions.CurrentUserProfile());
+  //
+  //   // get stream messages
+  //   this.store.select(streamsLoaded).subscribe({
+  //     next: (status: boolean) => {
+  //       if (status) {
+  //         // todo get stream messages here after streams are loaded
+  //         this.messageSrv.handleGetStreamMessages();
+  //       }
+  //     }
+  //   });
+  //
+  //   // get Private messages
+  //   this.store.select(usersLoaded).subscribe({
+  //     next: (status: boolean) => {
+  //       // Only get private messages when users are loaded
+  //       if (status) {
+  //         // this.messageSrv.handleGetPrivateMessages();
+  //       }
+  //     }
+  //     });
+  // }
 
 }

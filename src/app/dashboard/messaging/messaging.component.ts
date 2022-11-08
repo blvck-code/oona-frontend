@@ -18,6 +18,7 @@ import { getAllUsers, getZulipUsers } from '../../auth/state/auth.selectors';
 import { Title } from '@angular/platform-browser';
 import { SingleMessageModel } from './models/messages.model';
 import {ZulipSingleUser} from '../../auth/models/user.model';
+import {getUsers} from '../state/entities/users.entity';
 
 @Component({
   selector: 'app-messaging',
@@ -50,10 +51,6 @@ export class MessagingComponent implements OnInit {
     private store: Store<AppState>,
     public messagingService: MessagingService,
   ) {
-    // this.messageSocket.messageConnect();
-    this.messagingService.messages.subscribe((msg) => {
-      // console.log('Response from websocket ===>>>', msg);
-    });
   }
 
   ngOnInit(): void {
@@ -79,42 +76,42 @@ export class MessagingComponent implements OnInit {
     this.rightPanelUsers = $event;
   }
 
-  getAllMessages(): void {
-    const streamDetail = {
-      use_first_unread_anchor: true,
-      num_before: this.initialMessageCount,
-      type: [
-        {
-          operator: 'stream',
-          operand: 'general',
-        },
-      ],
-    };
-    this.store.dispatch(new messagingActions.LoadAllMessages(streamDetail));
-  }
+  // getAllMessages(): void {
+  //   const streamDetail = {
+  //     use_first_unread_anchor: true,
+  //     num_before: this.initialMessageCount,
+  //     type: [
+  //       {
+  //         operator: 'stream',
+  //         operand: 'general',
+  //       },
+  //     ],
+  //   };
+  //   this.store.dispatch(new messagingActions.LoadAllMessages(streamDetail));
+  // }
 
-  getPrivateMessages(): void {
-    this.store.select(getAllUsers).subscribe((users: any) => {
-      users?.map((user: any) => {
-        const streamDetail = {
-          use_first_unread_anchor: true,
-          num_before: this.initialMessageCount,
-          type: [
-            {
-              operator: 'pm-with',
-              operand: user?.email,
-            },
-          ],
-        };
-
-        this.store.dispatch(new messagingActions.LoadAllMessages(streamDetail));
-      });
-    });
-  }
+  // getPrivateMessages(): void {
+  //   this.store.select(getAllUsers).subscribe((users: any) => {
+  //     users?.map((user: any) => {
+  //       const streamDetail = {
+  //         use_first_unread_anchor: true,
+  //         num_before: this.initialMessageCount,
+  //         type: [
+  //           {
+  //             operator: 'pm-with',
+  //             operand: user?.email,
+  //           },
+  //         ],
+  //       };
+  //
+  //       this.store.dispatch(new messagingActions.LoadAllMessages(streamDetail));
+  //     });
+  //   });
+  // }
 
   initPage(): void {
-    this.unreadMessage$ = this.store.select(getPrivateUnread);
-    this.users$ = this.store.select(getZulipUsers);
+    // this.unreadMessage$ = this.store.select(getPrivateUnread);
+    this.users$ = this.store.select(getUsers);
 
     this.getUsersFromStore();
     // this.getUsers();
@@ -134,20 +131,20 @@ export class MessagingComponent implements OnInit {
         users.map((user: ZulipSingleUser) => {
           // if (uniqueUserId.includes(user.user_id)) { return; }
 
-          this.unreadMessage$.subscribe(
-            (messages: SingleMessageModel[]) => {
-              messages.map((message: SingleMessageModel) => {
-                // if (uniqueMsgId.includes(message.id)) { return; }
-
-                if (+message.sender_id === +user.user_id) {
-                  console.log('Unread messages ==>>', message);
-                  console.log('Unread messages ==>>', user);
-                }
-
-                // uniqueMsgId.push(message.id);
-              });
-            }
-          );
+          // this.unreadMessage$.subscribe(
+          //   (messages: SingleMessageModel[]) => {
+          //     messages.map((message: SingleMessageModel) => {
+          //       // if (uniqueMsgId.includes(message.id)) { return; }
+          //
+          //       if (+message.sender_id === +user.user_id) {
+          //         console.log('Unread messages ==>>', message);
+          //         console.log('Unread messages ==>>', user);
+          //       }
+          //
+          //       // uniqueMsgId.push(message.id);
+          //     });
+          //   }
+          // );
 
           // uniqueUserId.push(user.user_id);
         });

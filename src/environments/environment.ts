@@ -43,7 +43,7 @@ export const environment = {
   getStreamID: oonaBaseUrl + '/streams/get-stream-id', // Get  payload id
   archiveStream: oonaBaseUrl + '/streams/archive-a-stream', // Get payload stream id
   getStreamTopics: oonaBaseUrl + oonaVersion + '/streams/get-topics-in-a-stream?stream_id=',  // Get append stream id in the URL
-  streamSubscribers: oonaBaseUrl + '/streams/get-stream-members', // Get
+  streamSubscribers: oonaBaseUrl + oonaVersion + '/streams/get-stream-members', // Get
   subscribeToStream: oonaBaseUrl + '/streams/subscribe-to-a-stream', // Post
   unsubscribeToStream: oonaBaseUrl + '/streams/unsubscribe-from-stream', // Post
   subscribeSubscriptionStatus: oonaBaseUrl + '/streams/get-subscription-status', // Post

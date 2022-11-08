@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import { environment as env } from '../../../environments/environment';
-import {StreamsResponseModel, SubStreamsModel, SubStreamsResponseModel} from '../models/streams.model';
+import {StreamsResponseModel, SubscribersResponseModel, SubStreamsModel, SubStreamsResponseModel} from '../models/streams.model';
 
 // NgRx
 import {Store} from '@ngrx/store';
@@ -13,6 +13,8 @@ import * as msgActions from '../state/actions/messages.action';
 import {TopicResponseModel} from '../models/topics.model';
 import {getStreams, getStreamsId, getStreamsLoaded} from '../state/entities/streams.entity';
 import {MessagesResponseModel} from '../models/messages.model';
+import * as authActions from '../../auth/state/auth.actions';
+import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +30,7 @@ export class DashService {
     this.store.dispatch(new streamActions.LoadSubStreams());
     this.store.dispatch(new userActions.LoadZulipUsers());
     this.store.dispatch(new userActions.LoadPresentUsers());
+    this.store.dispatch(new authActions.CurrentUserProfile());
 
     this.streamsLoaded();
   }
@@ -39,6 +42,9 @@ export class DashService {
           // Actions
           this.getStreamTopic();
           this.getStreamMessages();
+          // setTimeout(() => {
+          //   this.getStreamSubscribers();
+          // }, 1000);
         }
       }
     });
@@ -51,6 +57,25 @@ export class DashService {
           this.streamTopics(streamId).subscribe({
             next: (response: any) => {
               this.store.dispatch(new streamActions.LoadTopics(response));
+            }
+          });
+        });
+      }
+    });
+  }
+
+  getStreamSubscribers(): void {
+    this.store.select(getStreams).subscribe({
+      next: (streams) => {
+        streams.map((stream) => {
+
+          this.streamSubscribers(stream.name).subscribe({
+            next: (response) => {
+              const content = {
+                streamId: stream.stream_id,
+                subscribers: response
+              };
+              // this.store.dispatch(new streamActions.StreamSubscribers(content));
             }
           });
         });
@@ -125,8 +150,11 @@ export class DashService {
     return this.http.get<PersonResponseModel>(env.zulipUsers);
   }
 
+  streamSubscribers(streamName: string | number): Observable<SubscribersResponseModel> {
+    return this.http.post<SubscribersResponseModel>(env.streamSubscribers, {stream_name: streamName});
+  }
+
   streamMessages(body: any): Observable<MessagesResponseModel> {
-    console.log('Message content ==>>', body);
     return this.http.post<MessagesResponseModel>(env.individualMessage, body);
   }
 }

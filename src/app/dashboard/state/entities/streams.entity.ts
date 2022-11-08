@@ -41,7 +41,6 @@ export function streamsReducer(
         ...state,
         loading: true
       };
-
     case dashActions.DashActions.LOAD_SUB_STREAMS_SUCCESS:
       return streamsAdapter.addMany(action.payload.subscriptions, {
         ...state,
@@ -49,7 +48,15 @@ export function streamsReducer(
         loaded: true
       });
       // Todo Error handling
-
+    // Selected stream / topic
+    case dashActions.DashActions.SELECTED_STREAM:
+      const streamId = action.payload.streamId;
+      const topic = action.payload?.topic;
+      return {
+        ...state,
+        selectedTopic: topic ? topic : '',
+        selectedStreamId: streamId
+      };
     case dashActions.DashActions.LOAD_TOPICS:
       const newState = streamsAdapter.map(
         (stream: SubStreamsModel) => stream.stream_id === action.payload.oz.stream_id ? {
@@ -58,6 +65,15 @@ export function streamsReducer(
         } : stream, state
       );
       return newState;
+    // case dashActions.DashActions.LOAD_SUBSCRIBERS_SUCCESS:
+    //   const updatedSubscribers = streamsAdapter.map(
+    //     (stream: SubStreamsModel) => stream.stream_id === action.payload.streamId ? {
+    //       ...stream,
+    //       subscribers: action.payload.subscribers
+    //     } : stream, state
+    //   );
+    //   return updatedSubscribers;
+
     default:
       return state;
   }
@@ -96,3 +112,11 @@ export const publicStreams = createSelector(
     (stream: SubStreamsModel) => !stream.invite_only
   )
 );
+export const selectedStream = createSelector(
+  streamStateKey,
+  state => state.selectedStreamId
+);
+export const selectedTopic = createSelector(
+  streamStateKey,
+  state => state.selectedTopic
+)

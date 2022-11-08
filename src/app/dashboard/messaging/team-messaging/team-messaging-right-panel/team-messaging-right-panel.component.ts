@@ -24,8 +24,9 @@ export class TeamMessagingRightPanelComponent implements OnInit {
     private route: ActivatedRoute,
     private change: ChangeDetectorRef,
   ) {
-    // this.getAllSubscribers();
   }
+
+
 
   ngOnInit(): void {
     this.onInitHandler();

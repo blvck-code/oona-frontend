@@ -4,6 +4,16 @@ export enum DashActions {
   LOAD_SUB_STREAMS_SUCCESS = 'dash/loadSubStreamsSuccess',
   LOAD_SUB_STREAMS_FAIL = 'dash/loadSubStreamsFail',
 
+  // Selected stream
+  SELECTED_STREAM = 'dash/selectedStream',
+  SELECTED_TOPIC = 'dash/selectedTopic',
+
+  // Stream Subscribers
+  LOAD_SUBSCRIBERS = 'dash/loadSubscribers',
+  LOAD_SUBSCRIBERS_SUCCESS = 'dash/loadSubscribersSuccess',
+  LOAD_SUBSCRIBERS_FAIL = 'dash/loadSubscribersFail',
+  STREAM_SUBSCRIBERS = 'dash/Subscribers',
+
   // Stream Topics
   LOAD_TOPICS = 'dash/loadTopics',
 

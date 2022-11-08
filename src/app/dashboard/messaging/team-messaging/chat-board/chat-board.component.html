@@ -22,23 +22,26 @@
     <div class="tab-pane messages-tab-pane fade show active border-bottom-0" style="height: 100%" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
 
       <div class="overflow-chat">
-        <div *ngIf="(selectedStreamMessages$ | async)?.length" #myList id="box">
+        <div *ngIf="(messages$ | async)?.length" #myList id="box">
+
           <div class="d-flex justify-content-center">
             <button class="btn load-more-messages-btn" (click)="getMorePrivateMessages()">Get more</button>
           </div>
+
           <app-chat-card
-            *ngFor="let message of (selectedStreamMessages$ | async)"
+            *ngFor="let message of (messages$ | async)"
             [messageDetail]="message"
             (messageTopic)="setMessageTopic($event)"
             [userId$]="currentUserId$"
           ></app-chat-card>
+
         </div>
-        <div *ngIf="!(selectedStreamMessages$ | async)?.length">
+        <div *ngIf="(loaded$ | async) && !(messages$ | async)?.length">
           <p>No messages</p>
         </div>
 
         <div
-          *ngIf="loading"
+          *ngIf="(loading$ | async)"
           class="d-flex justify-content-center"
         >
           <app-loading-animation></app-loading-animation>

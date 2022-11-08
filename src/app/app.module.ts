@@ -28,6 +28,7 @@ import {MessagingEffects} from './dashboard/messaging/state/messaging.effects';
 import {messagingReducer} from './dashboard/messaging/state/messaging.reducer';
 import {authReducer} from './auth/state/auth.reducer';
 import { localStorageSync } from 'ngrx-store-localstorage';
+import {DashboardModule} from './dashboard/dashboard.module';
 
 
 export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {

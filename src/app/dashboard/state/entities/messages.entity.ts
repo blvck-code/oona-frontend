@@ -3,6 +3,7 @@ import {SingleMessageModel} from '../../models/messages.model';
 import * as dashActions from '../dash.actions';
 import {createSelector} from '@ngrx/store';
 import {messagesStateKey} from '../dash.selectors';
+import {selectedStream, selectedTopic} from './streams.entity';
 // import * as userActions from '../../../auth/state/auth.actions';
 
 export interface MessagesState extends EntityState<SingleMessageModel> {
@@ -34,7 +35,6 @@ export function messagesReducer(
         loading: true
       };
     case dashActions.DashActions.LOAD_MESSAGE_SUCCESS:
-      console.log('Reducer =>', action.payload.zulip.messages);
       return messagesAdapter.addMany(action.payload.zulip.messages, {
         ...state,
         loading: false,
@@ -60,4 +60,14 @@ export const messagesLoading = createSelector(
 export const messagesLoaded = createSelector(
   messagesStateKey,
   state => state.loaded
+);
+
+export const filteredMsg = createSelector(
+  getMessages,
+  selectedStream,
+  selectedTopic,
+  (messages, streamId, topic) => topic ?
+    messages.filter(message => message.stream_id === streamId && message.subject.toLowerCase() === topic.toLowerCase())
+    : messages.filter(message => message.stream_id === streamId)
+      .sort((a: SingleMessageModel, b: SingleMessageModel) => a.timestamp - b.timestamp)
 );

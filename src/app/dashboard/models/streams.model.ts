@@ -54,4 +54,11 @@ export interface SubStreamsModel {
   stream_weekly_traffic: number;
   wildcard_mentions_notify: any;
   topic?: TopicsModel[];
+  subscribers?: number[];
+}
+
+export interface SubscribersResponseModel {
+  result: string;
+  msg: string;
+  subscribers: number[];
 }

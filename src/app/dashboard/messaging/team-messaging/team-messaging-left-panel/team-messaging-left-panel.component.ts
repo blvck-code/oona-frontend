@@ -58,7 +58,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   newMessagesCount: number | undefined;
   streamMessages = Array();
 
-  streams$!: Observable<AllStreamsModel[]>;
+  // streams$!: Observable<AllStreamsModel[]>;
 
   topics!: Observable<any>;
   allTopics: any = [];
@@ -111,19 +111,19 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
   ngOnInit(): void {
     // fire on page load handler
-    this.streams$ = this.store.select(getAllStreams);
-    this.streamUnread$ = this.store.select(getStreamUnreadMessages);
-    this.privateUnread$ = this.store.select(getPrivateUnreadMessages);
+    // this.streams$ = this.store.select(getAllStreams);
+    // this.streamUnread$ = this.store.select(getStreamUnreadMessages);
+    // this.privateUnread$ = this.store.select(getPrivateUnreadMessages);
 
     this.initPageHandler();
-    this.handleStreams();
+    // this.handleStreams();
     this.readMessageFlags();
     this.handleStreamCategory();
   }
 
   initPageHandler(): void {
     // handle All Unread Messages
-    this.handleUnreadMsgCounter();
+    // this.handleUnreadMsgCounter();
     this.handleNewStream();
 
     // this.streamTopics();
@@ -207,93 +207,93 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
   }
 
-  handleStreams(): void {
-    // Fetch Topics
-    this.streams$.subscribe(streams => {
-      const uniqueId: number[] = [];
-      const uniqueStream: number[] = [];
-
-      take(streams.length),
-        streams.map((stream: AllStreamsModel) => {
-          const streamId = stream?.stream_id;
-
-          take(1),
-            this.messagingService.getTopicsOnStreams(stream.stream_id).subscribe(
-              (topicData: any) => {
-                this.newTopicsArray = [];
-
-                const topicId = topicData?.oz?.stream_id;
-                const topics = topicData?.zulip.topics;
-
-                topics.map((topicItem: Topics) => {
-                  topicItem.unread = 0;
-                });
-
-                if (topicId === streamId) {
-                  stream = {
-                    ...stream,
-                    topics,
-                    unread: 0
-                  };
-
-                  this.streamsSubject$.subscribe(
-                    (streamsContent: any[]) => [...streamsContent, stream]
-                  );
-
-                  this.allTopics = [...this.allTopics, stream];
-
-                  this.unreadStreams$.subscribe(
-                    (messages: SingleMessageModel[]) => {
-                      messages.map((message: SingleMessageModel) => {
-
-                        if (message.stream_id !== stream.stream_id) { return; }
-                        if (uniqueId.includes(message.id)) { return; }
-
-                        if (message.stream_id === stream.stream_id) {
-                          // @ts-ignore
-                          this.streamsSubject$.find(
-                            (streamItem: AllStreamsModel) => {
-                              // tslint:disable-next-line:no-unused-expression
-                              if (streamItem.stream_id === stream.stream_id) {
-                                streamItem.unread += 1;
-
-                                streamItem.topics.map((topicItem: Topics) => {
-                                  if (topicItem.name.toLowerCase() === message.subject.toLowerCase()) {
-                                    // @ts-ignore
-                                    topicItem.unread += 1;
-                                  }
-                                });
-                              }
-                            }
-                          );
-                          this.allTopics.find(
-                            (streamItem: AllStreamsModel) => {
-                              // tslint:disable-next-line:no-unused-expression
-                              if (streamItem.stream_id === stream.stream_id) {
-                                streamItem.unread += 1;
-
-                                streamItem.topics.map((topicItem: Topics) => {
-                                  if (topicItem.name.toLowerCase() === message.subject.toLowerCase()) {
-                                    // @ts-ignore
-                                    topicItem.unread += 1;
-                                  }
-                                });
-                              }
-                            }
-                          );
-                        }
-                        uniqueId.push(message.id);
-                      });
-                    }
-                  );
-
-                  this.change.detectChanges();
-                }
-              }
-            );
-        });
-    });
-  }
+  // handleStreams(): void {
+  //   // Fetch Topics
+  //   this.streams$.subscribe(streams => {
+  //     const uniqueId: number[] = [];
+  //     const uniqueStream: number[] = [];
+  //
+  //     take(streams.length),
+  //       streams.map((stream: AllStreamsModel) => {
+  //         const streamId = stream?.stream_id;
+  //
+  //         take(1),
+  //           this.messagingService.getTopicsOnStreams(stream.stream_id).subscribe(
+  //             (topicData: any) => {
+  //               this.newTopicsArray = [];
+  //
+  //               const topicId = topicData?.oz?.stream_id;
+  //               const topics = topicData?.zulip.topics;
+  //
+  //               topics.map((topicItem: Topics) => {
+  //                 topicItem.unread = 0;
+  //               });
+  //
+  //               if (topicId === streamId) {
+  //                 stream = {
+  //                   ...stream,
+  //                   topics,
+  //                   unread: 0
+  //                 };
+  //
+  //                 this.streamsSubject$.subscribe(
+  //                   (streamsContent: any[]) => [...streamsContent, stream]
+  //                 );
+  //
+  //                 this.allTopics = [...this.allTopics, stream];
+  //
+  //                 this.unreadStreams$.subscribe(
+  //                   (messages: SingleMessageModel[]) => {
+  //                     messages.map((message: SingleMessageModel) => {
+  //
+  //                       if (message.stream_id !== stream.stream_id) { return; }
+  //                       if (uniqueId.includes(message.id)) { return; }
+  //
+  //                       if (message.stream_id === stream.stream_id) {
+  //                         // @ts-ignore
+  //                         this.streamsSubject$.find(
+  //                           (streamItem: AllStreamsModel) => {
+  //                             // tslint:disable-next-line:no-unused-expression
+  //                             if (streamItem.stream_id === stream.stream_id) {
+  //                               streamItem.unread += 1;
+  //
+  //                               streamItem.topics.map((topicItem: Topics) => {
+  //                                 if (topicItem.name.toLowerCase() === message.subject.toLowerCase()) {
+  //                                   // @ts-ignore
+  //                                   topicItem.unread += 1;
+  //                                 }
+  //                               });
+  //                             }
+  //                           }
+  //                         );
+  //                         this.allTopics.find(
+  //                           (streamItem: AllStreamsModel) => {
+  //                             // tslint:disable-next-line:no-unused-expression
+  //                             if (streamItem.stream_id === stream.stream_id) {
+  //                               streamItem.unread += 1;
+  //
+  //                               streamItem.topics.map((topicItem: Topics) => {
+  //                                 if (topicItem.name.toLowerCase() === message.subject.toLowerCase()) {
+  //                                   // @ts-ignore
+  //                                   topicItem.unread += 1;
+  //                                 }
+  //                               });
+  //                             }
+  //                           }
+  //                         );
+  //                       }
+  //                       uniqueId.push(message.id);
+  //                     });
+  //                   }
+  //                 );
+  //
+  //                 this.change.detectChanges();
+  //               }
+  //             }
+  //           );
+  //       });
+  //   });
+  // }
 
   handleStreamCategory(): void {
 
@@ -420,33 +420,32 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
 
   }
 
-  handleUnreadMsgCounter(): void {
+  // handleUnreadMsgCounter(): void {
+  //
+  //   this.store.select(getStreamUnreadMessages).subscribe(
+  //     unread => this.streamUnreadCount = unread
+  //   );
+  //
+  //   this.store.select(getPrivateUnreadMessages).subscribe(
+  //     unread => this.privateUnreadCount = unread
+  //   );
+  //   this.handleTotalUnread();
+  // }
 
-    this.store.select(getStreamUnreadMessages).subscribe(
-      unread => this.streamUnreadCount = unread
-    );
-
-    this.store.select(getPrivateUnreadMessages).subscribe(
-      unread => this.privateUnreadCount = unread
-    );
-    this.handleTotalUnread();
-
-  }
-
-  handleTotalUnread(): void {
-
-    this.streamUnread$.subscribe(
-      stream => {
-
-        this.privateUnread$.subscribe(
-          privateUnread => {
-            this.totalUnreadMsgSubject$.next(privateUnread + stream);
-          }
-        );
-
-      }
-    );
-  }
+  // handleTotalUnread(): void {
+  //
+  //   this.streamUnread$.subscribe(
+  //     stream => {
+  //
+  //       this.privateUnread$.subscribe(
+  //         privateUnread => {
+  //           this.totalUnreadMsgSubject$.next(privateUnread + stream);
+  //         }
+  //       );
+  //
+  //     }
+  //   );
+  // }
 
   handleShowAllUsers(): void {
     this.rightPanelEvent.emit('all_users');
@@ -455,17 +454,13 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   // The public messages topic fetcher
   handlePublicNavigateTopic(stream?: any, topic?: any): void {
     this.checkTopicNavigate(stream, topic);
-    // Todo change this back to team users when the endpoint is ready for subscribed users
-    // this.rightPanelEvent.emit('team_users');
-    this.rightPanelEvent.emit('all_users');
+    this.rightPanelEvent.emit('team_users');
   }
 
 
   // The private messages topic fetcher
   handlePrivateNavigateTopic(stream?: any, topic?: any): void {
-    // Todo change this back to team users when the endpoint is ready for subscribed users
-    // this.rightPanelEvent.emit('team_users');
-    this.rightPanelEvent.emit('all_users');
+    this.rightPanelEvent.emit('team_users');
     this.checkTopicNavigate(stream, topic);
   }
 
@@ -474,10 +469,14 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     let streamName = stream?.name;
     streamName = streamName.replace(/\s+/g, '-').toLowerCase();
 
-    const index = this.allTeams.indexOf(stream);
+    // this.subStreams$.subscribe({
+    //   next: (streams) => {
+    //     const index = this.allTeams.indexOf(stream);
+    //     this.allTeams[index] = stream;
+    //     this.change.detectChanges();
+    //   }
+    // });
 
-    this.allTeams[index] = stream;
-    this.change.detectChanges();
 
     if (topic) {
       this.router.navigate(['dashboard/messaging/team'], {
@@ -495,6 +494,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
         }
       });
     }
-    this.handleCounter(stream, topic);
+    // this.handleCounter(stream, topic);
   }
 }

@@ -112,5 +112,22 @@ export class DashEffects {
     )
   );
 
+  streamSubscribers$: Observable<Action> = createEffect(() =>
+    this.actions$.pipe(
+      ofType<streamActions.LoadSubscribers>(
+        dashActions.DashActions.LOAD_SUBSCRIBERS
+      ),
+      map((action: streamActions.LoadSubscribers) => action.streamName),
+      switchMap((streamId: string | number) =>
+        this.dashSrv.streamSubscribers(streamId).pipe(
+          map(
+            (subscribers: any) => new streamActions.LoadSubscribersSuccess(subscribers)
+          ),
+          catchError((err) => of(new streamActions.LoadSubscribersFail(err)))
+        )
+      )
+    )
+  );
+
 
 }
