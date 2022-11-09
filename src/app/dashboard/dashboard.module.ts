@@ -21,7 +21,7 @@ import {DashEffects} from './state/dash.effects';
     DashboardRoutingModule,
     SharedModule,
     StoreModule.forFeature('dashboard', dashReducer),
-    EffectsModule.forFeature([MessagingEffects, DashEffects])
+    EffectsModule.forFeature([DashEffects])
   ]
 })
 export class DashboardModule { }

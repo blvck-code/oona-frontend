@@ -47,8 +47,8 @@ export class AppComponent implements OnInit {
     this.store.select(getIsLoggedIn).subscribe({
       next: (status: boolean) => {
         if (status) {
-          this.getTotalCounter();
-          this.tabNotification();
+          // this.getTotalCounter();
+          // this.tabNotification();
         }
       }
     });

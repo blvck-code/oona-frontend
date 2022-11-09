@@ -53,20 +53,20 @@ export class TeamMessagingComponent implements OnInit {
         narrow: [
           {
             negated: false,
-            operator: streamId,
-            operand: 'public' // stream id
+            operator: 'stream',
+            operand: +streamId // stream id
           },
-          {
-            negated: false,
-            operator: 'topic',
-            operand: topic.replaceAll('-', ' ') // topic name
-          }
+          // {
+          //   negated: false,
+          //   operator: 'topic',
+          //   operand: topic.replaceAll('-', ' ') // topic name
+          // }
         ],
         client_gravatar: true
       };
 
       this.store.dispatch(new streamActions.SelectedStream(payload));
-      // this.store.dispatch(new msgActions.LoadMessage(topicRequest));
+      this.store.dispatch(new msgActions.LoadMessage(topicRequest));
     });
   }
 

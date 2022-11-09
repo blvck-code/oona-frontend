@@ -11,11 +11,6 @@ import { MessagingService } from '../../services/messaging.service';
 import { Store } from '@ngrx/store';
 import * as messageActions from '../../state/messaging.actions';
 import { AppState } from '../../../../state/app.state';
-import {
-  getLoadingAllMsg,
-  getAllMessages,
-  getPrivateMessages, getStreamMessages, getBothMessages,
-} from '../../state/messaging.selectors';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SingleChat, SingleMessageModel } from '../../models/messages.model';
 import {OonaSocketService} from '../../services/oona-socket.service';
@@ -66,8 +61,8 @@ export class LandingMessageBoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initPage();
-    this.currentUserId$ = this.store.select(getUserId);
+    // this.initPage();
+    // this.currentUserId$ = this.store.select(getUserId);
     this.getMessages();
   }
 
@@ -95,29 +90,29 @@ export class LandingMessageBoardComponent implements OnInit {
   // Init Page
   initPage(): void {
     // get messages from store
-    this.store.select(getBothMessages).subscribe(
-      (messages: SingleMessageModel[]) => {
-        if (messages) {
-          this.loading = false;
-          this.scrollBottom();
-        }
-      }
-    );
+    // this.store.select(getBothMessages).subscribe(
+    //   (messages: SingleMessageModel[]) => {
+    //     if (messages) {
+    //       this.loading = false;
+    //       this.scrollBottom();
+    //     }
+    //   }
+    // );
     // this.messages$ = this.store.select(getBothMessages);
 
     // get Loading Message
-    this.loadingMessages = this.store.select(getLoadingAllMsg);
+    // this.loadingMessages = this.store.select(getLoadingAllMsg);
 
-    this.messagesLength();
+    // this.messagesLength();
     this.scrollBottom();
   }
 
-  messagesLength(): void {
-    this.store.select(getAllMessages).subscribe((messages) => {
-      // @ts-ignore
-      this.messageExist = messages?.length > 0;
-    });
-  }
+  // messagesLength(): void {
+  //   this.store.select(getAllMessages).subscribe((messages) => {
+  //     // @ts-ignore
+  //     this.messageExist = messages?.length > 0;
+  //   });
+  // }
 
   allMemberTeams(): void {
     this.messagingService.getAllTeams().subscribe((teams: any) => {
@@ -157,32 +152,32 @@ export class LandingMessageBoardComponent implements OnInit {
     });
   }
 
-  getStreamMessage(): void {
-    // get stream messages from store
-    this.store.select(getStreamMessages).subscribe((streamData) => {
-      streamData?.map((msg: SingleMessageModel) => {
-        if (this.allStreamId.includes(msg.id)) {
-          return;
-        }
-
-        this.allMessages.push(msg);
-        this.allStreamId.push(msg.id);
-      });
-    });
-
-    // get private messages from store
-    this.store.select(getPrivateMessages).subscribe((allMessages) => {
-      allMessages?.map((msg: SingleMessageModel) => {
-        if (this.allMsgId.includes(msg.id)) {
-          return;
-        }
-
-        this.allMessages.push(msg);
-        this.allMsgId.push(msg.id);
-      });
-    });
-    this.sortMessages();
-  }
+  // getStreamMessage(): void {
+  //   // get stream messages from store
+  //   this.store.select(getStreamMessages).subscribe((streamData) => {
+  //     streamData?.map((msg: SingleMessageModel) => {
+  //       if (this.allStreamId.includes(msg.id)) {
+  //         return;
+  //       }
+  //
+  //       this.allMessages.push(msg);
+  //       this.allStreamId.push(msg.id);
+  //     });
+  //   });
+  //
+  //   // get private messages from store
+  //   this.store.select(getPrivateMessages).subscribe((allMessages) => {
+  //     allMessages?.map((msg: SingleMessageModel) => {
+  //       if (this.allMsgId.includes(msg.id)) {
+  //         return;
+  //       }
+  //
+  //       this.allMessages.push(msg);
+  //       this.allMsgId.push(msg.id);
+  //     });
+  //   });
+  //   this.sortMessages();
+  // }
 
   inComingMessage(): void {
     this.userSocketService.privateMessageCountSocket.subscribe((prvMsg) => {
