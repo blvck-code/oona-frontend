@@ -15,7 +15,6 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../state/app.state';
 // @Todo change this to fetch only private messages
-import {getPrivateMessages} from '../../state/messaging.selectors';
 import * as messageActions from '../../state/messaging.actions';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import {
@@ -25,7 +24,8 @@ import {
 } from '../../models/messages.model';
 import {getAllUsers, getUserId} from '../../../../auth/state/auth.selectors';
 import { OonaSocketService } from '../../services/oona-socket.service';
-import {getMessages, messagesLoaded, messagesLoading} from '../../../state/entities/messages.entity';
+import {privateMessagesLoaded, privateMessagesLoading, getPrivateMessages} from '../../../state/entities/messages/private.messages.entity';
+import {getStreamMessages} from '../../../state/entities/messages/stream.messages.entity';
 
 @Component({
   selector: 'app-all-private-messages-board',
@@ -58,9 +58,10 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
   currentUserId$!: Observable<number>;
   @ViewChild('endChat') endChat: ElementRef | undefined;
 
-  messages$: Observable<any> = this.store.select(getMessages);
-  loading$: Observable<boolean> = this.store.select(messagesLoading);
-  loaded$: Observable<boolean> = this.store.select(messagesLoaded);
+  // @ts-ignore
+  messages$: Observable<SingleMessageModel[]> = this.store.select(getPrivateMessages);
+  loading$: Observable<boolean> = this.store.select(privateMessagesLoading);
+  loaded$: Observable<boolean> = this.store.select(privateMessagesLoaded);
 
   constructor(
     private messagingService: MessagingService,
@@ -85,11 +86,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
 
   // Init page
   initPage(): void {
-    // this.messages$ = this.store.select(getPrivateMessages);
-    // this.store.select(getPrivateMessages).subscribe(
-    //   () => {this.loading = false; }
-    // );
-    // this.getStateAllPrivateMessages();
+
   }
 
   allUsersRegistered(): void {
@@ -144,23 +141,23 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
     });
   }
 
-  getStateAllPrivateMessages(): void {
-    this.subscription = this.store
-      .select(getPrivateMessages)
-      .subscribe((messages: SingleMessageModel[]) => {
-        messages?.forEach((msg: SingleMessageModel) => {
-          if (msg) {
-            if (this.storeMessagesId.includes(msg.id)) {
-              return;
-            } else {
-              this.privateMessages.push(msg);
-              this.sortMessages();
-            }
-            this.storeMessagesId.push(msg.id);
-          }
-        });
-      });
-  }
+  // getStateAllPrivateMessages(): void {
+  //   this.subscription = this.store
+  //     .select(getPrivateMessages)
+  //     .subscribe((messages: SingleMessageModel[]) => {
+  //       messages?.forEach((msg: SingleMessageModel) => {
+  //         if (msg) {
+  //           if (this.storeMessagesId.includes(msg.id)) {
+  //             return;
+  //           } else {
+  //             this.privateMessages.push(msg);
+  //             this.sortMessages();
+  //           }
+  //           this.storeMessagesId.push(msg.id);
+  //         }
+  //       });
+  //     });
+  // }
 
   sortMessages(): void {
     this.loadingMessages = false;

@@ -9,7 +9,7 @@ import {getUnreadStreamMessages} from '../state/messaging.selectors';
 import * as messagingActions from '../state/messaging.actions';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {MessagingService} from '../services/messaging.service';
-import * as msgActions from '../../state/actions/messages.action';
+import * as streamMsgAction from '../../state/actions/streams.messages.actions';
 import * as streamActions from '../../state/actions/streams.actions';
 import {getStreams} from '../../state/entities/streams.entity';
 
@@ -66,7 +66,7 @@ export class TeamMessagingComponent implements OnInit {
       };
 
       this.store.dispatch(new streamActions.SelectedStream(payload));
-      this.store.dispatch(new msgActions.LoadMessage(topicRequest));
+      this.store.dispatch(new streamMsgAction.LoadStreamMsg(topicRequest));
     });
   }
 

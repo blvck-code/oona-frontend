@@ -8,18 +8,12 @@ import { MessagingService } from '../../services/messaging.service';
 
 import TurndownService from 'turndown';
 import {OonaSocketService} from '../../services/oona-socket.service';
-import * as messagingActions from '../../state/messaging.actions';
-import {getAllStreams, getSelectedStreamId, getSelectedStreamMessages, getSelectedTopic} from '../../state/messaging.selectors';
+import {getSelectedStreamMessages, getSelectedTopic} from '../../state/messaging.selectors';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
 import {Observable} from 'rxjs';
-import {SingleMessageModel} from '../../models/messages.model';
-import {AllStreamsModel} from '../../models/streams.model';
-import {getUserId} from '../../../../auth/state/auth.selectors';
 import {getSelectedStream, getStreams} from '../../../state/entities/streams.entity';
-import * as streamActions from '../../../state/actions/streams.actions';
-import {filteredMsg, getMessages, messagesLoaded, messagesLoading} from '../../../state/entities/messages.entity';
-import * as msgActions from '../../../state/actions/messages.action';
+import {filteredStreamMsg, streamMessagesLoaded, streamMessagesLoading} from '../../../state/entities/messages/stream.messages.entity';
 
 const turndownService = new TurndownService();
 
@@ -43,9 +37,9 @@ export class ChatBoardComponent implements OnInit {
 
   selectedStreamMessages$: Observable<any> = this.store.select(getStreams);
 
-  messages$: Observable<any> = this.store.select(filteredMsg);
-  loading$: Observable<boolean> = this.store.select(messagesLoading);
-  loaded$: Observable<boolean> = this.store.select(messagesLoaded);
+  messages$: Observable<any> = this.store.select(filteredStreamMsg);
+  loading$: Observable<boolean> = this.store.select(streamMessagesLoading);
+  loaded$: Observable<boolean> = this.store.select(streamMessagesLoaded);
   selectedStream$: Observable<any> = this.store.select(getSelectedStream);
   selectedTopic$: Observable<string> = this.store.select(getSelectedTopic);
 
@@ -139,33 +133,44 @@ export class ChatBoardComponent implements OnInit {
 
   ngOnInit(): void {
     this.getStreamMessages();
-    this.messages$.subscribe({
-      next: (message) => {
-        console.log('Messages ==>>', message);
-      }
-    });
+    this.getStreamName();
   }
 
   getStreamName(): void {
-    this.store.select(getSelectedStreamId).subscribe(
-      (streamId: number | null) => {
-
+    this.store.select(getSelectedStream).subscribe({
+      next: (streamId: number | null) => {
         if (streamId) {
-          this.store.select(getAllStreams).subscribe(
-            (streams: AllStreamsModel[]) => {
-              streams.map((stream: AllStreamsModel) => {
-
-                if (+stream.stream_id === streamId ) {
+          this.store.select(getStreams).subscribe({
+            next: (streams) => {
+              streams.map((stream) => {
+                if (+stream.stream_id === streamId) {
                   this.streamName = stream.name;
                 }
-
               });
             }
-          );
+          });
         }
-
       }
-    );
+    });
+    // this.store.select(getSelectedStreamId).subscribe(
+    //   (streamId: number | null) => {
+    //
+    //     if (streamId) {
+    //       this.store.select(getAllStreams).subscribe(
+    //         (streams: AllStreamsModel[]) => {
+    //           streams.map((stream: AllStreamsModel) => {
+    //
+    //             if (+stream.stream_id === streamId ) {
+    //               this.streamName = stream.name;
+    //             }
+    //
+    //           });
+    //         }
+    //       );
+    //     }
+    //
+    //   }
+    // );
   }
 
   streamMessages(streamParamDetail: any): void {

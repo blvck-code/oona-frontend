@@ -9,7 +9,6 @@ import {Store} from '@ngrx/store';
 import {PersonResponseModel} from '../models/person.model';
 import * as streamActions from '../state/actions/streams.actions';
 import * as userActions from '../state/actions/users.actions';
-import * as msgActions from '../state/actions/messages.action';
 import {TopicResponseModel} from '../models/topics.model';
 import {getStreams, getStreamsId, getStreamsLoaded} from '../state/entities/streams.entity';
 import {MessagesResponseModel} from '../models/messages.model';

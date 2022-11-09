@@ -42,7 +42,7 @@ export class MessagingService {
   allUsers = env.allUsers;
   userProfile = env.userProfile;
   streamMessages = env.streamMessages;
-  sendStreamMessageURL = env.sendStreamMessageURL;
+  sendStreamMessageURL = env.sendMessageToStream;
   sendStreamMessageWithFileURL = oonaBaseUrl + '/api/v1/streams/file';
   sendIndividualMessageWithFileURL = env.sendIndividualMessageWithFileURL;
   individualMessage = env.individualMessage;

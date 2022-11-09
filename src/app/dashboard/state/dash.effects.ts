@@ -13,7 +13,8 @@ import {MessagesResponseModel} from '../models/messages.model';
 import * as streamActions from './actions/streams.actions';
 import * as dashActions from './dash.actions';
 import * as userActions from './actions/users.actions';
-import * as msgActions from './actions/messages.action';
+import * as streamMsgActions from './actions/streams.messages.actions';
+import * as privateMsgActions from './actions/private.messages.actions';
 
 @Injectable()
 
@@ -94,19 +95,55 @@ export class DashEffects {
     )
   );
 
-  messages$: Observable<Action> = createEffect(() =>
+  // messages$: Observable<Action> = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType<msgActions.LoadMessage>(
+  //       dashActions.DashActions.LOAD_MESSAGE
+  //     ),
+  //     map((action: msgActions.LoadMessage) => action.payload),
+  //     switchMap((content: any) =>
+  //       this.dashSrv.streamMessages(content).pipe(
+  //         map(
+  //           (messages: MessagesResponseModel) =>
+  //             new msgActions.LoadMessageSuccess(messages)
+  //         ),
+  //         catchError((err) => of(new msgActions.LoadMessageFail(err)))
+  //       )
+  //     )
+  //   )
+  // );
+
+  streamMessages$: Observable<Action> = createEffect(() =>
     this.actions$.pipe(
-      ofType<msgActions.LoadMessage>(
-        dashActions.DashActions.LOAD_MESSAGE
+      ofType<streamMsgActions.LoadStreamMsg>(
+        dashActions.DashActions.LOAD_STREAM_MESSAGE
       ),
-      map((action: msgActions.LoadMessage) => action.payload),
+      map((action: streamMsgActions.LoadStreamMsg) => action.payload),
       switchMap((content: any) =>
         this.dashSrv.streamMessages(content).pipe(
           map(
             (messages: MessagesResponseModel) =>
-              new msgActions.LoadMessageSuccess(messages)
+              new streamMsgActions.LoadStreamMsgSuccess(messages)
           ),
-          catchError((err) => of(new msgActions.LoadMessageFail(err)))
+          catchError((err) => of(new streamMsgActions.LoadStreamMsgFail(err)))
+        )
+      )
+    )
+  );
+
+  privateMessages$: Observable<Action> = createEffect(() =>
+    this.actions$.pipe(
+      ofType<privateMsgActions.LoadPrivateMsg>(
+        dashActions.DashActions.LOAD_PRIVATE_MESSAGE
+      ),
+      map((action: privateMsgActions.LoadPrivateMsg) => action.payload),
+      switchMap((content: any) =>
+        this.dashSrv.streamMessages(content).pipe(
+          map(
+            (messages: MessagesResponseModel) =>
+              new privateMsgActions.LoadPrivateMsgSuccess(messages)
+          ),
+          catchError((err) => of(new privateMsgActions.LoadPrivateMsgFail(err)))
         )
       )
     )

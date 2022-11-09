@@ -28,8 +28,18 @@ export enum DashActions {
   LOAD_ZULIP_USERS_FAIL = 'dash/loadZulipUsersFail',
 
   // Private messages
-  LOAD_MESSAGE = 'dash/loadMessage',
-  LOAD_MESSAGE_SUCCESS = 'dash/loadMessageSuccess',
-  LOAD_MESSAGE_FAIL = 'dash/loadMessageFail',
+  // LOAD_MESSAGE = 'dash/loadMessage',
+  // LOAD_MESSAGE_SUCCESS = 'dash/loadMessageSuccess',
+  // LOAD_MESSAGE_FAIL = 'dash/loadMessageFail',
+
+  // Private messages
+  LOAD_PRIVATE_MESSAGE = 'dash/loadPrivateMsg',
+  LOAD_PRIVATE_MESSAGE_SUCCESS = 'dash/loadPrivateMsgSuccess',
+  LOAD_PRIVATE_MESSAGE_FAIL = 'dash/loadPrivateMsgFail',
+
+  // Stream messages
+  LOAD_STREAM_MESSAGE = 'dash/loadStreamMsg',
+  LOAD_STREAM_MESSAGE_SUCCESS = 'dash/loadStreamMsgSuccess',
+  LOAD_STREAM_MESSAGE_FAIL = 'dash/loadStreamMsgFail',
 
 }

@@ -8,8 +8,9 @@ import {AppState} from '../../../state/app.state';
 import {getAllUsers, getUserDetails, getZulipUsers} from '../../../auth/state/auth.selectors';
 import {firmName} from '../../../../environments/environment';
 import {MessagingService} from '../services/messaging.service';
-import {BehaviorSubject} from 'rxjs';
-import * as msgActions from '../../state/actions/messages.action';
+import {BehaviorSubject, Observable} from 'rxjs';
+import * as privateMshActions from '../../state/actions/private.messages.actions';
+import {privateMessagesLoaded} from '../../state/entities/messages/private.messages.entity';
 
 @Component({
   selector: 'app-all-private-messaging',
@@ -20,6 +21,8 @@ export class AllPrivateMessagingComponent implements OnInit {
   initialMessageCount = 10;
   operand: string | null | undefined = '';
 
+  loaded$: Observable<boolean> = this.store.select(privateMessagesLoaded);
+
   constructor(
     private userSocketService: OonaSocketService,
     private store: Store<AppState>,
@@ -29,7 +32,14 @@ export class AllPrivateMessagingComponent implements OnInit {
   ngOnInit(): void {
     this.changeMessageCount();
     this.handlePrivateUnread();
-    this.getPrivateMessages();
+
+    this.loaded$.subscribe({
+      next: (status) => {
+        if (!status) {
+          this.getPrivateMessages();
+        }
+      }
+    });
   }
 
   // Todo update this messages flad to read on component load
@@ -64,7 +74,7 @@ export class AllPrivateMessagingComponent implements OnInit {
       client_gravatar: true
     };
 
-    this.store.dispatch(new msgActions.LoadMessage(request));
+    this.store.dispatch(new privateMshActions.LoadPrivateMsg(request));
 
   }
 }

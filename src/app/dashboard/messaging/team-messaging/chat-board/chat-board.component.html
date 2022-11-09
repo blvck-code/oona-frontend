@@ -22,6 +22,12 @@
     <div class="tab-pane messages-tab-pane fade show active border-bottom-0" style="height: 100%" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
 
       <div class="overflow-chat">
+        <div
+          *ngIf="(loading$ | async)"
+          class="d-flex justify-content-center"
+        >
+          <app-loading-animation></app-loading-animation>
+        </div>
         <div *ngIf="(messages$ | async)?.length" #myList id="box">
 
           <div class="d-flex justify-content-center">
@@ -40,12 +46,6 @@
           <p>No messages</p>
         </div>
 
-        <div
-          *ngIf="(loading$ | async)"
-          class="d-flex justify-content-center"
-        >
-          <app-loading-animation></app-loading-animation>
-        </div>
       </div>
 
       <app-text-editor

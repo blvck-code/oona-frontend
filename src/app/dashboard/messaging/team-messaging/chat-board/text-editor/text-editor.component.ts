@@ -17,9 +17,9 @@ import {NotificationService} from '../../../../../shared/services/notification.s
 import {Router} from '@angular/router';
 import { ToolbarService, LinkService, ImageService, HtmlEditorService } from '@syncfusion/ej2-angular-richtexteditor';
 import {ChatBoardService} from '../chat-board.service';
-import {Store} from "@ngrx/store";
-import {AppState} from "../../../../../state/app.state";
-import {getSelectedTopic} from "../../../state/messaging.selectors";
+import {Store} from '@ngrx/store';
+import {AppState} from '../../../../../state/app.state';
+import {getSelectedTopic} from '../../../../state/entities/streams.entity';
 
 @Component({
   selector: 'app-text-editor',
@@ -109,14 +109,14 @@ export class TextEditorComponent implements OnInit, OnDestroy {
     });
 
     this.store.select(getSelectedTopic).subscribe(
-      (topicName:string) => {
+      (topicName: string) => {
         if (topicName) {
           this.currentTopic = topicName;
         } else {
-          this.currentTopic = 'new streams'
+          this.currentTopic = 'new streams';
         }
       }
-    )
+    );
   }
 
   onFileChanged(event: any): void {

@@ -40,22 +40,22 @@ export const environment = {
 
   // Streams
   subscribedStream: oonaBaseUrl + oonaVersion + '/streams/get-subscribed-streams', // Get
-  getStreamID: oonaBaseUrl + '/streams/get-stream-id', // Get  payload id
-  archiveStream: oonaBaseUrl + '/streams/archive-a-stream', // Get payload stream id
+  getStreamID: oonaBaseUrl + oonaVersion + '/streams/get-stream-id', // Get  payload id
+  archiveStream: oonaBaseUrl + oonaVersion + '/streams/archive-a-stream', // Get payload stream id
   getStreamTopics: oonaBaseUrl + oonaVersion + '/streams/get-topics-in-a-stream?stream_id=',  // Get append stream id in the URL
   streamSubscribers: oonaBaseUrl + oonaVersion + '/streams/get-stream-members', // Get
-  subscribeToStream: oonaBaseUrl + '/streams/subscribe-to-a-stream', // Post
-  unsubscribeToStream: oonaBaseUrl + '/streams/unsubscribe-from-stream', // Post
-  subscribeSubscriptionStatus: oonaBaseUrl + '/streams/get-subscription-status', // Post
-  updateSubscriptionSettings: oonaBaseUrl + '/streams/update-subscription-settings', // Post
-  allStreams: oonaBaseUrl + '/streams/', // Post
-  updateStream: oonaBaseUrl + '/streams/update-a-stream', // Post
-  muteTopic: oonaBaseUrl + '/streams/topic-muting', // Post
-  sendMessageToStream: oonaBaseUrl + '/streams/send-message-to-stream', // Post
-  sendFileToStream: oonaBaseUrl + '/streams/send-file-to-stream', // Post
-  addDefaultStream: oonaBaseUrl + '/streams/add-default-stream', // Post
-  removeDefaultStream: oonaBaseUrl + '/streams/remove-default-stream', // Post
-  deleteTopic: oonaBaseUrl + '/streams/delete-a-topic', // Post
+  subscribeToStream: oonaBaseUrl + oonaVersion + '/streams/subscribe-to-a-stream', // Post
+  unsubscribeToStream: oonaBaseUrl + oonaVersion + '/streams/unsubscribe-from-stream', // Post
+  subscribeSubscriptionStatus: oonaBaseUrl + oonaVersion + '/streams/get-subscription-status', // Post
+  updateSubscriptionSettings: oonaBaseUrl + oonaVersion + '/streams/update-subscription-settings', // Post
+  allStreams: oonaBaseUrl + oonaVersion + '/streams/', // Post
+  updateStream: oonaBaseUrl + oonaVersion + '/streams/update-a-stream', // Post
+  muteTopic: oonaBaseUrl + oonaVersion + '/streams/topic-muting', // Post
+  sendMessageToStream: oonaBaseUrl + oonaVersion + '/streams/send-message-to-stream', // Post
+  sendFileToStream: oonaBaseUrl + oonaVersion + '/streams/send-file-to-stream', // Post
+  addDefaultStream: oonaBaseUrl + oonaVersion + '/streams/add-default-stream', // Post
+  removeDefaultStream: oonaBaseUrl + oonaVersion + '/streams/remove-default-stream', // Post
+  deleteTopic: oonaBaseUrl + oonaVersion + '/streams/delete-a-topic', // Post
 
   // Messages
   sendMessage: oonaBaseUrl + '/message/send-a-message', // Post

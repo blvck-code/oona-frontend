@@ -14,7 +14,11 @@ export const userStateKey = createSelector(
   state => state.users
 );
 
-export const messagesStateKey = createSelector(
+export const privateMsgStateKey = createSelector(
   getDashboardStateKey,
-  state => state.messages
+  state => state.privateMsg
 );
+export const streamMsgStateKey = createSelector(
+  getDashboardStateKey,
+  state => state.streamMsg
+)

@@ -15,8 +15,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { SingleChat, SingleMessageModel } from '../../models/messages.model';
 import {OonaSocketService} from '../../services/oona-socket.service';
 import {getUserId} from '../../../../auth/state/auth.selectors';
-import {getMessages, messagesLoaded, messagesLoading} from '../../../state/entities/messages.entity';
-import * as msgActions from '../../../state/actions/messages.action';
+import * as privateMsgActions from '../../../state/actions/private.messages.actions';
+import * as streamMsgActions from '../../../state/actions/streams.messages.actions';
+import {getStreamMessages, streamMessagesLoaded, streamMessagesLoading} from '../../../state/entities/messages/stream.messages.entity';
 
 @Component({
   selector: 'app-landing-message-board',
@@ -47,9 +48,9 @@ export class LandingMessageBoardComponent implements OnInit {
   privateMessages = Array();
   privateMessagesSubject = new BehaviorSubject(this.privateMessages);
 
-  messages$: Observable<any> = this.store.select(getMessages);
-  loading$: Observable<boolean> = this.store.select(messagesLoading);
-  loaded$: Observable<boolean> = this.store.select(messagesLoaded);
+  messages$: Observable<any> = this.store.select(getStreamMessages);
+  loading$: Observable<boolean> = this.store.select(streamMessagesLoading);
+  loaded$: Observable<boolean> = this.store.select(streamMessagesLoaded);
 
   constructor(
     private messagingService: MessagingService,
@@ -84,7 +85,8 @@ export class LandingMessageBoardComponent implements OnInit {
       client_gravatar: true
     };
 
-    this.store.dispatch(new msgActions.LoadMessage(payload2));
+    // Load both private and stream messages
+    this.store.dispatch(new privateMsgActions.LoadPrivateMsg(payload2));
   }
 
   // Init Page
