@@ -134,6 +134,11 @@ export class ChatBoardComponent implements OnInit {
   ngOnInit(): void {
     this.getStreamMessages();
     this.getStreamName();
+    this.messages$.subscribe({
+      next: (messages) => {
+        console.log(messages);
+      }
+    })
   }
 
   getStreamName(): void {

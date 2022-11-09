@@ -36,9 +36,17 @@ export class LoadZulipUsersFail implements Action {
   }
 }
 
+// Selected User
+export class CurrentUser implements Action {
+  readonly type = DashActions.SELECTED_USER;
+  constructor(public payload: string | number) {
+  }
+}
+
 export type UserActions =
   // Load Present Users
   | LoadPresentUsers
   | LoadPresentUsersSuccess
-  | LoadPresentUsersFail;
+  | LoadPresentUsersFail
   // Zulip Users
+  | CurrentUser;

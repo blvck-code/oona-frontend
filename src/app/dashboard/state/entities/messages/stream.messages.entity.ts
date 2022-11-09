@@ -3,7 +3,7 @@ import {SingleMessageModel} from '../../../models/messages.model';
 import * as dashActions from '../../dash.actions';
 import {createSelector} from '@ngrx/store';
 import {selectedStream, selectedTopic} from '../streams.entity';
-import {privateMsgAdapter} from './private.messages.entity';
+import {sortByTime} from './private.messages.entity';
 import {streamMsgStateKey} from '../../dash.selectors';
 // import * as userActions from '../../../auth/state/auth.actions';
 
@@ -13,7 +13,9 @@ export interface StreamMessagesState extends EntityState<SingleMessageModel> {
   error: string;
 }
 
-export const streamMsgAdapter: EntityAdapter<SingleMessageModel> = createEntityAdapter<SingleMessageModel>();
+export const streamMsgAdapter: EntityAdapter<SingleMessageModel> = createEntityAdapter<SingleMessageModel>({
+  sortComparer: sortByTime
+});
 
 export const defaultMessages: StreamMessagesState = {
   ids: [],
@@ -36,7 +38,7 @@ export function streamMsgReducer(
         loading: true
       };
     case dashActions.DashActions.LOAD_STREAM_MESSAGE_SUCCESS:
-      return streamMsgAdapter.addMany(action.payload.zulip.messages, {
+      return streamMsgAdapter.upsertMany(action.payload.zulip.messages, {
         ...state,
         loading: false,
         loaded: true
@@ -68,4 +70,10 @@ export const filteredStreamMsg = createSelector(
     messages.filter(message => message.stream_id === streamId && message.subject.toLowerCase() === topic.toLowerCase())
     : messages.filter(message => message.stream_id === streamId)
       .sort((a: SingleMessageModel, b: SingleMessageModel) => a.timestamp - b.timestamp)
+);
+
+export const streamsUnread = createSelector(
+  getStreamMessages,
+  (streams) =>
+    streams.filter((stream) => !stream.flags.includes('read')).length
 );

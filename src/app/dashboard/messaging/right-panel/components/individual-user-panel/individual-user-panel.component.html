@@ -10,12 +10,12 @@
 <!--      </ng-template>-->
       <img src="/assets/img/user/avatarHolder.png" class="rounded-circle" alt="...">
       <div class="member-info">
-        <p class="member-name">{{ currentUser.full_name }}</p>
-        <p class="member-role" *ngIf="currentUser.role === 100">Organization owner</p>
-        <p class="member-role" *ngIf="currentUser.role === 200">Organization administrator</p>
-        <p class="member-role" *ngIf="currentUser.role === 300">300</p>
-        <p class="member-role" *ngIf="currentUser.role === 400">Member</p>
-        <p class="member-role" *ngIf="currentUser.role === 600">Guest</p>
+        <p class="member-name">{{ (currentUser$ | async)?.full_name }}</p>
+        <p class="member-role" *ngIf="(currentUser$ | async)?.role === 100">Organization owner</p>
+        <p class="member-role" *ngIf="(currentUser$ | async)?.role === 200">Organization administrator</p>
+        <p class="member-role" *ngIf="(currentUser$ | async)?.role === 300">300</p>
+        <p class="member-role" *ngIf="(currentUser$ | async)?.role === 400">Member</p>
+        <p class="member-role" *ngIf="(currentUser$ | async)?.role === 600">Guest</p>
       </div>
     </div>
 
@@ -36,7 +36,7 @@
 
     <div class="member-profile-date">
       <p class="title me-2">Member since:</p>
-      <p class="">{{ currentUser?.date_joined | date: 'dd/MM/yyyy'}}</p>
+      <p class="">{{ (currentUser$ | async)?.date_joined | date: 'dd/MM/yyyy'}}</p>
     </div>
     <div class="member-common-teams-container">
       <p class="common-teams-title">Common Teams</p>

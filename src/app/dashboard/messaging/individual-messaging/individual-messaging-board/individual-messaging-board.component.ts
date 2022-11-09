@@ -27,6 +27,8 @@ import {
   getUserUnreadMessages
 } from '../../state/messaging.selectors';
 import * as messagingActions from '../../state/messaging.actions';
+import {PersonModel} from '../../../models/person.model';
+import {currentUser} from '../../../state/entities/users.entity';
 
 const turndownService = new TurndownService();
 
@@ -49,6 +51,8 @@ export class IndividualMessagingBoardComponent implements OnInit {
     email: undefined,
   };
 
+  currentUser$: Observable<PersonModel | undefined> = this.store.select(currentUser);
+
   selectedUserId: any;
   currentUserId: any;
 
@@ -60,8 +64,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
   loading = true;
 
-  currentUser$!: Observable<any>;
-  currentUserId$!: Observable<number>;
+  currentUserId$!: Observable<any>;
   messages$!: Observable<SingleMessageModel[]>;
 
   messagesWithPerson = Array();
@@ -87,13 +90,12 @@ export class IndividualMessagingBoardComponent implements OnInit {
         this.selectedUserId = data.user_id;
       }
     });
-    this.routerDetails();
   }
 
   ngOnInit(): void {
     // this.inComingMessage();
     this.resetDmUnreads();
-    this.getUnreadMessages();
+    // this.getUnreadMessages();
     this.store.select(getSelectedUserMessages).subscribe(
       () => {
         this.loading = false;
@@ -102,7 +104,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
     this.messages$ = this.store.select(getSelectedUserMessages);
 
-    this.currentUser$ = this.store.select(getPrivateUser);
+    // this.currentUser$ = this.store.select(getPrivateUser);
     this.currentUserId$ = this.store.select(getUserId);
     this.store.select(getPrivateUser).subscribe(
       (userInfo: any) => {
@@ -131,14 +133,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
           }
         );
       }
-    });
-  }
-
-  routerDetails(): void {
-    this.activatedRoute.queryParams.subscribe(params => {
-      const userId = params.id;
-      this.currentUserId = params.id;
-      this.store.dispatch(new messagingActions.SelectedUserId(+userId));
     });
   }
 

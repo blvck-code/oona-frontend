@@ -119,4 +119,4 @@ export const selectedStream = createSelector(
 export const selectedTopic = createSelector(
   streamStateKey,
   state => state.selectedTopic
-)
+);

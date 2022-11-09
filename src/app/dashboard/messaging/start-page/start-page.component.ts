@@ -22,6 +22,10 @@ export class StartPageComponent implements OnInit {
 
   onIniHandler(): void {
     this.updateReadMessages();
+
+    const payload = {
+      anchor: ''
+    };
   }
 
   updateReadMessages(): void {
@@ -34,10 +38,10 @@ export class StartPageComponent implements OnInit {
           unreadMessages.map((msg: SingleMessageModel) => {
             unreadMsgId.push(msg.id);
             // console.log('All unread messages ===>>>', msg)
-          })
+          });
 
         });
-    }, 500)
+    }, 500);
 
     // this.messagingSrv.updateReadMsgFlag();
 

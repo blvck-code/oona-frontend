@@ -19,18 +19,16 @@ export interface PersonModel{
   is_active: boolean;
   date_joined: string;
   avatar_url: any;
-  presence?: PresenceModel | null;
+  presence?: PresenceModel;
 }
 
 export interface PresenceModel {
-  presence: {
     website: {
       status: string,
       timestamp: number
-    },
+    };
     aggregated: {
       status: string,
       timestamp: number
-    }
-  };
+    };
 }

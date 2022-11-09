@@ -14,10 +14,10 @@ import { AppState } from '../../../../state/app.state';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SingleChat, SingleMessageModel } from '../../models/messages.model';
 import {OonaSocketService} from '../../services/oona-socket.service';
-import {getUserId} from '../../../../auth/state/auth.selectors';
 import * as privateMsgActions from '../../../state/actions/private.messages.actions';
 import * as streamMsgActions from '../../../state/actions/streams.messages.actions';
 import {getStreamMessages, streamMessagesLoaded, streamMessagesLoading} from '../../../state/entities/messages/stream.messages.entity';
+// import {allMessages} from '../../../state/dash.selectors';
 
 @Component({
   selector: 'app-landing-message-board',
@@ -68,14 +68,21 @@ export class LandingMessageBoardComponent implements OnInit {
   }
 
   getMessages(): void {
-    const payload = {
+    const firstUnread = {
       anchor: 'first_unread',
       num_before: 200,
       num_after: 200,
+      narrow: [{
+        negated: false,
+        operator: 'in',
+        operand: 'home'
+      }],
+      client_gravatar: true
     };
-    const payload2 = {
+
+    const newestPayload = {
       anchor: 'newest',
-      numb_before: 400,
+      num_before: 400,
       num_after: 0,
       narrow: [{
         negated: false,
@@ -86,7 +93,8 @@ export class LandingMessageBoardComponent implements OnInit {
     };
 
     // Load both private and stream messages
-    this.store.dispatch(new privateMsgActions.LoadPrivateMsg(payload2));
+    this.store.dispatch(new privateMsgActions.LoadPrivateMsg(newestPayload));
+    this.store.dispatch(new streamMsgActions.LoadStreamMsg(firstUnread));
   }
 
   // Init Page

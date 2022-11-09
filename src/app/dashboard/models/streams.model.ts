@@ -53,6 +53,7 @@ export interface SubStreamsModel {
   stream_post_policy: number;
   stream_weekly_traffic: number;
   wildcard_mentions_notify: any;
+  unread?: number;
   topic?: TopicsModel[];
   subscribers?: number[];
 }

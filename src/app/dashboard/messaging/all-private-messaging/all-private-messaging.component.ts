@@ -62,10 +62,10 @@ export class AllPrivateMessagingComponent implements OnInit {
   }
 
   private getPrivateMessages(): void {
-    const request = {
-      anchor: 1905,
-      num_before: 50,
-      num_after: 50,
+    const firstUnread = {
+      anchor: 'first_unread',
+      num_before: 200,
+      num_after: 200,
       narrow: [{
         negated: false,
         operator: 'is',
@@ -74,7 +74,20 @@ export class AllPrivateMessagingComponent implements OnInit {
       client_gravatar: true
     };
 
-    this.store.dispatch(new privateMshActions.LoadPrivateMsg(request));
+    const newestPayload = {
+      anchor: 'newest',
+      num_before: 400,
+      num_after: 0,
+      narrow: [{
+        negated: false,
+        operator: 'is',
+        operand: 'private'
+      }],
+      client_gravatar: true
+    };
+
+    this.store.dispatch(new privateMshActions.LoadPrivateMsg(firstUnread));
+    this.store.dispatch(new privateMshActions.LoadPrivateMsg(newestPayload));
 
   }
 }

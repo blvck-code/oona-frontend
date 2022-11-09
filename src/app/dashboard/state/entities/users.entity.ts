@@ -51,6 +51,12 @@ export function usersReducer(
         loading: false,
         loaded: true
       });
+      // Selected user
+    case dashActions.DashActions.SELECTED_USER:
+      return {
+        ...state,
+        selectedUserId: +action.payload
+      };
     default:
       return state;
   }
@@ -68,4 +74,15 @@ export const usersLoaded = createSelector(
 export const usersLoading = createSelector(
   userStateKey,
   state => state.loading
+);
+export const selectedUserId = createSelector(
+  userStateKey,
+  state => state.selectedUserId
+);
+export const currentUser = createSelector(
+  getUsers,
+  selectedUserId,
+  (users, userId) => users.find(
+    user => user.user_id === userId
+  )
 );

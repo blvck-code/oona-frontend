@@ -59,16 +59,16 @@ export class ChatCardComponent implements OnInit {
     });
   }
 
-  streamName(streamId: number): Observable<string> {
-    let currentStream;
-    this.store.select(getStreams).subscribe(
-      (streams: SubStreamsModel[]) => {
-        currentStream = streams.find(stream => stream.stream_id === streamId);
-      }
-    );
-    // @ts-ignore
-    return currentStream.name;
-  }
+  // streamName(streamId: number): Observable<string> {
+  //   let currentStream;
+  //   this.store.select(getStreams).subscribe(
+  //     (streams: SubStreamsModel[]) => {
+  //       currentStream = streams.find(stream => stream.stream_id === streamId);
+  //     }
+  //   );
+  //   // @ts-ignore
+  //   return currentStream.name;
+  // }
 
   ngOnInit(): void {
     this.store.select(getZulipProfile).subscribe(

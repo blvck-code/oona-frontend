@@ -8,6 +8,9 @@ export enum DashActions {
   SELECTED_STREAM = 'dash/selectedStream',
   SELECTED_TOPIC = 'dash/selectedTopic',
 
+  // Selected User
+  SELECTED_USER = 'dash/selectedUser',
+
   // Stream Subscribers
   LOAD_SUBSCRIBERS = 'dash/loadSubscribers',
   LOAD_SUBSCRIBERS_SUCCESS = 'dash/loadSubscribersSuccess',
@@ -26,11 +29,6 @@ export enum DashActions {
   LOAD_ZULIP_USERS = 'dash/loadZulipUsers',
   LOAD_ZULIP_USERS_SUCCESS = 'dash/loadZulipUsersSuccess',
   LOAD_ZULIP_USERS_FAIL = 'dash/loadZulipUsersFail',
-
-  // Private messages
-  // LOAD_MESSAGE = 'dash/loadMessage',
-  // LOAD_MESSAGE_SUCCESS = 'dash/loadMessageSuccess',
-  // LOAD_MESSAGE_FAIL = 'dash/loadMessageFail',
 
   // Private messages
   LOAD_PRIVATE_MESSAGE = 'dash/loadPrivateMsg',

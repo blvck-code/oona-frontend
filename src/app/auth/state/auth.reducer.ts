@@ -1,6 +1,7 @@
 import { UserModel } from '../models/user.model';
 import * as authActions from './auth.actions';
 import {load} from '@syncfusion/ej2-angular-richtexteditor';
+import {ProfileModel} from '../models/zulip.model';
 
 export interface UserInfoState {
   first_name: string | null;
@@ -17,7 +18,7 @@ export interface AuthState {
     isLoading: boolean;
   };
   userInfo: UserInfoState | null;
-  zulipProfile: null;
+  zulipProfile: ProfileModel | null;
   users: {
     loaded: boolean,
     all: any;

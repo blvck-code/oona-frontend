@@ -55,7 +55,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
   messagesId: number[] = [];
   storeMessagesId: number[] = [];
 
-  currentUserId$!: Observable<number>;
+  currentUserId$!: Observable<any>;
   @ViewChild('endChat') endChat: ElementRef | undefined;
 
   // @ts-ignore

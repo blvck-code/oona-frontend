@@ -10,7 +10,13 @@ export interface PrivateMessagesState extends EntityState<SingleMessageModel> {
   error: string;
 }
 
-export const privateMsgAdapter: EntityAdapter<SingleMessageModel> = createEntityAdapter<SingleMessageModel>();
+export const sortByTime = (a: SingleMessageModel, b: SingleMessageModel) => {
+  return a.timestamp - b.timestamp;
+};
+
+export const privateMsgAdapter: EntityAdapter<SingleMessageModel> = createEntityAdapter<SingleMessageModel>({
+  sortComparer: sortByTime
+});
 
 export const defaultMessages: PrivateMessagesState = {
   ids: [],
@@ -33,7 +39,7 @@ export function privateMsgReducer(
         loading: true
       };
     case dashActions.DashActions.LOAD_PRIVATE_MESSAGE_SUCCESS:
-      return privateMsgAdapter.addMany(action.payload.zulip.messages, {
+      return privateMsgAdapter.upsertMany(action.payload.zulip.messages, {
         ...state,
         loading: false,
         loaded: true

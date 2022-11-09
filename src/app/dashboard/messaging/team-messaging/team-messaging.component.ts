@@ -11,7 +11,7 @@ import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {MessagingService} from '../services/messaging.service';
 import * as streamMsgAction from '../../state/actions/streams.messages.actions';
 import * as streamActions from '../../state/actions/streams.actions';
-import {getStreams} from '../../state/entities/streams.entity';
+import {getSelectedStream, getStreams} from '../../state/entities/streams.entity';
 
 
 @Component({
@@ -22,6 +22,8 @@ import {getStreams} from '../../state/entities/streams.entity';
 export class TeamMessagingComponent implements OnInit {
   unreadMessageId: number[] = [];
   messageUpdate$!: Observable<SingleMessageModel[]>;
+
+  selectedStream$: Observable<number | null> = this.store.select(getSelectedStream);
 
   constructor(
     private store: Store<AppState>,
@@ -64,9 +66,15 @@ export class TeamMessagingComponent implements OnInit {
         ],
         client_gravatar: true
       };
-
       this.store.dispatch(new streamActions.SelectedStream(payload));
       this.store.dispatch(new streamMsgAction.LoadStreamMsg(topicRequest));
+
+      // this.selectedStream$.subscribe({
+      //   // tslint:disable-next-line:no-shadowed-variable
+      //   next: (streamId) => {
+      //     if ( streamId && +streamId === +streamId) { return; }
+      //   }
+      // });
     });
   }
 

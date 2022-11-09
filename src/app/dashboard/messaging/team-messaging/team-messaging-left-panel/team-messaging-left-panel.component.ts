@@ -15,6 +15,7 @@ import {SingleMessageModel} from '../../models/messages.model';
 import {Topics} from '../../models/topics.model';
 import {SubStreamsModel} from '../../../models/streams.model';
 import {getStreams, privateStreams, publicStreams} from '../../../state/entities/streams.entity';
+import {streamsUnread} from '../../../state/entities/messages/stream.messages.entity';
 
 interface TopicDetails {
   topic_name: string;
@@ -112,6 +113,11 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   }
 
   initPageHandler(): void {
+    this.store.select(streamsUnread).subscribe({
+      next: (length) => console.log(
+        'unread message ', length
+      )
+    })
     // handle All Unread Messages
     // this.handleUnreadMsgCounter();
     // this.handleNewStream();

@@ -20,7 +20,7 @@ export class TeamSettingsComponent implements OnInit {
   teams: any;
   allUsers: ZulipSingleUser[] = Array();
   allUsers$!: Observable<ZulipSingleUser[]>;
-  currentUserId$!: Observable<number>;
+  currentUserId$!: Observable<any>;
 
   teamOfChoice: any;
   displayCreateTeamComponentRef: MatDialogRef<CreateTeamComponent> | undefined;

@@ -7,7 +7,12 @@
     <div class="right-profile-section">
       <div class="profile-section-text">
         <p> {{ (userDetails$ | async).first_name }} {{ (userDetails$ | async).last_name }}</p>
-        <!--          <p>Lecturer</p>-->
+<!--        <p class="member-name">{{ (currentUser$ | async)?.full_name }}</p>-->
+        <p class="member-role" *ngIf="(currentUser$ | async)?.role === 100">Organization owner</p>
+        <p class="member-role" *ngIf="(currentUser$ | async)?.role === 200">Organization administrator</p>
+        <p class="member-role" *ngIf="(currentUser$ | async)?.role === 300">Organization moderator</p>
+        <p class="member-role" *ngIf="(currentUser$ | async)?.role === 400">Member</p>
+        <p class="member-role" *ngIf="(currentUser$ | async)?.role === 600">Guest</p>
       </div>
       <div class="profile-section-image">
         <img src="assets/img/placeholder.jpg" alt="" />
