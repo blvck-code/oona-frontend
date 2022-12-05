@@ -1,6 +1,6 @@
 import {Action} from '@ngrx/store';
 import { DashActions } from '../dash.actions';
-import {SubscribersResponseModel, SubStreamsResponseModel} from '../../models/streams.model';
+import {SubscribersResponseModel, SubStreamsModel, SubStreamsResponseModel} from '../../models/streams.model';
 import {TopicResponseModel} from '../../models/topics.model';
 
 // Subscribed Streams
@@ -20,6 +20,12 @@ export class LoadSubStreamsFail implements Action {
 export class LoadTopics implements Action {
   readonly type = DashActions.LOAD_TOPICS;
   constructor(public payload: TopicResponseModel) {
+  }
+}
+// Create Stream
+export class CreateStream implements Action {
+  readonly type = DashActions.CREATE_STREAM;
+  constructor(public payload: SubStreamsModel) {
   }
 }
 // Selected stream
@@ -72,4 +78,6 @@ export type StreamActions =
   | LoadSubscribersFail
   // Selected stream / topic
   | SelectedStream
-  | SelectedTopic;
+  | SelectedTopic
+  // Create stream
+  | CreateStream;

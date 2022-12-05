@@ -29,12 +29,121 @@
     <div class="col create-stream">
       <div *ngIf="teamOfChoice">
         <div>
-          <div class="d-flex justify-content-between">
-            <h5>{{teamOfChoice.name}}</h5>
+          <div class="d-flex justify-content-between py-2">
+
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button type="button" class="btn btn-sm btn-primary">
+                General
+              </button>
+              <button type="button" class="btn btn-sm btn-primary">
+                Personal
+              </button>
+              <button type="button" class="btn btn-sm btn-primary">
+                Subscribers
+              </button>
+            </div>
+
             <button type="button" class="btn btn-primary p-2 btn-sm shadow-none" (click)="unsubscribeFromTeam()">Unsubscribe</button>
+
           </div>
-          <p *ngIf="teamOfChoice.description">{{teamOfChoice.description}}</p>
-          <p *ngIf="teamOfChoice.description == ''">No description for this team yet</p>
+          <div class="stream-content">
+
+            <div class="stream-general" *ngIf="false">
+              <div class="d-flex justify-content-between">
+                <h5>{{teamOfChoice.name}}</h5>
+                <button class="btn btn-sm btn-primary" data-toggle="modal" (click)="editStream()">
+                  Edit
+                </button>
+              </div>
+              <p *ngIf="teamOfChoice.description">{{teamOfChoice.description}}</p>
+              <p *ngIf="teamOfChoice.description == ''">No description for this team yet</p>
+
+              <h5>
+                Stream permissions
+              </h5>
+              <ul>
+                <li>
+                  This is a <strong>public stream</strong>. Any member of the organization can join without an invitation or view content sent to this stream.
+                </li>
+                <li>
+                  All stream subscribers can post.
+                </li>
+              </ul>
+            </div>
+
+            <div class="stream-personal" *ngIf="false">
+              <h5>Personal settings</h5>
+
+              <div class="py-2">
+                <fieldset class="form-check">
+                  <input type="checkbox" class="form-check-input">
+                  <label class="form-check-label" >Mute stream</label>
+                </fieldset>
+                <fieldset class="form-check">
+                  <input type="checkbox" class="form-check-input">
+                  <label class="form-check-label">Pin stream to top of left sidebar</label>
+                </fieldset>
+              </div>
+
+              <div class="py-2">
+                <h5>Notification settings</h5>
+                <fieldset class="form-check">
+                  <input type="checkbox" class="form-check-input">
+                  <label class="form-check-label">Visual desktop notifications</label>
+                </fieldset>
+                <fieldset class="form-check">
+                  <input type="checkbox" class="form-check-input">
+                  <label class="form-check-label">Audible desktop notifications</label>
+                </fieldset>
+                <fieldset class="form-check">
+                  <input type="checkbox" class="form-check-input">
+                  <label class="form-check-label">Mobile notifications</label>
+                </fieldset>
+                <fieldset class="form-check">
+                  <input type="checkbox" class="form-check-input">
+                  <label class="form-check-label">Email notifications</label>
+                </fieldset>
+                <fieldset class="form-check">
+                  <input type="checkbox" class="form-check-input">
+                  <label class="form-check-label">Notifications for @all/everyone mentions</label>
+                </fieldset>
+              </div>
+
+            </div>
+            <div class="stream-subscribers" *ngIf="true">
+
+
+              <div>
+                <div class="form-group stream-filter-users">
+                  <label>Choose subscribers</label>
+
+<!--                  <div *ngIf="filterWord">-->
+<!--                    <div *ngFor="let member of (users$ | async) | userFilter: filterWord" class="stream-filter-users-list list-group">-->
+<!--                      <button class="list-group-item list-group-item-action" (click)="addSingleUser(member)">-->
+<!--                        <b>{{ member.full_name }}</b> <span>{{ member.email }}</span>-->
+<!--                      </button>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  <div class="list-pm-members pb-2">-->
+<!--                    <div class="pm-member" *ngFor="let member of oneByOneUser" (click)="removeFromOneByOneUser(member)">-->
+<!--                      <p>{{member.full_name}}</p>-->
+<!--                      <i class="bi bi-x"></i>-->
+<!--                    </div>-->
+<!--                  </div>-->
+                </div>
+                <div class="d-flex">
+                  <input
+                    style="flex: 1;"
+                    type="text"
+                    class="form-control"
+                    placeholder="Add subscribers. Use usergroup or #streamname to bulk add subscribers">
+                  <button class="btn btn-sm btn-outline-dark ms-2">Add</button>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
         </div>
         <div class="d-flex justify-content-end">
           <ul class="searchable-users list-group">
@@ -69,3 +178,4 @@
   </div>
 
 </div>
+

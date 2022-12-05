@@ -1,6 +1,7 @@
 // Load Private Messages
 import {Action} from '@ngrx/store';
 import {DashActions} from '../dash.actions';
+import {SubStreamsModel} from '../../models/streams.model';
 
 export class LoadStreamMsg implements Action {
   readonly type = DashActions.LOAD_STREAM_MESSAGE;
@@ -17,11 +18,6 @@ export class LoadStreamMsgFail implements Action {
   }
 }
 
-// Create Stream
-export class CreateStream implements Action {
-  readonly type = DashActions.CREATE_STREAM;
-
-}
 
 export type MessagesActions =
 // Private Messages

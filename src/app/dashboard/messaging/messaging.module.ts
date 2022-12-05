@@ -57,6 +57,7 @@ import { AllUsersPanelComponent } from './right-panel/components/all-users-panel
 import { IndividualUserPanelComponent } from './right-panel/components/individual-user-panel/individual-user-panel.component';
 import { AllPrivateMessagesCardComponent } from './all-private-messaging/all-private-messages-card/all-private-messages-card.component';
 import { NewTeamComponent } from './team-messaging/team-settings/new-team/new-team.component';
+import { EditStreamComponent } from './team-messaging/team-settings/edit-stream/edit-stream.component';
 
 @NgModule({
   // tslint:disable-next-line:max-line-length
@@ -104,7 +105,8 @@ import { NewTeamComponent } from './team-messaging/team-settings/new-team/new-te
     AllUsersPanelComponent,
     IndividualUserPanelComponent,
     AllPrivateMessagesCardComponent,
-    NewTeamComponent
+    NewTeamComponent,
+    EditStreamComponent
   ],
   exports: [LoadingAnimationComponent],
   imports: [

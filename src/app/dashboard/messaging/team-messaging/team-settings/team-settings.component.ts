@@ -13,6 +13,7 @@ import {getUserId, getZulipUsers} from '../../../../auth/state/auth.selectors';
 import {AllStreamsModel, SubStreamsModel} from '../../../models/streams.model';
 import {DashService} from '../../../service/dash-service.service';
 import {getStreams} from '../../../state/entities/streams.entity';
+import {EditStreamComponent} from './edit-stream/edit-stream.component';
 
 @Component({
   selector: 'app-team-settings',
@@ -32,6 +33,7 @@ export class TeamSettingsComponent implements OnInit {
   teamOfChoice: any;
   displayCreateTeamComponentRef: MatDialogRef<CreateTeamComponent> | undefined;
   displayLeaveTeamComponentRef: MatDialogRef<LeaveTeamComponent> | undefined;
+  displayEditStreamComponentRef: MatDialogRef<EditStreamComponent> | undefined;
   filteredTeams = Array();
   filteredUsers = Array();
   searchResult =  Array();
@@ -192,6 +194,22 @@ export class TeamSettingsComponent implements OnInit {
     dialogConfig.data = {teamToLeave: this.teamOfChoice};
     this.displayLeaveTeamComponentRef = this.dialog.open(LeaveTeamComponent, dialogConfig);
     this.displayLeaveTeamComponentRef.afterClosed().subscribe(
+      data => {
+        if (data === 'success'){
+          this.listAllTeams();
+          this.filteredTeams = this.teams;
+        }
+      }
+    );
+  }
+
+  editStream(): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.height = '35vh';
+    dialogConfig.width = '40vw';
+    dialogConfig.data = {teamToLeave: this.teamOfChoice};
+    this.displayEditStreamComponentRef = this.dialog.open(EditStreamComponent, dialogConfig);
+    this.displayEditStreamComponentRef.afterClosed().subscribe(
       data => {
         if (data === 'success'){
           this.listAllTeams();

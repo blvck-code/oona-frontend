@@ -45,7 +45,8 @@
             ],
             "scripts": [
               "src/assets/js/vendor/external_api.js",
-              "node_modules/bootstrap/dist/js/bootstrap.bundle.js"
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.js",
+              "node_modules/bootstrap/dist/js/bootstrap.js"
             ],
             "vendorChunk": true,
             "extractLicenses": false,

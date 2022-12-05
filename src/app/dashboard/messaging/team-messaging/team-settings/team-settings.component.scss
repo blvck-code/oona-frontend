@@ -139,3 +139,25 @@
     margin-bottom: 0;
   }
 }
+.stream-users {
+  .stream-filter-users {
+    position: relative;
+
+    .stream-filter-users-list {
+      width: 60%;
+      position: absolute;
+      bottom: 25px;
+      z-index: 2;
+      //min-height: 100px;
+
+      .list-group-item {
+        font-size: 14px;
+
+        span {
+          font-size: 12px;
+          margin-left: 15px;
+        }
+      }
+    }
+  }
+}
