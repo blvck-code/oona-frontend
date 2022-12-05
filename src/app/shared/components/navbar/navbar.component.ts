@@ -47,7 +47,7 @@ export class NavbarComponent implements OnInit {
         this.storage.removeItem('u?');
         localStorage.clear();
         this.router.navigate(['/']);
-        // this.store.dispatch(new authActions.LogoutUserSuccess());
+        this.store.dispatch(new authActions.LogoutUserSuccess());
         this.oonaSockets.disconnect();
         this.sharedSrv.showNotification('Logout successful.', 'success');
       },
