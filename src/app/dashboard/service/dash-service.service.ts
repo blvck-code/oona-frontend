@@ -2,7 +2,13 @@ import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import { environment as env } from '../../../environments/environment';
-import {StreamsResponseModel, SubscribersResponseModel, SubStreamsModel, SubStreamsResponseModel} from '../models/streams.model';
+import {
+  AllStreamsResponseModel,
+  StreamsResponseModel,
+  SubscribersResponseModel,
+  SubStreamsModel,
+  SubStreamsResponseModel
+} from '../models/streams.model';
 
 // NgRx
 import {Store} from '@ngrx/store';
@@ -47,6 +53,17 @@ export class DashService {
         }
       }
     });
+  }
+
+  getAllStreams(): Observable<AllStreamsResponseModel> {
+    const payload = {
+      include_public: true,
+      include_subscribed: true,
+      include_all_active: false,
+      include_default: false,
+      include_owner_subscribed: false
+    };
+    return this.http.post<AllStreamsResponseModel>(env.allStreams, payload);
   }
 
   getStreamTopic(): void {

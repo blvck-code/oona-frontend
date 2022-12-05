@@ -10,6 +10,9 @@ import {Observable} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
 import {getUserId, getZulipUsers} from '../../../../auth/state/auth.selectors';
+import {AllStreamsModel, SubStreamsModel} from '../../../models/streams.model';
+import {DashService} from '../../../service/dash-service.service';
+import {getStreams} from '../../../state/entities/streams.entity';
 
 @Component({
   selector: 'app-team-settings',
@@ -21,6 +24,10 @@ export class TeamSettingsComponent implements OnInit {
   allUsers: ZulipSingleUser[] = Array();
   allUsers$!: Observable<ZulipSingleUser[]>;
   currentUserId$!: Observable<any>;
+
+  // Streams
+  allStreams: AllStreamsModel[] = [];
+  subscribedStreams$: Observable<SubStreamsModel[]> = this.store.select(getStreams);
 
   teamOfChoice: any;
   displayCreateTeamComponentRef: MatDialogRef<CreateTeamComponent> | undefined;
@@ -44,6 +51,7 @@ export class TeamSettingsComponent implements OnInit {
     private  notificationService: NotificationService,
     private change: ChangeDetectorRef,
     private store: Store<AppState>,
+    private dashSrv: DashService,
     // @ts-ignore
     @Inject(MAT_DIALOG_DATA) data,
   ) {
@@ -69,14 +77,19 @@ export class TeamSettingsComponent implements OnInit {
 
   // privateShareF = '';
   ngOnInit(): void {
-    this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
+    this.onInitHandler();
+  }
 
-      this.allUsers = users.members.filter(user => user.presence );
-      this.filteredUsers = users.members.filter(user => user.presence );
-    });
-
-    this.allUsers$ = this.store.select(getZulipUsers);
-    this.currentUserId$ = this.store.select(getUserId);
+  onInitHandler(): void {
+    // this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
+    //
+    //   this.allUsers = users.members.filter(user => user.presence );
+    //   this.filteredUsers = users.members.filter(user => user.presence );
+    // });
+    //
+    // this.allUsers$ = this.store.select(getZulipUsers);
+    // this.currentUserId$ = this.store.select(getUserId);
+    this.getAllStreams();
   }
 
   getAllSubscribers(): void{
@@ -139,6 +152,24 @@ export class TeamSettingsComponent implements OnInit {
     // );
   }
 
+  getAllStreams(): void {
+    this.dashSrv.getAllStreams().subscribe({
+      next: (streams) => {
+        console.log('All streams ==>>', streams.streams);
+        this.allStreams = streams.streams;
+      }
+      }
+    );
+  }
+
+  getSubStreams(): void {
+    this.subscribedStreams$.subscribe({
+      next: (streams) => {
+        this.filteredTeams = streams;
+      }
+    });
+  }
+
   searchTeam(event: any): any {
     // tslint:disable-next-line:max-line-length
     this.filteredTeams  = this.teams.filter((team: { name: string; }) => team.name.toLowerCase().includes(event.target.value.toLowerCase()));
@@ -147,7 +178,7 @@ export class TeamSettingsComponent implements OnInit {
     this.filteredTeams = this.teams.filter((team: { invite_only: any; }) => team.invite_only);
   }
   showAllAvailableTeams(): void{
-    this.filteredTeams = this.teams;
+    this.filteredTeams = this.allStreams;
   }
 
   searchSubscriber(event: any): void {
