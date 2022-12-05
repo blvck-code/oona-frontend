@@ -81,14 +81,14 @@ export class TeamSettingsComponent implements OnInit {
   }
 
   onInitHandler(): void {
-    // this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
-    //
-    //   this.allUsers = users.members.filter(user => user.presence );
-    //   this.filteredUsers = users.members.filter(user => user.presence );
-    // });
-    //
-    // this.allUsers$ = this.store.select(getZulipUsers);
-    // this.currentUserId$ = this.store.select(getUserId);
+    this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
+
+      this.allUsers = users.members.filter(user => user.presence);
+      this.filteredUsers = users.members.filter(user => user.presence);
+    });
+
+    this.allUsers$ = this.store.select(getZulipUsers);
+    this.currentUserId$ = this.store.select(getUserId);
     this.getAllStreams();
   }
 
@@ -155,7 +155,6 @@ export class TeamSettingsComponent implements OnInit {
   getAllStreams(): void {
     this.dashSrv.getAllStreams().subscribe({
       next: (streams) => {
-        console.log('All streams ==>>', streams.streams);
         this.allStreams = streams.streams;
       }
       }

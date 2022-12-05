@@ -17,6 +17,12 @@ export class LoadStreamMsgFail implements Action {
   }
 }
 
+// Create Stream
+export class CreateStream implements Action {
+  readonly type = DashActions.CREATE_STREAM;
+
+}
+
 export type MessagesActions =
 // Private Messages
   | LoadStreamMsg

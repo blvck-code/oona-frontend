@@ -14,6 +14,7 @@ import {Router} from '@angular/router';
 import {SingleMessageModel} from '../models/messages.model';
 import * as messagingActions from '../state/messaging.actions';
 import {SocketMessageModel, StreamCounterModel} from '../../models/socket.model';
+import {StreamSocketModel} from '../models/socket.model';
 
 const msgSocket = webSocket(messageChannel);
 
@@ -228,30 +229,7 @@ export class OonaSocketService {
   }
 
   filterSocketData(userData: any): void {
-    /*
-     * Filters all active and inactive users
-     * @param userData Incoming message from the server.
-     * @return void
-     */
-
     const socketData  = JSON.parse(userData);
-
-    // {
-    //   "message": {
-    //   "operation": "add",
-    //   "all": false,
-    //   "type": "update_message_flags",
-    //   "id": 21,
-    //   "messages": [
-    //     34424,
-    //     34427,
-    //     34430,
-    //     34431,
-    //     34433
-    //   ],
-    //     "flag": "read"
-    // }
-    // }
 
     console.log('Socket data first time ===>>>', socketData);
 
@@ -263,7 +241,7 @@ export class OonaSocketService {
       // console.log('pushing user presence data');
       this.recognizedUsers.push(socketData);
     } else if (socketData.message.type === 'stream') {
-
+      this.handleStreamSockets(socketData);
       if (socketData.message.op === 'create'){
         // New stream just created
         this.newStreamSubject.next(socketData.message.streams);
@@ -338,6 +316,20 @@ export class OonaSocketService {
         this.connect();
       }, 1000);
     };
+  }
+
+  handleStreamSockets(streamData: StreamSocketModel): void {
+    // steps
+    //   check if it's  a new stream created
+    //   check if it's a new stream message
+    //    check if current logged user should see the incoming
+
+    if (streamData.op === 'create') {
+      // only show to subscribed users
+      // this.store.dispatch(new streamActions.createNewStream(streamData.stream))
+    }
+
+    // console.log('New stream message ==>>', incoming);
   }
 
   // Filter message types from the socket

@@ -53,7 +53,7 @@ export class MessagingService {
   oonaMemberProfileDetail = env.oonaMemberProfileDetail;
   oonaProfileUrl = env.oonaProfileUrl;
   streamUnsubscribe = env.streamUnsubscribe;
-  streamSubscribe = env.streamSubscribe;
+  streamSubscribe = env.subscribeToStream;
 
   public memberObject = {
     full_name: undefined,
