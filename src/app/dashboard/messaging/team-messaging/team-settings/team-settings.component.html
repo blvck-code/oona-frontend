@@ -32,13 +32,13 @@
           <div class="d-flex justify-content-between py-2">
 
             <div class="btn-group" role="group" aria-label="Basic example">
-              <button type="button" class="btn btn-sm btn-primary">
+              <button (click)="toggleCategory('general')" type="button" class="btn btn-sm btn-primary">
                 General
               </button>
-              <button type="button" class="btn btn-sm btn-primary">
+              <button (click)="toggleCategory('personal')" type="button" class="btn btn-sm btn-primary">
                 Personal
               </button>
-              <button type="button" class="btn btn-sm btn-primary">
+              <button (click)="toggleCategory('subscribers')" type="button" class="btn btn-sm btn-primary">
                 Subscribers
               </button>
             </div>
@@ -48,7 +48,7 @@
           </div>
           <div class="stream-content">
 
-            <div class="stream-general" *ngIf="false">
+            <div class="stream-general pt-3" *ngIf="activeCategory === 'general'">
               <div class="d-flex justify-content-between">
                 <h5>{{teamOfChoice.name}}</h5>
                 <button class="btn btn-sm btn-primary" data-toggle="modal" (click)="editStream()">
@@ -71,8 +71,11 @@
               </ul>
             </div>
 
-            <div class="stream-personal" *ngIf="false">
-              <h5>Personal settings</h5>
+            <div class="stream-personal pt-3" *ngIf="activeCategory === 'personal'">
+              <div class="d-flex">
+                <h5>Personal settings</h5>
+                <button class="btn btn-sm btn-outline-success ms-3">Saved</button>
+              </div>
 
               <div class="py-2">
                 <fieldset class="form-check">
@@ -110,8 +113,7 @@
               </div>
 
             </div>
-            <div class="stream-subscribers" *ngIf="true">
-
+            <div class="stream-subscribers pt-3" *ngIf="activeCategory === 'subscribers'">
 
               <div>
                 <div class="form-group stream-filter-users">

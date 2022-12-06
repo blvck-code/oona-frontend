@@ -14,6 +14,8 @@ import {AllStreamsModel, SubStreamsModel} from '../../../models/streams.model';
 import {DashService} from '../../../service/dash-service.service';
 import {getStreams} from '../../../state/entities/streams.entity';
 import {EditStreamComponent} from './edit-stream/edit-stream.component';
+import {PersonModel} from '../../../models/person.model';
+import {getUsers} from '../../../state/entities/users.entity';
 
 @Component({
   selector: 'app-team-settings',
@@ -25,6 +27,11 @@ export class TeamSettingsComponent implements OnInit {
   allUsers: ZulipSingleUser[] = Array();
   allUsers$!: Observable<ZulipSingleUser[]>;
   currentUserId$!: Observable<any>;
+  users$: Observable<PersonModel[]> = this.store.select(getUsers);
+
+  // Show content
+  activeCategory = 'personal';
+  activeStreamSubscribers: PersonModel[] = [];
 
   // Streams
   allStreams: AllStreamsModel[] = [];
@@ -92,6 +99,11 @@ export class TeamSettingsComponent implements OnInit {
     this.allUsers$ = this.store.select(getZulipUsers);
     this.currentUserId$ = this.store.select(getUserId);
     this.getAllStreams();
+    this.getSubStreams();
+  }
+
+  toggleCategory(category: string): void {
+    this.activeCategory = category;
   }
 
   getAllSubscribers(): void{
@@ -130,8 +142,28 @@ export class TeamSettingsComponent implements OnInit {
   }
 
   selectTeam(team: any): void {
+    this.activeStreamSubscribers = [];
+
     this.teamOfChoice = team;
     this.getSubscribersOfTeam(team.stream_id);
+    this.getStreamSubscribers(team.name);
+  }
+
+  getStreamSubscribers(streamName: string): void {
+    this.dashSrv.streamSubscribers(streamName).subscribe({
+      next: (response) => {
+        this.users$.subscribe({
+          next: (users) => {
+            users.filter(user => {
+              if (response.subscribers.includes(user.user_id)) {
+                console.log('Subscribed user ==>>', user)
+                this.activeStreamSubscribers.push(user);
+              }
+            });
+          }
+        });
+      }
+    });
   }
   listAllTeams(): any{
     this.messagingService.getAllTeams().subscribe((teams: any) => {
