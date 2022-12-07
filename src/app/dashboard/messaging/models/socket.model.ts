@@ -36,3 +36,13 @@ export interface PresenceSocketModel {
   // Todo Content pending
   type: string;
 }
+
+export interface UpdateStreamSocket {
+  id: number;
+  name: string;
+  op: string;
+  property: string;
+  stream_id: number;
+  type: string;
+  value: string;
+}

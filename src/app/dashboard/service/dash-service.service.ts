@@ -173,4 +173,24 @@ export class DashService {
   streamMessages(body: any): Observable<MessagesResponseModel> {
     return this.http.post<MessagesResponseModel>(env.individualMessage, body);
   }
+
+  streamSubStatus(streamId: number): Observable<any> {
+    return this.http.post(env.subscribeSubStatus, {stream_id: streamId});
+  }
+
+  streamSubscribe(stream: any): Observable<any> {
+    return this.http.post(env.subscribeToStream, stream);
+  }
+
+  updateStream(updatedContent: any): Observable<any> {
+    return this.http.post(env.updateStream, updatedContent);
+  }
+
+  updateStreamSubscription(updateContent: any): Observable<any> {
+    return this.http.post(env.updateSubscriptionSettings, updateContent);
+  }
+
+  unsubscribeStream(stream: any): Observable<any> {
+    return this.http.post(env.unsubscribeToStream, stream);
+  }
 }

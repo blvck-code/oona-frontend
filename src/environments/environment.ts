@@ -46,7 +46,7 @@ export const environment = {
   streamSubscribers: oonaBaseUrl + oonaVersion + '/streams/get-stream-members', // Get
   subscribeToStream: oonaBaseUrl + oonaVersion + '/streams/subscribe-to-a-stream', // Post
   unsubscribeToStream: oonaBaseUrl + oonaVersion + '/streams/unsubscribe-from-stream', // Post
-  subscribeSubscriptionStatus: oonaBaseUrl + oonaVersion + '/streams/get-subscription-status', // Post
+  subscribeSubStatus: oonaBaseUrl + oonaVersion + '/streams/get-subscription-status', // Post
   updateSubscriptionSettings: oonaBaseUrl + oonaVersion + '/streams/update-subscription-settings', // Post
   allStreams: oonaBaseUrl + oonaVersion + '/streams/', // Post
   updateStream: oonaBaseUrl + oonaVersion + '/streams/update-a-stream', // Post

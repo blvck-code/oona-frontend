@@ -16,6 +16,7 @@ import {getStreams} from '../../../state/entities/streams.entity';
 import {EditStreamComponent} from './edit-stream/edit-stream.component';
 import {PersonModel} from '../../../models/person.model';
 import {getUsers} from '../../../state/entities/users.entity';
+import {SharedService} from '../../../../shared/services/shared.service';
 
 @Component({
   selector: 'app-team-settings',
@@ -32,10 +33,13 @@ export class TeamSettingsComponent implements OnInit {
   // Show content
   activeCategory = 'personal';
   activeStreamSubscribers: PersonModel[] = [];
+  activeStreamSubStatus: any;
 
   // Streams
   allStreams: AllStreamsModel[] = [];
   subscribedStreams$: Observable<SubStreamsModel[]> = this.store.select(getStreams);
+
+  savingSubs = false;
 
   teamOfChoice: any;
   displayCreateTeamComponentRef: MatDialogRef<CreateTeamComponent> | undefined;
@@ -61,6 +65,7 @@ export class TeamSettingsComponent implements OnInit {
     private change: ChangeDetectorRef,
     private store: Store<AppState>,
     private dashSrv: DashService,
+    private sharedSrv: SharedService,
     // @ts-ignore
     @Inject(MAT_DIALOG_DATA) data,
   ) {
@@ -80,6 +85,16 @@ export class TeamSettingsComponent implements OnInit {
     public: [false],
     privateShare: [false],
     privateShareNo: [false],
+  });
+
+  personalSubForm = this.formBuilder.group({
+    is_muted: [false],
+    pin_to_top: [false],
+    desktop_notifications: [false],
+    audible_notifications: [false],
+    push_notifications: [false],
+    email_notifications: [false],
+    wildcard_mentions_notify: [false],
   });
 
   emptyForm = false;
@@ -147,6 +162,7 @@ export class TeamSettingsComponent implements OnInit {
     this.teamOfChoice = team;
     this.getSubscribersOfTeam(team.stream_id);
     this.getStreamSubscribers(team.name);
+    this.getSubStatus(team.stream_id);
   }
 
   getStreamSubscribers(streamName: string): void {
@@ -156,7 +172,6 @@ export class TeamSettingsComponent implements OnInit {
           next: (users) => {
             users.filter(user => {
               if (response.subscribers.includes(user.user_id)) {
-                console.log('Subscribed user ==>>', user)
                 this.activeStreamSubscribers.push(user);
               }
             });
@@ -165,9 +180,40 @@ export class TeamSettingsComponent implements OnInit {
       }
     });
   }
+
+  getSubStatus(streamId: number): void {
+    this.dashSrv.streamSubStatus(streamId).subscribe({
+      next: (status: { result: string, msg: string, is_subscribed: boolean }) => {
+        this.activeStreamSubStatus = status.is_subscribed;
+      }
+    });
+  }
   listAllTeams(): any{
     this.messagingService.getAllTeams().subscribe((teams: any) => {
       this.teams = teams.streams;
+    });
+  }
+
+  updateSubscription(event: any): void {
+    this.savingSubs = true;
+    // Todo adding color manually
+    const updateContent = {
+      ...this.personalSubForm.value,
+      stream_id: this.teamOfChoice.stream_id,
+      property: 'color',
+      value: '#f00f00'
+    };
+    this.dashSrv.updateStreamSubscription(updateContent).subscribe({
+      next: (resp) => {
+        this.savingSubs = false;
+        console.log('Resp ==>>', resp);
+        this.sharedSrv.showNotification('Changes updated successfully', 'success');
+      },
+      error: (err) => {
+        console.log('Error ==>>', err);
+        this.savingSubs = false;
+        this.sharedSrv.showNotification('Failed to update changes', 'error');
+      }
     });
   }
 
@@ -235,11 +281,20 @@ export class TeamSettingsComponent implements OnInit {
     );
   }
 
+  subscribeToTeam(): void {
+
+    this.dashSrv.streamSubscribe(this.teamOfChoice).subscribe({
+      next: (resp) => {
+        console.log('Subscribed response ==>>', resp);
+      }
+    });
+  }
+
   editStream(): void {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.height = '35vh';
     dialogConfig.width = '40vw';
-    dialogConfig.data = {teamToLeave: this.teamOfChoice};
+    dialogConfig.data = {editStream: this.teamOfChoice};
     this.displayEditStreamComponentRef = this.dialog.open(EditStreamComponent, dialogConfig);
     this.displayEditStreamComponentRef.afterClosed().subscribe(
       data => {
