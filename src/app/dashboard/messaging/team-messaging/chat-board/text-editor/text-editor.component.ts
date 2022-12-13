@@ -7,37 +7,47 @@ import {
   Output,
 } from '@angular/core';
 import { Editor, Toolbar, Validators, toHTML } from 'ngx-editor';
-import {
-  FormControl,
-  FormGroup,
-  NgForm,
-} from '@angular/forms';
+import { FormControl, FormGroup, NgForm } from '@angular/forms';
 import { MessagingService } from '../../../services/messaging.service';
-import {NotificationService} from '../../../../../shared/services/notification.service';
-import {Router} from '@angular/router';
-import { ToolbarService, LinkService, ImageService, HtmlEditorService } from '@syncfusion/ej2-angular-richtexteditor';
-import {ChatBoardService} from '../chat-board.service';
-import {Store} from '@ngrx/store';
-import {AppState} from '../../../../../state/app.state';
-import {getSelectedTopic} from '../../../../state/entities/streams.entity';
+import { NotificationService } from '../../../../../shared/services/notification.service';
+import { Router } from '@angular/router';
+import {
+  ToolbarService,
+  LinkService,
+  ImageService,
+  HtmlEditorService,
+} from '@syncfusion/ej2-angular-richtexteditor';
+import { ChatBoardService } from '../chat-board.service';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../../../state/app.state';
+import {
+  getSelectedTopic,
+  selectedStream,
+  selectedStreamName,
+  selectedTopic,
+} from '../../../../state/entities/streams.entity';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-text-editor',
   templateUrl: './text-editor.component.html',
   styleUrls: ['./text-editor.component.scss'],
-  providers: [ToolbarService, LinkService, ImageService, HtmlEditorService]
+  providers: [ToolbarService, LinkService, ImageService, HtmlEditorService],
 })
 export class TextEditorComponent implements OnInit, OnDestroy {
   @Output() messageContent = new EventEmitter<any>();
   @Output() newTopic = new EventEmitter<any>();
   @Output() streamFile = new EventEmitter<any>();
 
+  selectedStream$: Observable<any> = this.store.select(selectedStreamName);
+  selectedTopic$: Observable<string> = this.store.select(selectedTopic);
+
   @Input() messageTopic: any;
   @Input() streamName: any;
   currentTopic = '';
   editorTopic = '';
   values = '';
-  memberDetail =  {
+  memberDetail = {
     is_admin: undefined,
     full_name: undefined,
     is_active: undefined,
@@ -46,14 +56,14 @@ export class TextEditorComponent implements OnInit, OnDestroy {
     is_guest: undefined,
     bot_type: undefined,
     is_bot: undefined,
-    email: undefined
+    email: undefined,
   };
   userProfile: any;
 
   constructor(
     private messagingService: MessagingService,
     private chatBoardService: ChatBoardService,
-    private  notificationService: NotificationService,
+    private notificationService: NotificationService,
     private router: Router,
     private store: Store<AppState>
   ) {}
@@ -68,23 +78,38 @@ export class TextEditorComponent implements OnInit, OnDestroy {
   public newFileGroup: FormGroup;
 
   public tools: object = {
-    items: ['Bold', 'Italic', 'Underline', '|', 'Formats', 'Alignments', 'OrderedList',
-      'UnorderedList', '|', 'CreateLink', '|', 'SourceCode',
+    items: [
+      'Bold',
+      'Italic',
+      'Underline',
+      '|',
+      'Formats',
+      'Alignments',
+      'OrderedList',
+      'UnorderedList',
+      '|',
+      'CreateLink',
+      '|',
+      'SourceCode',
       {
         tooltipText: 'Share video link',
         undo: true,
         click: this.onClick.bind(this),
-        template: '<button class="e-tbar-btn e-btn" tabindex="-1" id="custom_tbar"  style="width:100%">'
-          + '<div class="e-tbar-btn-text" style="font-weight: 500;"><i class="bi bi-camera-video"></i></div></button>'
-      }, '|', 'Undo', 'Redo'
-    ]
+        template:
+          '<button class="e-tbar-btn e-btn" tabindex="-1" id="custom_tbar"  style="width:100%">' +
+          '<div class="e-tbar-btn-text" style="font-weight: 500;"><i class="bi bi-camera-video"></i></div></button>',
+      },
+      '|',
+      'Undo',
+      'Redo',
+    ],
   };
 
   insertImageSettings = {
     saveUrl: 'https://ej2.syncfusion.com/services/api/uploadbox/Save',
     removeUrl: 'https://ej2.syncfusion.com/services/api/uploadbox/Remove',
     width: 200,
-    height: 200
+    height: 200,
   };
   html: '' = '';
 
@@ -94,10 +119,21 @@ export class TextEditorComponent implements OnInit, OnDestroy {
   toggled = false;
 
   ngOnInit(): void {
+    this.selectedTopic$.subscribe({
+      next: (resp) => {
+        console.log('Selected topic ==>>', resp);
+      },
+    });
+    this.selectedStream$.subscribe({
+      next: (resp) => {
+        console.log('Selected stream ==>>', resp);
+      },
+    });
+
     this.messagingService.currentEditorTopic.subscribe((editorTopic) => {
       this.editorTopic = editorTopic; // always get the current value
     });
-    this.messagingService.currentMemberChatDetail.subscribe(member => {
+    this.messagingService.currentMemberChatDetail.subscribe((member) => {
       this.memberDetail = member;
     });
     this.loggedInProfile();
@@ -108,15 +144,13 @@ export class TextEditorComponent implements OnInit, OnDestroy {
       selectedFile: new FormControl(this.selectedFile),
     });
 
-    this.store.select(getSelectedTopic).subscribe(
-      (topicName: string) => {
-        if (topicName) {
-          this.currentTopic = topicName;
-        } else {
-          this.currentTopic = 'new streams';
-        }
+    this.store.select(getSelectedTopic).subscribe((topicName: string) => {
+      if (topicName) {
+        this.currentTopic = topicName;
+      } else {
+        this.currentTopic = 'new streams';
       }
-    );
+    });
   }
 
   onFileChanged(event: any): void {
@@ -132,7 +166,7 @@ export class TextEditorComponent implements OnInit, OnDestroy {
     this.editor.destroy();
   }
 
-  loggedInProfile(): void{
+  loggedInProfile(): void {
     this.messagingService.oonaProfile().subscribe((profile: any) => {
       this.userProfile = profile.results[0];
     });
@@ -141,38 +175,44 @@ export class TextEditorComponent implements OnInit, OnDestroy {
   public onClick(): any {
     const currentUrl = window.location.href;
     // console.log('current url', currentUrl);
-    if (currentUrl.includes('member')){
-      this.messagingService.getOonaMemberDetail(this.memberDetail?.email).subscribe((oonaProfileData: { results: string | any[]; }) => {
-        if (oonaProfileData.results.length < 1){
-          this.notificationService.showWarning(`${this.memberDetail?.full_name} is not a member of oona`, 'Not a member of oona');
-          return;
-        }else{
-          this.newMeeting([oonaProfileData.results[0].id]);
-        }
-      });
+    if (currentUrl.includes('member')) {
+      this.messagingService
+        .getOonaMemberDetail(this.memberDetail?.email)
+        .subscribe((oonaProfileData: { results: string | any[] }) => {
+          if (oonaProfileData.results.length < 1) {
+            this.notificationService.showWarning(
+              `${this.memberDetail?.full_name} is not a member of oona`,
+              'Not a member of oona'
+            );
+            return;
+          } else {
+            this.newMeeting([oonaProfileData.results[0].id]);
+          }
+        });
     }
-
   }
 
-  shareFile(): void{
+  shareFile(): void {
     // check current url and send file to appropriate individual or stream
     const currentPath = window.location.href;
-    if (currentPath.includes('member')){
+    if (currentPath.includes('member')) {
       // send file to individual
       this.sendFileToIndividual();
-    }else if (currentPath.includes('team')){
+    } else if (currentPath.includes('team')) {
       this.sendFileToStream();
     }
   }
 
-  sendFileToStream(): void{
+  sendFileToStream(): void {
     const newFileItem = new FormData();
     newFileItem.append('to', this.streamName);
     newFileItem.append('file', this.selectedFile);
     newFileItem.append('content', '&npsp');
     newFileItem.append('topic', this.messageTopic);
-    this.messagingService.sendStreamMessageWithFile(newFileItem).subscribe((res: any) => {
-        if (res.zulip.result === 'success'){
+    this.messagingService
+      .sendStreamMessageWithFile(newFileItem)
+      .subscribe((res: any) => {
+        if (res.zulip.result === 'success') {
           this.editorData += res.oz.file;
         }
       });
@@ -184,41 +224,53 @@ export class TextEditorComponent implements OnInit, OnDestroy {
     newFileItem.append('to', this.memberDetail.user_id);
     newFileItem.append('file', this.selectedFile);
     newFileItem.append('content', '&npsp');
-    this.messagingService.sendIndividualMessageWithFile(newFileItem).subscribe((res: any) => {
-      if (res.zulip.result === 'success'){
-        this.editorData += res.oz.file;
-      }
-    });
+    this.messagingService
+      .sendIndividualMessageWithFile(newFileItem)
+      .subscribe((res: any) => {
+        if (res.zulip.result === 'success') {
+          this.editorData += res.oz.file;
+        }
+      });
   }
 
   newMeeting(memberIds: any): any {
-    const currentDate = new Date ();
-    const startTimeTimestamp = currentDate.setMinutes(currentDate.getMinutes() + 5);
+    const currentDate = new Date();
+    const startTimeTimestamp = currentDate.setMinutes(
+      currentDate.getMinutes() + 5
+    );
     const stopTimeTimestamp = new Date(startTimeTimestamp);
-
 
     // console.log('start time', this.formatDate(new Date(startTimeTimestamp)));
     // console.log('stop time', this.formatDate(new Date( stopTimeTimestamp.getTime() + 30 * 60000)));
     const meetingDetail = {
-      name: `New meeting ${this.messagingService.formatDate(new Date(startTimeTimestamp))}`,
-      start_time: this.messagingService.formatDate(new Date(startTimeTimestamp)),
-      stop_time:  this.messagingService.formatDate(new Date( stopTimeTimestamp.getTime() + 30 * 60000)),
+      name: `New meeting ${this.messagingService.formatDate(
+        new Date(startTimeTimestamp)
+      )}`,
+      start_time: this.messagingService.formatDate(
+        new Date(startTimeTimestamp)
+      ),
+      stop_time: this.messagingService.formatDate(
+        new Date(stopTimeTimestamp.getTime() + 30 * 60000)
+      ),
       priority: '2',
-      attendees: memberIds
+      attendees: memberIds,
     };
 
     console.log(meetingDetail);
-    this.messagingService.createMeeting(meetingDetail).subscribe((response: any) => {
-      // response.video_stream
-      // https://192.168.0.76:8443/67830bfd-7249-4d05-b5a6-5eda9c0c30fa
-      this.notificationService.showInfo('Your meeting has been created. Go back to the meeting page to view', 'Meeting created');
-      setTimeout(() => {
-        this.router.navigate(['dashboard']);
-      }, 1000);
-
-    });
+    this.messagingService
+      .createMeeting(meetingDetail)
+      .subscribe((response: any) => {
+        // response.video_stream
+        // https://192.168.0.76:8443/67830bfd-7249-4d05-b5a6-5eda9c0c30fa
+        this.notificationService.showInfo(
+          'Your meeting has been created. Go back to the meeting page to view',
+          'Meeting created'
+        );
+        setTimeout(() => {
+          this.router.navigate(['dashboard']);
+        }, 1000);
+      });
   }
-
 
   onSubmit(form: NgForm): void {
     console.log('Message content ===>>>', form);

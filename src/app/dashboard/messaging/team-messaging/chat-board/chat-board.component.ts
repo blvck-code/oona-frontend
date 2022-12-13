@@ -143,6 +143,11 @@ export class ChatBoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.selectedTopic$.subscribe({
+      next: (resp) => {
+        console.log('Topic message ==>>', resp);
+      },
+    });
     this.getStreamMessages();
     this.getStreamName();
     this.messages$.subscribe({
@@ -168,25 +173,6 @@ export class ChatBoardComponent implements OnInit {
         }
       },
     });
-    // this.store.select(getSelectedStreamId).subscribe(
-    //   (streamId: number | null) => {
-    //
-    //     if (streamId) {
-    //       this.store.select(getAllStreams).subscribe(
-    //         (streams: AllStreamsModel[]) => {
-    //           streams.map((stream: AllStreamsModel) => {
-    //
-    //             if (+stream.stream_id === streamId ) {
-    //               this.streamName = stream.name;
-    //             }
-    //
-    //           });
-    //         }
-    //       );
-    //     }
-    //
-    //   }
-    // );
   }
 
   streamMessages(streamParamDetail: any): void {
@@ -328,17 +314,4 @@ export class ChatBoardComponent implements OnInit {
       }
     );
   }
-
-  // private filterMessagesByTopic(streamTopic: string): void {
-  //
-  //   if (streamTopic !== ''){
-  //     this.filteredMessagesOfStream = this.messagesOfStream.filter(
-  //       (message: { subject: string }) =>
-  //         message.subject === streamTopic
-  //     );
-  //   }else{
-  //     this.filteredMessagesOfStream = this.messagesOfStream;
-  //   }
-  //   this.change.detectChanges();
-  // }
 }

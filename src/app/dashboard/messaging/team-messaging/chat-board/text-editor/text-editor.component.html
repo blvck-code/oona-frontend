@@ -1,14 +1,14 @@
 <div class="text-editor">
-  <p class="message-topic" *ngIf="streamName">
+  <p class="message-topic" *ngIf="selectedStream$| async">
     <span class="editor-message me-1">Message </span>
-    <span class="editor-stream">#{{ streamName }}</span>
-    <span *ngIf="messageTopic">
+    <span class="editor-stream">#{{ (selectedStream$ | async)?.name }}</span>
+    <span *ngIf="(selectedTopic$ | async)">
     <i class="fa fa-solid fa-chevron-right" aria-hidden="true"></i>
       <span>
         <input
           type="text"
           class="border-0 shadow-none"
-          [placeholder]="messageTopic"
+          [placeholder]="(selectedTopic$ | async)"
           (keyup)="onKey($event)"
           name="first"
         /></span>
