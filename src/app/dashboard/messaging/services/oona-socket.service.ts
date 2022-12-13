@@ -1,38 +1,47 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {messageChannel} from '../../../../environments/environment';
-import {AuthService} from '../../../auth/services/auth.service';
-import {MessagingService} from './messaging.service';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { messageChannel } from '../../../../environments/environment';
+import { AuthService } from '../../../auth/services/auth.service';
+import { MessagingService } from './messaging.service';
 import { webSocket } from 'rxjs/webSocket';
 import { environment as env } from '../../../../environments/environment';
 
 // NgRx
-import {Store} from '@ngrx/store';
-import {AppState} from '../../../state/app.state';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../state/app.state';
 import * as authActions from '../../../auth/state/auth.actions';
-import {Router} from '@angular/router';
-import {SingleMessageModel} from '../models/messages.model';
-import {SocketMessageModel, StreamCounterModel} from '../../models/socket.model';
-import {AddSocketModel, StreamSocketModel, SubscriptionSocketModel} from '../models/socket.model';
-import {userId} from '../../../auth/state/auth.selectors';
-import {AllStreamsModel} from '../../models/streams.model';
+import { Router } from '@angular/router';
+import { SingleMessageModel } from '../models/messages.model';
+import {
+  SocketMessageModel,
+  StreamCounterModel,
+} from '../../models/socket.model';
+import {
+  AddSocketModel,
+  StreamSocketModel,
+  SubscriptionSocketModel,
+} from '../models/socket.model';
+import { userId } from '../../../auth/state/auth.selectors';
+import { AllStreamsModel } from '../../models/streams.model';
 
 import * as messagingActions from '../state/messaging.actions';
 import * as streamActions from '../../../dashboard/state/actions/streams.actions';
+import * as streamMessageActions from '../../../dashboard/state/actions/streams.messages.actions';
 
 const msgSocket = webSocket(messageChannel);
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OonaSocketService {
-
   allMessagesCounter = 0;
   allMsgCounterSubject = new BehaviorSubject<number>(this.allMessagesCounter);
   allMsgCounterObservable = this.allMsgCounterSubject.asObservable();
 
   privateMessagesCounter = 0;
-  privateMsgCounterSubject = new BehaviorSubject<number>(this.privateMessagesCounter);
+  privateMsgCounterSubject = new BehaviorSubject<number>(
+    this.privateMessagesCounter
+  );
   privateMsgCounter = this.privateMsgCounterSubject.asObservable();
 
   userId$: Observable<number | undefined> = this.store.select(userId);
@@ -88,14 +97,12 @@ export class OonaSocketService {
 
   newStreams: AllStreamsModel[] = [];
 
-
   constructor(
     private authService: AuthService,
     private messagingService: MessagingService,
     private route: Router,
     private store: Store<AppState>
-  ) {
-  }
+  ) {}
 
   notifySound(): void {
     const audio = new Audio();
@@ -111,11 +118,10 @@ export class OonaSocketService {
       // Check if the browser supports notifications
       alert('This browser does not support desktop notification');
     } else if (Notification.permission === 'granted') {
-
-      if (!message.is_me_message){
+      if (!message.is_me_message) {
         const notification = new Notification(message.sender_full_name, {
           body: message.content,
-          icon: message.avatar_url
+          icon: message.avatar_url,
         });
       }
     } else if (Notification.permission !== 'denied') {
@@ -132,7 +138,10 @@ export class OonaSocketService {
     // want to be respectful there is no need to bother them anymore.
   }
 
-  handleCounter(message: SocketMessageModel): { streamCounter: any[]; prvMsgCounter: any[] } {
+  handleCounter(message: SocketMessageModel): {
+    streamCounter: any[];
+    prvMsgCounter: any[];
+  } {
     const array = {
       streams: [
         {
@@ -142,20 +151,20 @@ export class OonaSocketService {
           topics: [
             {
               subject: 'new streams',
-              unread: 1
+              unread: 1,
             },
             {
               subject: 'topic streams',
-              unread: 1
+              unread: 1,
             },
             {
               subject: 'test streams',
-              unread: 1
+              unread: 1,
             },
-          ]
-        }
+          ],
+        },
       ],
-      private: []
+      private: [],
     };
     const streamCounter: any[] = [];
     const prvMsgCounter: any[] = [];
@@ -169,9 +178,9 @@ export class OonaSocketService {
         topics: [
           {
             subject: message.message.subject,
-            unread: 1
-          }
-        ]
+            unread: 1,
+          },
+        ],
       };
 
       streamCounter.push(counterContent);
@@ -180,7 +189,7 @@ export class OonaSocketService {
     }
     const counter = {
       streamCounter,
-      prvMsgCounter
+      prvMsgCounter,
     };
     console.log('Counter counter ==>>', counter);
     return counter;
@@ -207,8 +216,7 @@ export class OonaSocketService {
   }
 
   newMessageCounter(msg: SingleMessageModel): void {
-
-    if (this.newMessagesId.includes(msg.id)){
+    if (this.newMessagesId.includes(msg.id)) {
       return;
     }
 
@@ -237,29 +245,27 @@ export class OonaSocketService {
   }
 
   filterSocketData(userData: any): void {
-    const socketData  = JSON.parse(userData);
+    const socketData = JSON.parse(userData);
 
     console.log('Socket data first time ===>>>', socketData);
 
-    if (socketData.message.type === 'message'){
+    if (socketData.message.type === 'message') {
       this.handleCounter(socketData.message);
     }
 
-    if (socketData.message.type === 'presence'){
+    if (socketData.message.type === 'presence') {
       // console.log('pushing user presence data');
       this.recognizedUsers.push(socketData);
     } else if (socketData.message.type === 'stream') {
-
       this.handleStreamSockets(socketData.message);
       this.handleSubscriptionSockets(socketData.message);
 
-      if (socketData.message.op === 'create'){
+      if (socketData.message.op === 'create') {
         // New stream just created
         this.newStreamSubject.next(socketData.message.streams);
       }
-
-    } else if (socketData.message.type === 'message'){
-      // console.log('message', socketData);
+    } else if (socketData.message.type === 'message') {
+      console.log('Content message', socketData);
       this.setMessageType(socketData);
       // this.newMessages.push(socketData);
       // create a new set unique by message id
@@ -267,8 +273,7 @@ export class OonaSocketService {
       this.newMessageCount = this.newMessages.length;
       this.changeNewMessageCount(this.newMessageCount);
       this.newMessageCounter(socketData.message.message);
-
-    } else if (socketData.message.type === 'update_message_flags'){
+    } else if (socketData.message.type === 'update_message_flags') {
       // how many messages have been read
       const readMessages = socketData.message.messages;
       this.readFlagsSubject.next(readMessages);
@@ -276,34 +281,37 @@ export class OonaSocketService {
       const messagesRead = socketData.message.messages.length;
       this.newMessageCount = this.newMessageCount - messagesRead;
       const newRead = this.newMessageCount - messagesRead;
-      if (newRead < 0){
+      if (newRead < 0) {
         this.newMessageCount = 0;
         this.changeNewMessageCount(this.newMessageCount);
-      }else{
+      } else {
         this.changeNewMessageCount(this.newMessageCount);
       }
-    }else if (socketData.message.type === 'typing'){
+    } else if (socketData.message.type === 'typing') {
       const typeData = {
         userId: socketData.message.sender.user_id,
         userEmail: socketData.message.sender.email,
         op: socketData.message.op,
-        messageId: socketData.message.id
+        messageId: socketData.message.id,
       };
 
-      const newDataExists = this.peopleType.findIndex(personMessage => personMessage.userEmail === typeData.userEmail);
+      const newDataExists = this.peopleType.findIndex(
+        (personMessage) => personMessage.userEmail === typeData.userEmail
+      );
 
-      if (newDataExists >= 0){
+      if (newDataExists >= 0) {
         // data already exists. Hence only push if messageID is greater than that already existing
         // this would be obviously greater. Remove item at this index and replace with new ID
         this.peopleType[newDataExists] = typeData;
-      }else{
+      } else {
         this.peopleType.push(typeData);
       }
-      const max = this.peopleType.reduce((prev, current) => (prev.messageId > current.messageId) ? prev : current);
+      const max = this.peopleType.reduce((prev, current) =>
+        prev.messageId > current.messageId ? prev : current
+      );
 
       this.changeTypingStatus(this.peopleType);
     }
-
   }
 
   userManagement(): void {
@@ -330,6 +338,8 @@ export class OonaSocketService {
   }
 
   handleStreamSockets(streamData: StreamSocketModel): void {
+    console.log('HAndle stream messages ==>>', streamData);
+
     if (streamData.op === 'create') {
       streamData.streams.map((stream) => {
         this.store.dispatch(new streamActions.CreateStream(stream));
@@ -343,7 +353,6 @@ export class OonaSocketService {
   }
 
   handleSubscriptionSockets(streamData: SubscriptionSocketModel): void {
-
     // Check if logged user to see new stream created
     this.userId$.subscribe({
       // tslint:disable-next-line:no-shadowed-variable
@@ -355,12 +364,9 @@ export class OonaSocketService {
             // add the stream to stream array here
             console.log('List of new streams ==>>', this.newStreams);
           }
-
         }
-      }
+      },
     });
-
-
   }
 
   handleAddSocket(socket: AddSocketModel): void {
@@ -370,88 +376,124 @@ export class OonaSocketService {
   // Filter message types from the socket
   private setMessageType(socketData: any): void {
     const newMessage: SingleMessageModel = socketData.message.message;
-    if (this.newMessagesId.includes(newMessage.id)) { return; }
+    if (this.newMessagesId.includes(newMessage.id)) {
+      return;
+    }
     this.newMessagesId.push(newMessage.id);
 
-    const currentUserId =  this.loggedInUserProfile?.user_id;
+    const currentUserId = this.loggedInUserProfile?.user_id;
     const msgSenderId = socketData.message?.message?.sender_id;
-    const recipientOne: SingleMessageModel = socketData.message.message?.display_recipient[0].id;
-    const recipientTwo: SingleMessageModel = socketData.message.message?.display_recipient[1].id;
+    const recipientOne: SingleMessageModel =
+      socketData.message.message?.display_recipient[0].id;
+    const recipientTwo: SingleMessageModel =
+      socketData.message.message?.display_recipient[1].id;
 
     newMessage.flags = [];
-    if (socketData.message.message.type === 'stream'){
-
+    if (socketData.message.message.type === 'stream') {
       // If i send message to the stream listener
       const incomingMessage: SingleMessageModel = socketData.message.message;
-      if (msgSenderId === currentUserId){
+      console.log('Stream message sent ==>>', socketData);
+      if (msgSenderId === currentUserId) {
         // My outgoing message from the socket
         // console.log('My stream outgoing message content ===>>>', socketData);
         this.myStreamMessagesSocketSubject.next(socketData.message.message);
         incomingMessage.flags = ['read'];
-        this.store.dispatch(new messagingActions.CreateStreamMessageSuccess(incomingMessage));
+        this.store.dispatch(
+          new streamMessageActions.SocketStreamMessage(
+            socketData.message.message
+          )
+        );
       } else {
         incomingMessage.flags = [];
-        this.store.dispatch(new messagingActions.CreateStreamMessageSuccess(incomingMessage));
+        this.store.dispatch(
+          new streamMessageActions.SocketStreamMessage(
+            socketData.message.message
+          )
+        );
         this.notifyMe(socketData.message.message);
       }
 
       // this.store.dispatch(new messagingActions.CreateStreamMessageSuccess(socketData.message.message));
       // this.notifyMe(socketData.message.message);
 
-      this.messagesToStreams = [...this.messagesToStreams, socketData.message.message];
+      this.messagesToStreams = [
+        ...this.messagesToStreams,
+        socketData.message.message,
+      ];
       // let the array have unique messages
       // ! below is done because this socket service is called multiple times across multiple components
       // hence a tendency to have it with duplicate items for each time it is called
       // tslint:disable-next-line:max-line-length
-      this.messagesToStreams = this.messagesToStreams.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i); // have unique messages by id
+      this.messagesToStreams = this.messagesToStreams.filter(
+        (v, i, a) => a.findIndex((t) => t.id === v.id) === i
+      ); // have unique messages by id
       // console.log('Messages to streams ===>>>>', this.messagesToStreams);
-      this.changeNewStreamMessageCount(this.removeLoggedInUserMessages(this.messagesToStreams));
-    }else if (socketData.message.message.type === 'private'){
+      this.changeNewStreamMessageCount(
+        this.removeLoggedInUserMessages(this.messagesToStreams)
+      );
+    } else if (socketData.message.message.type === 'private') {
       const privateMessage: SingleMessageModel = socketData.message.message;
-
 
       // send new message to store
 
       // Check if am the sender or not me
-      if (msgSenderId === currentUserId){
+      if (msgSenderId === currentUserId) {
         // My outgoing message from the socket
         privateMessage.flags = ['read'];
         this.myMessagesSocketSubject.next(socketData.message.message);
-        this.store.dispatch(new messagingActions.CreatePrivateMessageSuccess(privateMessage));
-      } else if ( recipientOne === currentUserId || recipientTwo === currentUserId ) {
+        this.store.dispatch(
+          new messagingActions.CreatePrivateMessageSuccess(privateMessage)
+        );
+      } else if (
+        recipientOne === currentUserId ||
+        recipientTwo === currentUserId
+      ) {
         // Incoming message from other user in socket
         console.log('recipientOne', recipientOne);
         console.log('recipientTwo', recipientTwo);
         console.log('currentUserId', currentUserId);
         privateMessage.flags = [];
-        this.store.dispatch(new messagingActions.CreatePrivateMessageSuccess(privateMessage));
+        this.store.dispatch(
+          new messagingActions.CreatePrivateMessageSuccess(privateMessage)
+        );
         this.notifyMe(privateMessage);
-        this.messagesInPrivate = [...this.messagesInPrivate, socketData.message.message];
-        this.messagesInPrivate = this.messagesInPrivate.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
+        this.messagesInPrivate = [
+          ...this.messagesInPrivate,
+          socketData.message.message,
+        ];
+        this.messagesInPrivate = this.messagesInPrivate.filter(
+          (v, i, a) => a.findIndex((t) => t.id === v.id) === i
+        );
 
-        this.changeNewPrivateMessageCount(this.removeLoggedInUserMessages(this.messagesInPrivate));
+        this.changeNewPrivateMessageCount(
+          this.removeLoggedInUserMessages(this.messagesInPrivate)
+        );
         this.privateMsgCounterSubject.next(this.privateMessagesCounter + 1);
       }
     } else if (socketData.message.message.type === 'subscription') {
-
       console.log('Subscription socket fired ===>>>>', socketData);
       this.handleAddSocket(socketData.message);
-
     }
 
-    this.newMessages = this.removeLoggedInUserMessages([...this.messagesToStreams, ...this.messagesInPrivate]);
+    this.newMessages = this.removeLoggedInUserMessages([
+      ...this.messagesToStreams,
+      ...this.messagesInPrivate,
+    ]);
   }
 
   getCurrentProfile(): any {
-    this.messagingService.currentUserProfile().subscribe( (profile: any) => {
+    this.messagingService.currentUserProfile().subscribe((profile: any) => {
       this.loggedInUserProfile = profile.zulip;
     });
   }
 
-  private removeLoggedInUserMessages(messagesArray: any[]): any{
+  private removeLoggedInUserMessages(messagesArray: any[]): any {
     // ** as the socket comes with data even though the current logged in user sent teh text,
     // remove this logged in user from the messages array.
     // the logged in user cannot get a notification if they are the one that sent the message
-    return messagesArray.filter((message: { sender_email: any; }) => message.sender_email !== this.loggedInUserProfile.email);
+    return messagesArray.filter(
+      (message: { sender_email: any }) =>
+        message.sender_email !== this.loggedInUserProfile.email
+    );
   }
 }

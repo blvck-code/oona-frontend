@@ -29,6 +29,9 @@ import {
 import * as messagingActions from '../../state/messaging.actions';
 import {PersonModel} from '../../../models/person.model';
 import {currentUser} from '../../../state/entities/users.entity';
+import {DashService} from '../../../service/dash-service.service';
+import {MessagePayloadModel} from '../../models/message.model';
+import * as userActions from '../../../state/actions/users.actions';
 
 const turndownService = new TurndownService();
 
@@ -73,45 +76,84 @@ export class IndividualMessagingBoardComponent implements OnInit {
   );
 
   messagesId: number[] = [];
+  messages: any = [];
 
   @ViewChild('endPrivateChat') endPrivateChat: ElementRef | undefined;
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private store: Store<AppState>,
     private activatedRoute: ActivatedRoute,
     private messagingService: MessagingService,
+    private dashSrv: DashService,
     private change: ChangeDetectorRef,
     private userSocketService: OonaSocketService,
     private notify: NotificationService
   ) {
-    this.store.select(getSelectedUser).subscribe((data) => {
-      if (data) {
-        this.selectedUserId = data.user_id;
-      }
+    // this.store.select(getSelectedUser).subscribe((data) => {
+    //   if (data) {
+    //     this.selectedUserId = data.user_id;
+    //   }
+    // });
+    this.routerDetails();
+  }
+
+  routerDetails(): void {
+    this.route.queryParams.subscribe(params => {
+      this.selectedUserId = params.id;
+      console.log('User id ==>>', params);
+      // this.currentUserId = params.id;
+      // this.store.dispatch(new messagingActions.SelectedUserId(+userId));
+      // this.store.dispatch(new userActions.CurrentUser(+userId));
     });
   }
 
   ngOnInit(): void {
     // this.inComingMessage();
-    this.resetDmUnreads();
+    // this.resetDmUnreads();
     // this.getUnreadMessages();
-    this.store.select(getSelectedUserMessages).subscribe(
-      () => {
-        this.loading = false;
-      }
-    );
+    // this.store.select(getSelectedUserMessages).subscribe(
+    //   () => {
+    //     this.loading = false;
+    //   }
+    // );
 
-    this.messages$ = this.store.select(getSelectedUserMessages);
+    // this.messages$ = this.store.select(getSelectedUserMessages);
 
     // this.currentUser$ = this.store.select(getPrivateUser);
-    this.currentUserId$ = this.store.select(getUserId);
-    this.store.select(getPrivateUser).subscribe(
-      (userInfo: any) => {
-        this.selectedUserId = userInfo.user_id;
-        this.operand = userInfo;
+    // this.currentUserId$ = this.store.select(getUserId);
+    // this.store.select(getPrivateUser).subscribe(
+    //   (userInfo: any) => {
+    //     this.selectedUserId = userInfo.user_id;
+    //     this.operand = userInfo;
+    //   }
+    // );
+    this.getMessages();
+  }
+
+  getMessages(): void {
+      const payload = {
+      anchor: 'first_unread',
+      num_before: 200,
+      num_after: 200,
+      narrow: [{
+        negated: false,
+        operator: 'pm-with',
+        operand: [+this.selectedUserId] // Todo add userId
+      }],
+      client_gravatar: true
+    };
+
+      this.dashSrv.getMessages(payload).subscribe({
+      next: (resp) => {
+        this.messages = resp.zulip.messages;
+        console.log('Messages ===>>', resp);
+      },
+      error: (err) => {
+        console.log('Err ==>>', err);
       }
-    );
+    });
   }
 
   getUnreadMessages(): void {
@@ -160,7 +202,8 @@ export class IndividualMessagingBoardComponent implements OnInit {
     console.log('Message final content ===>>> ', messageDetail);
     // Todo uncomment to send message to backend
     this.messagingService.sendIndividualMessage(messageDetail).subscribe(
-      () => {
+      (resp: any) => {
+        console.log('Send message response ====>>>', resp);
       },
       () => {
         this.notify.showError(

@@ -43,4 +43,11 @@ export enum DashActions {
   LOAD_STREAM_MESSAGE_SUCCESS = 'dash/loadStreamMsgSuccess',
   LOAD_STREAM_MESSAGE_FAIL = 'dash/loadStreamMsgFail',
 
+  // Create Stream Message
+  CREATE_STREAM_MESSAGE = 'dash/createStreamMessage',
+  CREATE_STREAM_MESSAGE_SUCCESS = 'dash/createStreamMessageSuccess',
+  CREATE_STREAM_MESSAGE_FAIL = 'dash/createStreamMessageFail',
+
+  // Socket Stream Message
+  SOCKET_STREAM_MESSAGE = 'dash/socketStreamMessage',
 }

@@ -1,35 +1,36 @@
 import { Injectable } from '@angular/core';
-import {Observable} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { environment as env } from '../../../environments/environment';
 import {
   AllStreamsResponseModel,
   StreamsResponseModel,
   SubscribersResponseModel,
   SubStreamsModel,
-  SubStreamsResponseModel
+  SubStreamsResponseModel,
 } from '../models/streams.model';
 
 // NgRx
-import {Store} from '@ngrx/store';
-import {PersonResponseModel} from '../models/person.model';
+import { Store } from '@ngrx/store';
+import { PersonResponseModel } from '../models/person.model';
 import * as streamActions from '../state/actions/streams.actions';
 import * as userActions from '../state/actions/users.actions';
-import {TopicResponseModel} from '../models/topics.model';
-import {getStreams, getStreamsId, getStreamsLoaded} from '../state/entities/streams.entity';
-import {MessagesResponseModel} from '../models/messages.model';
+import { TopicResponseModel } from '../models/topics.model';
+import {
+  getStreams,
+  getStreamsId,
+  getStreamsLoaded,
+} from '../state/entities/streams.entity';
+import { MessagesResponseModel } from '../models/messages.model';
 import * as authActions from '../../auth/state/auth.actions';
-import {map} from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+import { MessagePayloadModel } from '../messaging/models/message.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DashService {
-
-  constructor(
-    private http: HttpClient,
-    private store: Store
-  ) { }
+  constructor(private http: HttpClient, private store: Store) {}
 
   onInitHandler(): void {
     this.store.dispatch(new streamActions.LoadSubStreams());
@@ -51,7 +52,7 @@ export class DashService {
           //   this.getStreamSubscribers();
           // }, 1000);
         }
-      }
+      },
     });
   }
 
@@ -61,7 +62,7 @@ export class DashService {
       include_subscribed: true,
       include_all_active: false,
       include_default: false,
-      include_owner_subscribed: false
+      include_owner_subscribed: false,
     };
     return this.http.post<AllStreamsResponseModel>(env.allStreams, payload);
   }
@@ -73,10 +74,10 @@ export class DashService {
           this.streamTopics(streamId).subscribe({
             next: (response: any) => {
               this.store.dispatch(new streamActions.LoadTopics(response));
-            }
+            },
           });
         });
-      }
+      },
     });
   }
 
@@ -84,65 +85,69 @@ export class DashService {
     this.store.select(getStreams).subscribe({
       next: (streams) => {
         streams.map((stream) => {
-
           this.streamSubscribers(stream.name).subscribe({
             next: (response) => {
               const content = {
                 streamId: stream.stream_id,
-                subscribers: response
+                subscribers: response,
               };
               // this.store.dispatch(new streamActions.StreamSubscribers(content));
-            }
+            },
           });
         });
-      }
+      },
     });
   }
 
   getStreamMessages(): void {
-
     const request1 = {
       anchor: 'first_unread',
       num_before: 200,
       num_after: 200,
-      client_gravatar: true
+      client_gravatar: true,
     };
 
     const request2 = {
       anchor: 'newest',
       num_before: 400,
       num_after: 0,
-      narrow: [{
-        negated: false,
-        operator: 'in',
-        operand: 'home'
-      }],
-      client_gravatar: true
+      narrow: [
+        {
+          negated: false,
+          operator: 'in',
+          operand: 'home',
+        },
+      ],
+      client_gravatar: true,
     };
 
     const request3 = {
       anchor: 'first_unread',
       num_before: 100,
       num_after: 100,
-      narrow: [{
-        negated: false,
-        operator: 'pm-with',
-        // Todo change to current logged in user id
-        operand: [10]
-      }],
-      client_gravatar: true
+      narrow: [
+        {
+          negated: false,
+          operator: 'pm-with',
+          // Todo change to current logged in user id
+          operand: [10],
+        },
+      ],
+      client_gravatar: true,
     };
 
     const request4 = {
       anchor: 'first_unread',
       num_before: 400,
       num_after: 0,
-      narrow: [{
-        negated: false,
-        operator: 'streams',
-        operand: 'public'
-      }],
-      client_gravatar: true
+      narrow: [
+        {
+          negated: false,
+          operator: 'streams',
+          operand: 'public',
+        },
+      ],
+      client_gravatar: true,
     };
 
     // this.store.dispatch(new msgActions.LoadMessage(request2));
@@ -166,8 +171,12 @@ export class DashService {
     return this.http.get<PersonResponseModel>(env.zulipUsers);
   }
 
-  streamSubscribers(streamName: string | number): Observable<SubscribersResponseModel> {
-    return this.http.post<SubscribersResponseModel>(env.streamSubscribers, {stream_name: streamName});
+  streamSubscribers(
+    streamName: string | number
+  ): Observable<SubscribersResponseModel> {
+    return this.http.post<SubscribersResponseModel>(env.streamSubscribers, {
+      stream_name: streamName,
+    });
   }
 
   streamMessages(body: any): Observable<MessagesResponseModel> {
@@ -175,7 +184,7 @@ export class DashService {
   }
 
   streamSubStatus(streamId: number): Observable<any> {
-    return this.http.post(env.subscribeSubStatus, {stream_id: streamId});
+    return this.http.post(env.subscribeSubStatus, { stream_id: streamId });
   }
 
   streamSubscribe(stream: any): Observable<any> {
@@ -192,5 +201,13 @@ export class DashService {
 
   unsubscribeStream(stream: any): Observable<any> {
     return this.http.post(env.unsubscribeToStream, stream);
+  }
+
+  getMessages(payload: MessagePayloadModel): Observable<MessagesResponseModel> {
+    return this.http.post<MessagesResponseModel>(env.getMessages, payload);
+  }
+
+  createMessage(payload: any): Observable<any> {
+    return this.http.post('', '');
   }
 }

@@ -1,13 +1,16 @@
-import {Injectable} from '@angular/core';
-import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {Observable, of} from 'rxjs';
-import {Action} from '@ngrx/store';
-import {catchError, map, switchMap, take} from 'rxjs/operators';
-import {DashService} from '../service/dash-service.service';
-import {StreamsResponseModel, SubStreamsResponseModel} from '../models/streams.model';
-import {PersonResponseModel} from '../models/person.model';
-import {TopicResponseModel} from '../models/topics.model';
-import {MessagesResponseModel} from '../models/messages.model';
+import { Injectable } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Observable, of } from 'rxjs';
+import { Action } from '@ngrx/store';
+import { catchError, map, switchMap, take } from 'rxjs/operators';
+import { DashService } from '../service/dash-service.service';
+import {
+  StreamsResponseModel,
+  SubStreamsResponseModel,
+} from '../models/streams.model';
+import { PersonResponseModel } from '../models/person.model';
+import { TopicResponseModel } from '../models/topics.model';
+import { MessagesResponseModel } from '../models/messages.model';
 
 // Actions
 import * as streamActions from './actions/streams.actions';
@@ -15,16 +18,15 @@ import * as dashActions from './dash.actions';
 import * as userActions from './actions/users.actions';
 import * as streamMsgActions from './actions/streams.messages.actions';
 import * as privateMsgActions from './actions/private.messages.actions';
+import { SharedService } from '../../shared/services/shared.service';
 
 @Injectable()
-
 export class DashEffects {
-
   constructor(
     private actions$: Actions,
-    private dashSrv: DashService
+    private dashSrv: DashService,
+    private sharedSrv: SharedService
   ) {}
-
 
   streams$: Observable<Action> = createEffect(() =>
     this.actions$.pipe(
@@ -131,6 +133,23 @@ export class DashEffects {
     )
   );
 
+  // createStreamMessage$: Observable<Action> = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType<streamMsgActions.CreateStreamMessage>(
+  //       dashActions.DashActions.CREATE_STREAM
+  //     ),
+  //     map((action: streamMsgActions.CreateStreamMessage) => action.payload),
+  //     switchMap((content: any) =>
+  //       this.dashSrv.createMessage(content).pipe(
+  //         map((message: any) => {
+  //           return new this.sharedSrv.showNotification('', '');
+  //           // return new streamMsgActions.CreateStreamMessageSuccess(message);
+  //         })
+  //       )
+  //     )
+  //   )
+  // );
+
   privateMessages$: Observable<Action> = createEffect(() =>
     this.actions$.pipe(
       ofType<privateMsgActions.LoadPrivateMsg>(
@@ -158,13 +177,12 @@ export class DashEffects {
       switchMap((streamId: string | number) =>
         this.dashSrv.streamSubscribers(streamId).pipe(
           map(
-            (subscribers: any) => new streamActions.LoadSubscribersSuccess(subscribers)
+            (subscribers: any) =>
+              new streamActions.LoadSubscribersSuccess(subscribers)
           ),
           catchError((err) => of(new streamActions.LoadSubscribersFail(err)))
         )
       )
     )
   );
-
-
 }
