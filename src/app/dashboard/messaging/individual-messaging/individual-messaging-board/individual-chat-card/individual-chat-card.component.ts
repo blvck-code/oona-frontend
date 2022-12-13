@@ -1,13 +1,12 @@
-import { Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../../state/app.state';
-import {
-  getZulipProfile,
-} from '../../../../../auth/state/auth.selectors';
+import { getZulipProfile } from '../../../../../auth/state/auth.selectors';
 import { Observable } from 'rxjs';
 import { oonaFrontendUrl } from '../../../../../../environments/environment';
 import moment from 'moment';
-import {ActivatedRoute} from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { selectedUserMessages } from '../../../../state/entities/messages/private.messages.entity';
 
 @Component({
   selector: 'app-individual-chat-card',
@@ -26,21 +25,17 @@ export class IndividualChatCardComponent implements OnInit {
   imageURL = '';
   isVisible = false;
 
-  constructor(
-    private store: Store<AppState>,
-    private route: ActivatedRoute,
-  ) {
+  constructor(private store: Store, private route: ActivatedRoute) {
     this.getUserInfo();
     this.routerDetails();
   }
 
   routerDetails(): void {
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       const streamId = params.id;
       const topic = params.topic;
     });
   }
-
 
   getUserInfo(): void {
     this.zulipProfile = this.store.select(getZulipProfile);
@@ -65,5 +60,4 @@ export class IndividualChatCardComponent implements OnInit {
     this.handleDate();
     this.routerDetails();
   }
-
 }

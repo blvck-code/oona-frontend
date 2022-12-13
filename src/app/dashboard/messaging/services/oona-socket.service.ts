@@ -27,6 +27,7 @@ import { AllStreamsModel } from '../../models/streams.model';
 import * as messagingActions from '../state/messaging.actions';
 import * as streamActions from '../../../dashboard/state/actions/streams.actions';
 import * as streamMessageActions from '../../../dashboard/state/actions/streams.messages.actions';
+import * as privateMessageActions from '../../../dashboard/state/actions/private.messages.actions';
 
 const msgSocket = webSocket(messageChannel);
 
@@ -442,7 +443,7 @@ export class OonaSocketService {
         privateMessage.flags = ['read'];
         this.myMessagesSocketSubject.next(socketData.message.message);
         this.store.dispatch(
-          new messagingActions.CreatePrivateMessageSuccess(privateMessage)
+          new privateMessageActions.SocketPrivateMessage(privateMessage)
         );
       } else if (
         recipientOne === currentUserId ||
@@ -454,7 +455,7 @@ export class OonaSocketService {
         console.log('currentUserId', currentUserId);
         privateMessage.flags = [];
         this.store.dispatch(
-          new messagingActions.CreatePrivateMessageSuccess(privateMessage)
+          new privateMessageActions.SocketPrivateMessage(privateMessage)
         );
         this.notifyMe(privateMessage);
         this.messagesInPrivate = [

@@ -27,6 +27,7 @@ import {
   selectedTopic,
 } from '../../../../state/entities/streams.entity';
 import { Observable } from 'rxjs';
+import { SharedService } from '../../../../../shared/services/shared.service';
 
 @Component({
   selector: 'app-text-editor',
@@ -63,7 +64,7 @@ export class TextEditorComponent implements OnInit, OnDestroy {
   constructor(
     private messagingService: MessagingService,
     private chatBoardService: ChatBoardService,
-    private notificationService: NotificationService,
+    private sharedSrv: SharedService,
     private router: Router,
     private store: Store<AppState>
   ) {}
@@ -180,9 +181,9 @@ export class TextEditorComponent implements OnInit, OnDestroy {
         .getOonaMemberDetail(this.memberDetail?.email)
         .subscribe((oonaProfileData: { results: string | any[] }) => {
           if (oonaProfileData.results.length < 1) {
-            this.notificationService.showWarning(
+            this.sharedSrv.showNotification(
               `${this.memberDetail?.full_name} is not a member of oona`,
-              'Not a member of oona'
+              'error'
             );
             return;
           } else {
@@ -262,9 +263,9 @@ export class TextEditorComponent implements OnInit, OnDestroy {
       .subscribe((response: any) => {
         // response.video_stream
         // https://192.168.0.76:8443/67830bfd-7249-4d05-b5a6-5eda9c0c30fa
-        this.notificationService.showInfo(
+        this.sharedSrv.showNotification(
           'Your meeting has been created. Go back to the meeting page to view',
-          'Meeting created'
+          'success'
         );
         setTimeout(() => {
           this.router.navigate(['dashboard']);

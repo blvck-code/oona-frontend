@@ -50,4 +50,5 @@ export enum DashActions {
 
   // Socket Stream Message
   SOCKET_STREAM_MESSAGE = 'dash/socketStreamMessage',
+  SOCKET_PRIVATE_MESSAGE = 'dash/socketPrivateMessage',
 }

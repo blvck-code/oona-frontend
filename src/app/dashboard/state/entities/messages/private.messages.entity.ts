@@ -1,8 +1,9 @@
-import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
-import {SingleMessageModel} from '../../../models/messages.model';
+import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
+import { SingleMessageModel } from '../../../models/messages.model';
 import * as dashActions from '../../dash.actions';
-import {createSelector} from '@ngrx/store';
-import { privateMsgStateKey} from '../../dash.selectors';
+import { createSelector } from '@ngrx/store';
+import { privateMsgStateKey } from '../../dash.selectors';
+import { selectedUserId } from '../users.entity';
 
 export interface PrivateMessagesState extends EntityState<SingleMessageModel> {
   loading: boolean;
@@ -14,9 +15,10 @@ export const sortByTime = (a: SingleMessageModel, b: SingleMessageModel) => {
   return a.timestamp - b.timestamp;
 };
 
-export const privateMsgAdapter: EntityAdapter<SingleMessageModel> = createEntityAdapter<SingleMessageModel>({
-  sortComparer: sortByTime
-});
+export const privateMsgAdapter: EntityAdapter<SingleMessageModel> =
+  createEntityAdapter<SingleMessageModel>({
+    sortComparer: sortByTime,
+  });
 
 export const defaultMessages: PrivateMessagesState = {
   ids: [],
@@ -36,13 +38,17 @@ export function privateMsgReducer(
     case dashActions.DashActions.LOAD_PRIVATE_MESSAGE:
       return {
         ...state,
-        loading: true
+        loading: true,
       };
     case dashActions.DashActions.LOAD_PRIVATE_MESSAGE_SUCCESS:
       return privateMsgAdapter.upsertMany(action.payload.zulip.messages, {
         ...state,
         loading: false,
-        loaded: true
+        loaded: true,
+      });
+    case dashActions.DashActions.SOCKET_PRIVATE_MESSAGE:
+      return privateMsgAdapter.addOne(action.payload, {
+        ...state,
       });
     default:
       return state;
@@ -56,11 +62,26 @@ export const getPrivateMessages = createSelector(
 );
 export const privateMessagesLoading = createSelector(
   privateMsgStateKey,
-  state => state.loading
+  (state) => state.loading
 );
 export const privateMessagesLoaded = createSelector(
   privateMsgStateKey,
-  state => state.loaded
+  (state) => state.loaded
+);
+export const selectedUserMessages = createSelector(
+  getPrivateMessages,
+  selectedUserId,
+  (messages, id) =>
+    messages.filter(
+      (message) =>
+        // @ts-ignore
+        message.display_recipient[0].id === id ||
+        (message.display_recipient[1]
+          ? // @ts-ignore
+            message.display_recipient[1].id === id
+          : null) ||
+        message.sender_id === id
+    )
 );
 
 // export const filteredMsg = createSelector(

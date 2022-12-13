@@ -7,7 +7,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { MessagingService } from '../../services/messaging.service';
 
 import TurndownService from 'turndown';
@@ -16,7 +16,10 @@ import { OonaSocketService } from '../../services/oona-socket.service';
 // NgRx
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../state/app.state';
-import {getSelectedUser, getUserId} from '../../../../auth/state/auth.selectors';
+import {
+  getSelectedUser,
+  getUserId,
+} from '../../../../auth/state/auth.selectors';
 import { BehaviorSubject, Observable } from 'rxjs';
 // @Todo change this to fetch only individual messages
 import { SingleMessageModel } from '../../models/messages.model';
@@ -24,14 +27,20 @@ import { NotificationService } from '../../../../shared/services/notification.se
 import {
   getPrivateUser,
   getSelectedUserMessages,
-  getUserUnreadMessages
+  getUserUnreadMessages,
 } from '../../state/messaging.selectors';
 import * as messagingActions from '../../state/messaging.actions';
-import {PersonModel} from '../../../models/person.model';
-import {currentUser} from '../../../state/entities/users.entity';
-import {DashService} from '../../../service/dash-service.service';
-import {MessagePayloadModel} from '../../models/message.model';
+import { PersonModel } from '../../../models/person.model';
+import { currentUser } from '../../../state/entities/users.entity';
+import { DashService } from '../../../service/dash-service.service';
+import { MessagePayloadModel } from '../../models/message.model';
 import * as userActions from '../../../state/actions/users.actions';
+import {
+  privateMessagesLoaded,
+  privateMessagesLoading,
+  selectedUserMessages,
+} from '../../../state/entities/messages/private.messages.entity';
+import * as privateMshActions from '../../../state/actions/private.messages.actions';
 
 const turndownService = new TurndownService();
 
@@ -54,7 +63,8 @@ export class IndividualMessagingBoardComponent implements OnInit {
     email: undefined,
   };
 
-  currentUser$: Observable<PersonModel | undefined> = this.store.select(currentUser);
+  currentUser$: Observable<PersonModel | undefined> =
+    this.store.select(currentUser);
 
   selectedUserId: any;
   currentUserId: any;
@@ -67,8 +77,11 @@ export class IndividualMessagingBoardComponent implements OnInit {
 
   loading = true;
 
-  currentUserId$!: Observable<any>;
-  messages$!: Observable<SingleMessageModel[]>;
+  currentUserId$: Observable<any> = this.store.select(getUserId);
+
+  loaded$: Observable<boolean> = this.store.select(privateMessagesLoaded);
+  loading$: Observable<any> = this.store.select(privateMessagesLoading);
+  messages$: Observable<any> = this.store.select(selectedUserMessages);
 
   messagesWithPerson = Array();
   messagesSubject$ = new BehaviorSubject<SingleMessageModel[]>(
@@ -91,89 +104,58 @@ export class IndividualMessagingBoardComponent implements OnInit {
     private userSocketService: OonaSocketService,
     private notify: NotificationService
   ) {
-    // this.store.select(getSelectedUser).subscribe((data) => {
-    //   if (data) {
-    //     this.selectedUserId = data.user_id;
-    //   }
-    // });
     this.routerDetails();
   }
 
   routerDetails(): void {
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       this.selectedUserId = params.id;
-      console.log('User id ==>>', params);
-      // this.currentUserId = params.id;
-      // this.store.dispatch(new messagingActions.SelectedUserId(+userId));
-      // this.store.dispatch(new userActions.CurrentUser(+userId));
+      this.store.dispatch(new userActions.CurrentUser(+params.id));
+      this.getMessages();
     });
   }
 
-  ngOnInit(): void {
-    // this.inComingMessage();
-    // this.resetDmUnreads();
-    // this.getUnreadMessages();
-    // this.store.select(getSelectedUserMessages).subscribe(
-    //   () => {
-    //     this.loading = false;
-    //   }
-    // );
-
-    // this.messages$ = this.store.select(getSelectedUserMessages);
-
-    // this.currentUser$ = this.store.select(getPrivateUser);
-    // this.currentUserId$ = this.store.select(getUserId);
-    // this.store.select(getPrivateUser).subscribe(
-    //   (userInfo: any) => {
-    //     this.selectedUserId = userInfo.user_id;
-    //     this.operand = userInfo;
-    //   }
-    // );
-    this.getMessages();
-  }
+  ngOnInit(): void {}
 
   getMessages(): void {
-      const payload = {
+    const payload = {
       anchor: 'first_unread',
       num_before: 200,
       num_after: 200,
-      narrow: [{
-        negated: false,
-        operator: 'pm-with',
-        operand: [+this.selectedUserId] // Todo add userId
-      }],
-      client_gravatar: true
+      narrow: [
+        {
+          negated: false,
+          operator: 'pm-with',
+          operand: [+this.selectedUserId], // Todo add userId
+        },
+      ],
+      client_gravatar: true,
     };
-
-      this.dashSrv.getMessages(payload).subscribe({
-      next: (resp) => {
-        this.messages = resp.zulip.messages;
-        console.log('Messages ===>>', resp);
-      },
-      error: (err) => {
-        console.log('Err ==>>', err);
-      }
-    });
+    this.store.dispatch(new privateMshActions.LoadPrivateMsg(payload));
   }
 
   getUnreadMessages(): void {
     const unreadMessageId: number[] = [];
     this.router.events.subscribe((event: any) => {
       if (event instanceof NavigationEnd) {
-        this.store.select(getUserUnreadMessages).subscribe(
-          (messages: SingleMessageModel[]) => {
+        this.store
+          .select(getUserUnreadMessages)
+          .subscribe((messages: SingleMessageModel[]) => {
             messages.map((message: SingleMessageModel) => {
-              if (unreadMessageId.includes(message.id)) { return; }
+              if (unreadMessageId.includes(message.id)) {
+                return;
+              }
 
-              this.messagingService.updateMessageFlag(message.id).subscribe(
-                (response: any) => {
+              this.messagingService
+                .updateMessageFlag(message.id)
+                .subscribe((response: any) => {
                   const messageId = response.messages[0];
-                  this.store.dispatch(new messagingActions.UpdatePrivateMessageFlag(messageId));
-                }
-              );
+                  this.store.dispatch(
+                    new messagingActions.UpdatePrivateMessageFlag(messageId)
+                  );
+                });
             });
-          }
-        );
+          });
       }
     });
   }
@@ -193,7 +175,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
   }
 
   sendMessageToIndividual(message: any): void {
-
     const markdown = turndownService.turndown(message);
     const messageDetail = {
       to: [this.operand?.user_id],
@@ -212,7 +193,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
         );
       }
     );
-
   }
 
   getMorePrivateMessages(): void {
