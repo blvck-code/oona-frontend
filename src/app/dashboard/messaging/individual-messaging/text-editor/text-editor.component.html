@@ -1,0 +1,55 @@
+<div class="text-editor">
+
+  <div class="parent">
+    <form #form="ngForm" class="text-editor-container layer1">
+      <div class="form-group ">
+        <ejs-richtexteditor
+          #fromRTE
+          [(value)]="editorData"
+          [toolbarSettings]='tools'
+          [insertImageSettings]='insertImageSettings'
+          required
+          name="name"
+          [(ngModel)]="editorData"
+          (keydown.enter)="onSubmit(form)"
+          class="overflow-chat"
+        ></ejs-richtexteditor>
+        <div class="d-flex justify-content-end send-message-btn-container">
+          <button
+            type="submit"
+            class="border-0 submit-btn btn btn-dark shadow-none"
+            ejs-button
+          >
+            Send
+          </button>
+        </div>
+      </div>
+    </form>
+    <span class="d-flex justify-content-end child" title="React"
+          (click)="toggled = !toggled"
+          [(emojiPickerIf)]="toggled"
+          [emojiPickerDirection]="'bottom' || 'top' || 'left' || 'right'"
+          (emojiPickerSelect)="handleSelection($event)"
+    >😄</span>
+
+    <span class="d-flex justify-content-end child-file" title="Share file">
+      <div class="dropup"><button class="e-tbar-btn e-btn file-share" data-bs-toggle="dropdown" aria-expanded="false" tabindex="-1" id="custom_tbar"  style="width:100%">
+          <i class="fa fa-paperclip" aria-hidden="true"></i></button>
+          <ul class="dropdown-menu p-3">
+              <li>
+                <form [formGroup]="newFileGroup" (click)="fileInput.click()">
+                <input type="file" class="d-flex justify-content-center shadow-none form-control" (change)="onFileChanged($event)" #fileInput formControlName="selectedFile">
+                  </form>
+              </li>
+          <li>
+            <div class="d-flex justify-content-around mt-3">
+              <button class="btn btn-sm btn-primary shadow-none mx-2" title="upload" (click)="shareFile()">Upload</button>
+              <button class="btn btn-sm btn-primary shadow-none mx-2" title="cancel">Cancel</button>
+            </div>
+          </li>
+            </ul>
+          </div>
+  </span>
+  </div>
+
+</div>

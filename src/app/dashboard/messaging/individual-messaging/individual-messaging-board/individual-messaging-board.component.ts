@@ -15,7 +15,6 @@ import { OonaSocketService } from '../../services/oona-socket.service';
 
 // NgRx
 import { Store } from '@ngrx/store';
-import { AppState } from '../../../../state/app.state';
 import {
   getSelectedUser,
   getUserId,
@@ -29,9 +28,11 @@ import {
   getSelectedUserMessages,
   getUserUnreadMessages,
 } from '../../state/messaging.selectors';
-import * as messagingActions from '../../state/messaging.actions';
 import { PersonModel } from '../../../models/person.model';
-import { currentUser } from '../../../state/entities/users.entity';
+import {
+  currentUser,
+  selectedUserId,
+} from '../../../state/entities/users.entity';
 import { DashService } from '../../../service/dash-service.service';
 import { MessagePayloadModel } from '../../models/message.model';
 import * as userActions from '../../../state/actions/users.actions';
@@ -41,6 +42,7 @@ import {
   selectedUserMessages,
 } from '../../../state/entities/messages/private.messages.entity';
 import * as privateMshActions from '../../../state/actions/private.messages.actions';
+import { AppState } from '../../../../state/app.state';
 
 const turndownService = new TurndownService();
 
@@ -69,7 +71,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
   selectedUserId: any;
   currentUserId: any;
 
-  selectedUser$!: Observable<any>;
   userActivity: any;
   initialMessageCount = 30;
   @Input() currentMessages = [];
@@ -78,7 +79,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
   loading = true;
 
   currentUserId$: Observable<any> = this.store.select(getUserId);
-
+  selectedUser$: Observable<number | null> = this.store.select(selectedUserId);
   loaded$: Observable<boolean> = this.store.select(privateMessagesLoaded);
   loading$: Observable<any> = this.store.select(privateMessagesLoading);
   messages$: Observable<any> = this.store.select(selectedUserMessages);
@@ -96,7 +97,7 @@ export class IndividualMessagingBoardComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private store: Store<AppState>,
+    private store: Store,
     private activatedRoute: ActivatedRoute,
     private messagingService: MessagingService,
     private dashSrv: DashService,
@@ -115,7 +116,20 @@ export class IndividualMessagingBoardComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getUserId();
+  }
+
+  getUserId(): void {
+    this.selectedUser$.subscribe({
+      next: (userId) => {
+        if (userId) {
+          this.operand = userId;
+          console.log('Current user id ==>>', userId);
+        }
+      },
+    });
+  }
 
   getMessages(): void {
     const payload = {
@@ -132,32 +146,6 @@ export class IndividualMessagingBoardComponent implements OnInit {
       client_gravatar: true,
     };
     this.store.dispatch(new privateMshActions.LoadPrivateMsg(payload));
-  }
-
-  getUnreadMessages(): void {
-    const unreadMessageId: number[] = [];
-    this.router.events.subscribe((event: any) => {
-      if (event instanceof NavigationEnd) {
-        this.store
-          .select(getUserUnreadMessages)
-          .subscribe((messages: SingleMessageModel[]) => {
-            messages.map((message: SingleMessageModel) => {
-              if (unreadMessageId.includes(message.id)) {
-                return;
-              }
-
-              this.messagingService
-                .updateMessageFlag(message.id)
-                .subscribe((response: any) => {
-                  const messageId = response.messages[0];
-                  this.store.dispatch(
-                    new messagingActions.UpdatePrivateMessageFlag(messageId)
-                  );
-                });
-            });
-          });
-      }
-    });
   }
 
   // resets unread messages to zero when page in loaded
@@ -177,7 +165,8 @@ export class IndividualMessagingBoardComponent implements OnInit {
   sendMessageToIndividual(message: any): void {
     const markdown = turndownService.turndown(message);
     const messageDetail = {
-      to: [this.operand?.user_id],
+      type: 'private',
+      to: [+this.selectedUserId],
       content: markdown,
     };
     console.log('Message final content ===>>> ', messageDetail);

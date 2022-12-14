@@ -1,19 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 // NgRx
-import {Store} from '@ngrx/store';
-import {AppState} from '../state/app.state';
-import {getIsLoggedIn, usersLoaded} from '../auth/state/auth.selectors';
+import { Store } from '@ngrx/store';
+import { AppState } from '../state/app.state';
+import { getIsLoggedIn, usersLoaded } from '../auth/state/auth.selectors';
 import * as messagingActions from '../dashboard/messaging/state/messaging.actions';
 import * as authActions from '../auth/state/auth.actions';
-import {streamsLoaded} from './messaging/state/messaging.selectors';
-import {MessagingService} from './messaging/services/messaging.service';
-import {OonaSocketService} from './messaging/services/oona-socket.service';
-import {DashService} from './service/dash-service.service';
+import { streamsLoaded } from './messaging/state/messaging.selectors';
+import { MessagingService } from './messaging/services/messaging.service';
+import { OonaSocketService } from './messaging/services/oona-socket.service';
+import { DashService } from './service/dash-service.service';
+import { streamsUnread } from './state/entities/messages/stream.messages.entity';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
   title = 'Team Messaging';
@@ -22,10 +23,15 @@ export class DashboardComponent implements OnInit {
     private messageSrv: MessagingService,
     private oonaSockets: OonaSocketService,
     private dashSrv: DashService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.onInitHandler();
+    this.store.select(streamsUnread).subscribe({
+      next: (resp) => {
+        console.log('Unread streams number ==>>', resp);
+      },
+    });
   }
 
   onInitHandler(): void {
@@ -34,7 +40,7 @@ export class DashboardComponent implements OnInit {
         if (status) {
           this.dashSrv.onInitHandler();
         }
-      }
+      },
     });
   }
 
@@ -67,5 +73,4 @@ export class DashboardComponent implements OnInit {
   //     }
   //     });
   // }
-
 }
