@@ -39,7 +39,7 @@ export function streamMsgReducer(
         loading: true,
       };
     case dashActions.DashActions.LOAD_STREAM_MESSAGE_SUCCESS:
-      return streamMsgAdapter.upsertMany(action.payload.zulip.messages, {
+      return streamMsgAdapter.setMany(action.payload.zulip.messages, {
         ...state,
         loading: false,
         loaded: true,

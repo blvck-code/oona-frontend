@@ -84,6 +84,10 @@ export const selectedUserMessages = createSelector(
     )
 );
 
+export const privateUnread = createSelector(getPrivateMessages, (messages) =>
+  messages.filter((message) => !message.flags.includes('read'))
+);
+
 // export const filteredMsg = createSelector(
 //   getMessages,
 //   selectedStream,
