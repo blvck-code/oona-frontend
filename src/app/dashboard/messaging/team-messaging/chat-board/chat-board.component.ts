@@ -4,15 +4,12 @@ import { MessagingService } from '../../services/messaging.service';
 
 import TurndownService from 'turndown';
 import { OonaSocketService } from '../../services/oona-socket.service';
-import {
-  getSelectedStreamMessages,
-  getSelectedTopic,
-} from '../../state/messaging.selectors';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../state/app.state';
 import { Observable } from 'rxjs';
 import {
   getSelectedStream,
+  getSelectedTopic,
   getStreams,
 } from '../../../state/entities/streams.entity';
 import {
@@ -56,16 +53,7 @@ export class ChatBoardComponent implements OnInit {
     private router: Router,
     private userSocketService: OonaSocketService,
     private store: Store<AppState>
-  ) {
-    this.routerDetails();
-  }
-
-  routerDetails(): void {
-    this.route.queryParams.subscribe((params) => {
-      const topic = params.topic.replaceAll('-', ' ');
-      this.messageTopic = topic;
-    });
-  }
+  ) {}
 
   getStreamMessages(): void {
     const topicRequest = {
@@ -135,12 +123,12 @@ export class ChatBoardComponent implements OnInit {
     // });
   }
 
-  storeStreamMessages(): void {
-    this.selectedStreamMessages$ = this.store.select(getSelectedStreamMessages);
-    this.store.select(getSelectedStreamMessages).subscribe(() => {
-      this.loading = false;
-    });
-  }
+  // storeStreamMessages(): void {
+  //   this.selectedStreamMessages$ = this.store.select(getSelectedStreamMessages);
+  //   this.store.select(getSelectedStreamMessages).subscribe(() => {
+  //     this.loading = false;
+  //   });
+  // }
 
   ngOnInit(): void {
     this.selectedTopic$.subscribe({

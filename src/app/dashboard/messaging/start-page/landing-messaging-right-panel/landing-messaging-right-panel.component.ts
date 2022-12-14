@@ -10,16 +10,15 @@ import { AuthService } from '../../../../auth/services/auth.service';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../state/app.state';
 import * as authActions from '../../../../auth/state/auth.actions';
-// import {
-//   getAllUsers,
-//   getZulipUsers,
-// } from '../../../../auth/state/auth.selectors';
-import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
-import {SingleMessageModel} from '../../models/messages.model';
-import {SinglePresentUser, UserModel, ZulipSingleUser} from '../../../../auth/models/user.model';
-// import {getPrivateMessages, getPrivateUnread} from '../../state/messaging.selectors';
-import {PersonModel} from '../../../models/person.model';
-import {getUsers, usersLoading} from '../../../state/entities/users.entity';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { SingleMessageModel } from '../../models/messages.model';
+import {
+  SinglePresentUser,
+  UserModel,
+  ZulipSingleUser,
+} from '../../../../auth/models/user.model';
+import { PersonModel } from '../../../models/person.model';
+import { getUsers, usersLoading } from '../../../state/entities/users.entity';
 
 @Component({
   selector: 'app-landing-messaging-right-panel',
@@ -161,12 +160,11 @@ export class LandingMessagingRightPanelComponent implements OnInit {
     this.router.navigate(['dashboard/messaging/narrow'], {
       queryParams: {
         id: member.user_id,
-        member: member.full_name.replace(/\s/g, '')
-      }
+        member: member.full_name.replace(/\s/g, ''),
+      },
     });
 
     this.endPointUnreadId.filter((id) => id !== member.user_id);
-
   }
 
   // getPrivateUnreadMsg(): void {
@@ -194,12 +192,8 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   // }
 
   unreadMessages(): void {
-    this.zulipUserObservable.subscribe(
-      (zulipUsers: ZulipSingleUser[]) => {
-      }
-    );
+    this.zulipUserObservable.subscribe((zulipUsers: ZulipSingleUser[]) => {});
   }
-
 
   newListOfUsers(usersPresent: any): any[] {
     const allOnline = usersPresent?.filter(

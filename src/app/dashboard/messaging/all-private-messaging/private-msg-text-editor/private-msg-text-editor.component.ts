@@ -1,9 +1,12 @@
 import {
-  Component, ElementRef,
-  EventEmitter, Input,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
   OnDestroy,
   OnInit,
-  Output, ViewChild,
+  Output,
+  ViewChild,
 } from '@angular/core';
 import { MessagingService } from '../../services/messaging.service';
 import { NotificationService } from '../../../../shared/services/notification.service';
@@ -17,8 +20,8 @@ import TurndownService from 'turndown';
 // NgRx
 import { AppState } from '../../../../state/app.state';
 import { Store } from '@ngrx/store';
-import {SingleChat} from '../../models/messages.model';
-import {getReceiverInfo} from '../../state/messaging.selectors';
+import { SingleChat } from '../../models/messages.model';
+// import {getReceiverInfo} from '../../state/messaging.selectors';
 
 const turndownService = new TurndownService();
 
@@ -111,14 +114,15 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
     //   const presentUsers = users?.filter((user: any) => user?.presence);
     //   this.allUsers = users?.filter((user: any) => user?.presence);
     // });
-    this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
-      // Todo change back to present users
-      // this.allUsers = users.members.filter(user => user.presence );
-      this.allUsers = users.members;
-    });
+    this.messagingService
+      .getUsersByAvailability()
+      .subscribe((users: { members: any[] }) => {
+        // Todo change back to present users
+        // this.allUsers = users.members.filter(user => user.presence );
+        this.allUsers = users.members;
+      });
 
-    this.getReceiverInfo();
-
+    // this.getReceiverInfo();
   }
   ngOnDestroy(): void {
     this.editor.destroy();
@@ -187,17 +191,15 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
       attendees: memberIds,
     };
 
-    this.messagingService
-      .createMeeting(meetingDetail)
-      .subscribe(() => {
-        this.notificationService.showInfo(
-          'Your meeting has been created. Go back to the meeting page to view',
-          'Meeting created'
-        );
-        setTimeout(() => {
-          this.router.navigate(['dashboard']);
-        }, 1000);
-      });
+    this.messagingService.createMeeting(meetingDetail).subscribe(() => {
+      this.notificationService.showInfo(
+        'Your meeting has been created. Go back to the meeting page to view',
+        'Meeting created'
+      );
+      setTimeout(() => {
+        this.router.navigate(['dashboard']);
+      }, 1000);
+    });
   }
 
   formatDate(dateObject: any): any {
@@ -237,7 +239,10 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
     // clear the form
 
     if (this.chatGroup.length < 1) {
-      this.notificationService.showError('Select at least one user', 'Message sent fail.');
+      this.notificationService.showError(
+        'Select at least one user',
+        'Message sent fail.'
+      );
       return;
     }
     form.value.name = '';
@@ -271,23 +276,22 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
           .includes(event.target.value.toLowerCase()) ||
         user.email.toLowerCase().includes(event.target.value.toLowerCase())
     );
-
   }
 
   handleSelection(event: any): void {
     this.editorData += ' ' + event.char;
   }
 
-  getReceiverInfo(): void {
-    this.store.select(getReceiverInfo).subscribe(
-      (data: SingleChat) => {
-        if (data) {
-          this.receiverInfo = data;
-          console.log('Data: ', data.recipient_id);
-        }
-      }
-    );
-  }
+  // getReceiverInfo(): void {
+  //   this.store.select(getReceiverInfo).subscribe(
+  //     (data: SingleChat) => {
+  //       if (data) {
+  //         this.receiverInfo = data;
+  //         console.log('Data: ', data.recipient_id);
+  //       }
+  //     }
+  //   );
+  // }
 
   handleShowEditor(): void {
     this.showEditor = true;
@@ -295,7 +299,7 @@ export class PrivateMsgTextEditorComponent implements OnInit, OnDestroy {
 
   scrollBottom(): any {
     if (this.endChat) {
-      this.endChat.nativeElement.scrollIntoView({ behavior: 'smooth'});
+      this.endChat.nativeElement.scrollIntoView({ behavior: 'smooth' });
     }
   }
 }

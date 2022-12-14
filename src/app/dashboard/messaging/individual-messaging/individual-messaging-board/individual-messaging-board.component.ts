@@ -23,11 +23,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 // @Todo change this to fetch only individual messages
 import { SingleMessageModel } from '../../models/messages.model';
 import { NotificationService } from '../../../../shared/services/notification.service';
-import {
-  getPrivateUser,
-  getSelectedUserMessages,
-  getUserUnreadMessages,
-} from '../../state/messaging.selectors';
 import { PersonModel } from '../../../models/person.model';
 import {
   currentUser,
@@ -42,7 +37,6 @@ import {
   selectedUserMessages,
 } from '../../../state/entities/messages/private.messages.entity';
 import * as privateMshActions from '../../../state/actions/private.messages.actions';
-import { AppState } from '../../../../state/app.state';
 
 const turndownService = new TurndownService();
 

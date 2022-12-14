@@ -72,7 +72,6 @@ import { EditStreamComponent } from './team-messaging/team-settings/edit-stream/
     IndividualMessagingComponent,
     IndividualMessagingRightPanelComponent,
     IndividualMessagingBoardComponent,
-    IndividualChatCardComponent,
     IndividualChatCardResponseComponent,
     StartPageComponent,
     LandingMessagingRightPanelComponent,
@@ -106,7 +105,8 @@ import { EditStreamComponent } from './team-messaging/team-settings/edit-stream/
     IndividualUserPanelComponent,
     AllPrivateMessagesCardComponent,
     NewTeamComponent,
-    EditStreamComponent
+    EditStreamComponent,
+    IndividualChatCardComponent,
   ],
   exports: [LoadingAnimationComponent],
   imports: [

@@ -5,7 +5,6 @@ import { AppState } from '../state/app.state';
 import { getIsLoggedIn, usersLoaded } from '../auth/state/auth.selectors';
 import * as messagingActions from '../dashboard/messaging/state/messaging.actions';
 import * as authActions from '../auth/state/auth.actions';
-import { streamsLoaded } from './messaging/state/messaging.selectors';
 import { MessagingService } from './messaging/services/messaging.service';
 import { OonaSocketService } from './messaging/services/oona-socket.service';
 import { DashService } from './service/dash-service.service';
