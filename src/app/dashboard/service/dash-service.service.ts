@@ -35,18 +35,29 @@ import {
   getStreamMessages,
   streamsUnread,
 } from '../state/entities/messages/stream.messages.entity';
-import { privateUnread } from '../state/entities/messages/private.messages.entity';
+import {
+  privateUnreadCounter,
+  unreadMessages,
+} from '../state/entities/messages/private.messages.entity';
+import { Title } from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DashService {
   userId$: Observable<number | undefined> = this.store.select(getUserId);
-  unreadMessages$: Observable<number> = this.store.select(streamsUnread);
-  privateUnreadCounter: Observable<SingleMessageModel[]> =
-    this.store.select(privateUnread);
+  unreadMessages$: Observable<SingleMessageModel[]> =
+    this.store.select(unreadMessages);
+  privateUnreadCounter: Observable<number> =
+    this.store.select(privateUnreadCounter);
+  streams$: Observable<SubStreamsModel[]> = this.store.select(getStreams);
+
   userId: any;
-  constructor(private http: HttpClient, private store: Store) {}
+  constructor(
+    private http: HttpClient,
+    private store: Store,
+    private titleService: Title
+  ) {}
 
   onInitHandler(): void {
     this.store.dispatch(new streamActions.LoadSubStreams());
@@ -59,6 +70,7 @@ export class DashService {
     setTimeout(() => {
       this.unreadMessageCounter();
       this.getPrivateMessages();
+      this.streamUnreadCounter();
     }, 3000);
   }
 
@@ -211,18 +223,58 @@ export class DashService {
   }
 
   unreadMessageCounter(): void {
-    this.unreadMessages$.subscribe({
-      next: (resp: number) => {
-        console.log('Stream unread number ===>>', resp);
+    this.privateUnreadCounter.subscribe({
+      next: (unreadCount) => {
+        if (unreadCount > 0) {
+          this.titleService.setTitle(`(${unreadCount}) - AVL - Oona`);
+        } else {
+          this.titleService.setTitle(`AVL - Oona`);
+        }
       },
     });
+  }
 
-    this.privateUnreadCounter.subscribe({
+  streamUnreadCounter(): void {
+    this.unreadMessages$.subscribe({
       next: (messages) => {
         messages.map((message) => {
-          console.log('Unread message ==>>', message.type);
+          if (message.type === 'stream') {
+            setTimeout(() => {
+              this.updateStreamCounter(message);
+            }, 1500);
+          }
         });
-        // console.log('Private unread length ==>>', counter);
+      },
+    });
+  }
+
+  updateStreamCounter(message: SingleMessageModel): void {
+    this.streams$.subscribe({
+      next: (streams) => {
+        streams.map((stream) => {
+          stream = {
+            ...stream,
+            unread: 0,
+          };
+          if (stream.stream_id === message.stream_id) {
+            stream.unread += 1;
+            // console.log('Stream to be updated ==>>', stream);
+            // console.log('Message content ==>>', message);
+            // this.store.dispatch(new streamActions.UpdateStreamCounter(stream));
+
+            // stream.topic?.map((topic) => {
+            //   if (topic.name === topicName) {
+            //     // dispatch update topic counter
+            //     this.store.dispatch(
+            //       new streamActions.UpdateTopicCounter({
+            //         stream_id: streamId,
+            //         topic: topicName,
+            //       })
+            //     );
+            //   }
+            // });
+          }
+        });
       },
     });
   }

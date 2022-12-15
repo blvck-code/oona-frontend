@@ -1,17 +1,21 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Observable} from 'rxjs';
-import {Router} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {AppState} from '../../../../../state/app.state';
-import {getPrivateUnread} from '../../../state/messaging.selectors';
-import {SingleMessageModel} from '../../../models/messages.model';
-import {PersonModel} from '../../../../models/person.model';
-import {getUsers, usersLoading} from '../../../../state/entities/users.entity';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../../../state/app.state';
+import { getPrivateUnread } from '../../../state/messaging.selectors';
+import { SingleMessageModel } from '../../../models/messages.model';
+import { PersonModel } from '../../../../models/person.model';
+import {
+  getUsers,
+  usersLoading,
+} from '../../../../state/entities/users.entity';
+import { unreadMessages } from '../../../../state/entities/messages/private.messages.entity';
 
 @Component({
   selector: 'app-all-users-panel',
   templateUrl: './all-users-panel.component.html',
-  styleUrls: ['./all-users-panel.component.scss']
+  styleUrls: ['./all-users-panel.component.scss'],
 })
 export class AllUsersPanelComponent implements OnInit {
   @Input() users$!: Observable<any>;
@@ -19,17 +23,29 @@ export class AllUsersPanelComponent implements OnInit {
   searchText = '';
   showSearchUser = false;
   endPointUnreadId: number[] = [];
+  unreadMessagesId: number[] = [];
 
   allUsers$: Observable<PersonModel[]> = this.store.select(getUsers);
   usersLoading$: Observable<boolean> = this.store.select(usersLoading);
+  // @ts-ignore
+  unreadMessages$: Observable<SingleMessageModel[]> =
+    this.store.select(unreadMessages);
 
-  constructor(
-    private router: Router,
-    private store: Store<AppState>
-  ) { }
+  constructor(private router: Router, private store: Store<AppState>) {}
 
   ngOnInit(): void {
     this.privateUnreadMessages();
+  }
+
+  unreadMessages(): void {
+    this.unreadMessages$.subscribe((messages: SingleMessageModel[]) => {
+      messages.map((message: SingleMessageModel) => {
+        if (this.unreadMessagesId.includes(message.sender_id)) {
+          return;
+        }
+        this.unreadMessagesId.push(message.sender_id);
+      });
+    });
   }
 
   handleShowSearchUser(): void {
@@ -43,23 +59,24 @@ export class AllUsersPanelComponent implements OnInit {
     this.router.navigate(['dashboard/messaging/narrow'], {
       queryParams: {
         id: member.user_id,
-        member: member.full_name.replace(/\s/g, '')
-      }
+        member: member.full_name.replace(/\s/g, ''),
+      },
     });
     this.rightPanelEvent.emit('individual_user');
 
     this.endPointUnreadId.unshift(member.user_id);
-
   }
 
-  privateUnreadMessages(): void{
-    this.store.select(getPrivateUnread).subscribe(
-      (messages: SingleMessageModel[]) => {
+  privateUnreadMessages(): void {
+    this.store
+      .select(getPrivateUnread)
+      .subscribe((messages: SingleMessageModel[]) => {
         messages.map((message: SingleMessageModel) => {
-          if (this.endPointUnreadId.includes(message.sender_id)) { return; }
+          if (this.endPointUnreadId.includes(message.sender_id)) {
+            return;
+          }
           this.endPointUnreadId.push(message.sender_id);
         });
-      }
-    );
+      });
   }
 }

@@ -1,21 +1,42 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {Router} from '@angular/router';
-import {MessagingService} from '../../services/messaging.service';
-import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
-import {CreateTeamComponent} from '../create-team/create-team.component';
-import {TeamSettingsComponent} from '../team-settings/team-settings.component';
-import {OonaSocketService} from '../../services/oona-socket.service';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { Router } from '@angular/router';
+import { MessagingService } from '../../services/messaging.service';
+import {
+  MatDialog,
+  MatDialogConfig,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import { CreateTeamComponent } from '../create-team/create-team.component';
+import { TeamSettingsComponent } from '../team-settings/team-settings.component';
+import { OonaSocketService } from '../../services/oona-socket.service';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 // NgRx
-import {Store} from '@ngrx/store';
+import { Store } from '@ngrx/store';
 // import {AllStreamsModel} from '../../models/streams.model';
-import {ChannelSettingsComponent} from '../channel-settings/channel-settings.component';
-import {SingleMessageModel} from '../../models/messages.model';
-import {Topics} from '../../models/topics.model';
-import {SubStreamsModel} from '../../../models/streams.model';
-import {getStreams, privateStreams, publicStreams} from '../../../state/entities/streams.entity';
-import {streamsUnread} from '../../../state/entities/messages/stream.messages.entity';
+import { ChannelSettingsComponent } from '../channel-settings/channel-settings.component';
+import { SingleMessageModel } from '../../models/message.model';
+import { Topics } from '../../models/topics.model';
+import { SubStreamsModel } from '../../../models/streams.model';
+import {
+  getStreams,
+  getStreamsLoaded,
+  privateStreams,
+  publicStreams,
+} from '../../../state/entities/streams.entity';
+import { streamsUnread } from '../../../state/entities/messages/stream.messages.entity';
+import {
+  privateMessagesLoaded,
+  unreadMessages,
+} from '../../../state/entities/messages/private.messages.entity';
+import * as streamActions from '../../../../dashboard/state/actions/streams.actions';
 
 interface TopicDetails {
   topic_name: string;
@@ -27,9 +48,8 @@ interface TopicDetails {
   selector: 'app-team-messaging-left-panel',
   templateUrl: './team-messaging-left-panel.component.html',
   styleUrls: ['./team-messaging-left-panel.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
 export class TeamMessagingLeftPanelComponent implements OnInit {
   newTopicsArray: TopicDetails[] = [];
   allTeams: any;
@@ -38,8 +58,12 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   @Output() topicToDisplay = new EventEmitter<any>();
   @Output() rightPanelEvent = new EventEmitter<string>();
   displayCreateTeamComponentRef: MatDialogRef<CreateTeamComponent> | undefined;
-  displayTeamSettingsComponentRef: MatDialogRef<TeamSettingsComponent> | undefined;
-  displayCreatChannelComponentRef: MatDialogRef<ChannelSettingsComponent> | undefined;
+  displayTeamSettingsComponentRef:
+    | MatDialogRef<TeamSettingsComponent>
+    | undefined;
+  displayCreatChannelComponentRef:
+    | MatDialogRef<ChannelSettingsComponent>
+    | undefined;
   allUsers = Array();
   pmNames = Array();
   privateChatMembers = Array();
@@ -56,7 +80,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   privateTopics: any = [];
   publicTopics: any = [];
 
-  streams: any[] = [];
+  streams: SubStreamsModel[] = [];
   streamsSubject$ = new BehaviorSubject(this.streams);
   streamsObservable = this.streamsSubject$.asObservable();
 
@@ -65,7 +89,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   finalStreamSubject = new BehaviorSubject(this.finalStream);
   finalStreamObservable = this.finalStreamSubject.asObservable();
 
-  unreadStreams$!: Observable<SingleMessageModel[]>;
   uniqueId: number[] = [];
 
   // streamTopics: AllStreamsModel[] = [];
@@ -73,22 +96,30 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   // streamTopicObservable = this.streamTopicsSubject.asObservable();
 
   privateUnreadMsgCounter = 0;
-  privateUnreadMsgCounterSubject = new BehaviorSubject(this.privateUnreadMsgCounter);
-  privateUnreadMsgCounterObservable = this.privateUnreadMsgCounterSubject.asObservable();
+  privateUnreadMsgCounterSubject = new BehaviorSubject(
+    this.privateUnreadMsgCounter
+  );
+  privateUnreadMsgCounterObservable =
+    this.privateUnreadMsgCounterSubject.asObservable();
 
   totalUnreadMsg = 0;
   totalUnreadMsgSubject$ = new BehaviorSubject<number>(this.totalUnreadMsg);
   totalUnreadMsgObservable = this.totalUnreadMsgSubject$.asObservable();
 
-  privateUnread$!: Observable<number>;
-  streamUnread$!: Observable<number>;
-
-  streamUnreadCount = 0;
   privateUnreadCount = 0;
 
   subStreams$: Observable<SubStreamsModel[]> = this.store.select(getStreams);
-  privateStreams$: Observable<SubStreamsModel[]> = this.store.select(privateStreams);
-  publicStreams$: Observable<SubStreamsModel[]> = this.store.select(publicStreams);
+  privateStreams$: Observable<SubStreamsModel[]> =
+    this.store.select(privateStreams);
+  publicStreams$: Observable<SubStreamsModel[]> =
+    this.store.select(publicStreams);
+
+  unreadMessages$: Observable<SingleMessageModel[]> =
+    this.store.select(unreadMessages);
+  messagesLoaded$: Observable<boolean> = this.store.select(
+    privateMessagesLoaded
+  );
+  streamsLoaded$: Observable<boolean> = this.store.select(getStreamsLoaded);
 
   constructor(
     public messagingService: MessagingService,
@@ -96,9 +127,8 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     private dialog: MatDialog,
     private change: ChangeDetectorRef,
     private userSocketService: OonaSocketService,
-    private store: Store,
-  ) {
-  }
+    private store: Store
+  ) {}
 
   ngOnInit(): void {
     // fire on page load handler
@@ -112,12 +142,63 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     // this.handleStreamCategory();
   }
 
+  loadedComplete(): void {
+    this.streamsLoaded$.subscribe({
+      next: (streamsLoaded: boolean) => {
+        if (streamsLoaded) {
+          this.messagesLoaded$.subscribe({
+            next: (messagesLoaded: boolean) => {
+              if (messagesLoaded) {
+                setTimeout(() => {
+                  this.streamsCounter();
+                }, 100);
+              }
+            },
+          });
+        }
+      },
+    });
+  }
+
+  streamsCounter(): void {
+    this.subStreams$.subscribe({
+      next: (streams) => {
+        streams.map((stream) => {
+          stream = {
+            ...stream,
+            unread: 0,
+          };
+
+          this.unreadMessages$.subscribe({
+            next: (messages) => {
+              messages.map((message) => {
+                if (message.stream_id === stream.stream_id) {
+                  stream = {
+                    ...stream,
+                    unread: (stream.unread += 1),
+                  };
+
+                  stream.topic?.map((topicItem) => {
+                    topicItem = {
+                      ...topicItem,
+                      unread: 0,
+                    };
+
+                    if (topicItem.name === message.subject) {
+                      topicItem.unread = topicItem.unread + 1;
+                    }
+                  });
+                }
+              });
+            },
+          });
+        });
+      },
+    });
+  }
+
   initPageHandler(): void {
-    this.store.select(streamsUnread).subscribe({
-      next: (length) => console.log(
-        'unread message ', length
-      )
-    })
+    this.loadedComplete();
     // handle All Unread Messages
     // this.handleUnreadMsgCounter();
     // this.handleNewStream();
@@ -129,7 +210,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     // this.unreadStreams$ = this.store.select(getStreamUnread);
 
     this.listAllTeams();
-    this.userSocketService.streamMessageSocket.subscribe(messages => {
+    this.userSocketService.streamMessageSocket.subscribe((messages) => {
       this.streamMessages = messages;
       this.updateTeamsWithMessageCount(messages);
     });
@@ -143,11 +224,9 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   }
 
   readMessageFlags(): void {
-    this.userSocketService.readFlagsObservable.subscribe(
-      (readMessage: any) => {
-        console.log('Read message flags', readMessage);
-      }
-    );
+    this.userSocketService.readFlagsObservable.subscribe((readMessage: any) => {
+      console.log('Read message flags', readMessage);
+    });
   }
 
   // handleNewStream(): void {
@@ -339,15 +418,22 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.messagingService.getAllTeams().subscribe((teams: any) => {
       this.privateAndPublicTeams = teams.streams;
       // display only teams that are private here
-      this.allTeams = teams.streams.filter((team: { invite_only: any; }) => team.invite_only);
-      this.publicTeams = teams.streams.filter((team: { invite_only: any; }) => !team.invite_only);
+      this.allTeams = teams.streams.filter(
+        (team: { invite_only: any }) => team.invite_only
+      );
+      this.publicTeams = teams.streams.filter(
+        (team: { invite_only: any }) => !team.invite_only
+      );
       // this.streamTopics(teams.streams);
     });
   }
 
   removeDuplicates(data: any): any {
     // tslint:disable-next-line:max-line-length
-    return data.filter((value: { id: any; }, index: any, array: { id: any; }[]) => array.findIndex((item: { id: any; }) => (item.id === value.id)) === index);
+    return data.filter(
+      (value: { id: any }, index: any, array: { id: any }[]) =>
+        array.findIndex((item: { id: any }) => item.id === value.id) === index
+    );
   }
 
   createArrayOfPms(pmNamesArray: any[]): any {
@@ -361,15 +447,16 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.height = '80vh';
     dialogConfig.width = '70vw';
-    dialogConfig.data = {allTeams: this.privateAndPublicTeams};
-    this.displayTeamSettingsComponentRef = this.dialog.open(TeamSettingsComponent, dialogConfig);
-    this.displayTeamSettingsComponentRef.afterClosed().subscribe(
-      data => {
-        if (data === 'success') {
-          this.listAllTeams();
-        }
-      }
+    dialogConfig.data = { allTeams: this.privateAndPublicTeams };
+    this.displayTeamSettingsComponentRef = this.dialog.open(
+      TeamSettingsComponent,
+      dialogConfig
     );
+    this.displayTeamSettingsComponentRef.afterClosed().subscribe((data) => {
+      if (data === 'success') {
+        this.listAllTeams();
+      }
+    });
   }
 
   channelSettings(): void {
@@ -378,43 +465,53 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
       width: '25rem',
       data: {
         name: this.streamName,
-      }
+      },
     });
   }
 
   private updateTeamsWithMessageCount(messages: any[]): void {
     if (messages.length > 0) {
-      this.allTeams.forEach((team: { messageCount: number; stream_id: any; }) => {
-        team.messageCount = messages.filter(message => message.stream_id === team.stream_id).length;
-      });
+      this.allTeams.forEach(
+        (team: { messageCount: number; stream_id: any }) => {
+          team.messageCount = messages.filter(
+            (message) => message.stream_id === team.stream_id
+          ).length;
+        }
+      );
 
-      this.publicTeams.forEach((team: { messageCount: number; stream_id: any; }) => {
-        team.messageCount = messages.filter(message => message.stream_id === team.stream_id).length;
-      });
+      this.publicTeams.forEach(
+        (team: { messageCount: number; stream_id: any }) => {
+          team.messageCount = messages.filter(
+            (message) => message.stream_id === team.stream_id
+          ).length;
+        }
+      );
     }
   }
 
-  handleSocketsNewMessage(): void {
-      this.userSocketService.streamMessageSocket.subscribe(
-      (messages: SingleMessageModel[]) => {
-       if (!messages.length) { return; }
-       console.log('Unread messages ==>>', messages);
-
-       this.unreadStreams$.subscribe((streamMessages: SingleMessageModel[]) => {
-         streamMessages.map((message: SingleMessageModel) => {
-           console.log('Stream messages ===>>', message);
-           streamMessages.push(message);
-          });
-        });
-
-      }
-    );
-  }
+  // handleSocketsNewMessage(): void {
+  //   this.userSocketService.streamMessageSocket.subscribe(
+  //     (messages: SingleMessageModel[]) => {
+  //       if (!messages.length) {
+  //         return;
+  //       }
+  //       console.log('Unread messages ==>>', messages);
+  //
+  //       this.unreadStreams$.subscribe(
+  //         (streamMessages: SingleMessageModel[]) => {
+  //           streamMessages.map((message: SingleMessageModel) => {
+  //             console.log('Stream messages ===>>', message);
+  //             streamMessages.push(message);
+  //           });
+  //         }
+  //       );
+  //     }
+  //   );
+  // }
 
   getStreamName(stream?: any, topic?: any): void {
     // stream
     this.streamName = stream.name;
-
   }
 
   // handleUnreadMsgCounter(): void {
@@ -454,7 +551,6 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     this.rightPanelEvent.emit('team_users');
   }
 
-
   // The private messages topic fetcher
   handlePrivateNavigateTopic(stream?: any, topic?: any): void {
     this.rightPanelEvent.emit('team_users');
@@ -474,21 +570,20 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
     //   }
     // });
 
-
     if (topic) {
       this.router.navigate(['dashboard/messaging/team'], {
         queryParams: {
           team: stream.name.replace(/\s/g, ''),
           id: stream.stream_id,
           topic: topic.name.replace(/\s/g, '-'),
-        }
+        },
       });
     } else {
       this.router.navigate(['dashboard/messaging/team'], {
         queryParams: {
           team: stream.name.replace(/\s/g, ''),
-          id: stream.stream_id
-        }
+          id: stream.stream_id,
+        },
       });
     }
     // this.handleCounter(stream, topic);

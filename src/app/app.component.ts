@@ -64,21 +64,6 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.updateState();
     this.handShakeSockets();
-    // console.log(2022);
-    // this.privateUnread$ = this.store.select(getStreamUnreadMessages);
-    // this.streamUnread$ = this.store.select(getStreamUnreadMessages);
-    //
-    // this.privateUnread$.subscribe({
-    //   next: (numb: number) => {
-    //     console.log('Unread private ==>>', numb);
-    //   }
-    // });
-    //
-    // this.streamUnread$.subscribe({
-    //   next: (numb: number) => {
-    //     console.log('Unread stream ==>>', numb);
-    //   }
-    // });
   }
 
   handShakeSockets(): void {

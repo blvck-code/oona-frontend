@@ -5,6 +5,7 @@ import { Action, createSelector } from '@ngrx/store';
 // Actions
 import * as dashActions from '../dash.actions';
 import { streamStateKey } from '../dash.selectors';
+import { streamMsgAdapter } from './messages/stream.messages.entity';
 
 export interface StreamsState extends EntityState<SubStreamsModel> {
   loading: boolean;
@@ -74,14 +75,6 @@ export function streamsReducer(
       return streamsAdapter.addOne(action.payload, {
         ...state,
       });
-    // case dashActions.DashActions.LOAD_SUBSCRIBERS_SUCCESS:
-    //   const updatedSubscribers = streamsAdapter.map(
-    //     (stream: SubStreamsModel) => stream.stream_id === action.payload.streamId ? {
-    //       ...stream,
-    //       subscribers: action.payload.subscribers
-    //     } : stream, state
-    //   );
-    //   return updatedSubscribers;
 
     default:
       return state;

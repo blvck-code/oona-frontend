@@ -4,6 +4,10 @@ export enum DashActions {
   LOAD_SUB_STREAMS_SUCCESS = 'dash/loadSubStreamsSuccess',
   LOAD_SUB_STREAMS_FAIL = 'dash/loadSubStreamsFail',
 
+  // Update Counter
+  UPDATE_STREAM_COUNTER = 'dash/updateStreamCounter',
+  UPDATE_TOPIC_COUNTER = 'dash/updateTopicCounter',
+
   // Create Stream
   CREATE_STREAM = 'dash/createStream',
 

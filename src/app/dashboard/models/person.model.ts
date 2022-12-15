@@ -4,7 +4,7 @@ export interface PersonResponseModel {
   members: PersonModel[];
 }
 
-export interface PersonModel{
+export interface PersonModel {
   email: string;
   user_id: number;
   avatar_version: number;
@@ -20,15 +20,16 @@ export interface PersonModel{
   date_joined: string;
   avatar_url: any;
   presence?: PresenceModel;
+  unread: false;
 }
 
 export interface PresenceModel {
-    website: {
-      status: string,
-      timestamp: number
-    };
-    aggregated: {
-      status: string,
-      timestamp: number
-    };
+  website: {
+    status: string;
+    timestamp: number;
+  };
+  aggregated: {
+    status: string;
+    timestamp: number;
+  };
 }
