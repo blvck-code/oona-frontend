@@ -73,11 +73,16 @@ export const filteredStreamMsg = createSelector(
   selectedTopic,
   (messages, streamId, topic) =>
     topic
-      ? messages.filter(
-          (message) =>
-            message.stream_id === streamId &&
-            message.subject.toLowerCase() === topic.toLowerCase()
-        )
+      ? messages
+          .filter(
+            (message) =>
+              message.stream_id === streamId &&
+              message.subject.toLowerCase() === topic.toLowerCase()
+          )
+          .sort(
+            (a: SingleMessageModel, b: SingleMessageModel) =>
+              a.timestamp - b.timestamp
+          )
       : messages
           .filter((message) => message.stream_id === streamId)
           .sort(

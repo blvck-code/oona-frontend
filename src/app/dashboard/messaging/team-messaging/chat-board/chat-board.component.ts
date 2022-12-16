@@ -133,7 +133,7 @@ export class ChatBoardComponent implements OnInit {
   ngOnInit(): void {
     this.selectedTopic$.subscribe({
       next: (resp) => {
-        console.log('Topic message ==>>', resp);
+        this.messageTopic = resp;
       },
     });
     this.getStreamMessages();
