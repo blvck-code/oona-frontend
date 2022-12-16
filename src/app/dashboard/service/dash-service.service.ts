@@ -323,8 +323,13 @@ export class DashService {
     return this.http.post(env.updateSubscriptionSettings, updateContent);
   }
 
-  unsubscribeStream(stream: any): Observable<any> {
-    return this.http.post(env.unsubscribeToStream, stream);
+  unsubscribeStream(
+    stream: any
+  ): Observable<{ result: string; msg: string; removed: string[] }> {
+    return this.http.post<{ result: string; msg: string; removed: string[] }>(
+      env.unsubscribeToStream,
+      stream
+    );
   }
 
   updateMessageFlags(
