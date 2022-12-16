@@ -9,21 +9,21 @@
     <div class="message-body">
       <div class="d-flex justify-content-between">
         <p class="name" *ngIf="messageDetail.display_recipient[1]; else noRecipient">
-          {{ messageDetail.display_recipient[0].id === (userId$ | async) ? 'You' : messageDetail.display_recipient[0].full_name }} and {{ messageDetail.display_recipient[1].id === (userId$ | async) ? 'You' : messageDetail.display_recipient[1].full_name }}
+          {{ messageDetail?.display_recipient[0].id === (userId$ | async) ? 'You' : messageDetail?.display_recipient[0]?.full_name }} and {{ messageDetail.display_recipient[1].id === (userId$ | async) ? 'You' : messageDetail.display_recipient[1].full_name }}
         </p>
         <ng-template #noRecipient>
           <p class="name">
-            {{ messageDetail.display_recipient[0].id === (userId$ | async) ? 'You' : messageDetail.display_recipient[0].full_name }} and {{ messageDetail.display_recipient[0].full_name }}
+            {{ messageDetail?.display_recipient[0].id === (userId$ | async) ? 'You' : messageDetail?.display_recipient[0]?.full_name }} and {{ messageDetail.display_recipient[0].full_name }}
           </p>
         </ng-template>
         <p class="chat-time">{{ messageTime }}</p>
       </div>
 
       <showdown class="chat-msg" [value]="messageDetail?.content"></showdown>
-
     </div>
     <div class="message-feedback">
 
     </div>
   </div>
+  <div #intersection></div>
 </div>

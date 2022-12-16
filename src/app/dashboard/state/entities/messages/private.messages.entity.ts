@@ -4,6 +4,7 @@ import * as dashActions from '../../dash.actions';
 import { createSelector } from '@ngrx/store';
 import { privateMsgStateKey } from '../../dash.selectors';
 import { selectedUserId } from '../users.entity';
+import { flag } from 'ionicons/icons';
 
 export interface PrivateMessagesState extends EntityState<SingleMessageModel> {
   loading: boolean;
@@ -50,6 +51,16 @@ export function privateMsgReducer(
       return privateMsgAdapter.addOne(action.payload, {
         ...state,
       });
+    case dashActions.DashActions.UPDATE_STREAM_COUNTER:
+      return privateMsgAdapter.updateOne(
+        {
+          id: action.payload.messages,
+          changes: {
+            flags: action.payload.flag,
+          },
+        },
+        state
+      );
     default:
       return state;
   }
@@ -59,6 +70,10 @@ export function privateMsgReducer(
 export const getPrivateMessages = createSelector(
   privateMsgStateKey,
   privateMsgAdapter.getSelectors().selectAll
+);
+export const allPrivateMessages = createSelector(
+  getPrivateMessages,
+  (messages) => messages.filter((message) => message.type === 'private')
 );
 export const privateMessagesLoading = createSelector(
   privateMsgStateKey,
@@ -75,12 +90,13 @@ export const selectedUserMessages = createSelector(
     messages.filter(
       (message) =>
         // @ts-ignore
-        message.display_recipient[0].id === id ||
-        (message.display_recipient[1]
-          ? // @ts-ignore
-            message.display_recipient[1].id === id
-          : null) ||
-        message.sender_id === id
+        (message.display_recipient[0].id === id ||
+          (message.display_recipient[1]
+            ? // @ts-ignore
+              message.display_recipient[1].id === id
+            : null) ||
+          message.sender_id === id) &&
+        message.type === 'private'
     )
 );
 
@@ -94,6 +110,13 @@ export const unreadMessages = createSelector(getPrivateMessages, (messages) =>
   messages.filter((message) => !message.flags.includes('read'))
 );
 
+export const privateUnreadLength = createSelector(
+  getPrivateMessages,
+  (messages) =>
+    messages.filter(
+      (message) => !message.flags.includes('read') && message.type === 'private'
+    ).length
+);
 // export const filteredMsg = createSelector(
 //   getMessages,
 //   selectedStream,

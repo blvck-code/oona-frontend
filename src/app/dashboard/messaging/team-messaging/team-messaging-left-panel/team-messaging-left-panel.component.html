@@ -13,9 +13,9 @@
         <p>
           All Messages
           <span
-            *ngIf="(totalUnreadMsgObservable | async)"
+            *ngIf="(allUnread$ | async)"
             class="badge mat-badge-before">
-            {{ totalUnreadMsgObservable | async }}
+            {{ allUnread$ | async }}
           </span>
         </p>
       </a>
@@ -27,9 +27,9 @@
       >
         <p>Private Messages
           <span
-            *ngIf="( privateUnreadCount )"
+            *ngIf="( privateUnread$ | async )"
             class="badge mat-badge-before">
-            {{ privateUnreadCount }}
+            {{ privateUnread$ | async }}
           </span>
         </p>
       </a>

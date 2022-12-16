@@ -42,6 +42,9 @@ export enum DashActions {
   LOAD_PRIVATE_MESSAGE_SUCCESS = 'dash/loadPrivateMsgSuccess',
   LOAD_PRIVATE_MESSAGE_FAIL = 'dash/loadPrivateMsgFail',
 
+  // Update Message Flag
+  UPDATE_MESSAGE_FLAG = 'dash/updateMessageFlag',
+
   // Stream messages
   LOAD_STREAM_MESSAGE = 'dash/loadStreamMsg',
   LOAD_STREAM_MESSAGE_SUCCESS = 'dash/loadStreamMsgSuccess',

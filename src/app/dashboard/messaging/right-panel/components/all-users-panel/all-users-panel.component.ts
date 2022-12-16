@@ -35,6 +35,7 @@ export class AllUsersPanelComponent implements OnInit {
 
   ngOnInit(): void {
     this.privateUnreadMessages();
+    this.unreadMessages();
   }
 
   unreadMessages(): void {

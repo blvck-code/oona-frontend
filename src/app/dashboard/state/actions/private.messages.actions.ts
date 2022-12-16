@@ -22,6 +22,13 @@ export class SocketPrivateMessage implements Action {
   constructor(public payload: any) {}
 }
 
+export class UpdateMessageFlag implements Action {
+  readonly type = DashActions.UPDATE_STREAM_COUNTER;
+  constructor(public payload: any) {
+    console.log('Payload ==>>', payload);
+  }
+}
+
 export type MessagesActions =
   // Private Messages
   | LoadPrivateMsg

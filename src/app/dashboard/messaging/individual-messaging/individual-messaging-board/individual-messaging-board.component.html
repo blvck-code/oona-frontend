@@ -29,7 +29,13 @@
         </div>
 
         <div id="box">
-          <app-individual-chat-card [userId$]="currentUserId$" *ngFor="let chat of (messages$ | async);" [messageDetail]="chat"></app-individual-chat-card>
+<!--          <app-individual-chat-card [userId$]="currentUserId$" *ngFor="let chat of (messages$ | async);" [messageDetail]="chat"></app-individual-chat-card>-->
+          <app-all-private-messages-card
+            class="mt-4"
+            *ngFor="let chat of (messages$ | async)"
+            [messageDetail]="chat"
+            [userId$]="currentUserId$"
+          ></app-all-private-messages-card>
           <div #endPrivateChat></div>
         </div>
 

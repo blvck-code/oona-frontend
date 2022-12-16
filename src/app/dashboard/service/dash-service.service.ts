@@ -327,6 +327,15 @@ export class DashService {
     return this.http.post(env.unsubscribeToStream, stream);
   }
 
+  updateMessageFlags(
+    updateContent: any
+  ): Observable<{ result: string; msg: string; messages: number[] }> {
+    return this.http.post<{ result: string; msg: string; messages: number[] }>(
+      env.updatePersonalMessageFlag,
+      updateContent
+    );
+  }
+
   getMessages(payload: MessagePayloadModel): Observable<MessagesResponseModel> {
     return this.http.post<MessagesResponseModel>(env.getMessages, payload);
   }

@@ -24,6 +24,7 @@ export class IndividualChatCardComponent implements OnInit {
   baseURL = 'https://192.168.0.42:3443';
   imageURL = '';
   isVisible = false;
+  showComment = false;
 
   constructor(private store: Store, private route: ActivatedRoute) {
     this.getUserInfo();
@@ -39,6 +40,10 @@ export class IndividualChatCardComponent implements OnInit {
 
   getUserInfo(): void {
     this.zulipProfile = this.store.select(getZulipProfile);
+  }
+
+  toggleComments(): void {
+    this.showComment = !this.showComment;
   }
 
   showUserInfo(userName: any, zulipName: any): void {

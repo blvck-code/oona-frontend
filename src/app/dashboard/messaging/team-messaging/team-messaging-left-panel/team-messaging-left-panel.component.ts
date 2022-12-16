@@ -34,6 +34,8 @@ import {
 import { streamsUnread } from '../../../state/entities/messages/stream.messages.entity';
 import {
   privateMessagesLoaded,
+  privateUnreadCounter,
+  privateUnreadLength,
   unreadMessages,
 } from '../../../state/entities/messages/private.messages.entity';
 import * as streamActions from '../../../../dashboard/state/actions/streams.actions';
@@ -90,6 +92,8 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   finalStreamObservable = this.finalStreamSubject.asObservable();
 
   uniqueId: number[] = [];
+  allUnread$: Observable<number> = this.store.select(privateUnreadCounter);
+  privateUnread$: Observable<number> = this.store.select(privateUnreadLength);
 
   // streamTopics: AllStreamsModel[] = [];
   // streamTopicsSubject = new BehaviorSubject<AllStreamsModel[]>(this.streamTopics);
