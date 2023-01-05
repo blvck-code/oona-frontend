@@ -41,6 +41,13 @@ export class SocketStreamMessage implements Action {
   constructor(public payload: any) {}
 }
 
+export class UpdateStreamMessageFlag implements Action {
+  readonly type = DashActions.UPDATE_STREAM_MESSAGE_FLAG;
+  constructor(public payload: any) {
+    console.log('Payload ==>>', payload);
+  }
+}
+
 export type MessagesActions =
   // Private Messages
   | LoadStreamMsg
@@ -49,4 +56,5 @@ export type MessagesActions =
   // Create Stream Message
   | CreateStreamMessage
   | CreateStreamMessageSuccess
-  | CreateStreamMessageFail;
+  | CreateStreamMessageFail
+  | UpdateStreamMessageFlag;

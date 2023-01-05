@@ -15,9 +15,9 @@ export interface MessageNarrowModel {
 export interface MessagesResponseModel {
   oz: OzModel;
   zulip: {
-    result: string,
-    msg: string,
-    messages: SingleMessageModel[]
+    result: string;
+    msg: string;
+    messages: SingleMessageModel[];
   };
 }
 
@@ -26,16 +26,18 @@ export interface OzModel {
   use_first_unread_anchor: boolean;
   num_before: number;
   num_after: number;
-  type: [{
-    operator: string;
-    operand: string
-  }];
+  type: [
+    {
+      operator: string;
+      operand: string;
+    }
+  ];
   client_gravatar: boolean;
   apply_markdown: boolean;
 }
 
-export interface SingleMessageModel  {
-  id?: number;
+export interface SingleMessageModel {
+  id: number;
   sender_id: number;
   content: string;
   recipient_id: number;

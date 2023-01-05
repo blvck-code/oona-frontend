@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { Document } from '@contentful/rich-text-types';
 import { BLOCKS, MARKS } from '@contentful/rich-text-types';
 import { Router } from '@angular/router';
@@ -15,6 +23,10 @@ import { getAllStreams } from '../../../state/messaging.selectors';
 import { AllStreamsModel } from '../../../models/streams.model';
 import { getStreams } from '../../../../state/entities/streams.entity';
 import { SubStreamsModel } from '../../../../models/streams.model';
+import * as streamMsgActions from '../../../../state/actions/streams.messages.actions';
+import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
+import { DashService } from '../../../../service/dash-service.service';
+import { UpdateStreamMessageFlag } from '../../../../state/actions/streams.messages.actions';
 
 @Component({
   selector: 'app-chat-card',
@@ -27,6 +39,7 @@ export class ChatCardComponent implements OnInit {
   @Output() emitReplyMsg = new EventEmitter<any>();
 
   userId$: Observable<any> = this.store.select(getUserId);
+  @ViewChild('intersection') 'intersection': ElementRef;
 
   userId: any;
   messageTime = '';
@@ -50,7 +63,64 @@ export class ChatCardComponent implements OnInit {
     ],
   };
 
-  constructor(private router: Router, private store: Store<AppState>) {}
+  constructor(
+    private router: Router,
+    private store: Store<AppState>,
+    private dashSrv: DashService
+  ) {}
+
+  handleReadFlag(): void {
+    if (this.messageDetail?.flags.includes('read')) {
+      return;
+    }
+
+    setTimeout(() => {
+      this.chatObserver(this.intersection).subscribe({
+        next: (isVisible) => {
+          if (isVisible) {
+            // dispatch unread flags
+            const updateContent = {
+              messages: [this.messageDetail.id],
+              flag: 'read',
+              op: 'add',
+            };
+
+            this.dashSrv.updateMessageFlags(updateContent).subscribe({
+              next: (resp) => {
+                if (resp.result === 'success') {
+                  this.store.dispatch(
+                    new streamMsgActions.UpdateStreamMessageFlag({
+                      messages: this.messageDetail.id,
+                      flag: [...this.messageDetail.flags, 'read'],
+                    })
+                  );
+                }
+              },
+            });
+          }
+        },
+      });
+    }, 1000);
+  }
+
+  chatObserver(element: ElementRef): Observable<boolean> {
+    return new Observable((observe) => {
+      const intersectionObserver = new IntersectionObserver((entries) => {
+        observe.next(entries);
+      });
+
+      intersectionObserver.observe(element.nativeElement);
+
+      return () => {
+        intersectionObserver.disconnect();
+      };
+    }).pipe(
+      // @ts-ignore
+      switchMap((entries: IntersectionObserverEntry) => entries),
+      map((entry: any) => entry.isIntersecting),
+      distinctUntilChanged()
+    );
+  }
 
   navigateSubject(stream: any): void {
     this.router.navigate(['dashboard/messaging/team'], {
@@ -73,6 +143,7 @@ export class ChatCardComponent implements OnInit {
   // }
 
   ngOnInit(): void {
+    this.handleReadFlag();
     this.store
       .select(getZulipProfile)
       .subscribe((user: any) => (this.userId = user.zulip.user_id));

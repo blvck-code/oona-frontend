@@ -5,6 +5,7 @@ import { createSelector } from '@ngrx/store';
 import { privateMsgStateKey } from '../../dash.selectors';
 import { selectedUserId } from '../users.entity';
 import { flag } from 'ionicons/icons';
+import { streamMsgAdapter } from './stream.messages.entity';
 
 export interface PrivateMessagesState extends EntityState<SingleMessageModel> {
   loading: boolean;
@@ -52,6 +53,16 @@ export function privateMsgReducer(
         ...state,
       });
     case dashActions.DashActions.UPDATE_STREAM_COUNTER:
+      return privateMsgAdapter.updateOne(
+        {
+          id: action.payload.messages,
+          changes: {
+            flags: action.payload.flag,
+          },
+        },
+        state
+      );
+    case dashActions.DashActions.UPDATE_STREAM_MESSAGE_FLAG:
       return privateMsgAdapter.updateOne(
         {
           id: action.payload.messages,
