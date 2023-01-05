@@ -2,6 +2,8 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+import { oonaVersion } from './environment';
+
 export const backendPort = ':2443';
 export const frontendPort = ':3443';
 export const jitsiPort = ':8443';
@@ -22,6 +24,7 @@ const etherPad = 'http://192.168.0.37:9001/';
 export const environment = {
   production: false,
   // User Management Urls
+  // User Management Urls
   loginUrl: oonaBaseUrl + '/api/v1/accounts/login/',
   requestResetUrl: oonaBaseUrl + '/api/v1/accounts/password/reset/request/',
   resetPassUrl: oonaBaseUrl + '/api/v1/accounts/password/reset/',
@@ -37,10 +40,62 @@ export const environment = {
   meetingDetailsUrl: oonaBaseUrl + '/api/v1/meet/meetings/',
   changePasswordUrl: oonaBaseUrl + '/api/v1/accounts/password/change/',
 
+  // Streams
+  subscribedStream:
+    oonaBaseUrl + oonaVersion + '/streams/get-subscribed-streams', // Get
+  getStreamID: oonaBaseUrl + oonaVersion + '/streams/get-stream-id', // Get  payload id
+  archiveStream: oonaBaseUrl + oonaVersion + '/streams/archive-a-stream', // Get payload stream id
+  getStreamTopics:
+    oonaBaseUrl + oonaVersion + '/streams/get-topics-in-a-stream?stream_id=', // Get append stream id in the URL
+  streamSubscribers: oonaBaseUrl + oonaVersion + '/streams/get-stream-members', // Get
+  subscribeToStream:
+    oonaBaseUrl + oonaVersion + '/streams/subscribe-to-a-stream', // Post
+  unsubscribeToStream:
+    oonaBaseUrl + oonaVersion + '/streams/unsubscribe-from-stream', // Post
+  subscribeSubStatus:
+    oonaBaseUrl + oonaVersion + '/streams/get-subscription-status', // Post
+  updateSubscriptionSettings:
+    oonaBaseUrl + oonaVersion + '/streams/update-subscription-settings', // Post
+  allStreams: oonaBaseUrl + oonaVersion + '/streams/', // Post
+  updateStream: oonaBaseUrl + oonaVersion + '/streams/update-a-stream', // Post
+  muteTopic: oonaBaseUrl + oonaVersion + '/streams/topic-muting', // Post
+  sendMessageToStream:
+    oonaBaseUrl + oonaVersion + '/streams/send-message-to-stream', // Post
+  sendFileToStream: oonaBaseUrl + oonaVersion + '/streams/send-file-to-stream', // Post
+  addDefaultStream: oonaBaseUrl + oonaVersion + '/streams/add-default-stream', // Post
+  removeDefaultStream:
+    oonaBaseUrl + oonaVersion + '/streams/remove-default-stream', // Post
+  deleteTopic: oonaBaseUrl + oonaVersion + '/streams/delete-a-topic', // Post
+
+  // Messages
+  sendMessage: oonaBaseUrl + oonaVersion + '/message/send-a-message', // Post
+  uploadFile: oonaBaseUrl + oonaVersion + '/message/upload-a-file', // Post
+  editMessage: oonaBaseUrl + oonaVersion + '/message/edit-a-message', // Post
+  deleteMessage: oonaBaseUrl + oonaVersion + '/message/delete-a-message', // Post
+  getMessages: oonaBaseUrl + oonaVersion + '/message/', // Post
+  messagesMatchNarrow:
+    oonaBaseUrl + oonaVersion + '/message/check-if-messages-match-a-narrow', // Post
+  addEmojiReaction: oonaBaseUrl + oonaVersion + '/message/add-emoji', // Post
+  removeEmojiReaction: oonaBaseUrl + oonaVersion + '//message/remove-emoji', // Post
+  singleMessage:
+    oonaBaseUrl + oonaVersion + '/message/fetch-a-single-message?message_id=', // Get
+  idsWithRead:
+    oonaBaseUrl + oonaVersion + '/message/get-list-of-id-that-read?message_id=', // Get
+  messageEditHistory:
+    oonaBaseUrl + oonaVersion + '/message/get-a-message-edit-history', // Post
+  updatePersonalMessageFlag:
+    oonaBaseUrl + oonaVersion + '/message/update-personal-message-flags', // Post
+  markAllMessagesRead: oonaBaseUrl + oonaVersion + '/message/all/read', // Get
+  markMessageInStreamRead:
+    oonaBaseUrl + oonaVersion + '/message/mark-messages-in-stream-as-read', // Post
+  markMessageInTopicAsRead:
+    oonaBaseUrl + oonaVersion + '/message/mark-messages-in-topic-as-read', // Post
+  renderMessage: oonaBaseUrl + oonaVersion + '/message/render-message', // Post
+
   // Messaging Urls
   users: oonaBaseUrl + '/api/v1/accounts/z/user/',
   zulipUsers: oonaBaseUrl + '/api/v1/accounts/z/user/',
-  teams: oonaBaseUrl + '/api/v1/streams/all',
+  teams: oonaBaseUrl + '/api/v1/streams/get-subscribed-streams',
   subscribedStreams: oonaBaseUrl + '/api/v1/streams',
   presentUsers: oonaBaseUrl + '/api/v1/accounts/present/user/',
   userProfile: oonaBaseUrl + '/api/v1/accounts/profile/',
