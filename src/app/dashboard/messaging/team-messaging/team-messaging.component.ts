@@ -7,8 +7,11 @@ import {Observable} from 'rxjs';
 import {SingleMessageModel} from '../models/messages.model';
 import {getUnreadStreamMessages} from '../state/messaging.selectors';
 import * as messagingActions from '../state/messaging.actions';
-import {NavigationEnd, Router} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {MessagingService} from '../services/messaging.service';
+import * as streamMsgAction from '../../state/actions/streams.messages.actions';
+import * as streamActions from '../../state/actions/streams.actions';
+import {getSelectedStream, getStreams} from '../../state/entities/streams.entity';
 
 
 @Component({
@@ -20,17 +23,62 @@ export class TeamMessagingComponent implements OnInit {
   unreadMessageId: number[] = [];
   messageUpdate$!: Observable<SingleMessageModel[]>;
 
+  selectedStream$: Observable<number | null> = this.store.select(getSelectedStream);
+
   constructor(
     private store: Store<AppState>,
-    private messageSrv: MessagingService
+    private messageSrv: MessagingService,
+    private route: ActivatedRoute,
   ) {
-
+    this.routerDetails();
   }
 
-  ngOnInit(): void {
-    this.messageUpdate$ = this.store.select(getUnreadStreamMessages);
-    this.updateMessageFlags();
+  routerDetails(): void {
+    this.route.queryParams.subscribe(params => {
+      const streamId = params.id;
+      const topic = params.topic;
+
+      const payload = {
+        streamId: +streamId,
+        topic: ''
+      };
+
+      if (topic){
+        payload.topic = topic.replaceAll('-', ' ');
+      }
+
+
+      const topicRequest = {
+        anchor: 1750,
+        num_before: 50,
+        num_after: 50,
+        narrow: [
+          {
+            negated: false,
+            operator: 'stream',
+            operand: +streamId // stream id
+          },
+          // {
+          //   negated: false,
+          //   operator: 'topic',
+          //   operand: topic.replaceAll('-', ' ') // topic name
+          // }
+        ],
+        client_gravatar: true
+      };
+      this.store.dispatch(new streamActions.SelectedStream(payload));
+      this.store.dispatch(new streamMsgAction.LoadStreamMsg(topicRequest));
+
+      // this.selectedStream$.subscribe({
+      //   // tslint:disable-next-line:no-shadowed-variable
+      //   next: (streamId) => {
+      //     if ( streamId && +streamId === +streamId) { return; }
+      //   }
+      // });
+    });
   }
+
+  ngOnInit(): void {}
 
   updateMessageFlags(): void {
     const unreadMessageId: number[] = [];

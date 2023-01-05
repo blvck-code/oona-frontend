@@ -13,7 +13,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {MessagingService} from './dashboard/messaging/services/messaging.service';
 import * as messagingActions from './dashboard/messaging/state/messaging.actions';
 import {getPrivateUnreadMessages, getStreamUnreadMessages} from './dashboard/messaging/state/messaging.selectors';
-import {log} from 'util';
+import {MessagesSocketService} from './dashboard/messaging/services/messages-socket.service';
 
 @Component({
   selector: 'app-root',
@@ -27,8 +27,8 @@ export class AppComponent implements OnInit {
   totalUnreadMsgSubject$ = new BehaviorSubject<number>(this.totalUnreadMsg);
   totalUnreadMsgObservable = this.totalUnreadMsgSubject$.asObservable();
 
-  privateUnread$!: Observable<number>;
   streamUnread$!: Observable<number>;
+  privateUnread$!: Observable<number>;
 
   constructor(
     private store: Store<AppState>,
@@ -36,19 +36,22 @@ export class AppComponent implements OnInit {
     private messageSrv: MessagingService,
     private route: ActivatedRoute,
     private titleService: Title,
+    private oonaSockets: OonaSocketService,
+    private msgSockets: MessagesSocketService
   ) {
   }
 
   updateState = () => {
     this.store.dispatch(new authActions.UpdateState());
-    this.store.select(getIsLoggedIn).subscribe(
-      status => {
+
+    this.store.select(getIsLoggedIn).subscribe({
+      next: (status: boolean) => {
         if (status) {
-          this.store.dispatch(new authActions.LoadPresentUsers());
-          this.store.dispatch(new authActions.LoadZulipUsers());
+          // this.getTotalCounter();
+          // this.tabNotification();
         }
       }
-    );
+    });
   }
 
   tabNotification(): void {
@@ -65,9 +68,38 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateState();
-    // this.initializeState();
-
+    this.handShakeSockets();
+    // console.log(2022);
+    // this.privateUnread$ = this.store.select(getStreamUnreadMessages);
+    // this.streamUnread$ = this.store.select(getStreamUnreadMessages);
+    //
+    // this.privateUnread$.subscribe({
+    //   next: (numb: number) => {
+    //     console.log('Unread private ==>>', numb);
+    //   }
+    // });
+    //
+    // this.streamUnread$.subscribe({
+    //   next: (numb: number) => {
+    //     console.log('Unread stream ==>>', numb);
+    //   }
+    // });
   }
+
+  handShakeSockets(): void {
+    this.store.select(getIsLoggedIn).subscribe({
+      next: (status: boolean) => {
+        if (status) {
+          this.msgSockets.messageConnect();
+          this.oonaSockets.getCurrentProfile();
+          this.oonaSockets.connect();
+          this.oonaSockets.userManagement();
+        }
+      }
+    });
+  }
+
+
 
   initializeState(): void {
     this.store.select(getIsLoggedIn).subscribe(
@@ -81,11 +113,10 @@ export class AppComponent implements OnInit {
 
           setTimeout(() => {
             this.getMessages();
-            this.getTotalCounter();
+
 
             this.streamUnread$ = this.store.select(getStreamUnreadMessages);
             this.privateUnread$ = this.store.select(getPrivateUnreadMessages);
-            this.tabNotification();
           }, 1000);
         }
       }

@@ -10,6 +10,7 @@ export const backendProtocol = 'https://';
 export const domain = '192.168.0.42';
 
 export const oonaBaseUrl = `${backendProtocol}${domain}${backendPort}`;
+export const oonaVersion = '/api/v1';
 export const jitsiURL = `${domain}${jitsiPort}`;
 
 export const oonaFrontendUrl = `${backendProtocol}${domain}${frontendPort}`;
@@ -37,10 +38,47 @@ export const environment = {
   meetingDetailsUrl: oonaBaseUrl + '/api/v1/meet/meetings/',
   changePasswordUrl: oonaBaseUrl + '/api/v1/accounts/password/change/',
 
+  // Streams
+  subscribedStream: oonaBaseUrl + oonaVersion + '/streams/get-subscribed-streams', // Get
+  getStreamID: oonaBaseUrl + oonaVersion + '/streams/get-stream-id', // Get  payload id
+  archiveStream: oonaBaseUrl + oonaVersion + '/streams/archive-a-stream', // Get payload stream id
+  getStreamTopics: oonaBaseUrl + oonaVersion + '/streams/get-topics-in-a-stream?stream_id=',  // Get append stream id in the URL
+  streamSubscribers: oonaBaseUrl + oonaVersion + '/streams/get-stream-members', // Get
+  subscribeToStream: oonaBaseUrl + oonaVersion + '/streams/subscribe-to-a-stream', // Post
+  unsubscribeToStream: oonaBaseUrl + oonaVersion + '/streams/unsubscribe-from-stream', // Post
+  subscribeSubscriptionStatus: oonaBaseUrl + oonaVersion + '/streams/get-subscription-status', // Post
+  updateSubscriptionSettings: oonaBaseUrl + oonaVersion + '/streams/update-subscription-settings', // Post
+  allStreams: oonaBaseUrl + oonaVersion + '/streams/', // Post
+  updateStream: oonaBaseUrl + oonaVersion + '/streams/update-a-stream', // Post
+  muteTopic: oonaBaseUrl + oonaVersion + '/streams/topic-muting', // Post
+  sendMessageToStream: oonaBaseUrl + oonaVersion + '/streams/send-message-to-stream', // Post
+  sendFileToStream: oonaBaseUrl + oonaVersion + '/streams/send-file-to-stream', // Post
+  addDefaultStream: oonaBaseUrl + oonaVersion + '/streams/add-default-stream', // Post
+  removeDefaultStream: oonaBaseUrl + oonaVersion + '/streams/remove-default-stream', // Post
+  deleteTopic: oonaBaseUrl + oonaVersion + '/streams/delete-a-topic', // Post
+
+  // Messages
+  sendMessage: oonaBaseUrl + '/message/send-a-message', // Post
+  uploadFile: oonaBaseUrl + '/message/upload-a-file', // Post
+  editMessage: oonaBaseUrl + '/message/edit-a-message', // Post
+  deleteMessage: oonaBaseUrl + '/message/delete-a-message', // Post
+  getMessages: oonaBaseUrl + '/message/', // Post
+  messagesMatchNarrow: oonaBaseUrl + '/message/check-if-messages-match-a-narrow', // Post
+  addEmojiReaction: oonaBaseUrl + '/message/add-emoji', // Post
+  removeEmojiReaction: oonaBaseUrl + '//message/remove-emoji', // Post
+  singleMessage: oonaBaseUrl + '/message/fetch-a-single-message?message_id=', // Get
+  idsWithRead: oonaBaseUrl + '/message/get-list-of-id-that-read?message_id=', // Get
+  messageEditHistory: oonaBaseUrl + '/message/get-a-message-edit-history', // Post
+  updatePersonalMessageFlag: oonaBaseUrl + '/message/update-personal-message-flags', // Post
+  markAllMessagesRead: oonaBaseUrl + '/message/all/read', // Get
+  markMessageInStreamRead: oonaBaseUrl + '/message/mark-messages-in-stream-as-read', // Post
+  markMessageInTopicAsRead: oonaBaseUrl + '/message/mark-messages-in-topic-as-read', // Post
+  renderMessage: oonaBaseUrl + '/message/render-message', // Post
+
   // Messaging Urls
   users: oonaBaseUrl + '/api/v1/accounts/z/user/',
   zulipUsers: oonaBaseUrl + '/api/v1/accounts/z/user/',
-  teams: oonaBaseUrl + '/api/v1/streams/all',
+  teams: oonaBaseUrl + '/api/v1/streams/get-subscribed-streams',
   subscribedStreams: oonaBaseUrl + '/api/v1/streams',
   presentUsers: oonaBaseUrl + '/api/v1/accounts/present/user/',
   userProfile: oonaBaseUrl + '/api/v1/accounts/profile/',

@@ -6,6 +6,8 @@ import {Store} from '@ngrx/store';
 import {AppState} from '../../../../../state/app.state';
 import {getPrivateUnread, getPrivateUser} from '../../../state/messaging.selectors';
 import {SingleMessageModel} from '../../../models/messages.model';
+import {PersonModel} from '../../../../models/person.model';
+import {currentUser} from '../../../../state/entities/users.entity';
 
 @Component({
   selector: 'app-individual-user-panel',
@@ -19,6 +21,8 @@ export class IndividualUserPanelComponent implements OnInit {
   currentUser: any;
   staffUsers: ZulipSingleUser[] = [];
   unreadMessagesId: number[] = [];
+
+  currentUser$: Observable<PersonModel | undefined> = this.store.select(currentUser);
 
   constructor(
     private router: Router,

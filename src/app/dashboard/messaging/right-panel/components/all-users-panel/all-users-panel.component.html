@@ -18,24 +18,24 @@
     </div>
 
     <div class="group-members-wrap">
-      <div *ngIf="!(users$ | async)" class="d-flex justify-content-center">
+      <div *ngIf="(usersLoading$ | async)" class="d-flex justify-content-center">
         <div>
           <app-loading-animation></app-loading-animation>
         </div>
       </div>
-      <div class="mb-2" *ngFor="let member of (users$ | async) | userFilter: searchText">
+      <div class="mb-2" *ngFor="let member of (allUsers$ | async) | userFilter: searchText">
         <div class="member">
           <div class="member-info" >
             <div class="member-content" (click)="goToMemberChat(member)">
-              <!--              <app-active-tag-->
-              <!--                *ngIf="member.presence.aggregated.status === 'active'"-->
-              <!--              ></app-active-tag>-->
-              <!--              <app-inactive-tag-->
-              <!--                *ngIf="member.presence.aggregated.status === 'idle'"-->
-              <!--              ></app-inactive-tag>-->
-              <!--              <app-idle-tag-->
-              <!--                *ngIf="member.presence.aggregated.status === 'offline'"-->
-              <!--              ></app-idle-tag>-->
+                <app-active-tag
+                  *ngIf="member?.presence?.aggregated?.status === 'active'"
+                ></app-active-tag>
+                <app-inactive-tag
+                  *ngIf="member?.presence?.aggregated?.status === 'idle'"
+                ></app-inactive-tag>
+                <app-idle-tag
+                  *ngIf="member?.presence?.aggregated?.status === 'offline'"
+                ></app-idle-tag>
               <img
                 src="/assets/img/user/avatarHolder.png"
                 height="32px"

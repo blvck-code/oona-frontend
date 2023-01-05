@@ -10,14 +10,16 @@ import { AuthService } from '../../../../auth/services/auth.service';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../state/app.state';
 import * as authActions from '../../../../auth/state/auth.actions';
-import {
-  getAllUsers,
-  getZulipUsers,
-} from '../../../../auth/state/auth.selectors';
+// import {
+//   getAllUsers,
+//   getZulipUsers,
+// } from '../../../../auth/state/auth.selectors';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {SingleMessageModel} from '../../models/messages.model';
 import {SinglePresentUser, UserModel, ZulipSingleUser} from '../../../../auth/models/user.model';
-import {getPrivateMessages, getPrivateUnread} from '../../state/messaging.selectors';
+// import {getPrivateMessages, getPrivateUnread} from '../../state/messaging.selectors';
+import {PersonModel} from '../../../models/person.model';
+import {getUsers, usersLoading} from '../../../state/entities/users.entity';
 
 @Component({
   selector: 'app-landing-messaging-right-panel',
@@ -44,6 +46,9 @@ export class LandingMessagingRightPanelComponent implements OnInit {
 
   endPointUnreadId: number[] = [];
 
+  allUsers$: Observable<PersonModel[]> = this.store.select(getUsers);
+  usersLoading$: Observable<boolean> = this.store.select(usersLoading);
+
   constructor(
     private messagingService: MessagingService,
     private userSocketService: OonaSocketService,
@@ -54,9 +59,8 @@ export class LandingMessagingRightPanelComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.onInitPage();
     this.unreadMsg();
-    this.privateUnreadMessages();
+    // this.privateUnreadMessages();
     this.unreadMessages();
 
     this.userSocketService.currentUsers.subscribe(
@@ -86,15 +90,15 @@ export class LandingMessagingRightPanelComponent implements OnInit {
     );
   }
 
-  privateUnreadMessages(): void {
-    this.store.select(getPrivateUnread).subscribe(
-      (messages: SingleMessageModel[]) => {
-        messages.map((message: SingleMessageModel) => {
-          this.endPointUnreadId.push(message.sender_id);
-        });
-      }
-    );
-  }
+  // privateUnreadMessages(): void {
+  //   this.store.select(getPrivateUnread).subscribe(
+  //     (messages: SingleMessageModel[]) => {
+  //       messages.map((message: SingleMessageModel) => {
+  //         this.endPointUnreadId.push(message.sender_id);
+  //       });
+  //     }
+  //   );
+  // }
 
   unreadMsg(): void {
     this.userSocketService.privateMessageCountSocket.subscribe((prvMsg) => {
@@ -117,41 +121,41 @@ export class LandingMessagingRightPanelComponent implements OnInit {
     });
   }
 
-  onInitPage(): void {
-    if (!this.allUsers  ) {
-      return;
-    } else {
-      this.store.select(getAllUsers).subscribe((users) => {
-        // Todo change this back to active users and present users
-        // const usersPresent = users?.filter((user: any) => user.presence);
-        // this.allUsers = this.newListOfUsers(usersPresent);
-        const newArray: any[] = [];
+  // onInitPage(): void {
+  //   if (!this.allUsers  ) {
+  //     return;
+  //   } else {
+  //     this.store.select(getAllUsers).subscribe((users) => {
+  //       // Todo change this back to active users and present users
+  //       // const usersPresent = users?.filter((user: any) => user.presence);
+  //       // this.allUsers = this.newListOfUsers(usersPresent);
+  //       const newArray: any[] = [];
+  //
+  //       users?.map((user: SinglePresentUser) => {
+  //         const userDetail = {
+  //           name: user.full_name,
+  //           user_id: user.user_id,
+  //           role: user.role,
+  //           counter: 0
+  //         };
+  //
+  //         this.listedUsersArray.push(userDetail);
+  //       });
+  //     });
+  //   }
+  //
+  //   this.loadedUsers = true;
+  //   this.getPrivateUnreadMsg();
+  //   // this.handleUsers();
+  // }
 
-        users?.map((user: SinglePresentUser) => {
-          const userDetail = {
-            name: user.full_name,
-            user_id: user.user_id,
-            role: user.role,
-            counter: 0
-          };
-
-          this.listedUsersArray.push(userDetail);
-        });
-      });
-    }
-
-    this.loadedUsers = true;
-    this.getPrivateUnreadMsg();
-    this.handleUsers();
-  }
-
-  handleUsers(): void {
-    this.store.select(getZulipUsers).subscribe(
-      (users: any) => {
-        this.zulipUsersSubject$.next(users.members);
-      }
-    );
-  }
+  // handleUsers(): void {
+  //   this.store.select(getZulipUsers).subscribe(
+  //     (users: any) => {
+  //       this.zulipUsersSubject$.next(users.members);
+  //     }
+  //   );
+  // }
 
   goToMemberChat(member: any): void {
     this.router.navigate(['dashboard/messaging/narrow'], {
@@ -165,29 +169,29 @@ export class LandingMessagingRightPanelComponent implements OnInit {
 
   }
 
-  getPrivateUnreadMsg(): void {
-
-    const messagesId: number[] = [];
-
-    this.store.select(getPrivateMessages).subscribe(
-      (messages: SingleMessageModel[]) => {
-        messages.map((message: SingleMessageModel) => {
-
-          if (message.flags.includes('read')){
-            return;
-          }
-
-          if (messagesId.includes(message.id)){
-            return;
-          }
-
-          this.endPointUnreadId.push(message.sender_id);
-          messagesId.push(message.id);
-
-        });
-      }
-    );
-  }
+  // getPrivateUnreadMsg(): void {
+  //
+  //   const messagesId: number[] = [];
+  //
+  //   this.store.select(getPrivateMessages).subscribe(
+  //     (messages: SingleMessageModel[]) => {
+  //       messages.map((message: SingleMessageModel) => {
+  //
+  //         if (message.flags.includes('read')){
+  //           return;
+  //         }
+  //
+  //         if (messagesId.includes(message.id)){
+  //           return;
+  //         }
+  //
+  //         this.endPointUnreadId.push(message.sender_id);
+  //         messagesId.push(message.id);
+  //
+  //       });
+  //     }
+  //   );
+  // }
 
   unreadMessages(): void {
     this.zulipUserObservable.subscribe(

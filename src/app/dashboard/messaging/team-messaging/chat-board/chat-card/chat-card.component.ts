@@ -9,6 +9,8 @@ import moment from 'moment';
 import {Observable} from 'rxjs';
 import {getAllStreams} from '../../../state/messaging.selectors';
 import {AllStreamsModel} from '../../../models/streams.model';
+import {getStreams} from '../../../../state/entities/streams.entity';
+import {SubStreamsModel} from '../../../../models/streams.model';
 
 @Component({
   selector: 'app-chat-card',
@@ -57,16 +59,16 @@ export class ChatCardComponent implements OnInit {
     });
   }
 
-  streamName(streamId: number): Observable<string> {
-    let currentStream;
-    this.store.select(getAllStreams).subscribe(
-      (streams: AllStreamsModel[]) => {
-        currentStream = streams.find(stream => stream.stream_id === streamId);
-      }
-    );
-    // @ts-ignore
-    return currentStream.name;
-  }
+  // streamName(streamId: number): Observable<string> {
+  //   let currentStream;
+  //   this.store.select(getStreams).subscribe(
+  //     (streams: SubStreamsModel[]) => {
+  //       currentStream = streams.find(stream => stream.stream_id === streamId);
+  //     }
+  //   );
+  //   // @ts-ignore
+  //   return currentStream.name;
+  // }
 
   ngOnInit(): void {
     this.store.select(getZulipProfile).subscribe(

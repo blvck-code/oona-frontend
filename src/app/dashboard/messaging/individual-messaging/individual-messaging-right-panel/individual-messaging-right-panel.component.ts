@@ -5,12 +5,14 @@ import * as authActions from '../../../../auth/state/auth.actions';
 import {environment} from '../../../../../environments/environment';
 
 import {NotificationService} from '../../../../shared/services/notification.service';
-import {getAllUsers, getLoadingUsers, getSelectedUser, getZulipUsers, getZulipUsersMembers} from '../../../../auth/state/auth.selectors';
+import {getAllUsers, getSelectedUser, getZulipUsers, getZulipUsersMembers} from '../../../../auth/state/auth.selectors';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
 import {Observable} from 'rxjs';
 import {getSubStreams} from '../../state/messaging.selectors';
 import {load} from '@syncfusion/ej2-angular-richtexteditor';
+import {PersonModel} from '../../../models/person.model';
+import {getUsers, usersLoading} from '../../../state/entities/users.entity';
 
 
 @Component({
@@ -61,26 +63,7 @@ export class IndividualMessagingRightPanelComponent implements OnInit {
   }
 
   allUsersRegistered(): void {
-    // this.messagingService.getZulipUsers().subscribe((users: { members: any[]; }) => {
-    //   const usersPresent = users.members.filter(user => user?.presence );
-    //   this.allUsers = this.messagingService.newListOfUsers(usersPresent);
-    // });
-
     this.zulipUsers$ = this.store.select(getZulipUsers);
-
-    // this.store.select(getLoadi).subscribe(
-    //   loading => {
-    //     if (!loading) {
-    //       this.store.select(getZulipUsers).subscribe(
-    //         users => {
-    //           console.log('Zulip users ===>>>', users);
-    //           const usersPresent = users?.filter((user: any) => user?.presence );
-    //           this.allUsers = this.messagingService.newListOfUsers(usersPresent);
-    //         }
-    //       );
-    //     }
-    //   }
-    // );
   }
 
   getCurrentUser(userId: number): void {

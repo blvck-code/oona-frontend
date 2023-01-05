@@ -11,15 +11,13 @@ import { MessagingService } from '../../services/messaging.service';
 import { Store } from '@ngrx/store';
 import * as messageActions from '../../state/messaging.actions';
 import { AppState } from '../../../../state/app.state';
-import {
-  getLoadingAllMsg,
-  getAllMessages,
-  getPrivateMessages, getStreamMessages, getBothMessages,
-} from '../../state/messaging.selectors';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SingleChat, SingleMessageModel } from '../../models/messages.model';
 import {OonaSocketService} from '../../services/oona-socket.service';
-import {getUserId} from '../../../../auth/state/auth.selectors';
+import * as privateMsgActions from '../../../state/actions/private.messages.actions';
+import * as streamMsgActions from '../../../state/actions/streams.messages.actions';
+import {getStreamMessages, streamMessagesLoaded, streamMessagesLoading} from '../../../state/entities/messages/stream.messages.entity';
+// import {allMessages} from '../../../state/dash.selectors';
 
 @Component({
   selector: 'app-landing-message-board',
@@ -32,7 +30,6 @@ export class LandingMessageBoardComponent implements OnInit {
   allTeams = Array();
   messagesOfStream = Array();
   initialMessageCount = 30;
-  messages$!: Observable<any>;
   loadingMessages!: Observable<boolean>;
   messageExist: any;
   editorActive = true;
@@ -51,6 +48,9 @@ export class LandingMessageBoardComponent implements OnInit {
   privateMessages = Array();
   privateMessagesSubject = new BehaviorSubject(this.privateMessages);
 
+  messages$: Observable<any> = this.store.select(getStreamMessages);
+  loading$: Observable<boolean> = this.store.select(streamMessagesLoading);
+  loaded$: Observable<boolean> = this.store.select(streamMessagesLoaded);
 
   constructor(
     private messagingService: MessagingService,
@@ -58,40 +58,71 @@ export class LandingMessageBoardComponent implements OnInit {
     private userSocketService: OonaSocketService,
     private store: Store<AppState>
   ) {
-    // this.allMemberTeams();
+
   }
 
   ngOnInit(): void {
-    this.initPage();
-    this.currentUserId$ = this.store.select(getUserId);
+    // this.initPage();
+    // this.currentUserId$ = this.store.select(getUserId);
+    this.getMessages();
+  }
+
+  getMessages(): void {
+    const firstUnread = {
+      anchor: 'first_unread',
+      num_before: 200,
+      num_after: 200,
+      narrow: [{
+        negated: false,
+        operator: 'in',
+        operand: 'home'
+      }],
+      client_gravatar: true
+    };
+
+    const newestPayload = {
+      anchor: 'newest',
+      num_before: 400,
+      num_after: 0,
+      narrow: [{
+        negated: false,
+        operator: 'in',
+        operand: 'home'
+      }],
+      client_gravatar: true
+    };
+
+    // Load both private and stream messages
+    this.store.dispatch(new privateMsgActions.LoadPrivateMsg(newestPayload));
+    this.store.dispatch(new streamMsgActions.LoadStreamMsg(firstUnread));
   }
 
   // Init Page
   initPage(): void {
     // get messages from store
-    this.store.select(getBothMessages).subscribe(
-      (messages: SingleMessageModel[]) => {
-        if (messages) {
-          this.loading = false;
-          this.scrollBottom();
-        }
-      }
-    );
-    this.messages$ = this.store.select(getBothMessages);
+    // this.store.select(getBothMessages).subscribe(
+    //   (messages: SingleMessageModel[]) => {
+    //     if (messages) {
+    //       this.loading = false;
+    //       this.scrollBottom();
+    //     }
+    //   }
+    // );
+    // this.messages$ = this.store.select(getBothMessages);
 
     // get Loading Message
-    this.loadingMessages = this.store.select(getLoadingAllMsg);
+    // this.loadingMessages = this.store.select(getLoadingAllMsg);
 
-    this.messagesLength();
+    // this.messagesLength();
     this.scrollBottom();
   }
 
-  messagesLength(): void {
-    this.store.select(getAllMessages).subscribe((messages) => {
-      // @ts-ignore
-      this.messageExist = messages?.length > 0;
-    });
-  }
+  // messagesLength(): void {
+  //   this.store.select(getAllMessages).subscribe((messages) => {
+  //     // @ts-ignore
+  //     this.messageExist = messages?.length > 0;
+  //   });
+  // }
 
   allMemberTeams(): void {
     this.messagingService.getAllTeams().subscribe((teams: any) => {
@@ -131,32 +162,32 @@ export class LandingMessageBoardComponent implements OnInit {
     });
   }
 
-  getStreamMessage(): void {
-    // get stream messages from store
-    this.store.select(getStreamMessages).subscribe((streamData) => {
-      streamData?.map((msg: SingleMessageModel) => {
-        if (this.allStreamId.includes(msg.id)) {
-          return;
-        }
-
-        this.allMessages.push(msg);
-        this.allStreamId.push(msg.id);
-      });
-    });
-
-    // get private messages from store
-    this.store.select(getPrivateMessages).subscribe((allMessages) => {
-      allMessages?.map((msg: SingleMessageModel) => {
-        if (this.allMsgId.includes(msg.id)) {
-          return;
-        }
-
-        this.allMessages.push(msg);
-        this.allMsgId.push(msg.id);
-      });
-    });
-    this.sortMessages();
-  }
+  // getStreamMessage(): void {
+  //   // get stream messages from store
+  //   this.store.select(getStreamMessages).subscribe((streamData) => {
+  //     streamData?.map((msg: SingleMessageModel) => {
+  //       if (this.allStreamId.includes(msg.id)) {
+  //         return;
+  //       }
+  //
+  //       this.allMessages.push(msg);
+  //       this.allStreamId.push(msg.id);
+  //     });
+  //   });
+  //
+  //   // get private messages from store
+  //   this.store.select(getPrivateMessages).subscribe((allMessages) => {
+  //     allMessages?.map((msg: SingleMessageModel) => {
+  //       if (this.allMsgId.includes(msg.id)) {
+  //         return;
+  //       }
+  //
+  //       this.allMessages.push(msg);
+  //       this.allMsgId.push(msg.id);
+  //     });
+  //   });
+  //   this.sortMessages();
+  // }
 
   inComingMessage(): void {
     this.userSocketService.privateMessageCountSocket.subscribe((prvMsg) => {

@@ -68,8 +68,6 @@ export class LogoutUser implements Action {
 }
 export class LogoutUserSuccess implements Action {
   readonly type = AuthActionsTypes.LOGOUT_USER_SUCCESS;
-  constructor(public payload: string) {
-  }
 }
 export class LogoutUserFail implements Action {
   readonly type = AuthActionsTypes.LOGOUT_USER_FAIL;

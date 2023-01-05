@@ -13,6 +13,7 @@ import * as authActions from '../../../auth/state/auth.actions';
 import {Router} from '@angular/router';
 import {SingleMessageModel} from '../models/messages.model';
 import * as messagingActions from '../state/messaging.actions';
+import {SocketMessageModel, StreamCounterModel} from '../../models/socket.model';
 
 const msgSocket = webSocket(messageChannel);
 
@@ -85,13 +86,18 @@ export class OonaSocketService {
     private route: Router,
     private store: Store<AppState>
   ) {
-    this.getCurrentProfile();
-    this.connect();
-    this.userManagement();
+  }
+
+  notifySound(): void {
+    let audio = new Audio();
+    audio.src = '../../../../assets/notification.mp3';
+    audio.load();
+    audio.play();
   }
 
   notifyMe(message: SingleMessageModel): void {
     console.log('Notification message ', message);
+    this.notifySound();
     if (!('Notification' in window)) {
       // Check if the browser supports notifications
       alert('This browser does not support desktop notification');
@@ -115,6 +121,60 @@ export class OonaSocketService {
 
     // At last, if the user has denied notifications, and you
     // want to be respectful there is no need to bother them anymore.
+  }
+
+  handleCounter(message: SocketMessageModel): { streamCounter: any[]; prvMsgCounter: any[] } {
+    const array = {
+      streams: [
+        {
+          message_id: 4,
+          stream_id: 4, // General
+          unread: 3,
+          topics: [
+            {
+              subject: 'new streams',
+              unread: 1
+            },
+            {
+              subject: 'topic streams',
+              unread: 1
+            },
+            {
+              subject: 'test streams',
+              unread: 1
+            },
+          ]
+        }
+      ],
+      private: []
+    };
+    const streamCounter: any[] = [];
+    const prvMsgCounter: any[] = [];
+
+    if (message.type === 'stream') {
+      console.log('Stream message ==>>>', message);
+      const counterContent = {
+        message_id: message.id,
+        stream_id: message.message.id,
+        unread: 1,
+        topics: [
+          {
+            subject: message.message.subject,
+            unread: 1
+          }
+        ]
+      };
+
+      streamCounter.push(counterContent);
+    } else if (message.type === 'private') {
+      console.log('Private message ==>>', message);
+    }
+    const counter = {
+      streamCounter,
+      prvMsgCounter
+    };
+    console.log('Counter counter ==>>', counter);
+    return counter;
   }
 
   changeNewMessageCount(newCount: any): void {
@@ -159,6 +219,14 @@ export class OonaSocketService {
     this.websocket = new WebSocket(userChannel, this.authService.getToken());
   }
 
+  disconnect(): void {
+    this.websocket?.close();
+    // @ts-ignore
+    this.websocket.onclose = (evt) => {
+      console.log('Websockets closed ==>>', evt);
+    };
+  }
+
   filterSocketData(userData: any): void {
     /*
      * Filters all active and inactive users
@@ -186,6 +254,10 @@ export class OonaSocketService {
     // }
 
     console.log('Socket data first time ===>>>', socketData);
+
+    if (socketData.message.type === 'message'){
+      this.handleCounter(socketData.message);
+    }
 
     if (socketData.message.type === 'presence'){
       // console.log('pushing user presence data');
@@ -342,7 +414,7 @@ export class OonaSocketService {
     this.newMessages = this.removeLoggedInUserMessages([...this.messagesToStreams, ...this.messagesInPrivate]);
   }
 
-  private getCurrentProfile(): any {
+  getCurrentProfile(): any {
     this.messagingService.currentUserProfile().subscribe( (profile: any) => {
       this.loggedInUserProfile = profile.zulip;
     });

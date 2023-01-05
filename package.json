@@ -31,6 +31,7 @@
     "@ngneat/hot-toast": "^4.1.0",
     "@ngneat/overview": "^3.0.0",
     "@ngrx/effects": "^13.2.0",
+    "@ngrx/entity": "^14.3.2",
     "@ngrx/store": "^13.2.0",
     "@ngrx/store-devtools": "^13.2.0",
     "@syncfusion/ej2-angular-base": "^20.3.47",

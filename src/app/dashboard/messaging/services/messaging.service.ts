@@ -42,7 +42,7 @@ export class MessagingService {
   allUsers = env.allUsers;
   userProfile = env.userProfile;
   streamMessages = env.streamMessages;
-  sendStreamMessageURL = env.sendStreamMessageURL;
+  sendStreamMessageURL = env.sendMessageToStream;
   sendStreamMessageWithFileURL = oonaBaseUrl + '/api/v1/streams/file';
   sendIndividualMessageWithFileURL = env.sendIndividualMessageWithFileURL;
   individualMessage = env.individualMessage;
@@ -462,39 +462,28 @@ export class MessagingService {
   }
 
   handleGetStreamMessages(): void {
-    this.store.select(getStreamMsgStatus).subscribe(
-      (status: boolean) => {
-
-        if (status) {
-          return;
-        }
-
-        this.store.select(getAllStreams).subscribe(
-          (streams: AllStreamsModel[]) => {
-            streams?.map((stream: any) => {
-
-              const streamDetail = {
-                anchor: 'newest',
-                num_before: 30,
-                num_after: 0,
-                type: [
-                  {
-                    operator: 'stream',
-                    operand: stream?.name,
-                  },
-                ],
-              };
-              this.store.dispatch(new messagingActions.LoadStreamMessage(streamDetail));
-            });
-          }
-        );
-
+    this.store.select(getAllStreams).subscribe(
+      (streams: AllStreamsModel[]) => {
+        streams?.map((stream: any) => {
+          const streamDetail = {
+            anchor: 'newest',
+            num_before: 30,
+            num_after: 0,
+            type: [
+              {
+                operator: 'stream',
+                operand: stream?.name,
+              },
+            ],
+          };
+          this.store.dispatch(new messagingActions.LoadStreamMessage(streamDetail));
+        });
       }
     );
-
   }
 
   handleGetPrivateMessages(): void {
+    console.log('Getting private message');
     this.store.select(getZulipUsers).subscribe(
       (users: any) => {
         users?.map((user: any) => {

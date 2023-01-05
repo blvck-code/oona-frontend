@@ -8,7 +8,7 @@ import { environment as env } from '../../../../environments/environment';
 })
 export class ConferenceService {
   meetingDetailsUrl = env.meetingDetailsUrl;
-  usersUrl = env.getUserUrl;
+  // usersUrl = env.getUserUrl;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -18,9 +18,9 @@ export class ConferenceService {
       this.authService.getHeaders()
     );
   }
-  getAllUsers(): any {
-    return this.http.get(this.usersUrl, this.authService.getHeaders());
-  }
+  // getAllUsers(): any {
+  //   return this.http.get(this.usersUrl, this.authService.getHeaders());
+  // }
   inviteMembers(meetingData: any, id: any): any {
     return this.http.patch(
       this.meetingDetailsUrl + id + '/',

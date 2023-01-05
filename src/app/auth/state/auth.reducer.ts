@@ -1,6 +1,7 @@
 import { UserModel } from '../models/user.model';
 import * as authActions from './auth.actions';
 import {load} from '@syncfusion/ej2-angular-richtexteditor';
+import {ProfileModel} from '../models/zulip.model';
 
 export interface UserInfoState {
   first_name: string | null;
@@ -17,9 +18,9 @@ export interface AuthState {
     isLoading: boolean;
   };
   userInfo: UserInfoState | null;
-  zulipProfile: null;
+  zulipProfile: ProfileModel | null;
   users: {
-    loading: boolean,
+    loaded: boolean,
     all: any;
     zulipUsers: any;
     selectedUser: any;
@@ -35,7 +36,7 @@ export const initialState: AuthState = {
   userInfo: null,
   zulipProfile: null,
   users: {
-    loading: true,
+    loaded: false,
     all: null,
     zulipUsers: null,
     selectedUser: null,
@@ -77,15 +78,7 @@ export function authReducer(state = initialState, action: any): AuthState {
     // Login Error
     case authActions.AuthActionsTypes.LOGIN_USER_FAIL:
     case authActions.AuthActionsTypes.LOGOUT_USER_SUCCESS:
-      return {
-        ...state,
-        loginStatus: {
-          isLoggedIn: false,
-          isLoading: false,
-        },
-        userInfo: null,
-        message: action.payload.message,
-      };
+      return state = initialState;
     case authActions.AuthActionsTypes.LOGOUT_USER_FAIL:
       return {
         ...state,
@@ -117,7 +110,7 @@ export function authReducer(state = initialState, action: any): AuthState {
         ...state,
         users: {
           ...state.users,
-          loading: false,
+          loaded: true,
           all: action.payload.members,
         },
       };
@@ -135,7 +128,7 @@ export function authReducer(state = initialState, action: any): AuthState {
           ...state,
           users: {
             ...state.users,
-            loading: false,
+            loaded: false,
             zulipUsers: action.payload.members
           }
         };

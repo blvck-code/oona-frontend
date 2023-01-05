@@ -5,12 +5,13 @@ import {Router} from '@angular/router';
 // NgRx
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../state/app.state';
-import * as authActions from '../../../auth/state/auth.actions'
-import {getUserDetails} from '../../../auth/state/auth.selectors';
+import {getUserDetails, getZulipProfile, getZulipProfileInfo} from '../../../auth/state/auth.selectors';
 import {Observable} from 'rxjs';
 import {ToastrService} from 'ngx-toastr';
 import {SharedService} from '../../services/shared.service';
 import {BROWSER_STORAGE} from '../../../auth/storage';
+import {OonaSocketService} from '../../../dashboard/messaging/services/oona-socket.service';
+import * as authActions from '../../../auth/state/auth.actions';
 
 @Component({
   selector: 'app-navbar',
@@ -18,24 +19,23 @@ import {BROWSER_STORAGE} from '../../../auth/storage';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
-  userDetails$!: Observable<any>;
+  userDetails$: Observable<any> = this.store.select(getUserDetails);
+  currentUser$: Observable<any> = this.store.select(getZulipProfileInfo);
+
   @Input() public parentTitle!: string;
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private store: Store<AppState>,
+    private oonaSockets: OonaSocketService,
     private sharedSrv: SharedService,
     @Inject(BROWSER_STORAGE) private storage: Storage
   ) { }
 
   ngOnInit(): void {
-    this.getUserInfo();
   }
 
-  getUserInfo(): void{
-    this.userDetails$ = this.store.select(getUserDetails);
-  }
 
   logoutUser(): void {
     // this.store.dispatch(new authActions.LogoutUser());
@@ -47,10 +47,12 @@ export class NavbarComponent implements OnInit {
         this.storage.removeItem('u?');
         localStorage.clear();
         this.router.navigate(['/']);
+        // this.store.dispatch(new authActions.LogoutUserSuccess());
+        this.oonaSockets.disconnect();
         this.sharedSrv.showNotification('Logout successful.', 'success');
       },
       error: () => {
-        this.sharedSrv.showNotification('Logged out successful.', 'error');
+        this.sharedSrv.showNotification('Logged out failed.', 'error');
       }
     });
   }

@@ -1,4 +1,4 @@
-import {createFeatureSelector, createSelector} from "@ngrx/store";
+import {createFeatureSelector, createSelector} from '@ngrx/store';
 import {AuthState} from './auth.reducer';
 import {ZulipSingleUser} from '../models/user.model';
 
@@ -15,6 +15,12 @@ export const getZulipProfile = createSelector(
   getAuthState,
   state => state.zulipProfile
 );
+
+export const getZulipProfileInfo = createSelector(
+  getZulipProfile,
+  zulipProfile => zulipProfile?.zulip
+);
+
 
 
 
@@ -44,9 +50,9 @@ export const getIsAuthLoading = createSelector(
   state => state.loginStatus.isLoading
 );
 
-export const getLoadingUsers = createSelector(
+export const usersLoaded = createSelector(
   getAuthState,
-  state => state.users.loading
+  state => state.users.loaded
 );
 
 export const getZulipUsers = createSelector(

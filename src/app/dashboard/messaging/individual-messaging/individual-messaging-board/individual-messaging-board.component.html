@@ -1,9 +1,9 @@
 <div class="individual-messaging-container">
   <div class="messaging-member-title">
     <img src="assets/img/user/avatarHolder.png" alt="...">
-    <app-idle-tag class="ms-n5 circle" *ngIf="(selectedUser$ | async)?.presence?.aggregated?.status === 'idle'"></app-idle-tag>
-    <app-active-tag class="ms-n5 circle" *ngIf="(selectedUser$ | async)?.presence?.aggregated?.status === 'active'"></app-active-tag>
-    <app-inactive-tag class="ms-n5 circle" *ngIf="(selectedUser$ | async)?.presence?.aggregated?.status === 'offline'"></app-inactive-tag>
+    <app-idle-tag class="ms-n5 circle" *ngIf="(currentUser$ | async)?.presence?.aggregated?.status === 'idle'"></app-idle-tag>
+    <app-active-tag class="ms-n5 circle" *ngIf="(currentUser$ | async)?.presence?.aggregated?.status === 'active'"></app-active-tag>
+    <app-inactive-tag class="ms-n5 circle" *ngIf="(currentUser$ | async)?.presence?.aggregated?.status === 'offline'"></app-inactive-tag>
     <p class="member-name p-2">{{ (currentUser$ | async)?.full_name }}</p>
   </div>
 

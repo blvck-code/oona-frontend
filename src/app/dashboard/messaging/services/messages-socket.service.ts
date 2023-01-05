@@ -25,18 +25,7 @@ export class MessagesSocketService {
 
   constructor(
     private authService: AuthService,
-  ) {
-    this.messageConnect();
-    // this.messageCountManagement();
-
-    // this.messages = <Subject<any>>this.connect(messageChannel).pipe(
-    //   map((response: MessageEvent): any => {
-    //     console.log('Message response ===>>', response.data);
-    //     let data = JSON.parse(response.data);
-    //     return data;
-    //   })
-    // );
-  }
+  ) {}
 
   messageConnect(): any {
 
@@ -45,10 +34,10 @@ export class MessagesSocketService {
     const url: string = env.messageChannel;
     const messageChannelURL = protocol + url;
 
-    // console.log('userChannel URL ===>>>', messageChannelURL);
+    console.log('userChannel URL ===>>>', messageChannelURL);
 
     this.websocket = new WebSocket(messageChannelURL, this.authService.getToken());
-    // console.log('Messages sockets successfully connected: ', messageChannelURL);
+    console.log('Messages sockets successfully connected: ', messageChannelURL);
 
   }
 

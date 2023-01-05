@@ -8,7 +8,9 @@ import {AppState} from '../../../state/app.state';
 import {getAllUsers, getUserDetails, getZulipUsers} from '../../../auth/state/auth.selectors';
 import {firmName} from '../../../../environments/environment';
 import {MessagingService} from '../services/messaging.service';
-import {BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
+import * as privateMshActions from '../../state/actions/private.messages.actions';
+import {privateMessagesLoaded} from '../../state/entities/messages/private.messages.entity';
 
 @Component({
   selector: 'app-all-private-messaging',
@@ -19,6 +21,8 @@ export class AllPrivateMessagingComponent implements OnInit {
   initialMessageCount = 10;
   operand: string | null | undefined = '';
 
+  loaded$: Observable<boolean> = this.store.select(privateMessagesLoaded);
+
   constructor(
     private userSocketService: OonaSocketService,
     private store: Store<AppState>,
@@ -28,6 +32,14 @@ export class AllPrivateMessagingComponent implements OnInit {
   ngOnInit(): void {
     this.changeMessageCount();
     this.handlePrivateUnread();
+
+    this.loaded$.subscribe({
+      next: (status) => {
+        if (!status) {
+          this.getPrivateMessages();
+        }
+      }
+    });
   }
 
   // Todo update this messages flad to read on component load
@@ -49,29 +61,33 @@ export class AllPrivateMessagingComponent implements OnInit {
     this.userSocketService.changeNewMessageCount(this.userSocketService.newMessageCount);
   }
 
-  // onInitHandler(): void {
-  //   document.title = `Private messages - ${firmName} - Oona`;
-  //   this.store.select(getUserDetails).subscribe(
-  //     data => {
-  //       this.operand = data?.email;
-  //     }
-  //   );
-  //
-  //   // Message parameters
-  //   const streamDetail = {
-  //     use_first_unread_anchor: true,
-  //     apply_markdown: false,
-  //     num_before: this.initialMessageCount,
-  //     type: [
-  //       {
-  //         operator: 'pm-with',
-  //         // change to user.email
-  //         operand: this.operand,
-  //       }
-  //     ]
-  //   };
-  //
-  //   // fetch from server
-  //   this.store.dispatch(new messagingActions.LoadPrivateMessages(streamDetail));
-  // }
+  private getPrivateMessages(): void {
+    const firstUnread = {
+      anchor: 'first_unread',
+      num_before: 200,
+      num_after: 200,
+      narrow: [{
+        negated: false,
+        operator: 'is',
+        operand: 'private'
+      }],
+      client_gravatar: true
+    };
+
+    const newestPayload = {
+      anchor: 'newest',
+      num_before: 400,
+      num_after: 0,
+      narrow: [{
+        negated: false,
+        operator: 'is',
+        operand: 'private'
+      }],
+      client_gravatar: true
+    };
+
+    this.store.dispatch(new privateMshActions.LoadPrivateMsg(firstUnread));
+    this.store.dispatch(new privateMshActions.LoadPrivateMsg(newestPayload));
+
+  }
 }

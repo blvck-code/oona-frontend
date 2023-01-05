@@ -34,7 +34,7 @@ export class AuthEffects {
     ofType<authActions.LogoutUser>(authActions.AuthActionsTypes.LOGOUT_USER),
     mergeMap(() =>
       this.authSrv.logoutUser().pipe(
-        map((msg: any) => new authActions.LogoutUserSuccess(msg)),
+        map(() => new authActions.LogoutUserSuccess()),
         catchError((err: any) => of(new authActions.LogoutUserFail(err)))
       )
     )

@@ -1,4 +1,4 @@
-<div class="chart-item-container" [class.my-message]="messageDetail.sender_id === (userId$ | async)" >
+<div class="chart-item-container my-message" [class.my-message]="messageDetail.sender_id === (userId$ | async)" >
   <div class="chart-item-profile">
     <img
       src="/assets/img/placeholder.jpg"
@@ -13,7 +13,7 @@
       <div class="chart-item-content">
         <div *ngIf="messageDetail.type === 'stream' " class="chart-item-title" (click)="navigateSubject(messageDetail)">
           <p class="chat-tag">
-            {{ streamName(messageDetail.stream_id) }} #{{ messageDetail.subject | titlecase }}
+<!--            {{ streamName(messageDetail.stream_id) }} #{{ messageDetail.subject | titlecase }}-->
           </p>
         </div>
         <div *ngIf="messageDetail.type === 'private' " class="chart-item-title" (click)="navigateSubject(messageDetail)">
