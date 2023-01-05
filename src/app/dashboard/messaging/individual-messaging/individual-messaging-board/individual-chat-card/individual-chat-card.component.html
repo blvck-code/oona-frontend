@@ -1,4 +1,4 @@
-<div class="message-container">
+<div (click)="toggleComments()" class="message-container">
   <div class="message-wrap" id="initial-message">
     <div class="message-card">
       <div class="message-sender-img">
@@ -12,7 +12,7 @@
        <div class="message-card-content">
          <showdown class="chat-msg" [value]="messageDetail?.content"></showdown>
        </div>
-       <div class="message-card-footer">
+       <div *ngIf="showComment" class="message-card-footer">
          <div class="message-card-icon-footer">
            <span class="icon">😄</span>
            <span class="numbers">123</span>
@@ -29,7 +29,7 @@
      </div>
     </div>
   </div>
-  <app-individual-chat-card-response></app-individual-chat-card-response>
+  <app-individual-chat-card-response *ngIf="showComment" ></app-individual-chat-card-response>
 </div>
 
 

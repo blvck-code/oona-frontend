@@ -1,19 +1,22 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessagingService } from '../../services/messaging.service';
 
 import TurndownService from 'turndown';
-import {OonaSocketService} from '../../services/oona-socket.service';
-import {getSelectedStreamMessages, getSelectedTopic} from '../../state/messaging.selectors';
-import {Store} from '@ngrx/store';
-import {AppState} from '../../../../state/app.state';
-import {Observable} from 'rxjs';
-import {getSelectedStream, getStreams} from '../../../state/entities/streams.entity';
-import {filteredStreamMsg, streamMessagesLoaded, streamMessagesLoading} from '../../../state/entities/messages/stream.messages.entity';
+import { OonaSocketService } from '../../services/oona-socket.service';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../../state/app.state';
+import { Observable } from 'rxjs';
+import {
+  getSelectedStream,
+  getSelectedTopic,
+  getStreams,
+} from '../../../state/entities/streams.entity';
+import {
+  filteredStreamMsg,
+  streamMessagesLoaded,
+  streamMessagesLoading,
+} from '../../../state/entities/messages/stream.messages.entity';
 
 const turndownService = new TurndownService();
 
@@ -30,7 +33,7 @@ export class ChatBoardComponent implements OnInit {
   messageTopic: any;
   filteredStreamTopic = '';
   latItemTopic: any;
-  initialMessageCount =  30;
+  initialMessageCount = 30;
   topicSelected = '';
   loading = true;
   currentUserId$!: Observable<number>;
@@ -50,8 +53,7 @@ export class ChatBoardComponent implements OnInit {
     private router: Router,
     private userSocketService: OonaSocketService,
     private store: Store<AppState>
-  ) {
-  }
+  ) {}
 
   getStreamMessages(): void {
     const topicRequest = {
@@ -62,15 +64,15 @@ export class ChatBoardComponent implements OnInit {
         {
           negated: false,
           operator: 1,
-          operand: 'private' // stream id
+          operand: 'private', // stream id
         },
         {
           negated: false,
           operator: 'topic',
-          operand: 'new streams' // topic name
-        }
+          operand: 'new streams', // topic name
+        },
       ],
-      client_gravatar: true
+      client_gravatar: true,
     };
     // this.store.dispatch(new msgActions.LoadMessage(topicRequest));
 
@@ -121,24 +123,26 @@ export class ChatBoardComponent implements OnInit {
     // });
   }
 
-  storeStreamMessages(): void {
-    this.selectedStreamMessages$ = this.store.select(getSelectedStreamMessages);
-    this.store.select(getSelectedStreamMessages).subscribe(
-      () => {
-          this.loading = false;
-      }
-    );
-  }
-
+  // storeStreamMessages(): void {
+  //   this.selectedStreamMessages$ = this.store.select(getSelectedStreamMessages);
+  //   this.store.select(getSelectedStreamMessages).subscribe(() => {
+  //     this.loading = false;
+  //   });
+  // }
 
   ngOnInit(): void {
+    this.selectedTopic$.subscribe({
+      next: (resp) => {
+        this.messageTopic = resp;
+      },
+    });
     this.getStreamMessages();
     this.getStreamName();
     this.messages$.subscribe({
       next: (messages) => {
         console.log(messages);
-      }
-    })
+      },
+    });
   }
 
   getStreamName(): void {
@@ -152,35 +156,19 @@ export class ChatBoardComponent implements OnInit {
                   this.streamName = stream.name;
                 }
               });
-            }
+            },
           });
         }
-      }
+      },
     });
-    // this.store.select(getSelectedStreamId).subscribe(
-    //   (streamId: number | null) => {
-    //
-    //     if (streamId) {
-    //       this.store.select(getAllStreams).subscribe(
-    //         (streams: AllStreamsModel[]) => {
-    //           streams.map((stream: AllStreamsModel) => {
-    //
-    //             if (+stream.stream_id === streamId ) {
-    //               this.streamName = stream.name;
-    //             }
-    //
-    //           });
-    //         }
-    //       );
-    //     }
-    //
-    //   }
-    // );
   }
 
   streamMessages(streamParamDetail: any): void {
     this.messagingService.getAllTeams().subscribe((teams: any) => {
-      const streamName = teams.streams.find((team: { stream_id: any; }) => team?.stream_id === Number(streamParamDetail.id)).name;
+      const streamName = teams.streams.find(
+        (team: { stream_id: any }) =>
+          team?.stream_id === Number(streamParamDetail.id)
+      ).name;
       this.streamName = streamName;
 
       const streamDetail = {
@@ -215,9 +203,8 @@ export class ChatBoardComponent implements OnInit {
             block: 'end',
             inline: 'nearest',
           });
-          const lastItem = this.messagesOfStream[
-          this.messagesOfStream.length - 1
-            ];
+          const lastItem =
+            this.messagesOfStream[this.messagesOfStream.length - 1];
           this.latItemTopic = lastItem.subject;
           this.messagingService.changeEditorTopic(lastItem.subject);
 
@@ -228,7 +215,6 @@ export class ChatBoardComponent implements OnInit {
         }
       );
     });
-
   }
 
   sortMessageDates(): void {
@@ -260,7 +246,7 @@ export class ChatBoardComponent implements OnInit {
       () => {
         // re-fetch messages with pm
         const streamId = window.location.href.split('id=')[1];
-        this.streamMessages({id: streamId});
+        this.streamMessages({ id: streamId });
       },
       (error: any) => {
         console.log('error', error);
@@ -269,6 +255,7 @@ export class ChatBoardComponent implements OnInit {
   }
 
   setMessageTopic(messageTopic: any): void {
+    console.log('Message topic ==>>', messageTopic);
     this.messageTopic = messageTopic;
   }
 
@@ -315,17 +302,4 @@ export class ChatBoardComponent implements OnInit {
       }
     );
   }
-
-  // private filterMessagesByTopic(streamTopic: string): void {
-  //
-  //   if (streamTopic !== ''){
-  //     this.filteredMessagesOfStream = this.messagesOfStream.filter(
-  //       (message: { subject: string }) =>
-  //         message.subject === streamTopic
-  //     );
-  //   }else{
-  //     this.filteredMessagesOfStream = this.messagesOfStream;
-  //   }
-  //   this.change.detectChanges();
-  // }
 }

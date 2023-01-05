@@ -8,8 +8,8 @@ import {
 } from '@angular/core';
 import { Editor, Toolbar, Validators, toHTML } from 'ngx-editor';
 import { FormControl, FormGroup, NgForm } from '@angular/forms';
-import { MessagingService } from '../../../services/messaging.service';
-import { NotificationService } from '../../../../../shared/services/notification.service';
+import { MessagingService } from '../../services/messaging.service';
+import { NotificationService } from '../../../../shared/services/notification.service';
 import { Router } from '@angular/router';
 import {
   ToolbarService,
@@ -17,31 +17,26 @@ import {
   ImageService,
   HtmlEditorService,
 } from '@syncfusion/ej2-angular-richtexteditor';
-import { ChatBoardService } from '../chat-board.service';
+// import { ChatBoardService } from 'chat-board.service';
 import { Store } from '@ngrx/store';
-import { AppState } from '../../../../../state/app.state';
-import {
-  getSelectedTopic,
-  selectedStream,
-  selectedStreamName,
-  selectedTopic,
-} from '../../../../state/entities/streams.entity';
+import { AppState } from '../../../../state/app.state';
+
 import { Observable } from 'rxjs';
-import { SharedService } from '../../../../../shared/services/shared.service';
+import { SharedService } from '../../../../shared/services/shared.service';
+import { selectedUserId } from '../../../state/entities/users.entity';
 
 @Component({
-  selector: 'app-text-editor',
+  selector: 'app-text-editor-private',
   templateUrl: './text-editor.component.html',
   styleUrls: ['./text-editor.component.scss'],
   providers: [ToolbarService, LinkService, ImageService, HtmlEditorService],
 })
-export class TextEditorComponent implements OnInit, OnDestroy {
+export class TextEditorComponentPrivate implements OnInit, OnDestroy {
   @Output() messageContent = new EventEmitter<any>();
   @Output() newTopic = new EventEmitter<any>();
   @Output() streamFile = new EventEmitter<any>();
 
-  selectedStream$: Observable<any> = this.store.select(selectedStreamName);
-  selectedTopic$: Observable<string> = this.store.select(selectedTopic);
+  selectedUser$: Observable<number | null> = this.store.select(selectedUserId);
 
   @Input() messageTopic: any;
   @Input() streamName: any;
@@ -63,7 +58,7 @@ export class TextEditorComponent implements OnInit, OnDestroy {
 
   constructor(
     private messagingService: MessagingService,
-    private chatBoardService: ChatBoardService,
+    // private chatBoardService: ChatBoardService,
     private sharedSrv: SharedService,
     private router: Router,
     private store: Store<AppState>
@@ -120,37 +115,12 @@ export class TextEditorComponent implements OnInit, OnDestroy {
   toggled = false;
 
   ngOnInit(): void {
-    this.selectedTopic$.subscribe({
-      next: (resp) => {
-        console.log('Selected topic ==>>', resp);
-      },
-    });
-    this.selectedStream$.subscribe({
-      next: (resp) => {
-        console.log('Selected stream ==>>', resp);
-      },
-    });
-
-    this.messagingService.currentEditorTopic.subscribe((editorTopic) => {
-      this.editorTopic = editorTopic; // always get the current value
-    });
-    this.messagingService.currentMemberChatDetail.subscribe((member) => {
-      this.memberDetail = member;
-    });
     this.loggedInProfile();
     this.editor = new Editor();
     this.editor.commands.focus().exec();
 
     this.newFileGroup = new FormGroup({
       selectedFile: new FormControl(this.selectedFile),
-    });
-
-    this.store.select(getSelectedTopic).subscribe((topicName: string) => {
-      if (topicName) {
-        this.currentTopic = topicName;
-      } else {
-        this.currentTopic = 'new streams';
-      }
     });
   }
 

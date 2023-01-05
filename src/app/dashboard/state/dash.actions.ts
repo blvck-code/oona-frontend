@@ -4,6 +4,10 @@ export enum DashActions {
   LOAD_SUB_STREAMS_SUCCESS = 'dash/loadSubStreamsSuccess',
   LOAD_SUB_STREAMS_FAIL = 'dash/loadSubStreamsFail',
 
+  // Update Counter
+  UPDATE_STREAM_COUNTER = 'dash/updateStreamCounter',
+  UPDATE_TOPIC_COUNTER = 'dash/updateTopicCounter',
+
   // Create Stream
   CREATE_STREAM = 'dash/createStream',
 
@@ -38,9 +42,20 @@ export enum DashActions {
   LOAD_PRIVATE_MESSAGE_SUCCESS = 'dash/loadPrivateMsgSuccess',
   LOAD_PRIVATE_MESSAGE_FAIL = 'dash/loadPrivateMsgFail',
 
+  // Update Message Flag
+  UPDATE_MESSAGE_FLAG = 'dash/updateMessageFlag',
+
   // Stream messages
   LOAD_STREAM_MESSAGE = 'dash/loadStreamMsg',
   LOAD_STREAM_MESSAGE_SUCCESS = 'dash/loadStreamMsgSuccess',
   LOAD_STREAM_MESSAGE_FAIL = 'dash/loadStreamMsgFail',
 
+  // Create Stream Message
+  CREATE_STREAM_MESSAGE = 'dash/createStreamMessage',
+  CREATE_STREAM_MESSAGE_SUCCESS = 'dash/createStreamMessageSuccess',
+  CREATE_STREAM_MESSAGE_FAIL = 'dash/createStreamMessageFail',
+
+  // Socket Stream Message
+  SOCKET_STREAM_MESSAGE = 'dash/socketStreamMessage',
+  SOCKET_PRIVATE_MESSAGE = 'dash/socketPrivateMessage',
 }

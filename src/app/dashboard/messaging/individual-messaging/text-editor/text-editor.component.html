@@ -1,22 +1,7 @@
 <div class="text-editor">
-  <p class="message-topic" *ngIf="selectedStream$| async">
-    <span class="editor-message me-1">Message </span>
-    <span class="editor-stream">#{{ (selectedStream$ | async)?.name }}</span>
-    <span *ngIf="(selectedTopic$ | async)">
-    <i class="fa fa-solid fa-chevron-right" aria-hidden="true"></i>
-      <span>
-        <input
-          type="text"
-          class="border-0 shadow-none"
-          [placeholder]="(selectedTopic$ | async)"
-          (keyup)="onKey($event)"
-          name="first"
-        /></span>
-    </span>
-  </p>
 
   <div class="parent">
-    <form #form="ngForm" (ngSubmit)="onSubmit(form)" class="text-editor-container layer1">
+    <form #form="ngForm" class="text-editor-container layer1">
       <div class="form-group ">
         <ejs-richtexteditor
           #fromRTE

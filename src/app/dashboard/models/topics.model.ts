@@ -5,12 +5,12 @@ export interface TopicResponseModel {
     topics: TopicsModel[];
   };
   oz: {
-    stream_id: number
+    stream_id: number;
   };
 }
 
 export interface TopicsModel {
   name: string;
   max_id: number;
-  unread?: number;
+  unread: number;
 }

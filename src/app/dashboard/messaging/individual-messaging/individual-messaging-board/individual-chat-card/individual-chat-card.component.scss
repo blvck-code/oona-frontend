@@ -3,6 +3,23 @@
   position: relative;
   margin-bottom: 15px;
 
+  &.my-message {
+    display: flex;
+    justify-content: flex-end;
+
+    .chart-item-profile {
+      display: none;
+    }
+
+    .chart-container-wrap {
+      margin-right: 15px;
+      //width: 50%;
+      //max-width: 70%;
+      //border-bottom-right-radius: 0px;
+      //border-bottom-left-radius: 10px;
+    }
+  }
+
   .message-wrap {
     max-width: 60%;
     min-width: 400px;

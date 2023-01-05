@@ -1,7 +1,11 @@
-import {Action} from '@ngrx/store';
+import { Action } from '@ngrx/store';
 import { DashActions } from '../dash.actions';
-import {SubscribersResponseModel, SubStreamsModel, SubStreamsResponseModel} from '../../models/streams.model';
-import {TopicResponseModel} from '../../models/topics.model';
+import {
+  SubscribersResponseModel,
+  SubStreamsModel,
+  SubStreamsResponseModel,
+} from '../../models/streams.model';
+import { TopicResponseModel } from '../../models/topics.model';
 
 // Subscribed Streams
 export class LoadSubStreams implements Action {
@@ -19,36 +23,30 @@ export class LoadSubStreamsFail implements Action {
 // Load Topics
 export class LoadTopics implements Action {
   readonly type = DashActions.LOAD_TOPICS;
-  constructor(public payload: TopicResponseModel) {
-  }
+  constructor(public payload: TopicResponseModel) {}
 }
 // Create Stream
 export class CreateStream implements Action {
   readonly type = DashActions.CREATE_STREAM;
-  constructor(public payload: SubStreamsModel) {
-  }
+  constructor(public payload: SubStreamsModel) {}
 }
 // Selected stream
 export class SelectedStream implements Action {
   readonly type = DashActions.SELECTED_STREAM;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 export class SelectedTopic implements Action {
   readonly type = DashActions.SELECTED_TOPIC;
-  constructor(public payload: string) {
-  }
+  constructor(public payload: string) {}
 }
 // Stream subscribers
 export class StreamSubscribers implements Action {
   readonly type = DashActions.STREAM_SUBSCRIBERS;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 export class LoadSubscribers implements Action {
   readonly type = DashActions.LOAD_SUBSCRIBERS;
-  constructor(public streamName: string, public streamId: string | number) {
-  }
+  constructor(public streamName: string, public streamId: string | number) {}
 }
 export class LoadSubscribersSuccess implements Action {
   readonly type = DashActions.LOAD_SUBSCRIBERS_SUCCESS;
@@ -58,11 +56,18 @@ export class LoadSubscribersSuccess implements Action {
 }
 export class LoadSubscribersFail implements Action {
   readonly type = DashActions.LOAD_SUBSCRIBERS_FAIL;
-  constructor(public payload: any) {
-  }
+  constructor(public payload: any) {}
 }
 
-
+// Update Counter
+export class UpdateStreamCounter implements Action {
+  readonly type = DashActions.UPDATE_STREAM_COUNTER;
+  constructor(public payload: SubStreamsModel) {}
+}
+export class UpdateTopicCounter implements Action {
+  readonly type = DashActions.UPDATE_STREAM_COUNTER;
+  constructor(public payload: any) {}
+}
 
 export type StreamActions =
   // Sub Streams
@@ -80,4 +85,7 @@ export type StreamActions =
   | SelectedStream
   | SelectedTopic
   // Create stream
-  | CreateStream;
+  | CreateStream
+  // Update Counter
+  | UpdateStreamCounter
+  | UpdateTopicCounter;

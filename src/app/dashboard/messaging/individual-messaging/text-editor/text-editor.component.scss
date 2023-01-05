@@ -1,0 +1,88 @@
+.text-editor-container{
+  border: none;
+}
+
+.text-editor-menu{
+  //width: 10px !important;
+}
+.submit-btn{
+  width: 100px;
+}
+.message-topic{
+  display: flex;
+  align-items: center;
+  height: 30px;
+  margin-bottom: 0;
+  padding: 8px 15px;
+  border-bottom: none;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  background-color: #ecf4fb;
+  color: #2D1A14;
+  font-weight: 500;
+
+  .editor-message,
+  .editor-stream {
+    font-size: 14px;
+  }
+
+  .fa {
+    font-size: 10px;
+    margin: 0 5px;
+  }
+
+  input {
+    background-color: transparent;
+    font-size: 14px;
+
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+  }
+}
+
+.send-message-btn-container {
+  button {
+    position: absolute;
+    top: 1px;
+    right: 5px;
+    height: 34px;
+  }
+}
+
+.e-content{
+  overflow-y: scroll;
+  height: 100px !important;
+}
+
+.message-topic input::placeholder{
+  color: #2D1A14;
+}
+.child {
+  cursor: pointer;
+  position: absolute;
+  top: 6px;
+  right: 130px;
+}
+
+.child-file {
+  cursor: pointer;
+  position: absolute;
+  top: 3px;
+  right: 155px;
+}
+
+.parent {
+  position: relative;
+}
+.e-control{
+  //background: red;
+}
+
+.e-rte-img-dialog{
+  top: -450px !important;
+}
+.file-share {
+box-shadow: none;
+}

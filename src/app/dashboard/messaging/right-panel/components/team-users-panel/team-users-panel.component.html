@@ -28,6 +28,7 @@
               />
               <div class="member-name">
                 <span>{{ member.full_name }}</span>
+                <span *ngIf="unreadMessagesId.includes(member.user_id)" class="new-message">New message</span>
               </div>
 <!--              <span class="member-role role-team-leader">-->
 <!--              Team leader-->
@@ -72,6 +73,7 @@
               />
               <div class="member-name">
                 <span>{{ member.full_name }}</span>
+                <span *ngIf="unreadMessagesId.includes(member.user_id)" class="new-message">New message</span>
               </div>
             </div>
             <div class="member-option" >

@@ -1,27 +1,33 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Document } from '@contentful/rich-text-types';
 import { BLOCKS, MARKS } from '@contentful/rich-text-types';
-import {Router} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {AppState} from '../../../../../state/app.state';
-import {getUserDetails, getZulipProfile} from '../../../../../auth/state/auth.selectors';
+import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../../../state/app.state';
+import {
+  getUserDetails,
+  getUserId,
+  getZulipProfile,
+} from '../../../../../auth/state/auth.selectors';
 import moment from 'moment';
-import {Observable} from 'rxjs';
-import {getAllStreams} from '../../../state/messaging.selectors';
-import {AllStreamsModel} from '../../../models/streams.model';
-import {getStreams} from '../../../../state/entities/streams.entity';
-import {SubStreamsModel} from '../../../../models/streams.model';
+import { Observable } from 'rxjs';
+import { getAllStreams } from '../../../state/messaging.selectors';
+import { AllStreamsModel } from '../../../models/streams.model';
+import { getStreams } from '../../../../state/entities/streams.entity';
+import { SubStreamsModel } from '../../../../models/streams.model';
 
 @Component({
   selector: 'app-chat-card',
   templateUrl: './chat-card.component.html',
-  styleUrls: ['./chat-card.component.scss']
+  styleUrls: ['./chat-card.component.scss'],
 })
 export class ChatCardComponent implements OnInit {
   @Input() messageDetail: any;
-  @Input() userId$!: Observable<number>;
   @Output() messageTopic = new EventEmitter<any>();
   @Output() emitReplyMsg = new EventEmitter<any>();
+
+  userId$: Observable<any> = this.store.select(getUserId);
+
   userId: any;
   messageTime = '';
   messageDate: any = '';
@@ -44,18 +50,14 @@ export class ChatCardComponent implements OnInit {
     ],
   };
 
-  constructor(
-    private router: Router,
-    private store: Store<AppState>
-  ) {
-  }
+  constructor(private router: Router, private store: Store<AppState>) {}
 
   navigateSubject(stream: any): void {
     this.router.navigate(['dashboard/messaging/team'], {
       queryParams: {
         team: stream.name.replace(/\s/g, ''),
         id: stream.stream_id,
-      }
+      },
     });
   }
 
@@ -71,9 +73,9 @@ export class ChatCardComponent implements OnInit {
   // }
 
   ngOnInit(): void {
-    this.store.select(getZulipProfile).subscribe(
-      (user: any) => this.userId = user.zulip.user_id
-    );
+    this.store
+      .select(getZulipProfile)
+      .subscribe((user: any) => (this.userId = user.zulip.user_id));
     //
     this.messageTime = moment(this.messageDetail.timestamp * 1000).calendar();
     this.messageDate = new Date(this.messageDetail.timestamp);

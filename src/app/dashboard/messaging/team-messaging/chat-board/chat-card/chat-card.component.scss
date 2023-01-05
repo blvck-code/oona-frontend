@@ -2,22 +2,6 @@
   display: flex;
   margin-bottom: 10px;
 
-  &.my-message {
-    display: flex;
-    justify-content: flex-end;
-
-    .chart-item-profile {
-      display: none;
-    }
-
-    .chart-container-wrap {
-      margin-right: 15px;
-      //width: 50%;
-      //max-width: 70%;
-      //border-bottom-right-radius: 0px;
-      //border-bottom-left-radius: 10px;
-    }
-  }
 }
 .chart-item-profile {
   margin-right: 20px;

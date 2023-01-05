@@ -1,5 +1,11 @@
 .individual-messaging-container {
   height: 100%;
+
+  .my-message {
+    //background: ;
+    justify-self: flex-end;
+    align-self: flex-end;
+  }
 }
 
 .messaging-member-title {

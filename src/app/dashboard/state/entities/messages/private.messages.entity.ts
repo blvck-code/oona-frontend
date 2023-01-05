@@ -1,8 +1,10 @@
-import {createEntityAdapter, EntityAdapter, EntityState} from '@ngrx/entity';
-import {SingleMessageModel} from '../../../models/messages.model';
+import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
+import { SingleMessageModel } from '../../../models/messages.model';
 import * as dashActions from '../../dash.actions';
-import {createSelector} from '@ngrx/store';
-import { privateMsgStateKey} from '../../dash.selectors';
+import { createSelector } from '@ngrx/store';
+import { privateMsgStateKey } from '../../dash.selectors';
+import { selectedUserId } from '../users.entity';
+import { flag } from 'ionicons/icons';
 
 export interface PrivateMessagesState extends EntityState<SingleMessageModel> {
   loading: boolean;
@@ -14,9 +16,10 @@ export const sortByTime = (a: SingleMessageModel, b: SingleMessageModel) => {
   return a.timestamp - b.timestamp;
 };
 
-export const privateMsgAdapter: EntityAdapter<SingleMessageModel> = createEntityAdapter<SingleMessageModel>({
-  sortComparer: sortByTime
-});
+export const privateMsgAdapter: EntityAdapter<SingleMessageModel> =
+  createEntityAdapter<SingleMessageModel>({
+    sortComparer: sortByTime,
+  });
 
 export const defaultMessages: PrivateMessagesState = {
   ids: [],
@@ -36,14 +39,28 @@ export function privateMsgReducer(
     case dashActions.DashActions.LOAD_PRIVATE_MESSAGE:
       return {
         ...state,
-        loading: true
+        loading: true,
       };
     case dashActions.DashActions.LOAD_PRIVATE_MESSAGE_SUCCESS:
       return privateMsgAdapter.upsertMany(action.payload.zulip.messages, {
         ...state,
         loading: false,
-        loaded: true
+        loaded: true,
       });
+    case dashActions.DashActions.SOCKET_PRIVATE_MESSAGE:
+      return privateMsgAdapter.addOne(action.payload, {
+        ...state,
+      });
+    case dashActions.DashActions.UPDATE_STREAM_COUNTER:
+      return privateMsgAdapter.updateOne(
+        {
+          id: action.payload.messages,
+          changes: {
+            flags: action.payload.flag,
+          },
+        },
+        state
+      );
     default:
       return state;
   }
@@ -54,15 +71,52 @@ export const getPrivateMessages = createSelector(
   privateMsgStateKey,
   privateMsgAdapter.getSelectors().selectAll
 );
+export const allPrivateMessages = createSelector(
+  getPrivateMessages,
+  (messages) => messages.filter((message) => message.type === 'private')
+);
 export const privateMessagesLoading = createSelector(
   privateMsgStateKey,
-  state => state.loading
+  (state) => state.loading
 );
 export const privateMessagesLoaded = createSelector(
   privateMsgStateKey,
-  state => state.loaded
+  (state) => state.loaded
+);
+export const selectedUserMessages = createSelector(
+  getPrivateMessages,
+  selectedUserId,
+  (messages, id) =>
+    messages.filter(
+      (message) =>
+        // @ts-ignore
+        (message.display_recipient[0].id === id ||
+          (message.display_recipient[1]
+            ? // @ts-ignore
+              message.display_recipient[1].id === id
+            : null) ||
+          message.sender_id === id) &&
+        message.type === 'private'
+    )
 );
 
+export const privateUnreadCounter = createSelector(
+  getPrivateMessages,
+  (messages) =>
+    messages.filter((message) => !message.flags.includes('read')).length
+);
+
+export const unreadMessages = createSelector(getPrivateMessages, (messages) =>
+  messages.filter((message) => !message.flags.includes('read'))
+);
+
+export const privateUnreadLength = createSelector(
+  getPrivateMessages,
+  (messages) =>
+    messages.filter(
+      (message) => !message.flags.includes('read') && message.type === 'private'
+    ).length
+);
 // export const filteredMsg = createSelector(
 //   getMessages,
 //   selectedStream,

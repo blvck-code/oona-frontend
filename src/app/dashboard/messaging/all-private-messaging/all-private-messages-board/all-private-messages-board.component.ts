@@ -22,10 +22,15 @@ import {
   SingleMessageModel,
   StreamDetail,
 } from '../../models/messages.model';
-import {getAllUsers, getUserId} from '../../../../auth/state/auth.selectors';
+import { getAllUsers, getUserId } from '../../../../auth/state/auth.selectors';
 import { OonaSocketService } from '../../services/oona-socket.service';
-import {privateMessagesLoaded, privateMessagesLoading, getPrivateMessages} from '../../../state/entities/messages/private.messages.entity';
-import {getStreamMessages} from '../../../state/entities/messages/stream.messages.entity';
+import {
+  privateMessagesLoaded,
+  privateMessagesLoading,
+  getPrivateMessages,
+  allPrivateMessages,
+} from '../../../state/entities/messages/private.messages.entity';
+import { getStreamMessages } from '../../../state/entities/messages/stream.messages.entity';
 
 @Component({
   selector: 'app-all-private-messages-board',
@@ -59,7 +64,8 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
   @ViewChild('endChat') endChat: ElementRef | undefined;
 
   // @ts-ignore
-  messages$: Observable<SingleMessageModel[]> = this.store.select(getPrivateMessages);
+  messages$: Observable<SingleMessageModel[]> =
+    this.store.select(allPrivateMessages);
   loading$: Observable<boolean> = this.store.select(privateMessagesLoading);
   loaded$: Observable<boolean> = this.store.select(privateMessagesLoaded);
 
@@ -85,9 +91,7 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
   }
 
   // Init page
-  initPage(): void {
-
-  }
+  initPage(): void {}
 
   allUsersRegistered(): void {
     this.store.select(getAllUsers).subscribe((users) => {
@@ -289,5 +293,4 @@ export class AllPrivateMessagesBoardComponent implements OnInit, OnDestroy {
   //     });
   //   });
   // }
-
 }
