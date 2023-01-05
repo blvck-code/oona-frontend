@@ -1756,6 +1756,11 @@
   "resolved" "https://registry.npmjs.org/@socket.io/component-emitter/-/component-emitter-3.1.0.tgz"
   "version" "3.1.0"
 
+"@stencil/core@^2.18.0":
+  "integrity" "sha512-ka+eOW+dNteXIfLCRipNbbAlBEQjqJ2fkx3fxzlKgnNHEQMdZiuIjlWt63KzvOJStNeuADdQXo89BB1dC2VRUw=="
+  "resolved" "https://registry.npmjs.org/@stencil/core/-/core-2.20.0.tgz"
+  "version" "2.20.0"
+
 "@syncfusion/ej2-angular-base@^20.3.47":
   "integrity" "sha512-B3xcRHPK1RiqUvSTkOyXocn6SjUNWK3oQ/L2Vl9m2Y5Jn+/b/4dng+wlNkzNQ3YmQ2Gc7PKETpdJQzp9qrUuxg=="
   "resolved" "https://registry.npmjs.org/@syncfusion/ej2-angular-base/-/ej2-angular-base-20.3.47.tgz"
@@ -4916,6 +4921,13 @@
     "ipaddr.js" "^1.9.1"
     "is-ip" "^3.1.0"
     "p-event" "^4.2.0"
+
+"ionicons@^6.0.4":
+  "integrity" "sha512-uDNOkBo0OVYV+kIhb51g9mb7r3Z0b+78GPZQBsjXuaetNmrB/mNTqN/uFtO+vxL/rQySKjzk8qeKJI5NWL9Ueg=="
+  "resolved" "https://registry.npmjs.org/ionicons/-/ionicons-6.0.4.tgz"
+  "version" "6.0.4"
+  dependencies:
+    "@stencil/core" "^2.18.0"
 
 "ip-regex@^4.0.0":
   "integrity" "sha512-B9ZWJxHHOHUhUjCPrMpLD4xEq35bUTClHM1S6CBU5ixQnkZmwipwgc96vAd7AAGM9TGHvJR+Uss+/Ak6UphK+Q=="

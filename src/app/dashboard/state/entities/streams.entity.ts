@@ -47,7 +47,7 @@ export function streamsReducer(
         loading: false,
         loaded: true
       });
-      // Todo Error handling
+    // Todo Error handling
     // Selected stream / topic
     case dashActions.DashActions.SELECTED_STREAM:
       const streamId = action.payload.streamId;
@@ -65,6 +65,11 @@ export function streamsReducer(
         } : stream, state
       );
       return newState;
+    case dashActions.DashActions.CREATE_STREAM:
+      console.log('Payload payload ==>>>', action);
+      return streamsAdapter.addOne(action.payload, {
+        ...state
+      });
     // case dashActions.DashActions.LOAD_SUBSCRIBERS_SUCCESS:
     //   const updatedSubscribers = streamsAdapter.map(
     //     (stream: SubStreamsModel) => stream.stream_id === action.payload.streamId ? {

@@ -45,6 +45,7 @@
     "flatpickr": "^4.6.9",
     "font-awesome": "^4.7.0",
     "http-server": "^14.1.1",
+    "ionicons": "^6.0.4",
     "markdown-to-html-pipe": "^1.2.5",
     "moment": "^2.29.4",
     "ng2-search-filter": "^0.5.1",

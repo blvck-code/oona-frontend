@@ -9,6 +9,8 @@ import {getAllStreams} from '../../../state/messaging.selectors';
 import {MessagingService} from '../../../services/messaging.service';
 import {SharedService} from '../../../../../shared/services/shared.service';
 import {HttpErrorResponse} from '@angular/common/http';
+import {getUsers} from '../../../../state/entities/users.entity';
+import {PersonModel} from '../../../../models/person.model';
 
 @Component({
   selector: 'app-new-team',
@@ -26,7 +28,7 @@ export class NewTeamComponent implements OnInit {
   searchText = '';
   filterWord = '';
 
-  @Input() users$!: Observable<ZulipSingleUser[]>;
+  users$: Observable<PersonModel[]> = this.store.select(getUsers);
   @Input() userId$!: Observable<number>;
 
   streams$!: Observable<AllStreamsModel[]>;
@@ -62,56 +64,11 @@ export class NewTeamComponent implements OnInit {
   }
 
   handlePrivacyType(type: string): void {
+    console.log('Type ==>>', type);
     this.privacyType = type;
-    this.validChecks();
-  }
-
-  validChecks(): void {
-
-    console.log('Privacy type ==>>', this.privacyType);
-
-    if ( this.privacyType !== 'public' ){
-      this.streamForm.controls.public.setValue(true);
-      this.streamForm.controls.teamHistory.setValue(false);
-      this.streamForm.controls.teamInvite.setValue(false);
-
-    }
-
-    if ( this.privacyType  !== 'privateTeamInviteShare' ){
-      this.streamForm.controls.public.setValue(false);
-      this.streamForm.controls.teamHistory.setValue(true);
-      this.streamForm.controls.teamInvite.setValue(false);
-
-    }
-
-    if ( this.privacyType !== 'privateTeamInviteNo' ){
-      this.streamForm.controls.public.setValue(false);
-      this.streamForm.controls.teamHistory.setValue(false);
-      this.streamForm.controls.teamInvite.setValue(true);
-    }
-  }
-
-  checkStreamName($event: any): void {
-    const streamName = $event.target.value;
-
-    this.streams$.subscribe(
-      (streams: AllStreamsModel[]) => {
-        streams.map((streamItem: AllStreamsModel) => {
-          if (streamItem.name.toLowerCase() === streamName.toLowerCase()) {
-            // Todo add stream form to be invalid
-            this.streamExistSubject.next(true);
-            console.log('A stream with this name already exists');
-          } else {
-            this.streamExistSubject.next(false);
-          }
-        });
-      }
-    );
-    console.log('Stream name ==>>', streamName);
   }
 
   onSubmit(): void {
-    this.validChecks();
     const teamData = {
       name: this.streamForm.value.teamName,
       description: this.streamForm.value.teamDescription,
@@ -122,19 +79,33 @@ export class NewTeamComponent implements OnInit {
       history_public_to_subscribers: this.streamForm.value.teamHistory,
     };
 
+    // Payload Model
+    // {
+    //   "name": "zawadasghv5" ,
+    //   "description": "stream",
+    //   "user_id": [
+    //   35
+    // ],
+    //   "authorization_errors_fatal": true,
+    //   "invite_only": true,
+    //   "announce": true,
+    //   "history_public_to_subscribers":true
+    // }
+
     console.log('Team data ===>>', teamData);
     console.log('Form data ===>>', this.streamForm.value);
     //
-    // this.messagingService.subscribeMember(teamData).subscribe({
-    //   next: (response: any) => {
-    //     if (response['zulip message'].result === 'success'){
-    //       this.sharedSrv.showNotification('Stream successfully created', 'success');
-    //     }else{
-    //       // this.notificationService.showError(`Cannot add ${this.selectedUser.full_name} at this time`, 'Could not add member');
-    //     }
-    //   },
-    //   error: (err: HttpErrorResponse) => console.log('Create stream err ==>>', err)
-    // });
+    this.messagingService.subscribeMember(teamData).subscribe({
+      next: (response: any) => {
+        if (response['zulip message'].result === 'success'){
+          this.sharedSrv.showNotification('Stream successfully created', 'success');
+        }else{
+          this.sharedSrv.showNotification('Failed to create stream, please try again', 'error');
+          // this.notificationService.showError(`Cannot add ${this.selectedUser.full_name} at this time`, 'Could not add member');
+        }
+      },
+      error: (err: HttpErrorResponse) => console.log('Create stream err ==>>', err)
+    });
   }
 
   getUsersEmail(users: ZulipSingleUser[]): any {
@@ -176,7 +147,7 @@ export class NewTeamComponent implements OnInit {
 
   addAllUsers(): void {
     this.users$.subscribe(
-      (users: ZulipSingleUser[]) => {
+      (users: PersonModel[]) => {
        this.selectedSubscribers = users;
       }
     );

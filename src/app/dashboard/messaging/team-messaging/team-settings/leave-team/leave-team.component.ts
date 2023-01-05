@@ -2,6 +2,8 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {NotificationService} from '../../../../../shared/services/notification.service';
 import {MessagingService} from '../../../services/messaging.service';
+import {DashService} from '../../../../service/dash-service.service';
+import {SharedService} from '../../../../../shared/services/shared.service';
 
 @Component({
   selector: 'app-leave-team',
@@ -15,7 +17,8 @@ export class LeaveTeamComponent implements OnInit {
     private dialog: MatDialog,
     private  notificationService: NotificationService,
     private dialogRef: MatDialogRef<LeaveTeamComponent>,
-    public messagingService: MessagingService,
+    public dashSrv: DashService,
+    private sharedSrv: SharedService,
     // @ts-ignore
     @Inject(MAT_DIALOG_DATA) data,
   ) {
@@ -36,13 +39,14 @@ export class LeaveTeamComponent implements OnInit {
       ]
     };
 
-    this.messagingService.unsubscribeFromStream(streamDetail).subscribe((response: any) => {
-
-      if (response.result === 'success'){
-        this.dialogRef.close('success');
-        this.notificationService.showSuccess(`Unsubscribed from ${this.teamDetail.name}`, 'Unsubscribed successfully');
-      }else{
-        this.notificationService.showError(`Unable to unsubscribe from ${this.teamDetail.name} at this time`, 'Could not unsubscribe');
+    this.dashSrv.unsubscribeStream(streamDetail).subscribe({
+      next: (response) => {
+        if (response.result === 'success'){
+          this.dialogRef.close('success');
+          this.sharedSrv.showNotification(`Unsubscribed from ${this.teamDetail.name}`, 'success');
+        }else{
+          this.sharedSrv.showNotification(`Unable to unsubscribe from ${this.teamDetail.name} at this time`, 'error');
+        }
       }
     });
   }

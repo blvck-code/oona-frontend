@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {messageChannel} from '../../../../environments/environment';
 import {AuthService} from '../../../auth/services/auth.service';
 import {MessagingService} from './messaging.service';
@@ -12,8 +12,13 @@ import {AppState} from '../../../state/app.state';
 import * as authActions from '../../../auth/state/auth.actions';
 import {Router} from '@angular/router';
 import {SingleMessageModel} from '../models/messages.model';
-import * as messagingActions from '../state/messaging.actions';
 import {SocketMessageModel, StreamCounterModel} from '../../models/socket.model';
+import {AddSocketModel, StreamSocketModel, SubscriptionSocketModel} from '../models/socket.model';
+import {userId} from '../../../auth/state/auth.selectors';
+import {AllStreamsModel} from '../../models/streams.model';
+
+import * as messagingActions from '../state/messaging.actions';
+import * as streamActions from '../../../dashboard/state/actions/streams.actions';
 
 const msgSocket = webSocket(messageChannel);
 
@@ -29,6 +34,8 @@ export class OonaSocketService {
   privateMessagesCounter = 0;
   privateMsgCounterSubject = new BehaviorSubject<number>(this.privateMessagesCounter);
   privateMsgCounter = this.privateMsgCounterSubject.asObservable();
+
+  userId$: Observable<number | undefined> = this.store.select(userId);
 
   public recognizedUsers = Array();
   private usersSocket = new BehaviorSubject(this.recognizedUsers);
@@ -79,6 +86,8 @@ export class OonaSocketService {
   private websocket: WebSocket | undefined;
   private loggedInUserProfile: any;
 
+  newStreams: AllStreamsModel[] = [];
+
 
   constructor(
     private authService: AuthService,
@@ -89,7 +98,7 @@ export class OonaSocketService {
   }
 
   notifySound(): void {
-    let audio = new Audio();
+    const audio = new Audio();
     audio.src = '../../../../assets/notification.mp3';
     audio.load();
     audio.play();
@@ -228,30 +237,7 @@ export class OonaSocketService {
   }
 
   filterSocketData(userData: any): void {
-    /*
-     * Filters all active and inactive users
-     * @param userData Incoming message from the server.
-     * @return void
-     */
-
     const socketData  = JSON.parse(userData);
-
-    // {
-    //   "message": {
-    //   "operation": "add",
-    //   "all": false,
-    //   "type": "update_message_flags",
-    //   "id": 21,
-    //   "messages": [
-    //     34424,
-    //     34427,
-    //     34430,
-    //     34431,
-    //     34433
-    //   ],
-    //     "flag": "read"
-    // }
-    // }
 
     console.log('Socket data first time ===>>>', socketData);
 
@@ -263,6 +249,9 @@ export class OonaSocketService {
       // console.log('pushing user presence data');
       this.recognizedUsers.push(socketData);
     } else if (socketData.message.type === 'stream') {
+
+      this.handleStreamSockets(socketData.message);
+      this.handleSubscriptionSockets(socketData.message);
 
       if (socketData.message.op === 'create'){
         // New stream just created
@@ -340,6 +329,44 @@ export class OonaSocketService {
     };
   }
 
+  handleStreamSockets(streamData: StreamSocketModel): void {
+    if (streamData.op === 'create') {
+      streamData.streams.map((stream) => {
+        this.store.dispatch(new streamActions.CreateStream(stream));
+      });
+      console.log('Create stream payload ==>>', streamData);
+    } else {
+      console.log('Stream message payload ==>>', streamData);
+    }
+
+    // console.log('New stream message ==>>', incoming);
+  }
+
+  handleSubscriptionSockets(streamData: SubscriptionSocketModel): void {
+
+    // Check if logged user to see new stream created
+    this.userId$.subscribe({
+      // tslint:disable-next-line:no-shadowed-variable
+      next: (userId) => {
+        if (userId) {
+          console.log('Logged user id ==>>', userId);
+
+          if (streamData.users_ids.includes(+userId)) {
+            // add the stream to stream array here
+            console.log('List of new streams ==>>', this.newStreams);
+          }
+
+        }
+      }
+    });
+
+
+  }
+
+  handleAddSocket(socket: AddSocketModel): void {
+    console.log('Add socket subscription', socket);
+  }
+
   // Filter message types from the socket
   private setMessageType(socketData: any): void {
     const newMessage: SingleMessageModel = socketData.message.message;
@@ -407,7 +434,8 @@ export class OonaSocketService {
       }
     } else if (socketData.message.message.type === 'subscription') {
 
-      // console.log('Subscription socket fired ===>>>>', socketData);
+      console.log('Subscription socket fired ===>>>>', socketData);
+      this.handleAddSocket(socketData.message);
 
     }
 

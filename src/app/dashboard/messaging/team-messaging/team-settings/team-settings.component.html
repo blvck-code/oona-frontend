@@ -8,7 +8,7 @@
     <div class="col">
       <div class="d-flex justify-content-between">
         <div>
-          <button type="button" class="btn btn-primary btn-sm shadow-none p-2 me-2" (click)="showSubscribedTeams()">Subscribed</button>
+          <button type="button" class="btn btn-primary btn-sm shadow-none p-2 me-2" (click)="getSubStreams()">Subscribed</button>
           <button type="button" class="btn btn-primary btn-sm shadow-none p-2" (click)="showAllAvailableTeams()">All streams</button>
         </div>
         <div class="d-flex justify-content-between">
@@ -29,25 +29,152 @@
     <div class="col create-stream">
       <div *ngIf="teamOfChoice">
         <div>
-          <div class="d-flex justify-content-between">
-            <h5>{{teamOfChoice.name}}</h5>
-            <button type="button" class="btn btn-primary p-2 btn-sm shadow-none" (click)="unsubscribeFromTeam()">Unsubscribe</button>
+          <div class="d-flex justify-content-between py-2">
+
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button (click)="toggleCategory('general')" type="button" class="btn btn-sm btn-primary">
+                General
+              </button>
+              <button (click)="toggleCategory('personal')" type="button" class="btn btn-sm btn-primary">
+                Personal
+              </button>
+              <button (click)="toggleCategory('subscribers')" type="button" class="btn btn-sm btn-primary">
+                Subscribers
+              </button>
+            </div>
+
+            <button *ngIf="activeStreamSubStatus" type="button" class="btn btn-primary p-2 btn-sm shadow-none" (click)="unsubscribeFromTeam()">Unsubscribe</button>
+            <button *ngIf="!activeStreamSubStatus" type="button" class="btn btn-primary p-2 btn-sm shadow-none" (click)="subscribeToTeam()">Subscribe</button>
+
           </div>
-          <p *ngIf="teamOfChoice.description">{{teamOfChoice.description}}</p>
-          <p *ngIf="teamOfChoice.description == ''">No description for this team yet</p>
+          <div class="stream-content">
+
+            <div class="stream-general pt-3" *ngIf="activeCategory === 'general'">
+              <div class="d-flex justify-content-between">
+                <h5>{{teamOfChoice.name}}</h5>
+                <button class="btn btn-sm btn-primary" data-toggle="modal" (click)="editStream()">
+                  Edit
+                </button>
+              </div>
+              <p *ngIf="teamOfChoice.description">{{teamOfChoice.description}}</p>
+              <p *ngIf="teamOfChoice.description == ''">No description for this team yet</p>
+
+              <h5>
+                Stream permissions
+              </h5>
+              <ul>
+                <li>
+                  This is a <strong>public stream</strong>. Any member of the organization can join without an invitation or view content sent to this stream.
+                </li>
+                <li>
+                  All stream subscribers can post.
+                </li>
+              </ul>
+            </div>
+
+            <form [formGroup]="personalSubForm" class="stream-personal pt-3" *ngIf="activeCategory === 'personal'">
+              <div class="d-flex">
+                <h5>Personal settings</h5>
+                <button *ngIf="savingSubs" class="btn btn-sm btn-outline-success ms-3">
+                  <div class="spinner-border spinner-border-sm text-success" role="status"></div>
+                  Saving
+                </button>
+              </div>
+
+              <div class="py-2">
+                <fieldset class="form-check">
+                  <input type="checkbox" formControlName="is_muted" (change)="updateSubscription($event.target)" id="muteStream" class="form-check-input">
+                  <label class="form-check-label" for="muteStream">Mute stream</label>
+                </fieldset>
+                <fieldset class="form-check">
+                  <input formControlName="pin_to_top" (change)="updateSubscription( $event.target)" id="pinOnTop" type="checkbox" class="form-check-input">
+                  <label class="form-check-label" for="pinOnTop">Pin stream to top of left sidebar</label>
+                </fieldset>
+              </div>
+
+              <div class="py-2">
+                <h5>Notification settings</h5>
+                <fieldset class="form-check">
+                  <input formControlName="desktop_notifications" id="deskNotification" (change)="updateSubscription($event.target)"  type="checkbox" class="form-check-input">
+                  <label class="form-check-label" for="deskNotification">Visual desktop notifications</label>
+                </fieldset>
+                <fieldset class="form-check">
+                  <input formControlName="audible_notifications" id="audioNotification" (change)="updateSubscription( $event.target)"  type="checkbox" class="form-check-input">
+                  <label class="form-check-label" for="audioNotification">Audible desktop notifications</label>
+                </fieldset>
+                <fieldset class="form-check">
+                  <input formControlName="push_notifications" id="pushNotification" (change)="updateSubscription( $event.target)" type="checkbox" class="form-check-input">
+                  <label class="form-check-label" for="pushNotification">Mobile notifications</label>
+                </fieldset>
+                <fieldset class="form-check">
+                  <input formControlName="email_notifications" id="emailNotification" (change)="updateSubscription( $event.target)"  type="checkbox" class="form-check-input">
+                  <label class="form-check-label" for="emailNotification">Email notifications</label>
+                </fieldset>
+                <fieldset class="form-check">
+                  <input formControlName="wildcard_mentions_notify" id="wildNotify" (change)="updateSubscription( $event.target)"  type="checkbox" class="form-check-input">
+                  <label class="form-check-label" for="wildNotify">Notifications for @all/everyone mentions</label>
+                </fieldset>
+              </div>
+
+            </form>
+            <div class="stream-subscribers pt-3" *ngIf="activeCategory === 'subscribers'">
+
+              <div class="mb-2">
+                <div class="form-group stream-filter-users">
+                  <label>Choose subscribers</label>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                  <ul class="searchable-users list-group">
+                    <li *ngFor="let show of searchResult" class="list-group-item filtered-user" (click)="addMemberToTeam(show)">
+                      {{ show.full_name }}
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="d-flex">
+                  <input
+                    style="flex: 1;"
+                    type="text"
+                    class="form-control"
+                    [(ngModel)]="selectedUser.full_name" (keyup)="searchUser($event)"
+                    placeholder="Add subscribers. Use usergroup or #streamname to bulk add subscribers">
+                  <button (click)="subscribeNewMember()" class="btn btn-sm btn-outline-dark ms-2">Add</button>
+                </div>
+              </div>
+              <table class="table mt-2">
+                <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">User ID</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let user of activeStreamSubscribers">
+                  <td>{{ user.full_name}}</td>
+                  <td>{{ user.email }}</td>
+                  <td>{{ user.user_id }}</td>
+                </tr>
+                </tbody>
+              </table>
+
+            </div>
+
+          </div>
         </div>
-        <div class="d-flex justify-content-end">
-          <ul class="searchable-users list-group">
-            <li *ngFor="let show of searchResult" class="list-group-item filtered-user" (click)="addMemberToTeam(show)">
-              {{ show.full_name }}
-            </li>
-          </ul>
-        </div>
-        <div class="d-flex justify-content-around">
-          <input type="text" class="form-control shadow-none team-search p-2" placeholder="Search subscribers" aria-label="search" aria-describedby="basic-addon1" (keyup)="searchSubscriber($event)" >
-          <input type="text" class="form-control shadow-none team-search p-2" placeholder="Name or email" aria-label="Name" aria-describedby="basic-addon1" [(ngModel)]="selectedUser.full_name" (keyup)="searchUser($event)">
-          <button type="button" class="btn btn-primary p-2 btn-sm shadow-none" (click)="subscribeNewMember()" [disabled]="this.selectedUser.full_name == '' ">Add</button>
-        </div>
+<!--        <div class="d-flex justify-content-end">-->
+<!--          <ul class="searchable-users list-group">-->
+<!--            <li *ngFor="let show of searchResult" class="list-group-item filtered-user" (click)="addMemberToTeam(show)">-->
+<!--              {{ show.full_name }}-->
+<!--            </li>-->
+<!--          </ul>-->
+<!--        </div>-->
+<!--        <div class="d-flex justify-content-around">-->
+<!--          <input type="text" class="form-control shadow-none team-search p-2" placeholder="Search subscribers" aria-label="search" aria-describedby="basic-addon1" (keyup)="searchSubscriber($event)" >-->
+<!--          <input type="text" class="form-control shadow-none team-search p-2" placeholder="Name or email" aria-label="Name" aria-describedby="basic-addon1" [(ngModel)]="selectedUser.full_name" (keyup)="searchUser($event)">-->
+<!--          <button type="button" class="btn btn-primary p-2 btn-sm shadow-none" (click)="subscribeNewMember()" [disabled]="this.selectedUser.full_name == '' ">Add</button>-->
+<!--        </div>-->
 
         <div class="">
           <div class="user-names mt-4">
@@ -63,9 +190,10 @@
       </div>
 
       <div *ngIf="!teamOfChoice" >
-       <app-new-team [userId$]="currentUserId$" [users$]="allUsers$"></app-new-team>
+       <app-new-team [userId$]="currentUserId$"></app-new-team>
       </div>
     </div>
   </div>
 
 </div>
+

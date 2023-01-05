@@ -10,6 +10,13 @@ import {Observable} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../../state/app.state';
 import {getUserId, getZulipUsers} from '../../../../auth/state/auth.selectors';
+import {AllStreamsModel, SubStreamsModel} from '../../../models/streams.model';
+import {DashService} from '../../../service/dash-service.service';
+import {getStreams} from '../../../state/entities/streams.entity';
+import {EditStreamComponent} from './edit-stream/edit-stream.component';
+import {PersonModel} from '../../../models/person.model';
+import {getUsers} from '../../../state/entities/users.entity';
+import {SharedService} from '../../../../shared/services/shared.service';
 
 @Component({
   selector: 'app-team-settings',
@@ -21,10 +28,23 @@ export class TeamSettingsComponent implements OnInit {
   allUsers: ZulipSingleUser[] = Array();
   allUsers$!: Observable<ZulipSingleUser[]>;
   currentUserId$!: Observable<any>;
+  users$: Observable<PersonModel[]> = this.store.select(getUsers);
+
+  // Show content
+  activeCategory = 'personal';
+  activeStreamSubscribers: PersonModel[] = [];
+  activeStreamSubStatus: any;
+
+  // Streams
+  allStreams: AllStreamsModel[] = [];
+  subscribedStreams$: Observable<SubStreamsModel[]> = this.store.select(getStreams);
+
+  savingSubs = false;
 
   teamOfChoice: any;
   displayCreateTeamComponentRef: MatDialogRef<CreateTeamComponent> | undefined;
   displayLeaveTeamComponentRef: MatDialogRef<LeaveTeamComponent> | undefined;
+  displayEditStreamComponentRef: MatDialogRef<EditStreamComponent> | undefined;
   filteredTeams = Array();
   filteredUsers = Array();
   searchResult =  Array();
@@ -44,6 +64,8 @@ export class TeamSettingsComponent implements OnInit {
     private  notificationService: NotificationService,
     private change: ChangeDetectorRef,
     private store: Store<AppState>,
+    private dashSrv: DashService,
+    private sharedSrv: SharedService,
     // @ts-ignore
     @Inject(MAT_DIALOG_DATA) data,
   ) {
@@ -65,18 +87,38 @@ export class TeamSettingsComponent implements OnInit {
     privateShareNo: [false],
   });
 
+  personalSubForm = this.formBuilder.group({
+    is_muted: [false],
+    pin_to_top: [false],
+    desktop_notifications: [false],
+    audible_notifications: [false],
+    push_notifications: [false],
+    email_notifications: [false],
+    wildcard_mentions_notify: [false],
+  });
+
   emptyForm = false;
 
   // privateShareF = '';
   ngOnInit(): void {
+    this.onInitHandler();
+  }
+
+  onInitHandler(): void {
     this.messagingService.getUsersByAvailability().subscribe((users: { members: any[]; }) => {
 
-      this.allUsers = users.members.filter(user => user.presence );
-      this.filteredUsers = users.members.filter(user => user.presence );
+      this.allUsers = users.members.filter(user => user.presence);
+      this.filteredUsers = users.members.filter(user => user.presence);
     });
 
     this.allUsers$ = this.store.select(getZulipUsers);
     this.currentUserId$ = this.store.select(getUserId);
+    this.getAllStreams();
+    this.getSubStreams();
+  }
+
+  toggleCategory(category: string): void {
+    this.activeCategory = category;
   }
 
   getAllSubscribers(): void{
@@ -115,12 +157,63 @@ export class TeamSettingsComponent implements OnInit {
   }
 
   selectTeam(team: any): void {
+    this.activeStreamSubscribers = [];
+
     this.teamOfChoice = team;
     this.getSubscribersOfTeam(team.stream_id);
+    this.getStreamSubscribers(team.name);
+    this.getSubStatus(team.stream_id);
+  }
+
+  getStreamSubscribers(streamName: string): void {
+    this.dashSrv.streamSubscribers(streamName).subscribe({
+      next: (response) => {
+        this.users$.subscribe({
+          next: (users) => {
+            users.filter(user => {
+              if (response.subscribers.includes(user.user_id)) {
+                this.activeStreamSubscribers.push(user);
+              }
+            });
+          }
+        });
+      }
+    });
+  }
+
+  getSubStatus(streamId: number): void {
+    this.dashSrv.streamSubStatus(streamId).subscribe({
+      next: (status: { result: string, msg: string, is_subscribed: boolean }) => {
+        this.activeStreamSubStatus = status.is_subscribed;
+      }
+    });
   }
   listAllTeams(): any{
     this.messagingService.getAllTeams().subscribe((teams: any) => {
       this.teams = teams.streams;
+    });
+  }
+
+  updateSubscription(event: any): void {
+    this.savingSubs = true;
+    // Todo adding color manually
+    const updateContent = {
+      ...this.personalSubForm.value,
+      stream_id: this.teamOfChoice.stream_id,
+      property: 'color',
+      value: '#f00f00'
+    };
+    this.dashSrv.updateStreamSubscription(updateContent).subscribe({
+      next: (resp) => {
+        this.savingSubs = false;
+        console.log('Resp ==>>', resp);
+        this.sharedSrv.showNotification('Changes updated successfully', 'success');
+      },
+      error: (err) => {
+        console.log('Error ==>>', err);
+        this.savingSubs = false;
+        this.sharedSrv.showNotification('Failed to update changes', 'error');
+      }
     });
   }
 
@@ -139,6 +232,23 @@ export class TeamSettingsComponent implements OnInit {
     // );
   }
 
+  getAllStreams(): void {
+    this.dashSrv.getAllStreams().subscribe({
+      next: (streams) => {
+        this.allStreams = streams.streams;
+      }
+      }
+    );
+  }
+
+  getSubStreams(): void {
+    this.subscribedStreams$.subscribe({
+      next: (streams) => {
+        this.filteredTeams = streams;
+      }
+    });
+  }
+
   searchTeam(event: any): any {
     // tslint:disable-next-line:max-line-length
     this.filteredTeams  = this.teams.filter((team: { name: string; }) => team.name.toLowerCase().includes(event.target.value.toLowerCase()));
@@ -147,7 +257,7 @@ export class TeamSettingsComponent implements OnInit {
     this.filteredTeams = this.teams.filter((team: { invite_only: any; }) => team.invite_only);
   }
   showAllAvailableTeams(): void{
-    this.filteredTeams = this.teams;
+    this.filteredTeams = this.allStreams;
   }
 
   searchSubscriber(event: any): void {
@@ -162,6 +272,31 @@ export class TeamSettingsComponent implements OnInit {
     dialogConfig.data = {teamToLeave: this.teamOfChoice};
     this.displayLeaveTeamComponentRef = this.dialog.open(LeaveTeamComponent, dialogConfig);
     this.displayLeaveTeamComponentRef.afterClosed().subscribe(
+      data => {
+        if (data === 'success'){
+          this.listAllTeams();
+          this.filteredTeams = this.teams;
+        }
+      }
+    );
+  }
+
+  subscribeToTeam(): void {
+
+    this.dashSrv.streamSubscribe(this.teamOfChoice).subscribe({
+      next: (resp) => {
+        console.log('Subscribed response ==>>', resp);
+      }
+    });
+  }
+
+  editStream(): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.height = '35vh';
+    dialogConfig.width = '40vw';
+    dialogConfig.data = {editStream: this.teamOfChoice};
+    this.displayEditStreamComponentRef = this.dialog.open(EditStreamComponent, dialogConfig);
+    this.displayEditStreamComponentRef.afterClosed().subscribe(
       data => {
         if (data === 'success'){
           this.listAllTeams();
