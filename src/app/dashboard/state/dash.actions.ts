@@ -44,6 +44,7 @@ export enum DashActions {
 
   // Update Message Flag
   UPDATE_MESSAGE_FLAG = 'dash/updateMessageFlag',
+  UPDATE_STREAM_MESSAGE_FLAG = 'dash/updateStreamMessageFlag',
 
   // Stream messages
   LOAD_STREAM_MESSAGE = 'dash/loadStreamMsg',

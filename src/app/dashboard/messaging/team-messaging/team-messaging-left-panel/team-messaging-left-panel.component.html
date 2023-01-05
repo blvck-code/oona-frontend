@@ -77,7 +77,7 @@
         <app-load-indicator></app-load-indicator>
       </div>
       <div
-        *ngFor="let team of (privateStreams$ | async); index as i"
+        *ngFor="let team of privateStreams$ | async; index as i"
         class="accordion-item" (click)="getStreamName(team)"
       >
         <h2 class="accordion-header" id="flush-headingOne">
@@ -122,7 +122,7 @@
 <!--                <span-->
 <!--                  *ngIf="topic?.unread > 0"-->
 <!--                  class="badge badge-dark ms-2">-->
-<!--                  {{ topic?.unread }}-->
+<!--                  {{ topic.unread }}-->
 <!--                </span>-->
               </p>
 
@@ -139,6 +139,9 @@
       <p>Public Streams</p>
     </div>
     <div class="accordion accordion-flush" id="generalAccordion">
+      <div *ngIf="!(publicStreams$ | async)?.length">
+        <app-load-indicator></app-load-indicator>
+      </div>
       <div
         *ngFor="let team of (publicStreams$ | async); index as i"
         (click)="getStreamName(team)"

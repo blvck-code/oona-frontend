@@ -3,7 +3,7 @@ import { SingleMessageModel } from '../../../models/messages.model';
 import * as dashActions from '../../dash.actions';
 import { createSelector } from '@ngrx/store';
 import { selectedStream, selectedTopic } from '../streams.entity';
-import { sortByTime } from './private.messages.entity';
+import { privateMsgAdapter, sortByTime } from './private.messages.entity';
 import { streamMsgStateKey } from '../../dash.selectors';
 // import * as userActions from '../../../auth/state/auth.actions';
 
@@ -48,6 +48,16 @@ export function streamMsgReducer(
       return streamMsgAdapter.addOne(action.payload, {
         ...state,
       });
+    case dashActions.DashActions.UPDATE_STREAM_MESSAGE_FLAG:
+      return streamMsgAdapter.updateOne(
+        {
+          id: action.payload.messages,
+          changes: {
+            flags: action.payload.flag,
+          },
+        },
+        state
+      );
     default:
       return state;
   }
