@@ -20,16 +20,19 @@ export interface PersonModel {
   date_joined: string;
   avatar_url: any;
   presence?: PresenceModel;
-  unread: false;
+  unread?: false;
 }
 
 export interface PresenceModel {
   website: {
     status: string;
+    client?: string;
     timestamp: number;
   };
   aggregated: {
     status: string;
+    pushable?: boolean;
+    client?: string;
     timestamp: number;
   };
 }
