@@ -126,8 +126,7 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   privateStreamsObservable = this.privateStreamsSubject.asObservable();
 
   subStreams$: Observable<SubStreamsModel[]> = this.store.select(getStreams);
-  privateStreams$: Observable<SubStreamsModel[]> =
-    this.store.select(privateStreams);
+  streams$: Observable<SubStreamsModel[]> = this.store.select(getStreams);
   publicStreams$: Observable<SubStreamsModel[]> =
     this.store.select(publicStreams);
 

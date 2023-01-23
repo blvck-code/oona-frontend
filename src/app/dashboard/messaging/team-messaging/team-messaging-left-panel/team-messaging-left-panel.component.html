@@ -51,7 +51,7 @@
   </div>
   <div class="panel-box-accordion teams-panel">
     <div class="accordion-box-title">
-      <p>Private Streams<span
+      <p>Streams<span
         class="badge badge-dark">
           </span></p>
       <svg
@@ -73,11 +73,11 @@
       </svg>
     </div>
     <div class="accordion accordion-flush" id="teamsAccordion">
-      <div *ngIf="!(privateStreams$ | async)?.length">
+      <div *ngIf="!(streams$ | async)?.length">
         <app-load-indicator></app-load-indicator>
       </div>
       <div
-        *ngFor="let team of privateStreams$ | async; index as i"
+        *ngFor="let team of streams$ | async; index as i"
         class="accordion-item" (click)="getStreamName(team)"
       >
         <h2 class="accordion-header" id="flush-headingOne">
@@ -124,70 +124,6 @@
 <!--                  class="badge badge-dark ms-2">-->
 <!--                  {{ topic.unread }}-->
 <!--                </span>-->
-              </p>
-
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="panel-box-accordion general-panel">
-    <div class="accordion-box-title">
-      <p>Public Streams</p>
-    </div>
-    <div class="accordion accordion-flush" id="generalAccordion">
-      <div *ngIf="!(publicStreams$ | async)?.length">
-        <app-load-indicator></app-load-indicator>
-      </div>
-      <div
-        *ngFor="let team of (publicStreams$ | async); index as i"
-        (click)="getStreamName(team)"
-        class="accordion-item"
-      >
-        <h2 class="accordion-header" id="flush-headingTwo">
-          <button
-            class="accordion-button collapsed"
-            type="button"
-            data-bs-toggle="collapse"
-            [attr.data-bs-target]="'#flush-collapse-general' + i"
-            aria-expanded="false"
-            [attr.aria-controls]="'flush-collapse-general' + i"
-          >
-              {{ team?.name | titlecase }}
-<!--              <span-->
-<!--                *ngIf="team.unread > 0"-->
-<!--                class="badge badge-dark ms-2">-->
-<!--                {{ team?.unread }}-->
-<!--              </span>-->
-          </button>
-        </h2>
-        <div
-          id="flush-collapse-general{{ i }}"
-          class="accordion-collapse collapse"
-          aria-labelledby="flush-headingTwo"
-          data-bs-parent="#generalAccordion"
-        >
-          <div class="accordion-body">
-            <div
-              class="accordion-body-item"
-            >
-              <p class="accordion-body-item__text" (click)="handlePublicNavigateTopic(team)">All Channels</p>
-            </div>
-
-            <div
-              *ngFor="let topic of team?.topic"
-              class="accordion-body-item"
-            >
-              <p (click)="handlePublicNavigateTopic(team, topic)">
-                # {{ topic?.name | titlecase }}
-<!--                <span-->
-<!--                  *ngIf="topic?.unread > 0"-->
-<!--                  class="badge badge-dark ms-2">-->
-<!--                {{ topic?.unread }}-->
-<!--              </span>-->
               </p>
 
             </div>

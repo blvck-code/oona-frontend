@@ -88,10 +88,10 @@ export const environment = {
 
   // Messaging Urls
   users: oonaBaseUrl + '/api/v1/accounts/z/user/',
-  zulipUsers: oonaBaseUrl + '/api/v1/accounts/zulip/users/',
+  zulipUsers: oonaBaseUrl + '/api/v1/accounts/z/user/',
   teams: oonaBaseUrl + '/api/v1/streams/get-subscribed-streams',
   subscribedStreams: oonaBaseUrl + '/api/v1/streams',
-  presentUsers: oonaBaseUrl + '/api/v1/accounts/presence/user/',
+  presentUsers: oonaBaseUrl + '/api/v1/accounts/present/user/',
   userProfile: oonaBaseUrl + '/api/v1/accounts/profile/',
   streamMessages: oonaBaseUrl + '/api/v1/message/s',
   sendStreamMessageURL: oonaBaseUrl + '/api/v1/streams/message',
