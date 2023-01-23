@@ -28,6 +28,7 @@ import { SubStreamsModel } from '../../../models/streams.model';
 import {
   getStreams,
   getStreamsLoaded,
+  getStreamsLoading,
   privateStreams,
   publicStreams,
 } from '../../../state/entities/streams.entity';
@@ -126,10 +127,8 @@ export class TeamMessagingLeftPanelComponent implements OnInit {
   privateStreamsObservable = this.privateStreamsSubject.asObservable();
 
   subStreams$: Observable<SubStreamsModel[]> = this.store.select(getStreams);
-  privateStreams$: Observable<SubStreamsModel[]> =
-    this.store.select(privateStreams);
-  publicStreams$: Observable<SubStreamsModel[]> =
-    this.store.select(publicStreams);
+  streams$: Observable<SubStreamsModel[]> = this.store.select(getStreams);
+  streamsLoading$: Observable<boolean> = this.store.select(getStreamsLoading);
 
   // @ts-ignore
   unreadMessages$: Observable<SingleMessageModel[]> =

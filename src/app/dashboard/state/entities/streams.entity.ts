@@ -106,6 +106,10 @@ export const getStreamsLoaded = createSelector(
   streamStateKey,
   (state) => state.loaded
 );
+export const getStreamsLoading = createSelector(
+  streamStateKey,
+  (state) => state.loading
+);
 export const privateStreams = createSelector(getStreams, (streams) =>
   streams.filter((stream: SubStreamsModel) => stream.invite_only)
 );

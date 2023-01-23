@@ -287,8 +287,8 @@ export class DashService {
     return this.http.get<TopicResponseModel>(env.getStreamTopics + streamId);
   }
 
-  presentUsers(): Observable<PersonResponseModel> {
-    return this.http.get<PersonResponseModel>(env.presentUsers);
+  presentUsers(): Observable<any> {
+    return this.http.get<any>(env.presentUsers);
   }
 
   zulipUsers(): Observable<PersonResponseModel> {
