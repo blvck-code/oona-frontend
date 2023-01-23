@@ -73,8 +73,11 @@
       </svg>
     </div>
     <div class="accordion accordion-flush" id="teamsAccordion">
-      <div *ngIf="!(streams$ | async)?.length">
+      <div *ngIf="(streamsLoading$ | async)">
         <app-load-indicator></app-load-indicator>
+      </div>
+      <div *ngIf="!(streamsLoading$ | async) && !(streams$ | async)?.length">
+        No streams
       </div>
       <div
         *ngFor="let team of streams$ | async; index as i"

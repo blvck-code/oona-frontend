@@ -11,6 +11,7 @@ import { SharedService } from '../../../../../shared/services/shared.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { getUsers } from '../../../../state/entities/users.entity';
 import { PersonModel } from '../../../../models/person.model';
+import { getZulipProfileInfo } from '../../../../../auth/state/auth.selectors';
 
 @Component({
   selector: 'app-new-team',
@@ -32,6 +33,7 @@ export class NewTeamComponent implements OnInit {
   @Input() userId$!: Observable<number>;
 
   streams$!: Observable<AllStreamsModel[]>;
+  currentUser$: Observable<any> = this.store.select(getZulipProfileInfo);
 
   streamExist = false;
   streamExistSubject = new BehaviorSubject<boolean>(this.streamExist);
@@ -61,10 +63,14 @@ export class NewTeamComponent implements OnInit {
 
   ngOnInit(): void {
     this.streams$ = this.store.select(getAllStreams);
+    this.currentUser$.subscribe({
+      next: (user) => {
+        this.selectedSubscribers = [...this.selectedSubscribers, user];
+      },
+    });
   }
 
   handlePrivacyType(type: string): void {
-    console.log('Type ==>>', type);
     this.privacyType = type;
   }
 
@@ -78,26 +84,9 @@ export class NewTeamComponent implements OnInit {
       announce: this.streamForm.value.announce,
       history_public_to_subscribers: this.streamForm.value.teamHistory,
     };
-
-    // Payload Model
-    // {
-    //   "name": "zawadasghv5" ,
-    //   "description": "stream",
-    //   "user_id": [
-    //   35
-    // ],
-    //   "authorization_errors_fatal": true,
-    //   "invite_only": true,
-    //   "announce": true,
-    //   "history_public_to_subscribers":true
-    // }
-
-    console.log('Team data ===>>', teamData);
-    console.log('Form data ===>>', this.streamForm.value);
     //
     this.messagingService.subscribeMember(teamData).subscribe({
       next: (response: any) => {
-        console.log('Create stream response ==>>', response);
         const responseType = response['zulip message'].result;
         const responseMsg = response['zulip message'].msg;
         if (responseType === 'success') {
